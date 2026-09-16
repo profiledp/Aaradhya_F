@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aaradhya Fashion | Product Catalog</title>
+<meta name="description" content="Aaradhya Fashion product catalog - New Arrivals, Offers and latest collection.">
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f7f7f8;color:#222}
+header{background:#111;color:#fff;padding:22px 16px;text-align:center}
+header h1{margin:0;font-size:25px}
+header p{margin:6px 0 0;color:#ccc;font-size:13px}
+.container{max-width:1100px;margin:auto;padding:18px 14px}
+.search{width:100%;padding:14px 16px;border:1px solid #ddd;border-radius:12px;font-size:16px;outline:none}
+.filters{display:flex;gap:8px;overflow-x:auto;padding:12px 0}
+button{border:0;border-radius:20px;padding:10px 15px;background:#e9e9ec;cursor:pointer;font-weight:600;white-space:nowrap}
+button.active{background:#111;color:#fff}
+.status{font-size:13px;color:#666;margin:6px 0 14px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.07);cursor:pointer;position:relative}
+.card img{width:100%;height:230px;object-fit:cover;background:#eee;display:block}
+.info{padding:12px}
+.name{font-weight:700;font-size:16px;margin-bottom:5px}
+.category{font-size:12px;color:#777;margin-bottom:7px}
+.price{font-size:18px;font-weight:800}
+.badges{position:absolute;top:10px;left:10px;display:flex;gap:5px;flex-wrap:wrap}
+.badge{font-size:11px;padding:5px 8px;border-radius:10px;background:#fff;font-weight:700;box-shadow:0 1px 5px rgba(0,0,0,.15)}
+.offer{background:#111;color:#fff}
+.empty{text-align:center;padding:50px 15px;color:#777;grid-column:1/-1}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:30;padding:20px;overflow:auto}
+.modal-box{background:#fff;max-width:520px;margin:30px auto;border-radius:18px;overflow:hidden}
+.modal-box img{width:100%;max-height:420px;object-fit:cover}
+.modal-content{padding:20px}
+.close{float:right;background:#eee;padding:8px 12px;border-radius:50%}
+.detail-price{font-size:25px;font-weight:800;margin:10px 0}
+.stock{margin-top:10px;font-weight:700}
+footer{text-align:center;padding:30px 15px;color:#777;font-size:13px}
+@media(max-width:850px){.grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.grid{grid-template-columns:repeat(2,1fr);gap:10px}.card img{height:190px}.container{padding:12px 10px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>🛍️ Aaradhya Fashion</h1>
+  <p>Latest Collection • New Arrivals • Special Offers</p>
+</header>
+
+<main class="container">
+  <input id="search" class="search" type="search" placeholder="🔎 Search product...">
+  <div class="filters">
+    <button class="active" data-filter="all">All</button>
+    <button data-filter="new">🆕 New Arrivals</button>
+    <button data-filter="offer">🏷️ Offers</button>
+    <button data-filter="Saree">Saree</button>
+    <button data-filter="Kurti">Kurti</button>
+    <button data-filter="Men">Men</button>
+    <button data-filter="Kids">Kids</button>
+  </div>
+  <div id="status" class="status">Loading products...</div>
+  <section id="grid" class="grid"></section>
+</main>
+
+<div id="modal" class="modal">
+  <div class="modal-box">
+    <img id="mImage" src="" alt="Product">
+    <div class="modal-content">
+      <button class="close" onclick="closeModal()">✕</button>
+      <h2 id="mName"></h2>
+      <div id="mCategory" class="category"></div>
+      <div id="mPrice" class="detail-price"></div>
+      <div id="mStock" class="stock"></div>
+      <p id="mBadges"></p>
+    </div>
+  </div>
+</div>
+
+<footer>Aaradhya Fashion • Product Catalog</footer>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbwCjLvXdJlMAjK18zGyVTExB6hWaZ2cw6ZF7u_8wJI40DcEjtSTR4H7NtdxNXuBR6IUWg/exec";
+let products = [];
+let currentFilter = "all";
+
+const grid = document.getElementById("grid");
+const search = document.getElementById("search");
+const statusBox = document.getElementById("status");
+
+function clean(value) {
+  return value == null ? "" : String(value).trim();
+}
+
+function escapeHtml(value) {
+  return clean(value).replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[c]));
+}
+
+function render() {
+  const q = clean(search.value).toLowerCase();
+
+  const filtered = products.filter(p => {
+    const text = (p.name + " " + p.category + " " + p.id).toLowerCase();
+    const searchMatch = !q || text.includes(q);
+
+    let filterMatch = true;
+    if (currentFilter === "new") filterMatch = p.newArrival === true;
+    else if (currentFilter === "offer") filterMatch = p.offer === true;
+    else if (currentFilter !== "all") filterMatch = p.category.toLowerCase() === currentFilter.toLowerCase();
+
+    return searchMatch && filterMatch;
+  });
+
+  statusBox.textContent = filtered.length + " product" + (filtered.length === 1 ? "" : "s") + " found";
+
+  if (!filtered.length) {
+    grid.innerHTML = '<div class="empty">No products found.<br>Try another search or category.</div>';
+    return;
+  }
+
+  grid.innerHTML = filtered.map((p, i) => {
+    const img = p.image || "https://via.placeholder.com/600x700?text=Aaradhya+Fashion";
+    const badges = [];
+    if (p.newArrival) badges.push('<span class="badge">NEW</span>');
+    if (p.offer) badges.push('<span class="badge offer">OFFER</span>');
+
+    const safeProduct = encodeURIComponent(JSON.stringify(p));
+    return `
+      <article class="card" onclick="openModal('${safeProduct}')">
+        <div class="badges">${badges.join("")}</div>
+        <img src="${escapeHtml(img)}" alt="${escapeHtml(p.name)}" loading="lazy"
+             onerror="this.src='https://via.placeholder.com/600x700?text=Image+Not+Available'">
+        <div class="info">
+          <div class="name">${escapeHtml(p.name)}</div>
+          <div class="category">${escapeHtml(p.category)}</div>
+          <div class="price">${escapeHtml(p.price)}</div>
+        </div>
+      </article>`;
+  }).join("");
+}
+
+function openModal(encoded) {
+  const p = JSON.parse(decodeURIComponent(encoded));
+  document.getElementById("mImage").src = p.image || "https://via.placeholder.com/600x700?text=Aaradhya+Fashion";
+  document.getElementById("mName").textContent = p.name;
+  document.getElementById("mCategory").textContent = p.category + " • " + p.id;
+  document.getElementById("mPrice").textContent = p.price;
+  document.getElementById("mStock").textContent = p.stock > 0 ? "📦 In Stock: " + p.stock : "❌ Out of Stock";
+  document.getElementById("mBadges").textContent =
+    [p.newArrival ? "🆕 New Arrival" : "", p.offer ? "🏷️ Offer Available" : ""].filter(Boolean).join("  ");
+  document.getElementById("modal").style.display = "block";
+}
+
+function closeModal() {
+  document.getElementById("modal").style.display = "none";
+}
+
+document.querySelectorAll(".filters button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".filters button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentFilter = btn.dataset.filter;
+    render();
+  });
+});
+
+search.addEventListener("input", render);
+
+window.addEventListener("click", e => {
+  if (e.target === document.getElementById("modal")) closeModal();
+});
+
+async function loadProducts() {
+  try {
+    const response = await fetch(API_URL);
+    if (!response.ok) throw new Error("API response error");
+    const data = await response.json();
+    if (!Array.isArray(data)) throw new Error("Invalid product data");
+
+    products = data.map(p => ({
+      id: clean(p.id),
+      name: clean(p.name),
+      category: clean(p.category),
+      price: clean(p.price),
+      image: clean(p.image),
+      newArrival: p.newArrival === true || clean(p.newArrival).toLowerCase() === "yes",
+      offer: p.offer === true || clean(p.offer).toLowerCase() === "yes",
+      stock: Number(p.stock) || 0
+    }));
+
+    render();
+  } catch (error) {
+    console.error(error);
+    statusBox.textContent = "Unable to load products";
+    grid.innerHTML = '<div class="empty">Products could not be loaded.<br>Please check the Google Apps Script Web App deployment.</div>';
+  }
+}
+
+loadProducts();
+</script>
+</body>
+</html>
