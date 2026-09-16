@@ -1,2 +1,1 @@
-# Aaradhya_F
-Aaradhya Fashion Catalog
+# Aaradhya Fashion Catalog
