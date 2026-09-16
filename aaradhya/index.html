@@ -3,207 +3,266 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aaradhya Fashion | Product Catalog</title>
-<meta name="description" content="Aaradhya Fashion product catalog - New Arrivals, Offers and latest collection.">
+<title>Aaradhya Fashion | Premium Collection</title>
+<meta name="description" content="Aaradhya Fashion - Premium sarees, kurtis, men's wear and kids wear.">
 <style>
+:root{
+  --gold:#a87520;--gold2:#c49343;--dark:#24211d;--cream:#fbf8f2;
+  --text:#252525;--muted:#777;--line:#e8e1d5;--white:#fff;
+}
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f7f7f8;color:#222}
-header{background:#111;color:#fff;padding:22px 16px;text-align:center}
-header h1{margin:0;font-size:25px}
-header p{margin:6px 0 0;color:#ccc;font-size:13px}
-.container{max-width:1100px;margin:auto;padding:18px 14px}
-.search{width:100%;padding:14px 16px;border:1px solid #ddd;border-radius:12px;font-size:16px;outline:none}
-.filters{display:flex;gap:8px;overflow-x:auto;padding:12px 0}
-button{border:0;border-radius:20px;padding:10px 15px;background:#e9e9ec;cursor:pointer;font-weight:600;white-space:nowrap}
-button.active{background:#111;color:#fff}
-.status{font-size:13px;color:#666;margin:6px 0 14px}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 3px 14px rgba(0,0,0,.08);cursor:pointer;position:relative;transition:transform .18s ease,box-shadow .18s ease}
-.card:hover{transform:translateY(-2px);box-shadow:0 7px 20px rgba(0,0,0,.12)}
-.image-wrap{width:100%;height:240px;background:linear-gradient(135deg,#f2f2f2,#e7e7e7);overflow:hidden;position:relative}
-.card img{width:100%;height:100%;object-fit:cover;background:#eee;display:block;font-size:0;color:transparent}
-.card img.failed{display:none}
-.image-placeholder{position:absolute;inset:0;display:none;align-items:center;justify-content:center;color:#999;font-size:13px;text-align:center}
-.image-wrap.show-placeholder .image-placeholder{display:flex}
-.info{padding:13px 14px 15px}
-.name{font-weight:700;font-size:16px;line-height:1.3;margin-bottom:5px}
-.category{font-size:12px;color:#777;margin-bottom:7px}
-.price{font-size:18px;font-weight:800;margin-top:3px}
-.badges{position:absolute;top:10px;left:10px;display:flex;gap:6px;flex-wrap:wrap;z-index:2}
-.badge{font-size:11px;padding:5px 9px;border-radius:999px;background:#fff;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,.16)}
-.offer{background:#111;color:#fff}
-.empty{text-align:center;padding:50px 15px;color:#777;grid-column:1/-1}
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:30;padding:20px;overflow:auto}
-.modal-box{background:#fff;max-width:520px;margin:30px auto;border-radius:18px;overflow:hidden}
-.modal-box img{width:100%;max-height:420px;object-fit:cover}
-.modal-content{padding:20px}
-.close{float:right;background:#eee;padding:8px 12px;border-radius:50%}
-.detail-price{font-size:25px;font-weight:800;margin:10px 0}
-.stock{margin-top:10px;font-weight:700}
-footer{text-align:center;padding:30px 15px;color:#777;font-size:13px}
-@media(max-width:850px){.grid{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:600px){.grid{grid-template-columns:repeat(2,1fr);gap:10px}.image-wrap{height:210px}.container{padding:12px 10px}}
+html{scroll-behavior:smooth}
+body{margin:0;background:#fff;color:var(--text);font-family:Arial,Helvetica,sans-serif}
+button,input,select{font:inherit}
+button{cursor:pointer}
+
+.topbar{background:var(--dark);color:#fff;height:68px;display:flex;align-items:center}
+.nav{max-width:1250px;width:100%;margin:auto;padding:0 22px;display:flex;align-items:center;gap:30px}
+.brand{font-family:Georgia,serif;font-size:24px;font-weight:700;white-space:nowrap;margin-right:10px}
+.navlinks{display:flex;gap:26px;align-items:center;flex:1}
+.navlinks button{background:none;border:0;color:#eee;padding:22px 0;font-weight:600}
+.navlinks button:hover,.navlinks button.active{color:#f1c777}
+.searchbox{width:310px;background:#fff;border-radius:28px;padding:10px 15px;display:flex;align-items:center;gap:8px}
+.searchbox input{border:0;outline:0;width:100%;font-size:14px}
+.iconbtn{border:0;background:none;color:#fff;font-size:22px;padding:6px}
+
+.hero{background:linear-gradient(105deg,#f5ead9 0%,#fffaf2 55%,#eee1cf 100%);min-height:290px;display:flex;align-items:center;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;right:-70px;top:-80px;width:420px;height:420px;border:1px solid rgba(168,117,32,.18);border-radius:50%;box-shadow:0 0 0 35px rgba(168,117,32,.04),0 0 0 70px rgba(168,117,32,.025)}
+.hero-inner{max-width:1250px;width:100%;margin:auto;padding:42px 22px;position:relative;z-index:1}
+.hero-kicker{letter-spacing:4px;text-transform:uppercase;font-size:12px;color:var(--gold);font-weight:700}
+.hero h1{font-family:Georgia,serif;font-size:54px;line-height:1.05;margin:12px 0;color:#5a3812;font-weight:500}
+.hero p{font-family:Georgia,serif;font-size:18px;letter-spacing:4px;margin:0 0 22px;color:#4b4035}
+.hero small{display:block;letter-spacing:3px;color:#6d6256;margin-bottom:25px}
+.hero-btn{background:var(--gold);color:#fff;border:0;padding:13px 27px;border-radius:7px;font-weight:700;letter-spacing:.5px}
+
+.container{max-width:1250px;margin:auto;padding:28px 22px}
+.section-title{font-family:Georgia,serif;font-size:26px;margin:0 0 18px;color:#392b1b}
+.categories{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:30px}
+.cat{border:1px solid var(--line);background:#fff;border-radius:13px;padding:15px 12px;text-align:center;box-shadow:0 3px 12px rgba(60,40,20,.05);transition:.18s}
+.cat:hover,.cat.active{border-color:#d0ad70;transform:translateY(-2px)}
+.cat.active{background:#a87520;color:#fff}
+.cat .ico{font-size:25px;margin-bottom:7px}.cat b{display:block;font-size:14px}.cat span{font-size:11px;color:#888}.cat.active span{color:#f4e5c8}
+
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:15px;margin:12px 0 18px}
+.count{font-size:20px;font-weight:700}.count:after{content:"";display:block;width:42px;height:2px;background:var(--gold);margin-top:9px}
+.sort{border:1px solid var(--line);border-radius:10px;padding:10px 13px;background:#fff}
+
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.card{background:#fff;border:1px solid #eee7dc;border-radius:15px;overflow:hidden;position:relative;box-shadow:0 5px 18px rgba(45,30,15,.07);transition:transform .18s,box-shadow .18s}
+.card:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(45,30,15,.12)}
+.photo{height:300px;background:linear-gradient(135deg,#f2eee7,#e8dfd0);position:relative;overflow:hidden}
+.photo img{width:100%;height:100%;object-fit:cover;display:block}
+.photo img.failed{display:none}
+.placeholder{display:none;position:absolute;inset:0;align-items:center;justify-content:center;color:#9a8d7d;font-size:13px}
+.photo.show-placeholder .placeholder{display:flex}
+.badges{position:absolute;top:12px;left:12px;display:flex;gap:6px;z-index:2}
+.badge{padding:6px 9px;border-radius:7px;background:#fff;font-size:11px;font-weight:800;box-shadow:0 2px 8px rgba(0,0,0,.14)}
+.badge.offer{background:#22743d;color:#fff}
+.info{padding:14px}
+.name{font-size:17px;font-weight:700;margin-bottom:5px}
+.catname{font-size:12px;color:#888;margin-bottom:10px}
+.bottom{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.price{font-size:20px;font-weight:800;color:#c32828}
+.stock{font-size:11px;background:#edf6ee;color:#247039;padding:6px 8px;border-radius:8px;font-weight:700}
+.details{width:100%;margin-top:13px;border:0;background:var(--gold);color:#fff;border-radius:8px;padding:10px;font-weight:700}
+.empty{grid-column:1/-1;text-align:center;padding:55px;color:#888;background:#faf8f4;border-radius:14px}
+
+.features{margin-top:40px;background:#f7f2e9;border-top:1px solid var(--line);border-bottom:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:24px 22px}
+.feature{text-align:center;border-right:1px solid #ddd3c4}.feature:last-child{border:0}.feature b{display:block;margin-bottom:5px}.feature span{font-size:12px;color:#777}
+
+footer{text-align:center;padding:24px;color:#777;font-size:12px;background:#fff}
+
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.62);z-index:20;padding:20px;overflow:auto}
+.modalbox{max-width:500px;margin:25px auto;background:#fff;border-radius:16px;overflow:hidden}
+.modalbox img{width:100%;height:390px;object-fit:cover;background:#eee}
+.modalcontent{padding:20px}.close{float:right;border:0;border-radius:50%;padding:7px 10px}.modalprice{font-size:25px;color:#c32828;font-weight:800;margin:12px 0}
+@media(max-width:1000px){.navlinks{gap:12px}.grid{grid-template-columns:repeat(3,1fr)}.categories{grid-template-columns:repeat(3,1fr)}.searchbox{width:230px}}
+@media(max-width:700px){
+ .topbar{height:auto}.nav{padding:12px 14px;flex-wrap:wrap;gap:10px}.brand{width:100%;text-align:center}.navlinks{order:3;width:100%;overflow-x:auto;gap:18px}.navlinks button{padding:8px 0}.searchbox{width:100%;order:2}.iconbtn{display:none}
+ .hero{min-height:260px}.hero-inner{padding:35px 18px}.hero h1{font-size:39px}.hero p{font-size:15px;letter-spacing:2px}.hero small{letter-spacing:1.5px}
+ .container{padding:22px 12px}.categories{display:flex;overflow-x:auto;gap:9px;padding-bottom:5px}.cat{min-width:112px}.grid{grid-template-columns:repeat(2,1fr);gap:10px}.photo{height:230px}.info{padding:11px}.name{font-size:15px}.price{font-size:18px}.stock{display:none}
+ .toolbar{align-items:center}.count{font-size:17px}.features{grid-template-columns:repeat(2,1fr);gap:20px}.feature:nth-child(2){border:0}
+}
 </style>
 </head>
 <body>
-<header>
-  <h1>🛍️ Aaradhya Fashion</h1>
-  <p>Latest Collection • New Arrivals • Special Offers</p>
+
+<header class="topbar">
+  <nav class="nav">
+    <div class="brand">Aaradhya Fashion</div>
+    <div class="navlinks">
+      <button class="active" data-filter="all">Home</button>
+      <button data-filter="new">New Arrivals</button>
+      <button data-filter="offer">Offers</button>
+      <button data-filter="Saree">Saree</button>
+      <button data-filter="Kurti">Kurti</button>
+      <button data-filter="Men">Men</button>
+      <button data-filter="Kids">Kids</button>
+    </div>
+    <div class="searchbox"><span>⌕</span><input id="search" placeholder="Search products..."></div>
+  </nav>
 </header>
 
-<main class="container">
-  <input id="search" class="search" type="search" placeholder="🔎 Search product...">
-  <div class="filters">
-    <button class="active" data-filter="all">All</button>
-    <button data-filter="new">🆕 New Arrivals</button>
-    <button data-filter="offer">🏷️ Offers</button>
-    <button data-filter="Saree">Saree</button>
-    <button data-filter="Kurti">Kurti</button>
-    <button data-filter="Men">Men</button>
-    <button data-filter="Kids">Kids</button>
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-kicker">Aaradhya Fashion</div>
+    <h1>Premium Collection</h1>
+    <p>STYLE FOR EVERY YOU</p>
+    <small>SAREES &nbsp;|&nbsp; KURTIS &nbsp;|&nbsp; MEN'S WEAR &nbsp;|&nbsp; KIDS WEAR</small>
+    <button class="hero-btn" onclick="document.getElementById('products').scrollIntoView()">EXPLORE COLLECTION →</button>
   </div>
-  <div id="status" class="status">Loading products...</div>
-  <section id="grid" class="grid"></section>
+</section>
+
+<main class="container" id="products">
+  <h2 class="section-title">Shop By Category</h2>
+  <div class="categories">
+    <button class="cat active" data-filter="all"><div class="ico">▦</div><b>All</b><span>All Products</span></button>
+    <button class="cat" data-filter="new"><div class="ico">✦</div><b>New Arrivals</b><span>Latest Collection</span></button>
+    <button class="cat" data-filter="offer"><div class="ico">◇</div><b>Offers</b><span>Best Deals</span></button>
+    <button class="cat" data-filter="Saree"><div class="ico">♢</div><b>Saree</b><span>Ethnic Wear</span></button>
+    <button class="cat" data-filter="Kurti"><div class="ico">♧</div><b>Kurti</b><span>Trendy Styles</span></button>
+    <button class="cat" data-filter="Men"><div class="ico">□</div><b>Men</b><span>Men's Collection</span></button>
+  </div>
+
+  <div class="toolbar">
+    <div class="count" id="status">Loading products...</div>
+    <select class="sort" id="sort">
+      <option value="newest">Newest First</option>
+      <option value="priceLow">Price: Low to High</option>
+      <option value="priceHigh">Price: High to Low</option>
+      <option value="name">Name A-Z</option>
+    </select>
+  </div>
+
+  <section class="grid" id="grid"></section>
 </main>
 
-<div id="modal" class="modal">
-  <div class="modal-box">
-    <img id="mImage" src="" alt="">
-    <div class="modal-content">
+<section class="features">
+  <div class="feature"><b>✧ Quality Products</b><span>Trusted Collection</span></div>
+  <div class="feature"><b>⌁ Fast & Reliable</b><span>Quick Service</span></div>
+  <div class="feature"><b>♡ Trendy Designs</b><span>For Every Occasion</span></div>
+  <div class="feature"><b>☆ Customer Satisfaction</b><span>Our Priority</span></div>
+</section>
+
+<footer>Aaradhya Fashion • Premium Collection</footer>
+
+<div class="modal" id="modal">
+  <div class="modalbox">
+    <img id="mImage" alt="">
+    <div class="modalcontent">
       <button class="close" onclick="closeModal()">✕</button>
       <h2 id="mName"></h2>
-      <div id="mCategory" class="category"></div>
-      <div id="mPrice" class="detail-price"></div>
-      <div id="mStock" class="stock"></div>
-      <p id="mBadges"></p>
+      <div id="mCategory" style="color:#888"></div>
+      <div id="mPrice" class="modalprice"></div>
+      <div id="mStock" style="font-weight:700"></div>
+      <p id="mBadge"></p>
     </div>
   </div>
 </div>
 
-<footer>Aaradhya Fashion • Product Catalog</footer>
-
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbwCjLvXdJlMAjK18zGyVTExB6hWaZ2cw6ZF7u_8wJI40DcEjtSTR4H7NtdxNXuBR6IUWg/exec";
-let products = [];
-let currentFilter = "all";
+let products=[], currentFilter="all";
 
-const grid = document.getElementById("grid");
-const search = document.getElementById("search");
-const statusBox = document.getElementById("status");
+const $=id=>document.getElementById(id);
+function clean(v){return v==null?"":String(v).trim()}
+function esc(v){return clean(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
 
-function clean(value) {
-  return value == null ? "" : String(value).trim();
+function applyFilter(filter){
+  currentFilter=filter;
+  document.querySelectorAll("[data-filter]").forEach(b=>b.classList.toggle("active",b.dataset.filter===filter));
+  render();
 }
 
-function escapeHtml(value) {
-  return clean(value).replace(/[&<>"']/g, c => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-  }[c]));
-}
+document.querySelectorAll("[data-filter]").forEach(b=>b.addEventListener("click",()=>applyFilter(b.dataset.filter)));
+$("search").addEventListener("input",render);
+$("sort").addEventListener("change",render);
 
-function render() {
-  const q = clean(search.value).toLowerCase();
-
-  const filtered = products.filter(p => {
-    const text = (p.name + " " + p.category + " " + p.id).toLowerCase();
-    const searchMatch = !q || text.includes(q);
-
-    let filterMatch = true;
-    if (currentFilter === "new") filterMatch = p.newArrival === true;
-    else if (currentFilter === "offer") filterMatch = p.offer === true;
-    else if (currentFilter !== "all") filterMatch = p.category.toLowerCase() === currentFilter.toLowerCase();
-
-    return searchMatch && filterMatch;
+function render(){
+  const q=clean($("search").value).toLowerCase();
+  let list=products.filter(p=>{
+    const text=(p.name+" "+p.category+" "+p.id).toLowerCase();
+    if(q && !text.includes(q)) return false;
+    if(currentFilter==="new") return p.newArrival;
+    if(currentFilter==="offer") return p.offer;
+    if(currentFilter!=="all") return p.category.toLowerCase()===currentFilter.toLowerCase();
+    return true;
   });
 
-  statusBox.textContent = filtered.length + " product" + (filtered.length === 1 ? "" : "s") + " found";
+  const sort=$("sort").value;
+  if(sort==="priceLow") list.sort((a,b)=>numPrice(a.price)-numPrice(b.price));
+  if(sort==="priceHigh") list.sort((a,b)=>numPrice(b.price)-numPrice(a.price));
+  if(sort==="name") list.sort((a,b)=>a.name.localeCompare(b.name));
 
-  if (!filtered.length) {
-    grid.innerHTML = '<div class="empty">No products found.<br>Try another search or category.</div>';
+  $("status").textContent=list.length+" Product"+(list.length===1?"":"s")+" Found";
+
+  if(!list.length){
+    $("grid").innerHTML='<div class="empty">No products found.<br>Try another search or category.</div>';
     return;
   }
 
-  grid.innerHTML = filtered.map((p, i) => {
-    const img = p.image || "https://via.placeholder.com/600x700?text=Aaradhya+Fashion";
-    const badges = [];
-    if (p.newArrival) badges.push('<span class="badge">NEW</span>');
-    if (p.offer) badges.push('<span class="badge offer">OFFER</span>');
-
-    const safeProduct = encodeURIComponent(JSON.stringify(p));
-    return `
-      <article class="card" onclick="openModal('${safeProduct}')">
-        <div class="badges">${badges.join("")}</div>
-        <div class="image-wrap">
-          <img src="${escapeHtml(img)}" alt="" loading="lazy"
-               onerror="this.classList.add('failed'); this.parentElement.classList.add('show-placeholder');">
-          <div class="image-placeholder">Image not available</div>
+  $("grid").innerHTML=list.map((p,i)=>{
+    const img=p.image||"";
+    return `<article class="card" onclick="openModal(${i},'${encodeURIComponent(JSON.stringify(p))}')">
+      <div class="photo">
+        <div class="badges">
+          ${p.newArrival?'<span class="badge">NEW</span>':''}
+          ${p.offer?'<span class="badge offer">OFFER</span>':''}
         </div>
-        <div class="info">
-          <div class="name">${escapeHtml(p.name)}</div>
-          <div class="category">${escapeHtml(p.category)}</div>
-          <div class="price">${escapeHtml(p.price)}</div>
+        <img src="${esc(img)}" alt="" loading="lazy" onerror="this.classList.add('failed');this.parentElement.classList.add('show-placeholder')">
+        <div class="placeholder">Product image not available</div>
+      </div>
+      <div class="info">
+        <div class="name">${esc(p.name)}</div>
+        <div class="catname">${esc(p.category)}</div>
+        <div class="bottom">
+          <div class="price">${esc(p.price)}</div>
+          ${p.stock>0?`<div class="stock">▣ In Stock: ${p.stock}</div>`:'<div class="stock">Out of Stock</div>'}
         </div>
-      </article>`;
+        <button class="details" onclick="event.stopPropagation();openModal(${i},'${encodeURIComponent(JSON.stringify(p))}')">View Details</button>
+      </div>
+    </article>`;
   }).join("");
 }
 
-function openModal(encoded) {
-  const p = JSON.parse(decodeURIComponent(encoded));
-  document.getElementById("mImage").src = p.image || "https://via.placeholder.com/600x700?text=Aaradhya+Fashion";
-  document.getElementById("mName").textContent = p.name;
-  document.getElementById("mCategory").textContent = p.category + " • " + p.id;
-  document.getElementById("mPrice").textContent = p.price;
-  document.getElementById("mStock").textContent = p.stock > 0 ? "📦 In Stock: " + p.stock : "❌ Out of Stock";
-  document.getElementById("mBadges").textContent =
-    [p.newArrival ? "🆕 New Arrival" : "", p.offer ? "🏷️ Offer Available" : ""].filter(Boolean).join("  ");
-  document.getElementById("modal").style.display = "block";
+function numPrice(v){
+  const n=parseFloat(String(v).replace(/[^0-9.]/g,""));
+  return isNaN(n)?999999:n;
 }
 
-function closeModal() {
-  document.getElementById("modal").style.display = "none";
+function openModal(i,encoded){
+  const p=JSON.parse(decodeURIComponent(encoded));
+  $("mImage").src=p.image||"";
+  $("mName").textContent=p.name;
+  $("mCategory").textContent=p.category+" • "+p.id;
+  $("mPrice").textContent=p.price;
+  $("mStock").textContent=p.stock>0?"▣ In Stock: "+p.stock:"Out of Stock";
+  $("mBadge").textContent=[p.newArrival?"NEW ARRIVAL":"",p.offer?"OFFER AVAILABLE":""].filter(Boolean).join(" • ");
+  $("modal").style.display="block";
 }
+function closeModal(){$("modal").style.display="none"}
+window.addEventListener("click",e=>{if(e.target===$("modal"))closeModal()});
 
-document.querySelectorAll(".filters button").forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".filters button").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    currentFilter = btn.dataset.filter;
-    render();
-  });
-});
-
-search.addEventListener("input", render);
-
-window.addEventListener("click", e => {
-  if (e.target === document.getElementById("modal")) closeModal();
-});
-
-async function loadProducts() {
-  try {
-    const response = await fetch(API_URL);
-    if (!response.ok) throw new Error("API response error");
-    const data = await response.json();
-    if (!Array.isArray(data)) throw new Error("Invalid product data");
-
-    products = data.map(p => ({
-      id: clean(p.id),
-      name: clean(p.name),
-      category: clean(p.category),
-      price: clean(p.price),
-      image: clean(p.image),
-      newArrival: p.newArrival === true || clean(p.newArrival).toLowerCase() === "yes",
-      offer: p.offer === true || clean(p.offer).toLowerCase() === "yes",
-      stock: Number(p.stock) || 0
+async function loadProducts(){
+  try{
+    const r=await fetch(API_URL);
+    if(!r.ok)throw new Error("API error");
+    const data=await r.json();
+    if(!Array.isArray(data))throw new Error("Invalid data");
+    products=data.map(p=>({
+      id:clean(p.id),name:clean(p.name),category:clean(p.category),
+      price:clean(p.price),image:clean(p.image),
+      newArrival:p.newArrival===true||clean(p.newArrival).toLowerCase()==="yes",
+      offer:p.offer===true||clean(p.offer).toLowerCase()==="yes",
+      stock:Number(p.stock)||0
     }));
-
     render();
-  } catch (error) {
-    console.error(error);
-    statusBox.textContent = "Unable to load products";
-    grid.innerHTML = '<div class="empty">Products could not be loaded.<br>Please check the Google Apps Script Web App deployment.</div>';
+  }catch(e){
+    console.error(e);
+    $("status").textContent="Products could not be loaded";
+    $("grid").innerHTML='<div class="empty">Unable to load products. Please check the Google Apps Script Web App.</div>';
   }
 }
-
 loadProducts();
 </script>
 </body>
