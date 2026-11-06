@@ -26,23 +26,34 @@
     </section>
 
     <section class="section-wrap" style="padding-top: 60px; padding-bottom: 80px;">
-      <div class="section-heading" style="text-align: center; display: block;">
+      <div class="section-heading" style="text-align: center; display: block; margin-bottom: 40px;">
         <span class="eyebrow">EXPLORE OUR VERTICALS</span>
         <h2>Our Stores</h2>
       </div>
 
-      <!-- STORE CARDS (Premium Gradient Design - No broken images) -->
-      <div class="store-directory-grid" style="margin-top: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+      <!-- 3 MAIN STORE CARDS -->
+      <div class="store-directory-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 40px;">
         
         <!-- 1. Fashion -->
-        <a href="fashion.html" class="store-dir-card" style="background: linear-gradient(135deg, #10243b, #1e3a5f); padding: 40px 30px; border-radius: 12px; display: flex; flex-direction: column; justify-content: space-between; min-height: 250px; text-decoration: none; box-shadow: 0 10px 30px rgba(16,36,59,0.2); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+        <div class="store-dir-card" style="background: linear-gradient(135deg, #10243b, #1e3a5f); padding: 40px 30px; border-radius: 12px; display: flex; flex-direction: column; justify-content: space-between; min-height: 250px; text-decoration: none; box-shadow: 0 10px 30px rgba(16,36,59,0.2);">
           <div>
             <span style="font-size: 30px;">👗</span>
             <h3 style="color: #fff; font-family: Georgia, serif; font-size: 24px; margin: 15px 0 5px;">Aaradhya Fashion</h3>
             <p style="color: #e2e6e9; font-size: 13px; line-height: 1.6; margin-bottom: 20px;">Men's Wear, Women's Wear, Kids, Sports & more.</p>
           </div>
-          <span style="color: var(--gold); font-weight: bold; font-size: 13px;">Explore Collection →</span>
-        </a>
+          <a href="fashion.html" style="color: var(--gold); font-weight: bold; font-size: 13px; text-decoration: none;">Explore Collection →</a>
+          
+          <!-- FASHION CATEGORIES SUB-CARDS -->
+          <div style="margin-top: 25px; display: flex; flex-wrap: wrap; gap: 8px;">
+            <a href="fashion.html?category=Men" class="cat-pill">Men's Wear</a>
+            <a href="fashion.html?category=Women" class="cat-pill">Women's Wear</a>
+            <a href="fashion.html?category=Kids" class="cat-pill">Kids Wear</a>
+            <a href="fashion.html?category=Sports Wear" class="cat-pill">Sports Wear</a>
+            <a href="fashion.html?category=Winter Wear" class="cat-pill">Winter Wear</a>
+            <a href="fashion.html?category=Accessories" class="cat-pill">Accessories</a>
+            <a href="fashion.html?category=Footwear" class="cat-pill">Footwear</a>
+          </div>
+        </div>
 
         <!-- 2. A-Print -->
         <a href="print.html" class="store-dir-card" style="background: linear-gradient(135deg, #c5a36b, #a88756); padding: 40px 30px; border-radius: 12px; display: flex; flex-direction: column; justify-content: space-between; min-height: 250px; text-decoration: none; box-shadow: 0 10px 30px rgba(197,163,107,0.3); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
