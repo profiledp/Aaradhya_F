@@ -4,164 +4,102 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#10243b">
-  <meta name="description" content="Explore the latest clothing collection at Aaradhya Fashion.">
-  <title>Aaradhya Fashion | Your Style. Your Fashion.</title>
+  <title>Aaradhya Mart | Multi-Store</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="announcement">NEW COLLECTION • FRESH STYLES FOR EVERYDAY</div>
+  <div class="announcement">AARADHYA MART • FASHION | PRINT | KIRANA</div>
   <header class="site-header">
-    <a class="brand" href="index.html" aria-label="Aaradhya Fashion home">
-      <span class="brand-mark">AF</span>
-      <span><strong>AARADHYA FASHION</strong><small>YOUR STYLE. YOUR FASHION.</small></span>
+    <a class="brand" href="index.html">
+      <span class="brand-mark">AM</span>
+      <span><strong>AARADHYA MART</strong><small>YOUR EVERYDAY STORE</small></span>
     </a>
     <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
     <nav id="mainNav">
-      <a href="#home">Home</a><a href="#shop">Shop</a>
-      <a href="about.html">About Us</a><a href="#contact">Contact</a>
+      <a href="#fashion" onclick="switchStore('Fashion')">Fashion</a>
+      <a href="#print" onclick="switchStore('Print')">A-Print</a>
+      <a href="#kirana" onclick="switchStore('Kirana')">Kirana</a>
+      <a href="admin.html">Admin Login</a>
     </nav>
-    <a class="header-wa" id="headerWhatsApp" href="https://wa.me/918931911428" target="_blank" rel="noopener">WhatsApp ↗</a>
+    <a class="header-wa" href="https://wa.me/918931911428" target="_blank" rel="noopener">WhatsApp ↗</a>
   </header>
 
   <main>
-    <section class="hero" id="home">
+    <!-- HERO SECTION -->
+    <section class="hero" style="height: 400px;">
       <div class="hero-shade"></div>
       <div class="hero-copy">
-        <span class="eyebrow">THE NEW SEASON EDIT</span>
-        <h1>Style that feels<br><em>like you.</em></h1>
-        <p>Discover clothing for every mood, every moment and every member of the family.</p>
-        <a class="button button-gold" href="#shop">EXPLORE COLLECTION <span>→</span></a>
-      </div>
-      <div class="hero-note"><span>01 / 03</span><span>MEN · WOMEN · KIDS</span></div>
-    </section>
-
-    <!-- MULTI-STORE DIRECTORY SECTION (NEW) -->
-    <section class="multi-store-section section-wrap">
-      <div class="section-heading center-text">
-        <span class="eyebrow">OUR SERVICES</span>
-        <h2>Aaradhya Mart Store</h2>
-        <p>Explore our different store verticals</p>
-      </div>
-      
-      <div class="store-directory">
-        <!-- 1. Aaradhya Fashion -->
-        <div class="store-branch">
-          <div class="branch-header">
-            <h3>Aaradhya Fashion</h3>
-            <div class="branch-line"></div>
-          </div>
-          <ul class="branch-list">
-            <li><a href="#shop" data-category="Men">Men's Wear</a></li>
-            <li><a href="#shop" data-category="Women">Women's Wear</a></li>
-            <li><a href="#shop" data-category="Kids">Kids Wear</a></li>
-            <li><a href="#shop" data-category="Sports Wear">Sports Wear</a></li>
-            <li><a href="#shop" data-category="Winter Wear">Winter Wear</a></li>
-            <li><a href="#shop" data-category="Accessories">Accessories</a></li>
-            <li><a href="#shop" data-category="Footwear">Footwear</a></li>
-          </ul>
-        </div>
-
-        <!-- 2. A-Print (Custom Price) -->
-        <div class="store-branch highlight-branch">
-          <div class="branch-header">
-            <h3>A-Print (By Aaradhya Fashion)</h3>
-            <div class="branch-line"></div>
-          </div>
-          <div class="custom-price-box">
-            <a href="https://wa.me/918931911428?text=Hello%20A-Print,%20I%20want%20to%20discuss%20a%20custom%20print%20order." target="_blank" class="custom-btn">
-              Custom Price ↗
-            </a>
-            <p>Get custom printing, banners & merchandise made to order.</p>
-          </div>
-        </div>
-
-        <!-- 3. Aaradhya Kirana Store -->
-        <div class="store-branch">
-          <div class="branch-header">
-            <h3>Aaradhya Kirana Store</h3>
-            <div class="branch-line"></div>
-          </div>
-          <ul class="branch-list">
-            <li><a href="https://wa.me/918931911428?text=Hello%20Aaradhya%20Kirana%20Store,%20I%20want%20to%20order%20groceries." target="_blank">Grocery Shop ↗</a></li>
-            <li style="color: #777; font-size: 11px; margin-top: 10px;">Daily essentials & household items available.</li>
-          </ul>
-        </div>
+        <span class="eyebrow">WELCOME TO AARADHYA MART</span>
+        <h1>Everything you need,<br><em>in one place.</em></h1>
+        <p>Clothing, Custom Printing, and Daily Grocery essentials.</p>
       </div>
     </section>
 
-    <section class="category-section section-wrap">
-      <div class="section-heading"><div><span class="eyebrow">FIND YOUR FIT</span><h2>Shop by category</h2></div><p>Something for everyone.</p></div>
-      <div class="category-cards">
-        <button class="category-card men-card" data-category="Men"><span>01</span><strong>MEN'S WEAR</strong><small>Explore collection ↗</small></button>
-        <button class="category-card women-card" data-category="Women"><span>02</span><strong>WOMEN'S WEAR</strong><small>Explore collection ↗</small></button>
-        <button class="category-card kids-card" data-category="Kids"><span>03</span><strong>KIDS WEAR</strong><small>Explore collection ↗</small></button>
-        <button class="category-card sports-card" data-category="Sports Wear"><span>04</span><strong>SPORTS WEAR</strong><small>Explore collection ↗</small></button>
-        <button class="category-card winter-card" data-category="Winter Wear"><span>05</span><strong>WINTER WEAR</strong><small>Explore collection ↗</small></button>
-        <button class="category-card accessories-card" data-category="Accessories"><span>06</span><strong>ACCESSORIES</strong><small>Explore collection ↗</small></button>
-        <button class="category-card footwear-card" data-category="Footwear"><span>07</span><strong>FOOTWEAR</strong><small>Explore collection ↗</small></button>
+    <!-- STORE NAVIGATOR TABS -->
+    <div class="store-tabs-container section-wrap">
+      <div class="store-tabs">
+        <button class="tab-btn active" onclick="switchStore('Fashion')">👗 Aaradhya Fashion</button>
+        <button class="tab-btn" onclick="switchStore('Print')">🖨️ A-Print (Custom)</button>
+        <button class="tab-btn" onclick="switchStore('Kirana')">🛒 Kirana Store</button>
       </div>
-    </section>
+    </div>
 
-    <section class="shop-section section-wrap" id="shop">
-      <div class="section-heading shop-heading">
-        <div><span class="eyebrow">CURATED FOR YOU</span><h2>Our collection</h2></div>
-        <span class="product-count" id="productCount">Loading collection…</span>
+    <!-- MAIN SHOP SECTION (Changes dynamically based on tab) -->
+    <section class="shop-section section-wrap" id="main-shop">
+      <div class="section-heading shop-heading" style="margin-bottom: 20px;">
+        <div>
+          <span class="eyebrow" id="currentStoreTag">AARADHYA FASHION</span>
+          <h2 id="currentStoreTitle">Clothing & Apparel</h2>
+        </div>
+        <span class="product-count" id="productCount">Loading...</span>
       </div>
-      <div class="shop-controls">
-        <label class="search-field"><span>⌕</span><input id="searchInput" type="search" placeholder="Search products, category…" autocomplete="off"></label>
+
+      <!-- Filters (Only visible for Fashion and Kirana, Print has custom logic) -->
+      <div class="shop-controls" id="storeFilters">
+        <label class="search-field"><span>⌕</span><input id="searchInput" type="search" placeholder="Search products..." autocomplete="off"></label>
+        
         <select id="categoryFilter" aria-label="Filter by category">
           <option value="All">All Categories</option>
-          <option value="Men">Men's Wear</option>
-          <option value="Women">Women's Wear</option>
-          <option value="Kids">Kids Wear</option>
-          <option value="Sports Wear">Sports Wear</option>
-          <option value="Winter Wear">Winter Wear</option>
-          <option value="Accessories">Accessories</option>
-          <option value="Footwear">Footwear</option>
+          <!-- Options will be filled by JS -->
         </select>
+        
         <select id="sortFilter" aria-label="Sort products">
-          <option value="featured">Featured</option><option value="low">Price: Low to High</option><option value="high">Price: High to Low</option><option value="new">Newest first</option>
+          <option value="featured">Featured</option>
+          <option value="low">Price: Low to High</option>
+          <option value="high">Price: High to Low</option>
         </select>
       </div>
+
+      <!-- Print Custom Banner -->
+      <div id="printBanner" class="hidden" style="background: #f7f5f0; padding: 30px; text-align: center; border: 1px solid var(--gold); margin-bottom: 30px;">
+        <h3 style="font-family: Georgia; color: var(--navy); font-size: 24px;">Custom Printing Services</h3>
+        <p style="color: #666; margin: 10px 0 20px;">We print custom T-shirts, Banners, and Visiting Cards. Prices vary by design.</p>
+        <a href="https://wa.me/918931911428?text=Hello%20A-Print,%20I%20want%20a%20custom%20quote." target="_blank" class="button button-navy">GET CUSTOM QUOTE ↗</a>
+      </div>
+
+      <!-- Products Grid -->
       <div class="product-grid" id="productGrid" aria-live="polite"></div>
       <div class="empty-state hidden" id="emptyState"><span>✧</span><h3>No products found</h3><p>Try another search or category.</p></div>
     </section>
 
-    <section class="about-section" id="about">
-      <div class="about-container">
-        <div class="about-image">
-          <img src="assets/images/aaradhya-storefront.png" alt="Aaradhya Fashion clothing store" loading="lazy">
-          <div class="about-label"><strong>AF</strong><span>YOUR STYLE. YOUR FASHION.</span></div>
-        </div>
-        <div class="about-content">
-          <span class="eyebrow">ABOUT AARADHYA FASHION</span>
-          <h2>Fashion for Everyone.<br><em>Style for Every Moment.</em></h2>
-          <p>Welcome to Aaradhya Fashion – your destination for stylish, comfortable and affordable clothing.</p>
-          <p>We bring together thoughtfully selected collections for men, women and kids, along with sportswear, winter wear, accessories and footwear. Our aim is to make fashion easy to explore and convenient to order for families in our community.</p>
-          <div class="about-points"><div>✓ Men's & Women's Fashion</div><div>✓ Kids Collection</div><div>✓ Sports & Winter Wear</div><div>✓ Accessories & Footwear</div></div>
-          <p class="store-address"><strong>Visit us:</strong> Bongariya Bazar, Azamgarh, Uttar Pradesh</p>
-          <a href="https://wa.me/918931911428" class="button button-navy" target="_blank" rel="noopener">CONNECT WITH US ↗</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="contact-strip section-wrap" id="contact">
-      <div><span class="eyebrow">WE'RE HERE TO HELP</span><h2>Need help choosing?</h2><p>Message us on WhatsApp for product details and orders.</p></div>
-      <a class="button button-navy" id="contactWhatsApp" href="https://wa.me/918931911428" target="_blank" rel="noopener">CHAT ON WHATSAPP ↗</a>
+    <section class="contact-strip section-wrap" id="contact" style="margin-top: 50px;">
+      <div><span class="eyebrow">WE'RE HERE TO HELP</span><h2>Need help with an order?</h2><p>Message us on WhatsApp.</p></div>
+      <a class="button button-navy" href="https://wa.me/918931911428" target="_blank" rel="noopener">CHAT ON WHATSAPP ↗</a>
     </section>
   </main>
 
   <footer class="site-footer">
-    <a class="brand footer-brand" href="#home"><span class="brand-mark">AF</span><span><strong>AARADHYA FASHION</strong><small>YOUR STYLE. YOUR FASHION.</small></span></a>
-    <p>Men's Wear · Women's Wear · Kids Wear</p>
-    <div class="footer-links"><a href="#shop">Shop</a><a href="about.html">About Us</a><a href="admin.html">Admin</a></div>
-    <small>© <span id="year"></span> Aaradhya Fashion. All rights reserved.</small>
+    <a class="brand footer-brand" href="index.html"><span class="brand-mark">AM</span><span><strong>AARADHYA MART</strong><small>YOUR EVERYDAY STORE</small></span></a>
+    <p>Fashion · A-Print · Kirana</p>
+    <div class="footer-links"><a href="#main-shop">Shop</a><a href="admin.html">Admin</a></div>
+    <small>© <span id="year"></span> Aaradhya Mart. All rights reserved.</small>
   </footer>
 
   <dialog class="product-dialog" id="productDialog">
     <button class="dialog-close" id="dialogClose" aria-label="Close">×</button>
     <div id="dialogContent"></div>
   </dialog>
+  
   <script src="products.js"></script>
   <script src="app.js"></script>
 </body>
