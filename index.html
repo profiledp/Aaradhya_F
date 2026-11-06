@@ -1,93 +1,75 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>A-Print | Custom Printing</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aaradhya Mart | Home</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="index.html"><span class="brand-mark">AM</span><span><strong>A-PRINT</strong><small>BY AARADHYA FASHION</small></span></a>
-    <a href="index.html" class="header-wa" style="background:#fff; color:var(--navy); border:1px solid var(--navy);">← Back to Home</a>
+    <a class="brand" href="index.html">
+      <span class="brand-mark">AM</span>
+      <span><strong>AARADHYA MART</strong><small>YOUR EVERYDAY STORE</small></span>
+    </a>
+    <a class="header-wa" href="admin.html">Admin Login ⚙️</a>
   </header>
 
-  <main class="section-wrap shop-section" style="padding-top: 40px;">
-    <div class="section-heading" style="margin-bottom: 20px;">
-      <span class="eyebrow">CUSTOM PRINTING</span>
-      <h2>A-Print Services</h2>
-    </div>
+  <main>
+    <section class="hero" style="height: 350px;">
+      <div class="hero-shade"></div>
+      <div class="hero-copy">
+        <span class="eyebrow">WELCOME TO AARADHYA MART</span>
+        <h1>Choose your<br><em>Store.</em></h1>
+        <p>Clothing, Custom Printing, and Daily Grocery essentials.</p>
+      </div>
+    </section>
 
-    <div class="shop-controls">
-      <label class="search-field"><span>⌕</span><input id="searchInput" type="search" placeholder="Search prints..." autocomplete="off"></label>
-      <select id="categoryFilter"><option value="All">All Categories</option></select>
-    </div>
+    <section class="section-wrap" style="padding-top: 60px; padding-bottom: 80px;">
+      <div class="section-heading" style="text-align: center; display: block;">
+        <span class="eyebrow">EXPLORE OUR VERTICALS</span>
+        <h2>Our Stores</h2>
+      </div>
 
-    <div class="product-grid" id="productGrid"></div>
+      <!-- STORE CARDS (Premium Gradient Design - No broken images) -->
+      <div class="store-directory-grid" style="margin-top: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+        
+        <!-- 1. Fashion -->
+        <a href="fashion.html" class="store-dir-card" style="background: linear-gradient(135deg, #10243b, #1e3a5f); padding: 40px 30px; border-radius: 12px; display: flex; flex-direction: column; justify-content: space-between; min-height: 250px; text-decoration: none; box-shadow: 0 10px 30px rgba(16,36,59,0.2); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+          <div>
+            <span style="font-size: 30px;">👗</span>
+            <h3 style="color: #fff; font-family: Georgia, serif; font-size: 24px; margin: 15px 0 5px;">Aaradhya Fashion</h3>
+            <p style="color: #e2e6e9; font-size: 13px; line-height: 1.6; margin-bottom: 20px;">Men's Wear, Women's Wear, Kids, Sports & more.</p>
+          </div>
+          <span style="color: var(--gold); font-weight: bold; font-size: 13px;">Explore Collection →</span>
+        </a>
+
+        <!-- 2. A-Print -->
+        <a href="print.html" class="store-dir-card" style="background: linear-gradient(135deg, #c5a36b, #a88756); padding: 40px 30px; border-radius: 12px; display: flex; flex-direction: column; justify-content: space-between; min-height: 250px; text-decoration: none; box-shadow: 0 10px 30px rgba(197,163,107,0.3); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+          <div>
+            <span style="font-size: 30px;">🖨️</span>
+            <h3 style="color: #10243b; font-family: Georgia, serif; font-size: 24px; margin: 15px 0 5px;">A-Print (By Aaradhya Fashion)</h3>
+            <p style="color: #10243b; font-size: 13px; line-height: 1.6; margin-bottom: 20px;">Custom Printing, T-Shirts, Visiting Cards & Banners.</p>
+          </div>
+          <span style="color: #10243b; font-weight: bold; font-size: 13px;">Get Custom Quote →</span>
+        </a>
+
+        <!-- 3. Kirana -->
+        <a href="kirana.html" class="store-dir-card" style="background: linear-gradient(135deg, #0b3d2e, #165a45); padding: 40px 30px; border-radius: 12px; display: flex; flex-direction: column; justify-content: space-between; min-height: 250px; text-decoration: none; box-shadow: 0 10px 30px rgba(11,61,46,0.2); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+          <div>
+            <span style="font-size: 30px;">🛒</span>
+            <h3 style="color: #fff; font-family: Georgia, serif; font-size: 24px; margin: 15px 0 5px;">Aaradhya Kirana Store</h3>
+            <p style="color: #d1d5db; font-size: 13px; line-height: 1.6; margin-bottom: 20px;">Daily Grocery, Essentials & Household items.</p>
+          </div>
+          <span style="color: #a7f3d0; font-weight: bold; font-size: 13px;">Order Groceries →</span>
+        </a>
+
+      </div>
+    </section>
   </main>
 
-  <dialog class="product-dialog" id="productDialog">
-    <button class="dialog-close" id="dialogClose">×</button>
-    <div id="dialogContent"></div>
-  </dialog>
-
-  <script src="products.js"></script>
-  <script>
-    const PAGE_STORE = "Print";
-    const WHATSAPP_NUMBER = "918931911428";
-    const EMAIL_ADDRESS = "your-email@gmail.com"; // Aap apna email yahan daalein
-    let products = [];
-
-    function load() {
-      const saved = localStorage.getItem("aaradhyaMartProductsV1");
-      products = saved ? JSON.parse(saved) : window.STARTER_PRODUCTS;
-    }
-    function money(v) { return "₹" + Number(v||0).toLocaleString("en-IN"); }
-    
-    function render() {
-      const query = document.getElementById("searchInput").value.toLowerCase();
-      const cat = document.getElementById("categoryFilter").value;
-      
-      let list = products.filter(p => p.store === PAGE_STORE);
-      const cats = [...new Set(list.map(p => p.category))];
-      const catSelect = document.getElementById("categoryFilter");
-      if(catSelect.options.length <= 1) {
-        cats.forEach(c => catSelect.innerHTML += `<option value="${c}">${c}</option>`);
-      }
-
-      if (cat !== "All") list = list.filter(p => p.category === cat);
-      list = list.filter(p => [p.name, p.category].join(" ").toLowerCase().includes(query));
-
-      document.getElementById("productGrid").innerHTML = list.map(p => `
-        <article class="product-card">
-          <div class="product-image-wrap">
-            <img src="${p.image}" alt="${p.name}">
-          </div>
-          <div class="product-info">
-            <span class="product-category">${p.category}</span>
-            <h3>${p.name}</h3>
-            <div class="product-price">${p.price === 0 ? 'Custom Quote' : money(p.price)}</div>
-            <div class="product-actions" style="flex-direction: column; gap: 5px;">
-              <button class="small-button primary" data-order="${p.id}">GET QUOTE (WhatsApp) ↗</button>
-              <a href="mailto:${EMAIL_ADDRESS}?subject=Quote Request: ${p.name}" class="small-button" style="text-decoration:none; text-align:center;">EMAIL US ✉️</a>
-            </div>
-          </div>
-        </article>`).join("");
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      load(); render();
-      document.getElementById("searchInput").addEventListener("input", render);
-      document.getElementById("categoryFilter").addEventListener("change", render);
-      
-      document.getElementById("productGrid").addEventListener("click", e => {
-        const order = e.target.closest("[data-order]");
-        if(order) {
-          const p = products.find(x=>x.id===order.dataset.order);
-          const msg = `Hello A-Print!\nI want a custom quote for: ${p.name}`;
-          window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
-        }
-      });
-    });
-  </script>
+  <footer class="site-footer">
+    <p>© 2026 Aaradhya Mart. All rights reserved.</p>
+  </footer>
 </body>
 </html>
