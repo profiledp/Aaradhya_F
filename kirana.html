@@ -19,11 +19,7 @@
 
     <div class="shop-controls">
       <label class="search-field"><span>⌕</span><input id="searchInput" type="search" placeholder="Search grocery..." autocomplete="off"></label>
-      <select id="sortFilter">
-        <option value="featured">Featured</option>
-        <option value="low">Price: Low to High</option>
-        <option value="high">Price: High to Low</option>
-      </select>
+      <select id="sortFilter"><option value="featured">Featured</option><option value="low">Price: Low to High</option><option value="high">Price: High to Low</option></select>
     </div>
 
     <div class="product-grid" id="productGrid"></div>
@@ -32,7 +28,6 @@
   <script src="products.js"></script>
   <script>
     const PAGE_STORE = "Kirana";
-    const WHATSAPP_NUMBER = "918931911428";
     let products = [];
 
     function load() {
@@ -75,8 +70,7 @@
         const order = e.target.closest("[data-order]");
         if(order) {
           const p = products.find(x=>x.id===order.dataset.order);
-          const msg = `Hello Aaradhya Kirana!\nI want to order: ${p.name}\nPrice: ${money(p.price)}`;
-          window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
+          window.location.href = `checkout.html?id=${p.id}&size=Standard&store=Aaradhya Kirana`;
         }
       });
     });
