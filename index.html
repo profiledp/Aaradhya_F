@@ -3,89 +3,85 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#10243b">
+  <meta name="theme-color" content="#0f172a">
   <title>Aaradhya Mart | Fashion, Print & Kirana</title>
   <link rel="stylesheet" href="style.css">
+  <!-- Google Fonts for Modern Look -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="announcement">AARADHYA MART • FASHION | PRINT | KIRANA</div>
-  <header class="site-header">
-    <a class="brand" href="index.html">
-      <span class="brand-mark">AM</span>
-      <span><strong>AARADHYA MART</strong><small>YOUR EVERYDAY STORE</small></span>
-    </a>
-    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
-    <nav id="mainNav">
-      <a href="#main-shop" onclick="switchStore('Fashion')">Fashion</a>
-      <a href="#main-shop" onclick="switchStore('Print')">A-Print</a>
-      <a href="#main-shop" onclick="switchStore('Kirana')">Kirana</a>
-      <a href="admin.html">Admin</a>
-    </nav>
-    <a class="header-wa" href="https://wa.me/918931911428" target="_blank" rel="noopener">WhatsApp ↗</a>
-  </header>
-
-  <main>
-    <section class="hero" style="height: 420px;">
-      <div class="hero-shade"></div>
-      <div class="hero-copy">
-        <span class="eyebrow">WELCOME TO AARADHYA MART</span>
-        <h1>Everything you need,<br><em>in one place.</em></h1>
-        <p>Clothing, Custom Printing, and Daily Grocery essentials.</p>
-      </div>
-    </section>
-
-    <div class="store-tabs-container section-wrap">
-      <div class="store-tabs">
-        <button class="tab-btn active" data-store="Fashion" onclick="switchStore('Fashion')">👗 Aaradhya Fashion</button>
-        <button class="tab-btn" data-store="Print" onclick="switchStore('Print')">🖨️ A-Print (Custom)</button>
-        <button class="tab-btn" data-store="Kirana" onclick="switchStore('Kirana')">🛒 Kirana Store</button>
+  <header class="modern-header">
+    <div class="header-top">
+      <a class="brand" href="index.html">
+        <span class="brand-icon">AM</span>
+        <span class="brand-text">Aaradhya Mart</span>
+      </a>
+      <div class="header-actions">
+        <a href="https://wa.me/918931911428" target="_blank" class="icon-btn">💬</a>
+        <a href="admin.html" class="icon-btn">⚙️</a>
       </div>
     </div>
-
-    <section class="shop-section section-wrap" id="main-shop">
-      <div class="section-heading shop-heading" style="margin-bottom: 20px;">
-        <div>
-          <span class="eyebrow" id="currentStoreTag">AARADHYA FASHION</span>
-          <h2 id="currentStoreTitle">Clothing & Apparel</h2>
-        </div>
-        <span class="product-count" id="productCount">Loading...</span>
+    
+    <!-- Search Bar -->
+    <div class="search-container">
+      <div class="search-box">
+        <span>🔍</span>
+        <input id="searchInput" type="search" placeholder="Search for products, brands..." autocomplete="off">
       </div>
+    </div>
+    
+    <!-- Modern Tabs -->
+    <div class="modern-tabs">
+      <button class="tab-btn active" data-store="Fashion" onclick="switchStore('Fashion')">Fashion</button>
+      <button class="tab-btn" data-store="Print" onclick="switchStore('Print')">A-Print</button>
+      <button class="tab-btn" data-store="Kirana" onclick="switchStore('Kirana')">Kirana</button>
+    </div>
+  </header>
 
-      <div class="shop-controls" id="storeFilters">
-        <label class="search-field"><span>⌕</span><input id="searchInput" type="search" placeholder="Search products..." autocomplete="off"></label>
-        <select id="categoryFilter" aria-label="Filter by category">
-          <option value="All">All Categories</option>
-        </select>
-        <select id="sortFilter" aria-label="Sort products">
-          <option value="featured">Featured</option>
-          <option value="low">Price: Low to High</option>
-          <option value="high">Price: High to Low</option>
-        </select>
+  <main class="app-container">
+    <!-- Print Custom Banner (Hidden by default) -->
+    <div id="printBanner" class="hidden custom-banner">
+      <div>
+        <h3>Custom Printing Services</h3>
+        <p>T-Shirts, Banners, Visiting Cards & more.</p>
       </div>
+      <a href="https://wa.me/918931911428?text=Hello%20A-Print,%20I%20want%20a%20custom%20quote." target="_blank" class="btn-primary">Get Quote ↗</a>
+    </div>
 
-      <div id="printBanner" class="hidden" style="background: #f7f5f0; padding: 30px; text-align: center; border: 1px solid var(--gold); margin-bottom: 30px;">
-        <h3 style="font-family: Georgia; color: var(--navy); font-size: 24px;">Custom Printing Services</h3>
-        <p style="color: #666; margin: 10px 0 20px;">We print custom T-shirts, Banners, and Visiting Cards. Prices vary by design.</p>
-        <a href="https://wa.me/918931911428?text=Hello%20A-Print,%20I%20want%20a%20custom%20quote." target="_blank" class="button button-navy">GET CUSTOM QUOTE ↗</a>
-      </div>
+    <div class="section-head">
+      <h2 id="currentStoreTitle">Clothing & Apparel</h2>
+      <span id="productCount" class="count-badge">Loading...</span>
+    </div>
 
-      <div class="product-grid" id="productGrid" aria-live="polite"></div>
-      <div class="empty-state hidden" id="emptyState"><span>✧</span><h3>No products found</h3><p>Try another search or category.</p></div>
-    </section>
+    <div class="filters-row">
+      <select id="categoryFilter" aria-label="Filter by category">
+        <option value="All">All Categories</option>
+      </select>
+      <select id="sortFilter" aria-label="Sort products">
+        <option value="featured">Sort: Featured</option>
+        <option value="low">Price: Low to High</option>
+        <option value="high">Price: High to Low</option>
+      </select>
+    </div>
 
-    <section class="contact-strip section-wrap" id="contact" style="margin-top: 50px;">
-      <div><span class="eyebrow">WE'RE HERE TO HELP</span><h2>Need help with an order?</h2><p>Message us on WhatsApp.</p></div>
-      <a class="button button-navy" href="https://wa.me/918931911428" target="_blank" rel="noopener">CHAT ON WHATSAPP ↗</a>
-    </section>
+    <div class="product-grid" id="productGrid" aria-live="polite"></div>
+    <div class="empty-state hidden" id="emptyState">
+      <span>🛒</span>
+      <h3>No products found</h3>
+      <p>Try a different search or category.</p>
+    </div>
   </main>
 
-  <footer class="site-footer">
-    <a class="brand footer-brand" href="index.html"><span class="brand-mark">AM</span><span><strong>AARADHYA MART</strong><small>YOUR EVERYDAY STORE</small></span></a>
-    <p>Fashion · A-Print · Kirana</p>
-    <div class="footer-links"><a href="#main-shop">Shop</a><a href="admin.html">Admin</a></div>
-    <small>© <span id="year"></span> Aaradhya Mart. All rights reserved.</small>
-  </footer>
+  <!-- Sticky Bottom Bar (Mock Cart/Help) -->
+  <div class="sticky-bottom-bar">
+    <div>
+      <span class="bottom-bar-title">Need help choosing?</span>
+      <span class="bottom-bar-sub">Chat with us on WhatsApp</span>
+    </div>
+    <a href="https://wa.me/918931911428" target="_blank" class="btn-whatsapp">Order on WhatsApp ↗</a>
+  </div>
 
+  <!-- Product Dialog -->
   <dialog class="product-dialog" id="productDialog">
     <button class="dialog-close" id="dialogClose" aria-label="Close">×</button>
     <div id="dialogContent"></div>
