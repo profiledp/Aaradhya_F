@@ -29,11 +29,6 @@
     <div class="product-grid" id="productGrid"></div>
   </main>
 
-  <dialog class="product-dialog" id="productDialog">
-    <button class="dialog-close" id="dialogClose">×</button>
-    <div id="dialogContent"></div>
-  </dialog>
-
   <script src="products.js"></script>
   <script>
     const PAGE_STORE = "Kirana";
@@ -57,7 +52,7 @@
 
       document.getElementById("productGrid").innerHTML = list.map(p => `
         <article class="product-card">
-          <div class="product-image-wrap" data-open="${p.id}">
+          <div class="product-image-wrap">
             <img src="${p.image}" alt="${p.name}">
           </div>
           <div class="product-info">
