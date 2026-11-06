@@ -1,17 +1,13 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Aaradhya Fashion | Clothing</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="index.html">
-      <span class="brand-mark">AM</span>
-      <span><strong>AARADHYA FASHION</strong><small>BY AARADHYA MART</small></span>
-    </a>
+    <a class="brand" href="index.html"><span class="brand-mark">AM</span><span><strong>AARADHYA FASHION</strong><small>BY AARADHYA MART</small></span></a>
     <a href="index.html" class="header-wa" style="background:#fff; color:var(--navy); border:1px solid var(--navy);">← Back to Home</a>
   </header>
 
@@ -21,34 +17,16 @@
       <h2>Fashion Collection</h2>
     </div>
 
-    <!-- Filters -->
     <div class="shop-controls">
-      <label class="search-field">
-        <span>⌕</span>
-        <input id="searchInput" type="search" placeholder="Search clothes..." autocomplete="off">
-      </label>
-      <select id="categoryFilter">
-        <option value="All">All Categories</option>
-      </select>
-      <select id="sortFilter">
-        <option value="featured">Featured</option>
-        <option value="low">Price: Low to High</option>
-        <option value="high">Price: High to Low</option>
-      </select>
+      <label class="search-field"><span>⌕</span><input id="searchInput" type="search" placeholder="Search clothes..." autocomplete="off"></label>
+      <select id="categoryFilter"><option value="All">All Categories</option></select>
+      <select id="sortFilter"><option value="featured">Featured</option><option value="low">Price: Low to High</option><option value="high">Price: High to Low</option></select>
     </div>
 
-    <!-- Product Grid -->
     <div class="product-grid" id="productGrid"></div>
-    
-    <!-- Empty State -->
-    <div class="empty-state hidden" id="emptyState">
-      <span>✧</span>
-      <h3>No products found</h3>
-      <p>Try another search or category.</p>
-    </div>
+    <div class="empty-state hidden" id="emptyState"><span>✧</span><h3>No products found</h3><p>Try another search or category.</p></div>
   </main>
 
-  <!-- Product Detail Dialog -->
   <dialog class="product-dialog" id="productDialog">
     <button class="dialog-close" id="dialogClose">×</button>
     <div id="dialogContent"></div>
@@ -57,44 +35,30 @@
   <script src="products.js"></script>
   <script>
     const PAGE_STORE = "Fashion";
-    const WHATSAPP_NUMBER = "918931911428";
     let products = [];
 
-    // Load products from LocalStorage or Starter Data
     function load() {
       const saved = localStorage.getItem("aaradhyaMartProductsV1");
       products = saved ? JSON.parse(saved) : window.STARTER_PRODUCTS;
-      if (!Array.isArray(products)) products = window.STARTER_PRODUCTS;
     }
-
-    function money(v) { 
-      return "₹" + Number(v || 0).toLocaleString("en-IN"); 
-    }
-
+    function money(v) { return "₹" + Number(v||0).toLocaleString("en-IN"); }
+    
     function render() {
       const query = document.getElementById("searchInput").value.toLowerCase();
       const cat = document.getElementById("categoryFilter").value;
       const sort = document.getElementById("sortFilter").value;
       
-      // Filter by Store
       let list = products.filter(p => p.store === PAGE_STORE);
-      
-      // Filter by Category
       if (cat !== "All") list = list.filter(p => p.category === cat);
-      
-      // Filter by Search
       list = list.filter(p => [p.name, p.category].join(" ").toLowerCase().includes(query));
-      
-      // Sorting
-      if (sort === "low") list.sort((a,b) => a.price - b.price);
-      if (sort === "high") list.sort((a,b) => b.price - a.price);
+      if (sort === "low") list.sort((a,b)=>a.price-b.price);
+      if (sort === "high") list.sort((a,b)=>b.price-a.price);
 
       const grid = document.getElementById("productGrid");
       const emptyState = document.getElementById("emptyState");
 
       if (list.length === 0) {
-        grid.innerHTML = "";
-        emptyState.classList.remove("hidden");
+        grid.innerHTML = ""; emptyState.classList.remove("hidden");
       } else {
         emptyState.classList.add("hidden");
         grid.innerHTML = list.map(p => {
@@ -108,12 +72,10 @@
             <div class="product-info">
               <span class="product-category">${p.category}</span>
               <h3>${p.name}</h3>
-              <div class="product-price">${money(p.price)} ${p.originalPrice > p.price ? `<span class="old-price">${money(p.originalPrice)}</span>` : ""}</div>
+              <div class="product-price">${money(p.price)} ${p.originalPrice>p.price ? `<span class="old-price">${money(p.originalPrice)}</span>`:""}</div>
               <div class="product-actions">
                 <button class="small-button" data-open="${p.id}">VIEW</button>
-                <button class="small-button primary" data-order="${p.id}" ${isOut ? 'disabled' : ''}>
-                  ${isOut ? 'OUT OF STOCK' : 'ORDER ↗'}
-                </button>
+                <button class="small-button primary" data-order="${p.id}" ${isOut?'disabled':''}>${isOut?'OUT OF STOCK':'ORDER ↗'}</button>
               </div>
             </div>
           </article>`;
@@ -123,61 +85,38 @@
 
     function openProduct(id) {
       const p = products.find(x => x.id === id);
-      if (!p) return;
-      
-      const dialog = document.getElementById("productDialog");
+      const d = document.getElementById("productDialog");
       document.getElementById("dialogContent").innerHTML = `
         <div class="dialog-layout">
           <img src="${p.image}" alt="${p.name}">
           <div class="dialog-details">
-            <span class="product-category">${p.category}</span>
             <h2>${p.name}</h2>
             <div class="product-price">${money(p.price)}</div>
             <p>${p.description}</p>
-            
-            ${p.sizes && p.sizes.length > 0 ? `
-            <label>Select Size:</label>
-            <select id="sizeChoice">
-              ${p.sizes.map(s => `<option>${s}</option>`).join("")}
-            </select>` : ''}
-            
-            <button class="button-navy" id="dialogOrder">ORDER ON WHATSAPP ↗</button>
+            <label>Size:</label>
+            <select id="sizeChoice">${p.sizes.map(s=>`<option>${s}</option>`).join("")}</select>
+            <button class="button-navy" id="dialogOrder">PROCEED TO CHECKOUT ↗</button>
           </div>
         </div>`;
-      
-      dialog.showModal();
-      
+      d.showModal();
       document.getElementById("dialogOrder").onclick = () => {
-        const size = document.getElementById("sizeChoice")?.value || "N/A";
-        const msg = `Hello Aaradhya Fashion!\nI want to order:\nProduct: ${p.name}\nSize: ${size}\nPrice: ${money(p.price)}`;
-        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
+        const size = document.getElementById("sizeChoice").value;
+        window.location.href = `checkout.html?id=${p.id}&size=${encodeURIComponent(size)}&store=Aaradhya Fashion`;
       };
     }
 
     document.addEventListener("DOMContentLoaded", () => {
       load();
-      
-      // Setup Category Dropdown
       const catSelect = document.getElementById("categoryFilter");
-      const storeProducts = products.filter(p => p.store === PAGE_STORE);
-      const categories = [...new Set(storeProducts.map(p => p.category))];
-      
-      categories.forEach(c => {
-        catSelect.innerHTML += `<option value="${c}">${c}</option>`;
-      });
+      const cats = [...new Set(products.filter(p => p.store === PAGE_STORE).map(p => p.category))];
+      cats.forEach(c => catSelect.innerHTML += `<option value="${c}">${c}</option>`);
 
-      // Check URL for Category Parameter (From Homepage links)
       const urlParams = new URLSearchParams(window.location.search);
-      const urlCategory = urlParams.get('category');
-      
-      if (urlCategory && categories.includes(urlCategory)) {
-        catSelect.value = urlCategory;
-      }
+      const urlCat = urlParams.get('category');
+      if (urlCat && cats.includes(urlCat)) catSelect.value = urlCat;
 
-      // Initial Render
       render();
       
-      // Event Listeners
       document.getElementById("searchInput").addEventListener("input", render);
       document.getElementById("categoryFilter").addEventListener("change", render);
       document.getElementById("sortFilter").addEventListener("change", render);
@@ -185,15 +124,12 @@
       document.getElementById("productGrid").addEventListener("click", e => {
         const open = e.target.closest("[data-open]");
         const order = e.target.closest("[data-order]");
-        
-        if (open) openProduct(open.dataset.open);
-        if (order && !order.disabled) {
-          const p = products.find(x => x.id === order.dataset.order);
-          const msg = `Hello Aaradhya Fashion!\nI want to order: ${p.name}`;
-          window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
+        if(open) openProduct(open.dataset.open);
+        if(order && !order.disabled) {
+          const p = products.find(x=>x.id===order.dataset.order);
+          window.location.href = `checkout.html?id=${p.id}&size=N/A&store=Aaradhya Fashion`;
         }
       });
-      
       document.getElementById("dialogClose").onclick = () => document.getElementById("productDialog").close();
     });
   </script>
