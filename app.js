@@ -1,6 +1,6 @@
 // Aaradhya Fashion storefront. Data is stored locally in this browser.
 const STORE_KEY = "aaradhyaFashionProductsV1";
-const WHATSAPP_NUMBER = "918931911428"; // Change to your WhatsApp number with country code.
+const WHATSAPP_NUMBER = "918931911428";
 let products = [];
 let activeProduct = null;
 
@@ -89,10 +89,13 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("searchInput").addEventListener("input", renderStore);
   document.getElementById("categoryFilter").addEventListener("change", renderStore);
   document.getElementById("sortFilter").addEventListener("change", renderStore);
+  
+  // This handles clicks for BOTH the Category Cards AND the new Store Directory links
   document.querySelectorAll("[data-category]").forEach(btn=>btn.addEventListener("click",()=>{
     document.getElementById("categoryFilter").value=btn.dataset.category;
     renderStore(); document.getElementById("shop").scrollIntoView({behavior:"smooth"});
   }));
+  
   document.getElementById("productGrid").addEventListener("click", e=>{
     const open = e.target.closest("[data-open]");
     const order = e.target.closest("[data-order]");
