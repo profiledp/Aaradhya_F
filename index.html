@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#10243b">
-  <title>Aaradhya Mart | Multi-Store</title>
+  <title>Aaradhya Mart | Fashion, Print & Kirana</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -16,17 +16,16 @@
     </a>
     <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
     <nav id="mainNav">
-      <a href="#fashion" onclick="switchStore('Fashion')">Fashion</a>
-      <a href="#print" onclick="switchStore('Print')">A-Print</a>
-      <a href="#kirana" onclick="switchStore('Kirana')">Kirana</a>
-      <a href="admin.html">Admin Login</a>
+      <a href="#main-shop" onclick="switchStore('Fashion')">Fashion</a>
+      <a href="#main-shop" onclick="switchStore('Print')">A-Print</a>
+      <a href="#main-shop" onclick="switchStore('Kirana')">Kirana</a>
+      <a href="admin.html">Admin</a>
     </nav>
     <a class="header-wa" href="https://wa.me/918931911428" target="_blank" rel="noopener">WhatsApp ↗</a>
   </header>
 
   <main>
-    <!-- HERO SECTION -->
-    <section class="hero" style="height: 400px;">
+    <section class="hero" style="height: 420px;">
       <div class="hero-shade"></div>
       <div class="hero-copy">
         <span class="eyebrow">WELCOME TO AARADHYA MART</span>
@@ -35,16 +34,14 @@
       </div>
     </section>
 
-    <!-- STORE NAVIGATOR TABS -->
     <div class="store-tabs-container section-wrap">
       <div class="store-tabs">
-        <button class="tab-btn active" onclick="switchStore('Fashion')">👗 Aaradhya Fashion</button>
-        <button class="tab-btn" onclick="switchStore('Print')">🖨️ A-Print (Custom)</button>
-        <button class="tab-btn" onclick="switchStore('Kirana')">🛒 Kirana Store</button>
+        <button class="tab-btn active" data-store="Fashion" onclick="switchStore('Fashion')">👗 Aaradhya Fashion</button>
+        <button class="tab-btn" data-store="Print" onclick="switchStore('Print')">🖨️ A-Print (Custom)</button>
+        <button class="tab-btn" data-store="Kirana" onclick="switchStore('Kirana')">🛒 Kirana Store</button>
       </div>
     </div>
 
-    <!-- MAIN SHOP SECTION (Changes dynamically based on tab) -->
     <section class="shop-section section-wrap" id="main-shop">
       <div class="section-heading shop-heading" style="margin-bottom: 20px;">
         <div>
@@ -54,15 +51,11 @@
         <span class="product-count" id="productCount">Loading...</span>
       </div>
 
-      <!-- Filters (Only visible for Fashion and Kirana, Print has custom logic) -->
       <div class="shop-controls" id="storeFilters">
         <label class="search-field"><span>⌕</span><input id="searchInput" type="search" placeholder="Search products..." autocomplete="off"></label>
-        
         <select id="categoryFilter" aria-label="Filter by category">
           <option value="All">All Categories</option>
-          <!-- Options will be filled by JS -->
         </select>
-        
         <select id="sortFilter" aria-label="Sort products">
           <option value="featured">Featured</option>
           <option value="low">Price: Low to High</option>
@@ -70,14 +63,12 @@
         </select>
       </div>
 
-      <!-- Print Custom Banner -->
       <div id="printBanner" class="hidden" style="background: #f7f5f0; padding: 30px; text-align: center; border: 1px solid var(--gold); margin-bottom: 30px;">
         <h3 style="font-family: Georgia; color: var(--navy); font-size: 24px;">Custom Printing Services</h3>
         <p style="color: #666; margin: 10px 0 20px;">We print custom T-shirts, Banners, and Visiting Cards. Prices vary by design.</p>
         <a href="https://wa.me/918931911428?text=Hello%20A-Print,%20I%20want%20a%20custom%20quote." target="_blank" class="button button-navy">GET CUSTOM QUOTE ↗</a>
       </div>
 
-      <!-- Products Grid -->
       <div class="product-grid" id="productGrid" aria-live="polite"></div>
       <div class="empty-state hidden" id="emptyState"><span>✧</span><h3>No products found</h3><p>Try another search or category.</p></div>
     </section>
