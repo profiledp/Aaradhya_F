@@ -25,12 +25,11 @@ function switchStore(storeName) {
   if(activeTab) activeTab.classList.add('active');
 
   const titles = {
-    "Fashion": { tag: "AARADHYA FASHION", title: "Clothing & Apparel" },
-    "Print": { tag: "A-PRINT", title: "Custom Printing Services" },
-    "Kirana": { tag: "AARADHYA KIRANA", title: "Grocery & Daily Needs" }
+    "Fashion": "Clothing & Apparel",
+    "Print": "Custom Printing Services",
+    "Kirana": "Grocery & Daily Needs"
   };
-  document.getElementById("currentStoreTag").textContent = titles[storeName].tag;
-  document.getElementById("currentStoreTitle").textContent = titles[storeName].title;
+  document.getElementById("currentStoreTitle").textContent = titles[storeName];
 
   document.getElementById("printBanner").classList.toggle("hidden", storeName !== "Print");
 
@@ -44,7 +43,6 @@ function switchStore(storeName) {
 
   document.getElementById("searchInput").value = "";
   renderStore();
-  document.getElementById("main-shop").scrollIntoView({ behavior: "smooth" });
 }
 
 function renderStore() {
@@ -67,19 +65,19 @@ function renderStore() {
   grid.innerHTML = list.map(p => {
     const isOut = Number(p.stock) <= 0;
     return `
-    <article class="product-card" style="${isOut ? 'opacity: 0.7;' : ''}">
+    <article class="product-card" style="${isOut ? 'opacity: 0.8;' : ''}">
       <div class="product-image-wrap" data-open="${escapeText(p.id)}">
         <img src="${safeImage(p.image)}" alt="${escapeText(p.name)}" loading="lazy">
         ${p.tag ? `<span class="product-tag">${escapeText(p.tag)}</span>` : ""}
-        ${isOut ? `<span class="product-tag" style="background:#a22;color:#fff;left:auto;right:12px;">OUT OF STOCK</span>` : ""}
+        ${isOut ? `<span class="out-of-stock-tag">SOLD OUT</span>` : ""}
       </div>
       <div class="product-info">
         <span class="product-category">${escapeText(p.category)}</span>
         <h3>${escapeText(p.name)}</h3>
         <div class="product-price">${p.price === 0 ? 'Custom Quote' : money(p.price)} ${Number(p.originalPrice)>Number(p.price)&&p.originalPrice>0?`<span class="old-price">${money(p.originalPrice)}</span>`:""}</div>
         <div class="product-actions">
-          <button class="small-button" data-open="${escapeText(p.id)}">VIEW</button>
-          <button class="small-button primary" data-order="${escapeText(p.id)}" ${isOut ? 'disabled style="background:#999;border-color:#999;"' : ''}>${isOut ? 'OUT OF STOCK' : 'ORDER ↗'}</button>
+          <button class="btn-view" data-open="${escapeText(p.id)}">Details</button>
+          <button class="btn-order" data-order="${escapeText(p.id)}" ${isOut ? 'disabled' : ''}>${isOut ? 'Sold Out' : 'Order'}</button>
         </div>
       </div>
     </article>`;
@@ -91,8 +89,8 @@ function openProduct(id) {
   if (!p) return;
   const dialog = document.getElementById("productDialog");
   
-  const priceHtml = p.store === "Print" && p.price === 0 
-    ? `<span style="color:var(--gold);font-weight:bold;">Custom Quote on WhatsApp</span>` 
+  const priceHtml = p.price === 0 
+    ? `<span style="color:var(--gold);font-weight:bold;">Custom Quote</span>` 
     : `${money(p.price)} ${Number(p.originalPrice)>Number(p.price)?`<span class="old-price">${money(p.originalPrice)}</span>`:""}`;
   
   document.getElementById("dialogContent").innerHTML = `
@@ -105,17 +103,17 @@ function openProduct(id) {
         <p>${escapeText(p.description)}</p>
         
         ${p.sizes && p.sizes.length > 0 ? `
-        <label for="sizeChoice">Choose Size/Quantity</label>
+        <label>Select Size / Qty</label>
         <select id="sizeChoice">${p.sizes.map(s=>`<option>${escapeText(s)}</option>`).join("")}</select>` : ''}
         
         ${p.colors && p.colors.length > 0 ? `
-        <label for="colorChoice">Choose Colour</label>
+        <label>Select Colour</label>
         <select id="colorChoice">${p.colors.map(c=>`<option>${escapeText(c)}</option>`).join("")}</select>` : ''}
         
-        <p>Availability: ${Number(p.stock)>0? "In stock" : "<span style='color:#a22'>Out of stock</span>"}</p>
+        <p style="margin-top:10px;">Status: ${Number(p.stock)>0? "<span style='color:var(--success);font-weight:bold;'>In Stock</span>" : "<span style='color:#ef4444;font-weight:bold;'>Out of Stock</span>"}</p>
         
-        <button class="button button-navy" id="dialogOrder" ${Number(p.stock)<=0 ? 'disabled style="background:#999"' : ''}>
-          ${Number(p.stock)<=0 ? 'OUT OF STOCK' : 'ORDER ON WHATSAPP ↗'}
+        <button class="btn-order" id="dialogOrder" ${Number(p.stock)<=0 ? 'disabled' : ''} style="margin-top:15px;">
+          ${Number(p.stock)<=0 ? 'Out of Stock' : 'Order on WhatsApp ↗'}
         </button>
       </div>
     </div>`;
@@ -135,7 +133,7 @@ function orderProduct(id, size, color) {
   if (!p) return;
   const storeName = p.store === "Fashion" ? "Aaradhya Fashion" : p.store === "Print" ? "A-Print" : "Aaradhya Kirana";
   
-  const msg = `Hello ${storeName}!\nI want to order:\n\nProduct: ${p.name}\nID: ${p.id}\nPrice: ${p.price === 0 ? 'Custom Quote' : money(p.price)}\nSize/Qty: ${size}\nColour: ${color}\n\nPlease confirm availability.`;
+  const msg = `Hello ${storeName}!\nI want to order:\n\nProduct: ${p.name}\nPrice: ${p.price === 0 ? 'Custom Quote' : money(p.price)}\nSize/Qty: ${size}\nColour: ${color}\n\nPlease confirm.`;
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
 }
 
@@ -143,7 +141,6 @@ document.addEventListener("DOMContentLoaded", () => {
   loadStoreProducts();
   switchStore('Fashion');
   
-  document.getElementById("year").textContent = new Date().getFullYear();
   document.getElementById("searchInput").addEventListener("input", renderStore);
   document.getElementById("categoryFilter").addEventListener("change", renderStore);
   document.getElementById("sortFilter").addEventListener("change", renderStore);
@@ -157,5 +154,4 @@ document.addEventListener("DOMContentLoaded", () => {
   
   document.getElementById("dialogClose").addEventListener("click",()=>document.getElementById("productDialog").close());
   document.getElementById("productDialog").addEventListener("click",e=>{if(e.target.id==="productDialog")e.target.close();});
-  document.getElementById("menuToggle").addEventListener("click",()=>document.getElementById("mainNav").classList.toggle("open"));
 });
