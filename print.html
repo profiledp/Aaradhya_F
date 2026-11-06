@@ -34,6 +34,7 @@
   <script>
     const PAGE_STORE = "Print";
     const WHATSAPP_NUMBER = "918931911428";
+    const EMAIL_ADDRESS = "your-email@gmail.com"; // Aap apna email yahan daalein
     let products = [];
 
     function load() {
@@ -58,15 +59,16 @@
 
       document.getElementById("productGrid").innerHTML = list.map(p => `
         <article class="product-card">
-          <div class="product-image-wrap" data-open="${p.id}">
+          <div class="product-image-wrap">
             <img src="${p.image}" alt="${p.name}">
           </div>
           <div class="product-info">
             <span class="product-category">${p.category}</span>
             <h3>${p.name}</h3>
             <div class="product-price">${p.price === 0 ? 'Custom Quote' : money(p.price)}</div>
-            <div class="product-actions">
-              <button class="small-button primary" data-order="${p.id}">GET QUOTE ↗</button>
+            <div class="product-actions" style="flex-direction: column; gap: 5px;">
+              <button class="small-button primary" data-order="${p.id}">GET QUOTE (WhatsApp) ↗</button>
+              <a href="mailto:${EMAIL_ADDRESS}?subject=Quote Request: ${p.name}" class="small-button" style="text-decoration:none; text-align:center;">EMAIL US ✉️</a>
             </div>
           </div>
         </article>`).join("");
