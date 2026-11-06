@@ -37,7 +37,6 @@
 
   <script src="products.js"></script>
   <script>
-    // Set store for this page
     const PAGE_STORE = "Fashion";
     const WHATSAPP_NUMBER = "918931911428";
     let products = [];
@@ -55,7 +54,6 @@
       
       let list = products.filter(p => p.store === PAGE_STORE);
       
-      // Populate Categories
       const cats = [...new Set(list.map(p => p.category))];
       const catSelect = document.getElementById("categoryFilter");
       if(catSelect.options.length <= 1) {
