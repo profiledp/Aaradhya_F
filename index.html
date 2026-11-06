@@ -5,14 +5,116 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0f172a">
   <title>Aaradhya Mart | Fashion, Print & Kirana</title>
-  <link rel="stylesheet" href="style.css">
-  <!-- Google Fonts for Modern Look -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- INLINE CSS (Design Fix) -->
+  <style>
+    :root { --bg-color: #f8fafc; --card-bg: #ffffff; --text-main: #0f172a; --text-muted: #64748b; --primary: #0f172a; --gold: #d4af37; --border: #e2e8f0; --success: #10b981; --font-family: 'Inter', system-ui, sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: var(--bg-color); color: var(--text-main); font-family: var(--font-family); padding-bottom: 80px; }
+    
+    /* Header */
+    .modern-header { background: #fff; position: sticky; top: 0; z-index: 100; padding: 15px 5% 0; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border-bottom: 1px solid var(--border); }
+    .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-main); }
+    .brand-icon { background: var(--primary); color: #fff; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-weight: 700; font-size: 14px; }
+    .brand-text { font-weight: 700; font-size: 18px; letter-spacing: -0.5px; }
+    .header-actions { display: flex; gap: 10px; }
+    .icon-btn { background: var(--bg-color); border: 1px solid var(--border); width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 18px; }
+    
+    /* Search */
+    .search-container { margin-bottom: 15px; }
+    .search-box { display: flex; align-items: center; background: var(--bg-color); border: 1px solid var(--border); border-radius: 14px; padding: 0 15px; height: 48px; }
+    .search-box span { font-size: 18px; margin-right: 10px; }
+    .search-box input { border: none; background: transparent; width: 100%; outline: none; font-size: 14px; color: var(--text-main); }
+    
+    /* Tabs */
+    .modern-tabs { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: none; }
+    .modern-tabs::-webkit-scrollbar { display: none; }
+    .tab-btn { background: var(--bg-color); border: 1px solid var(--border); padding: 10px 20px; border-radius: 20px; font-size: 13px; font-weight: 600; color: var(--text-muted); white-space: nowrap; cursor: pointer; transition: all 0.2s; }
+    .tab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    
+    /* App Container */
+    .app-container { padding: 20px 5%; max-width: 1200px; margin: auto; }
+    
+    /* Banner */
+    .custom-banner { background: linear-gradient(135deg, #0f172a, #1e293b); color: #fff; padding: 20px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+    .custom-banner h3 { font-size: 18px; margin-bottom: 5px; }
+    .custom-banner p { font-size: 12px; color: #94a3b8; }
+    .btn-primary { background: var(--gold); color: var(--primary); padding: 10px 18px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 12px; }
+    
+    /* Section Head */
+    .section-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .section-head h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+    .count-badge { background: #e2e8f0; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 600; color: var(--text-muted); }
+    
+    /* Filters */
+    .filters-row { display: flex; gap: 10px; margin-bottom: 20px; }
+    .filters-row select { flex: 1; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: #fff; font-size: 13px; color: var(--text-main); outline: none; appearance: none; font-family: var(--font-family); }
+    
+    /* Product Grid */
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+    .product-card { background: var(--card-bg); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); transition: transform 0.2s; }
+    .product-card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+    .product-image-wrap { position: relative; aspect-ratio: 4/5; background: #f1f5f9; cursor: pointer; }
+    .product-image-wrap img { width: 100%; height: 100%; object-fit: cover; }
+    .product-tag { position: absolute; top: 10px; left: 10px; background: #fff; color: var(--primary); padding: 4px 8px; border-radius: 6px; font-size: 9px; font-weight: 700; letter-spacing: 0.5px; }
+    .out-of-stock-tag { position: absolute; top: 10px; right: 10px; background: #ef4444; color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 9px; font-weight: 700; }
+    .product-info { padding: 15px; }
+    .product-category { font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .product-info h3 { font-size: 15px; font-weight: 600; margin: 5px 0 10px; color: var(--text-main); line-height: 1.3; }
+    .product-price { font-size: 16px; font-weight: 700; color: var(--primary); }
+    .old-price { font-size: 12px; color: var(--text-muted); text-decoration: line-through; margin-left: 8px; font-weight: 400; }
+    .product-actions { display: flex; gap: 8px; margin-top: 15px; }
+    .btn-view, .btn-order { flex: 1; padding: 10px; border-radius: 10px; font-size: 11px; font-weight: 700; text-align: center; cursor: pointer; border: none; font-family: var(--font-family); }
+    .btn-view { background: var(--bg-color); color: var(--primary); border: 1px solid var(--border); }
+    .btn-order { background: var(--primary); color: #fff; }
+    .btn-order:disabled { background: #cbd5e1; cursor: not-allowed; }
+    
+    /* Empty State */
+    .empty-state { text-align: center; padding: 50px 20px; color: var(--text-muted); }
+    .empty-state span { font-size: 40px; display: block; margin-bottom: 15px; }
+    .empty-state h3 { color: var(--text-main); margin-bottom: 5px; }
+    .hidden { display: none !important; }
+    
+    /* Sticky Bottom Bar */
+    .sticky-bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid var(--border); padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; z-index: 90; box-shadow: 0 -4px 20px rgba(0,0,0,0.05); }
+    .bottom-bar-title { display: block; font-size: 13px; font-weight: 700; }
+    .bottom-bar-sub { font-size: 11px; color: var(--text-muted); }
+    .btn-whatsapp { background: #25D366; color: #fff; padding: 12px 20px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 13px; }
+    
+    /* Modal / Dialog */
+    .product-dialog { border: none; border-radius: 20px; padding: 0; width: min(800px, 92vw); max-height: 90vh; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); overflow: hidden; }
+    .product-dialog::backdrop { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); }
+    .dialog-close { position: absolute; top: 15px; right: 15px; width: 36px; height: 36px; border-radius: 50%; background: #fff; border: 1px solid var(--border); font-size: 20px; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; }
+    .dialog-layout { display: grid; grid-template-columns: 1fr 1fr; }
+    .dialog-layout img { width: 100%; height: 100%; object-fit: cover; min-height: 400px; }
+    .dialog-details { padding: 30px; display: flex; flex-direction: column; justify-content: center; }
+    .dialog-details h2 { font-size: 24px; margin: 10px 0; }
+    .dialog-details .product-price { font-size: 20px; margin-bottom: 15px; }
+    .dialog-details p { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; }
+    .dialog-details label { display: block; font-size: 12px; font-weight: 600; margin: 10px 0 5px; }
+    .dialog-details select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 15px; outline: none; }
+    .dialog-details .btn-order { width: 100%; padding: 15px; font-size: 14px; border-radius: 12px; }
+    
+    @media (max-width: 768px) {
+      .dialog-layout { grid-template-columns: 1fr; }
+      .dialog-layout img { min-height: 250px; max-height: 300px; }
+      .dialog-details { padding: 20px; }
+      .product-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .product-info { padding: 10px; }
+      .product-info h3 { font-size: 13px; }
+      .product-price { font-size: 14px; }
+      .product-actions { flex-direction: column; }
+      .sticky-bottom-bar { flex-direction: column; gap: 10px; text-align: center; }
+      .btn-whatsapp { width: 100%; }
+    }
+  </style>
 </head>
 <body>
   <header class="modern-header">
     <div class="header-top">
-      <a class="brand" href="index.html">
+      <a class="brand" href="#">
         <span class="brand-icon">AM</span>
         <span class="brand-text">Aaradhya Mart</span>
       </a>
@@ -22,7 +124,6 @@
       </div>
     </div>
     
-    <!-- Search Bar -->
     <div class="search-container">
       <div class="search-box">
         <span>🔍</span>
@@ -30,7 +131,6 @@
       </div>
     </div>
     
-    <!-- Modern Tabs -->
     <div class="modern-tabs">
       <button class="tab-btn active" data-store="Fashion" onclick="switchStore('Fashion')">Fashion</button>
       <button class="tab-btn" data-store="Print" onclick="switchStore('Print')">A-Print</button>
@@ -39,7 +139,6 @@
   </header>
 
   <main class="app-container">
-    <!-- Print Custom Banner (Hidden by default) -->
     <div id="printBanner" class="hidden custom-banner">
       <div>
         <h3>Custom Printing Services</h3>
@@ -72,7 +171,6 @@
     </div>
   </main>
 
-  <!-- Sticky Bottom Bar (Mock Cart/Help) -->
   <div class="sticky-bottom-bar">
     <div>
       <span class="bottom-bar-title">Need help choosing?</span>
@@ -81,13 +179,179 @@
     <a href="https://wa.me/918931911428" target="_blank" class="btn-whatsapp">Order on WhatsApp ↗</a>
   </div>
 
-  <!-- Product Dialog -->
   <dialog class="product-dialog" id="productDialog">
     <button class="dialog-close" id="dialogClose" aria-label="Close">×</button>
     <div id="dialogContent"></div>
   </dialog>
   
-  <script src="products.js"></script>
-  <script src="app.js"></script>
+  <!-- INLINE JAVASCRIPT & STARTER PRODUCTS (Logic Fix) -->
+  <script>
+    // STARTER PRODUCTS DATA
+    window.STARTER_PRODUCTS = [
+      {id:"F1",store:"Fashion",name:"Classic Winter Jacket",category:"Winter Wear",price:999,originalPrice:1299,sizes:["M","L"],colors:["Black","Navy"],image:"https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=900&q=80",description:"A versatile layer for cooler days.",stock:10,tag:"NEW"},
+      {id:"F2",store:"Fashion",name:"Everyday Casual Shirt",category:"Men",price:699,originalPrice:899,sizes:["S","M","L"],colors:["White","Blue"],image:"https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=900&q=80",description:"Smart casual shirt.",stock:12,tag:"POPULAR"},
+      {id:"F3",store:"Fashion",name:"Women's Casual Look",category:"Women",price:899,originalPrice:1099,sizes:["S","M","L"],colors:["Cream","Black"],image:"https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=900&q=80",description:"Easy styling for everyday wear.",stock:9,tag:""},
+      {id:"P1",store:"Print",name:"Custom Printed T-Shirt",category:"Custom T-Shirts",price:299,originalPrice:0,sizes:["S","M","L"],colors:["White"],image:"https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9?auto=format&fit=crop&w=900&q=80",description:"High-quality print on your own design. Price varies by design.",stock:999,tag:"CUSTOM"},
+      {id:"P2",store:"Print",name:"Visiting Cards (Pack of 100)",category:"Stationery",price:499,originalPrice:699,sizes:["Standard"],colors:["White"],image:"https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=900&q=80",description:"Premium matte finish visiting cards.",stock:50,tag:""},
+      {id:"K1",store:"Kirana",name:"Tata Salt (1kg)",category:"Grocery",price:28,originalPrice:30,sizes:["1kg"],colors:["White"],image:"https://images.unsplash.com/photo-1626132618954-6c24859f4bb3?auto=format&fit=crop&w=900&q=80",description:"Iodized salt for daily use.",stock:40,tag:""},
+      {id:"K2",store:"Kirana",name:"Fortune Sunflower Oil (1L)",category:"Grocery",price:140,originalPrice:160,sizes:["1L"],colors:["Yellow"],image:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=900&q=80",description:"Refined sunflower oil.",stock:15,tag:"POPULAR"}
+    ];
+
+    // APP LOGIC
+    const STORE_KEY = "aaradhyaMartProductsV1";
+    const WHATSAPP_NUMBER = "918931911428";
+    let products = [];
+    let currentStore = "Fashion";
+
+    function loadStoreProducts() {
+      try {
+        const saved = localStorage.getItem(STORE_KEY);
+        products = saved ? JSON.parse(saved) : [...(window.STARTER_PRODUCTS || [])];
+        if (!Array.isArray(products)) products = [...(window.STARTER_PRODUCTS || [])];
+      } catch (e) {
+        products = [...(window.STARTER_PRODUCTS || [])];
+      }
+    }
+
+    function money(value) { return "₹" + Number(value || 0).toLocaleString("en-IN"); }
+    function escapeText(value) { return String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+    function safeImage(value) { return /^(https:\/\/|assets\/)/i.test(String(value)) ? escapeText(value) : "https://placehold.co/600x800/f1f0ed/10243b?text=No+Image"; }
+
+    function switchStore(storeName) {
+      currentStore = storeName;
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      const activeTab = document.querySelector(`.tab-btn[data-store="${storeName}"]`);
+      if(activeTab) activeTab.classList.add('active');
+
+      const titles = {
+        "Fashion": "Clothing & Apparel",
+        "Print": "Custom Printing Services",
+        "Kirana": "Grocery & Daily Needs"
+      };
+      document.getElementById("currentStoreTitle").textContent = titles[storeName];
+      document.getElementById("printBanner").classList.toggle("hidden", storeName !== "Print");
+
+      const catSelect = document.getElementById("categoryFilter");
+      catSelect.innerHTML = `<option value="All">All Categories</option>`;
+      const storeProducts = products.filter(p => p.store === storeName);
+      const uniqueCats = [...new Set(storeProducts.map(p => p.category))];
+      uniqueCats.forEach(cat => {
+        catSelect.innerHTML += `<option value="${escapeText(cat)}">${escapeText(cat)}</option>`;
+      });
+
+      document.getElementById("searchInput").value = "";
+      renderStore();
+    }
+
+    function renderStore() {
+      const query = (document.getElementById("searchInput")?.value || "").trim().toLowerCase();
+      const category = document.getElementById("categoryFilter")?.value || "All";
+      const sort = document.getElementById("sortFilter")?.value || "featured";
+      
+      let list = products.filter(p => p.store === currentStore);
+      if (category !== "All") list = list.filter(p => p.category === category);
+      list = list.filter(p => [p.name, p.category, p.description].join(" ").toLowerCase().includes(query));
+      
+      if (sort === "low") list.sort((a,b)=>Number(a.price)-Number(b.price));
+      if (sort === "high") list.sort((a,b)=>Number(b.price)-Number(a.price));
+
+      document.getElementById("productCount").textContent = `${list.length} ITEMS`;
+      const grid = document.getElementById("productGrid");
+      document.getElementById("emptyState").classList.toggle("hidden", list.length !== 0);
+
+      grid.innerHTML = list.map(p => {
+        const isOut = Number(p.stock) <= 0;
+        return `
+        <article class="product-card" style="${isOut ? 'opacity: 0.8;' : ''}">
+          <div class="product-image-wrap" data-open="${escapeText(p.id)}">
+            <img src="${safeImage(p.image)}" alt="${escapeText(p.name)}" loading="lazy">
+            ${p.tag ? `<span class="product-tag">${escapeText(p.tag)}</span>` : ""}
+            ${isOut ? `<span class="out-of-stock-tag">SOLD OUT</span>` : ""}
+          </div>
+          <div class="product-info">
+            <span class="product-category">${escapeText(p.category)}</span>
+            <h3>${escapeText(p.name)}</h3>
+            <div class="product-price">${p.price === 0 ? 'Custom Quote' : money(p.price)} ${Number(p.originalPrice)>Number(p.price)&&p.originalPrice>0?`<span class="old-price">${money(p.originalPrice)}</span>`:""}</div>
+            <div class="product-actions">
+              <button class="btn-view" data-open="${escapeText(p.id)}">Details</button>
+              <button class="btn-order" data-order="${escapeText(p.id)}" ${isOut ? 'disabled' : ''}>${isOut ? 'Sold Out' : 'Order'}</button>
+            </div>
+          </div>
+        </article>`;
+      }).join("");
+    }
+
+    function openProduct(id) {
+      const p = products.find(x => x.id === id);
+      if (!p) return;
+      const dialog = document.getElementById("productDialog");
+      
+      const priceHtml = p.price === 0 
+        ? `<span style="color:var(--gold);font-weight:bold;">Custom Quote</span>` 
+        : `${money(p.price)} ${Number(p.originalPrice)>Number(p.price)?`<span class="old-price">${money(p.originalPrice)}</span>`:""}`;
+      
+      document.getElementById("dialogContent").innerHTML = `
+        <div class="dialog-layout">
+          <img src="${safeImage(p.image)}" alt="${escapeText(p.name)}">
+          <div class="dialog-details">
+            <span class="product-category">${escapeText(p.category)}</span>
+            <h2>${escapeText(p.name)}</h2>
+            <div class="product-price">${priceHtml}</div>
+            <p>${escapeText(p.description)}</p>
+            
+            ${p.sizes && p.sizes.length > 0 ? `
+            <label>Select Size / Qty</label>
+            <select id="sizeChoice">${p.sizes.map(s=>`<option>${escapeText(s)}</option>`).join("")}</select>` : ''}
+            
+            ${p.colors && p.colors.length > 0 ? `
+            <label>Select Colour</label>
+            <select id="colorChoice">${p.colors.map(c=>`<option>${escapeText(c)}</option>`).join("")}</select>` : ''}
+            
+            <p style="margin-top:10px;">Status: ${Number(p.stock)>0? "<span style='color:var(--success);font-weight:bold;'>In Stock</span>" : "<span style='color:#ef4444;font-weight:bold;'>Out of Stock</span>"}</p>
+            
+            <button class="btn-order" id="dialogOrder" ${Number(p.stock)<=0 ? 'disabled' : ''} style="margin-top:15px;">
+              ${Number(p.stock)<=0 ? 'Out of Stock' : 'Order on WhatsApp ↗'}
+            </button>
+          </div>
+        </div>`;
+      dialog.showModal();
+      
+      if (Number(p.stock) > 0) {
+        document.getElementById("dialogOrder").addEventListener("click", () => {
+          const size = document.getElementById("sizeChoice")?.value || "N/A";
+          const color = document.getElementById("colorChoice")?.value || "N/A";
+          orderProduct(p.id, size, color);
+        });
+      }
+    }
+
+    function orderProduct(id, size, color) {
+      const p = products.find(x=>x.id===id);
+      if (!p) return;
+      const storeName = p.store === "Fashion" ? "Aaradhya Fashion" : p.store === "Print" ? "A-Print" : "Aaradhya Kirana";
+      
+      const msg = `Hello ${storeName}!\nI want to order:\n\nProduct: ${p.name}\nPrice: ${p.price === 0 ? 'Custom Quote' : money(p.price)}\nSize/Qty: ${size}\nColour: ${color}\n\nPlease confirm.`;
+      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadStoreProducts();
+      switchStore('Fashion');
+      
+      document.getElementById("searchInput").addEventListener("input", renderStore);
+      document.getElementById("categoryFilter").addEventListener("change", renderStore);
+      document.getElementById("sortFilter").addEventListener("change", renderStore);
+      
+      document.getElementById("productGrid").addEventListener("click", e=>{
+        const open = e.target.closest("[data-open]");
+        const order = e.target.closest("[data-order]");
+        if (open) openProduct(open.dataset.open);
+        if (order && !order.disabled) orderProduct(order.dataset.order, "N/A", "N/A");
+      });
+      
+      document.getElementById("dialogClose").addEventListener("click",()=>document.getElementById("productDialog").close());
+      document.getElementById("productDialog").addEventListener("click",e=>{if(e.target.id==="productDialog")e.target.close();});
+    });
+  </script>
 </body>
 </html>
