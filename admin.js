@@ -1,54 +1,103 @@
-<!doctype html>
-<html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#10243b"><title>Aaradhya Fashion | Admin</title><link rel="stylesheet" href="style.css"></head>
-<body class="admin-body">
-  <div id="loginView" class="admin-login">
-    <a class="brand" href="index.html"><span class="brand-mark">AF</span><span><strong>AARADHYA FASHION</strong><small>ADMINISTRATION</small></span></a>
-    <h1>Admin login</h1>
-    <p>Manage products shown in this browser's catalog.</p>
-    <div class="admin-notice">Demo security only: the login credentials are stored in admin.js. This is not secure for a public production website. Do not use a personal or reused password.</div>
-    <label for="adminUser">Username</label><input id="adminUser" autocomplete="username" value="admin">
-    <label for="adminPass">Password</label><input id="adminPass" type="password" autocomplete="current-password" placeholder="Enter admin password">
-    <button class="button button-navy" id="loginButton" style="width:100%;justify-content:center;margin-top:18px">LOGIN →</button>
-    <p id="loginError" class="admin-status"></p>
-    <p><a class="text-link" href="index.html">← BACK TO WEBSITE</a></p>
-  </div>
+const ADMIN_USERNAME = "admin";
+const ADMIN_PASSWORD = "AF2026!"; 
+const ADMIN_STORE_KEY = "aaradhyaFashionProductsV1";
+let adminProducts = [];
 
-  <main id="adminView" class="admin-shell hidden">
-    <div class="admin-top">
-      <div><span class="eyebrow">AARADHYA FASHION</span><h1>Product manager</h1></div>
-      <div class="admin-actions"><a class="small-button" href="index.html">VIEW WEBSITE ↗</a><button class="small-button" id="logoutButton">LOG OUT</button></div>
-    </div>
-    <div class="admin-notice">Local-only admin: product changes are saved in this browser using LocalStorage. They do not sync to other devices or visitors. Export a backup before clearing browser data.</div>
-    <section class="admin-panel">
-      <h2 id="formTitle">Add a product</h2>
-      <form id="productForm">
-        <input type="hidden" id="editId">
-        <div class="admin-form-grid">
-          <div class="form-field"><label for="pName">Product name *</label><input id="pName" required maxlength="80"></div>
-          <div class="form-field"><label for="pCategory">Category *</label><select id="pCategory">
-  <option value="Men">Men's Wear</option><option value="Women">Women's Wear</option>
-  <option value="Kids">Kids Wear</option><option value="Sports Wear">Sports Wear</option>
-  <option value="Winter Wear">Winter Wear</option><option value="Accessories">Accessories</option>
-  <option value="Footwear">Footwear</option>
-</select></div>
-          <div class="form-field"><label for="pPrice">Selling price (₹) *</label><input id="pPrice" type="number" min="0" required></div>
-          <div class="form-field"><label for="pOriginal">Original price (₹)</label><input id="pOriginal" type="number" min="0"></div>
-          <div class="form-field"><label for="pSizes">Sizes (comma separated)</label><input id="pSizes" placeholder="M, L, XL"></div>
-          <div class="form-field"><label for="pColors">Colours (comma separated)</label><input id="pColors" placeholder="Black, Blue"></div>
-          <div class="form-field full"><label for="pImage">Image URL (HTTPS) or local path</label><input id="pImage" placeholder="https://... or assets/products/photo.jpg"></div>
-          <div class="form-field"><label for="pStock">Stock quantity</label><input id="pStock" type="number" min="0" value="1"></div>
-          <div class="form-field"><label for="pTag">Label (optional)</label><input id="pTag" placeholder="NEW / BESTSELLER"></div>
-          <div class="form-field full"><label for="pDescription">Description</label><textarea id="pDescription"></textarea></div>
-        </div>
-        <div class="admin-actions" style="margin-top:18px"><button class="button button-navy" type="submit" id="saveButton">SAVE PRODUCT</button><button class="small-button" type="button" id="resetButton">CLEAR FORM</button></div>
-        <p id="saveStatus" class="admin-status"></p>
-      </form>
-    </section>
-    <section class="admin-panel">
-      <div class="admin-top"><h2>Products</h2><div class="admin-actions"><button class="small-button" id="exportButton">EXPORT BACKUP</button><label class="small-button" for="importFile" style="cursor:pointer">IMPORT BACKUP</label><input id="importFile" type="file" accept="application/json" hidden></div></div>
-      <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>ID</th><th>PRODUCT</th><th>CATEGORY</th><th>PRICE</th><th>STOCK</th><th>ACTIONS</th></tr></thead><tbody id="adminProductRows"></tbody></table></div>
-    </section>
-  </main>
-  <script src="products.js"></script><script src="admin.js"></script>
-</body></html>
+function getAdminProducts() {
+  try {
+    const saved = localStorage.getItem(ADMIN_STORE_KEY);
+    adminProducts = saved ? JSON.parse(saved) : [...(window.STARTER_PRODUCTS || [])];
+    if (!Array.isArray(adminProducts)) adminProducts = [...(window.STARTER_PRODUCTS || [])];
+  } catch (e) { adminProducts = [...(window.STARTER_PRODUCTS || [])]; }
+}
+function saveAdminProducts() { localStorage.setItem(ADMIN_STORE_KEY, JSON.stringify(adminProducts)); }
+function safeAdminText(v) { return String(v ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function makeId() { return "AF" + Date.now().toString().slice(-8); }
+function showAdmin() {
+  document.getElementById("loginView").classList.add("hidden");
+  document.getElementById("adminView").classList.remove("hidden");
+  renderAdminRows();
+}
+function renderAdminRows() {
+  document.getElementById("adminProductRows").innerHTML = adminProducts.map(p=>`
+    <tr><td>${safeAdminText(p.id)}</td><td>${safeAdminText(p.name)}</td><td>${safeAdminText(p.category)}</td><td>₹${Number(p.price).toLocaleString("en-IN")}</td><td>${Number(p.stock)||0}</td>
+    <td><button class="small-button" data-edit="${safeAdminText(p.id)}">EDIT</button> <button class="small-button danger" data-delete="${safeAdminText(p.id)}">DELETE</button></td></tr>`).join("") || '<tr><td colspan="6">No products yet.</td></tr>';
+}
+function clearForm() {
+  document.getElementById("productForm").reset();
+  document.getElementById("editId").value="";
+  document.getElementById("pStock").value="1";
+  document.getElementById("formTitle").textContent="Add a product";
+  document.getElementById("saveButton").textContent="SAVE PRODUCT";
+}
+document.addEventListener("DOMContentLoaded",()=>{
+  getAdminProducts();
+  document.getElementById("loginButton").addEventListener("click",()=>{
+    const u=document.getElementById("adminUser").value;
+    const p=document.getElementById("adminPass").value;
+    if(u===ADMIN_USERNAME && p===ADMIN_PASSWORD){showAdmin();}
+    else document.getElementById("loginError").textContent="Incorrect username or password.";
+  });
+  document.getElementById("adminPass").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("loginButton").click();});
+  document.getElementById("logoutButton").addEventListener("click",()=>location.reload());
+  document.getElementById("productForm").addEventListener("submit",e=>{
+    e.preventDefault();
+    const id=document.getElementById("editId").value || makeId();
+    const old=adminProducts.find(p=>p.id===id);
+    const product={
+      id,name:document.getElementById("pName").value.trim(),
+      category:document.getElementById("pCategory").value,
+      price:Number(document.getElementById("pPrice").value),
+      originalPrice:Number(document.getElementById("pOriginal").value)||0,
+      sizes:document.getElementById("pSizes").value.split(",").map(x=>x.trim()).filter(Boolean),
+      colors:document.getElementById("pColors").value.split(",").map(x=>x.trim()).filter(Boolean),
+      image:document.getElementById("pImage").value.trim(),
+      description:document.getElementById("pDescription").value.trim(),
+      stock:Number(document.getElementById("pStock").value)||0,
+      tag:document.getElementById("pTag").value.trim()
+    };
+    if(old) adminProducts=adminProducts.map(p=>p.id===id?product:p);
+    else adminProducts.unshift(product);
+    saveAdminProducts();renderAdminRows();clearForm();
+    document.getElementById("saveStatus").textContent="Product saved in this browser.";
+  });
+  document.getElementById("resetButton").addEventListener("click",clearForm);
+  document.getElementById("adminProductRows").addEventListener("click",e=>{
+    const edit=e.target.closest("[data-edit]")?.dataset.edit;
+    const del=e.target.closest("[data-delete]")?.dataset.delete;
+    if(edit){
+      const p=adminProducts.find(x=>x.id===edit);if(!p)return;
+      document.getElementById("editId").value=p.id;
+      document.getElementById("pName").value=p.name;
+      document.getElementById("pCategory").value=p.category;
+      document.getElementById("pPrice").value=p.price;
+      document.getElementById("pOriginal").value=p.originalPrice||"";
+      document.getElementById("pSizes").value=(p.sizes||[]).join(", ");
+      document.getElementById("pColors").value=(p.colors||[]).join(", ");
+      document.getElementById("pImage").value=p.image||"";
+      document.getElementById("pStock").value=p.stock||0;
+      document.getElementById("pTag").value=p.tag||"";
+      document.getElementById("pDescription").value=p.description||"";
+      document.getElementById("formTitle").textContent="Edit product";
+      document.getElementById("saveButton").textContent="UPDATE PRODUCT";
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+    if(del && confirm("Delete this product?")){
+      adminProducts=adminProducts.filter(p=>p.id!==del);saveAdminProducts();renderAdminRows();
+    }
+  });
+  document.getElementById("exportButton").addEventListener("click",()=>{
+    const blob=new Blob([JSON.stringify(adminProducts,null,2)],{type:"application/json"});
+    const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="aaradhya-products-backup.json";a.click();URL.revokeObjectURL(a.href);
+  });
+  document.getElementById("importFile").addEventListener("change",async e=>{
+    const file=e.target.files[0];if(!file)return;
+    try{
+      const data=JSON.parse(await file.text());
+      if(!Array.isArray(data)||!data.every(p=>p.id&&p.name&&p.category))throw new Error("Invalid product file");
+      adminProducts=data;saveAdminProducts();renderAdminRows();
+      alert("Backup imported successfully.");
+    }catch(err){alert("Could not import file. Please select a valid Aaradhya product backup.");}
+    e.target.value="";
+  });
+});
