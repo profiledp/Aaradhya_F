@@ -3,190 +3,238 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0f172a">
+  <meta name="theme-color" content="#10243b">
   <title>Aaradhya Mart | Fashion, Print & Kirana</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Georgia&display=swap" rel="stylesheet">
   
-  <!-- INLINE CSS (Design Fix) -->
+  <!-- INLINE CSS (Classic Premium Theme) -->
   <style>
-    :root { --bg-color: #f8fafc; --card-bg: #ffffff; --text-main: #0f172a; --text-muted: #64748b; --primary: #0f172a; --gold: #d4af37; --border: #e2e8f0; --success: #10b981; --font-family: 'Inter', system-ui, sans-serif; }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background-color: var(--bg-color); color: var(--text-main); font-family: var(--font-family); padding-bottom: 80px; }
+    :root {
+      --navy: #10243b;
+      --gold: #c5a36b;
+      --cream: #f7f5f0;
+      --ink: #182333;
+      --muted: #777f89;
+      --line: #e6e5e1;
+      --white: #fff;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: #fff; color: var(--ink); font-family: Arial, Helvetica, sans-serif; }
+    a { color: inherit; text-decoration: none; }
+    button, input, select { font: inherit; }
+
+    /* HEADER */
+    .announcement { background: var(--navy); color: #e9d5b1; text-align: center; padding: 9px 12px; font-size: 10px; letter-spacing: 2px; }
+    .site-header { height: 82px; padding: 0 6.5%; display: flex; align-items: center; justify-content: space-between; background: #fff; position: sticky; top: 0; z-index: 20; border-bottom: 1px solid #f0efec; }
+    .brand { display: flex; align-items: center; gap: 11px; }
+    .brand-mark { width: 42px; height: 42px; display: grid; place-items: center; background: var(--navy); color: #fff; font-family: Georgia, serif; font-size: 17px; border: 1px solid var(--gold); }
+    .brand strong { display: block; font-family: Georgia, serif; font-size: 15px; letter-spacing: 1.3px; }
+    .brand small { display: block; color: #a88756; font-size: 8px; letter-spacing: 2px; margin-top: 5px; }
+    .site-header nav { display: flex; gap: 32px; }
+    .site-header nav a { font-size: 12px; color: #4d5661; cursor: pointer; font-weight: bold; }
+    .site-header nav a:hover { color: var(--gold); }
+    .header-wa { font-size: 11px; background: var(--navy); color: #fff; padding: 13px 18px; letter-spacing: .5px; }
+    .menu-toggle { display: none; border: 0; background: none; font-size: 24px; color: var(--navy); cursor: pointer; }
+
+    /* HERO */
+    .hero { height: 480px; position: relative; background: #263a4d url('https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=2000&q=85') center 38%/cover; display: flex; align-items: center; padding: 0 11%; color: #fff; }
+    .hero-shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(8,24,42,.92), rgba(8,24,42,.56) 48%, rgba(8,24,42,.08)); }
+    .hero-copy { position: relative; max-width: 570px; }
+    .eyebrow { font-size: 10px; letter-spacing: 3px; color: var(--gold); font-weight: bold; }
+    .hero h1 { font: normal clamp(40px,5vw,64px)/1.04 Georgia, serif; margin: 23px 0; }
+    .hero h1 em { color: #d5b681; font-weight: normal; }
+    .hero-copy p { font-size: 14px; line-height: 1.9; color: #e2e6e9; max-width: 430px; }
+
+    /* TABS */
+    .store-tabs-container { margin-top: -25px; position: relative; z-index: 10; display: flex; justify-content: center; padding: 0 7%; }
+    .store-tabs { display: flex; background: #fff; border-radius: 50px; box-shadow: 0 10px 30px rgba(16,36,59,0.15); padding: 6px; gap: 5px; }
+    .tab-btn { border: none; background: transparent; padding: 15px 30px; font-size: 13px; font-weight: bold; color: var(--navy); border-radius: 40px; cursor: pointer; transition: 0.3s; }
+    .tab-btn:hover { background: #f0f0f0; }
+    .tab-btn.active { background: var(--navy); color: #fff; }
+
+    /* SHOP SECTION */
+    .section-wrap { padding-left: 7%; padding-right: 7%; }
+    .shop-section { padding-top: 40px; padding-bottom: 85px; }
+    .section-heading { display: flex; align-items: end; justify-content: space-between; margin-bottom: 26px; }
+    .section-heading h2 { font: normal 38px Georgia, serif; margin: 12px 0 0; color: var(--navy); }
+    .product-count { font-size: 12px; color: var(--muted); }
     
-    /* Header */
-    .modern-header { background: #fff; position: sticky; top: 0; z-index: 100; padding: 15px 5% 0; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border-bottom: 1px solid var(--border); }
-    .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-    .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-main); }
-    .brand-icon { background: var(--primary); color: #fff; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-weight: 700; font-size: 14px; }
-    .brand-text { font-weight: 700; font-size: 18px; letter-spacing: -0.5px; }
-    .header-actions { display: flex; gap: 10px; }
-    .icon-btn { background: var(--bg-color); border: 1px solid var(--border); width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 18px; }
-    
-    /* Search */
-    .search-container { margin-bottom: 15px; }
-    .search-box { display: flex; align-items: center; background: var(--bg-color); border: 1px solid var(--border); border-radius: 14px; padding: 0 15px; height: 48px; }
-    .search-box span { font-size: 18px; margin-right: 10px; }
-    .search-box input { border: none; background: transparent; width: 100%; outline: none; font-size: 14px; color: var(--text-main); }
-    
-    /* Tabs */
-    .modern-tabs { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: none; }
-    .modern-tabs::-webkit-scrollbar { display: none; }
-    .tab-btn { background: var(--bg-color); border: 1px solid var(--border); padding: 10px 20px; border-radius: 20px; font-size: 13px; font-weight: 600; color: var(--text-muted); white-space: nowrap; cursor: pointer; transition: all 0.2s; }
-    .tab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-    
-    /* App Container */
-    .app-container { padding: 20px 5%; max-width: 1200px; margin: auto; }
-    
-    /* Banner */
-    .custom-banner { background: linear-gradient(135deg, #0f172a, #1e293b); color: #fff; padding: 20px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-    .custom-banner h3 { font-size: 18px; margin-bottom: 5px; }
-    .custom-banner p { font-size: 12px; color: #94a3b8; }
-    .btn-primary { background: var(--gold); color: var(--primary); padding: 10px 18px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 12px; }
-    
-    /* Section Head */
-    .section-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-    .section-head h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
-    .count-badge { background: #e2e8f0; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 600; color: var(--text-muted); }
-    
-    /* Filters */
-    .filters-row { display: flex; gap: 10px; margin-bottom: 20px; }
-    .filters-row select { flex: 1; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: #fff; font-size: 13px; color: var(--text-main); outline: none; appearance: none; font-family: var(--font-family); }
-    
-    /* Product Grid */
-    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-    .product-card { background: var(--card-bg); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); transition: transform 0.2s; }
-    .product-card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-    .product-image-wrap { position: relative; aspect-ratio: 4/5; background: #f1f5f9; cursor: pointer; }
-    .product-image-wrap img { width: 100%; height: 100%; object-fit: cover; }
-    .product-tag { position: absolute; top: 10px; left: 10px; background: #fff; color: var(--primary); padding: 4px 8px; border-radius: 6px; font-size: 9px; font-weight: 700; letter-spacing: 0.5px; }
-    .out-of-stock-tag { position: absolute; top: 10px; right: 10px; background: #ef4444; color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 9px; font-weight: 700; }
-    .product-info { padding: 15px; }
-    .product-category { font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-    .product-info h3 { font-size: 15px; font-weight: 600; margin: 5px 0 10px; color: var(--text-main); line-height: 1.3; }
-    .product-price { font-size: 16px; font-weight: 700; color: var(--primary); }
-    .old-price { font-size: 12px; color: var(--text-muted); text-decoration: line-through; margin-left: 8px; font-weight: 400; }
-    .product-actions { display: flex; gap: 8px; margin-top: 15px; }
-    .btn-view, .btn-order { flex: 1; padding: 10px; border-radius: 10px; font-size: 11px; font-weight: 700; text-align: center; cursor: pointer; border: none; font-family: var(--font-family); }
-    .btn-view { background: var(--bg-color); color: var(--primary); border: 1px solid var(--border); }
-    .btn-order { background: var(--primary); color: #fff; }
-    .btn-order:disabled { background: #cbd5e1; cursor: not-allowed; }
-    
-    /* Empty State */
-    .empty-state { text-align: center; padding: 50px 20px; color: var(--text-muted); }
-    .empty-state span { font-size: 40px; display: block; margin-bottom: 15px; }
-    .empty-state h3 { color: var(--text-main); margin-bottom: 5px; }
+    .shop-controls { display: flex; gap: 12px; margin-bottom: 28px; }
+    .search-field { height: 46px; border: 1px solid var(--line); display: flex; align-items: center; gap: 10px; padding: 0 14px; flex: 1; }
+    .search-field span { font-size: 23px; color: #9a8a70; }
+    .search-field input { border: 0; outline: 0; width: 100%; font-size: 12px; }
+    .shop-controls select { border: 1px solid var(--line); background: #fff; padding: 0 14px; min-width: 155px; color: #4c5662; font-size: 11px; outline: none; }
+
+    /* PRODUCT GRID */
+    .product-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px 18px; }
+    .product-card { min-width: 0; }
+    .product-image-wrap { position: relative; background: #f1f0ed; overflow: hidden; aspect-ratio: 3/4; cursor: pointer; }
+    .product-image-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .5s; }
+    .product-card:hover .product-image-wrap img { transform: scale(1.04); }
+    .product-tag { position: absolute; top: 12px; left: 12px; background: #fff; color: var(--navy); padding: 7px 9px; font-size: 9px; letter-spacing: 1px; }
+    .out-of-stock-tag { position: absolute; top: 12px; right: 12px; background: #a22; color: #fff; padding: 7px 9px; font-size: 9px; letter-spacing: 1px; font-weight: bold; }
+    .product-info { padding: 13px 2px; }
+    .product-category { font-size: 9px; letter-spacing: 1.5px; color: #a18456; text-transform: uppercase; }
+    .product-info h3 { font: normal 17px Georgia, serif; margin: 8px 0; color: var(--navy); }
+    .product-price { font-size: 13px; font-weight: bold; }
+    .old-price { font-size: 11px; color: #9a9a9a; text-decoration: line-through; margin-left: 7px; font-weight: normal; }
+    .product-actions { display: flex; gap: 8px; margin-top: 12px; }
+    .small-button { border: 1px solid var(--navy); background: #fff; color: var(--navy); padding: 10px 12px; font-size: 9px; letter-spacing: .6px; cursor: pointer; flex: 1; text-align: center; }
+    .small-button.primary { background: var(--navy); color: #fff; }
+    .small-button:disabled { background: #ccc; border-color: #ccc; cursor: not-allowed; }
+
+    /* BANNER & EMPTY STATE */
+    .custom-banner { background: var(--cream); padding: 30px; text-align: center; border: 1px solid var(--gold); margin-bottom: 30px; }
+    .custom-banner h3 { font-family: Georgia, serif; color: var(--navy); font-size: 24px; margin: 0 0 10px; }
+    .custom-banner p { color: #666; margin: 0 0 20px; font-size: 14px; }
+    .button { display: inline-flex; align-items: center; justify-content: center; gap: 15px; padding: 16px 21px; font-size: 10px; letter-spacing: 1px; font-weight: bold; border: none; cursor: pointer; text-decoration: none; }
+    .button-navy { background: var(--navy); color: #fff; }
+    .empty-state { text-align: center; padding: 55px 15px; color: var(--muted); }
+    .empty-state span { font-size: 30px; color: var(--gold); }
+    .empty-state h3 { font: normal 25px Georgia, serif; color: var(--navy); }
     .hidden { display: none !important; }
-    
-    /* Sticky Bottom Bar */
-    .sticky-bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid var(--border); padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; z-index: 90; box-shadow: 0 -4px 20px rgba(0,0,0,0.05); }
-    .bottom-bar-title { display: block; font-size: 13px; font-weight: 700; }
-    .bottom-bar-sub { font-size: 11px; color: var(--text-muted); }
-    .btn-whatsapp { background: #25D366; color: #fff; padding: 12px 20px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 13px; }
-    
-    /* Modal / Dialog */
-    .product-dialog { border: none; border-radius: 20px; padding: 0; width: min(800px, 92vw); max-height: 90vh; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); overflow: hidden; }
-    .product-dialog::backdrop { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); }
-    .dialog-close { position: absolute; top: 15px; right: 15px; width: 36px; height: 36px; border-radius: 50%; background: #fff; border: 1px solid var(--border); font-size: 20px; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; }
+
+    /* DIALOG */
+    .product-dialog { border: 0; padding: 0; width: min(760px, 92vw); max-width: none; box-shadow: 0 20px 80px #0005; }
+    .product-dialog::backdrop { background: #07182bbd; }
+    .dialog-close { position: absolute; right: 12px; top: 8px; border: 0; background: #fff; width: 34px; height: 34px; border-radius: 50%; font-size: 24px; cursor: pointer; z-index: 2; }
     .dialog-layout { display: grid; grid-template-columns: 1fr 1fr; }
-    .dialog-layout img { width: 100%; height: 100%; object-fit: cover; min-height: 400px; }
-    .dialog-details { padding: 30px; display: flex; flex-direction: column; justify-content: center; }
-    .dialog-details h2 { font-size: 24px; margin: 10px 0; }
-    .dialog-details .product-price { font-size: 20px; margin-bottom: 15px; }
-    .dialog-details p { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; }
-    .dialog-details label { display: block; font-size: 12px; font-weight: 600; margin: 10px 0 5px; }
-    .dialog-details select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 15px; outline: none; }
-    .dialog-details .btn-order { width: 100%; padding: 15px; font-size: 14px; border-radius: 12px; }
-    
+    .dialog-layout img { width: 100%; height: 100%; min-height: 400px; object-fit: cover; }
+    .dialog-details { padding: 45px 30px; }
+    .dialog-details h2 { font: normal 29px Georgia, serif; color: var(--navy); margin: 10px 0; }
+    .dialog-details p { font-size: 13px; line-height: 1.8; color: #68717a; }
+    .dialog-details label { display: block; font-size: 11px; margin: 18px 0 7px; }
+    .dialog-details select { width: 100%; padding: 12px; border: 1px solid var(--line); outline: none; margin-bottom: 15px; }
+    .dialog-details .button { margin-top: 10px; width: 100%; }
+
+    /* FOOTER */
+    .site-footer { background: #0b1b2d; color: #fff; padding: 45px 7% 25px; text-align: center; }
+    .footer-brand { justify-content: center; }
+    .footer-brand .brand-mark { border-color: var(--gold); }
+    .site-footer p { font-size: 11px; color: #b8c1ca; margin: 22px 0; }
+    .footer-links { display: flex; justify-content: center; gap: 25px; margin: 22px; }
+    .footer-links a { font-size: 11px; color: #d9dfe5; }
+    .site-footer > small { display: block; border-top: 1px solid #28394b; padding-top: 20px; color: #8e9ba8; font-size: 10px; }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .product-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .site-header { padding: 0 4%; }
+      .site-header nav { gap: 17px; }
+      .hero { padding-left: 7%; }
+    }
     @media (max-width: 768px) {
-      .dialog-layout { grid-template-columns: 1fr; }
-      .dialog-layout img { min-height: 250px; max-height: 300px; }
-      .dialog-details { padding: 20px; }
-      .product-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-      .product-info { padding: 10px; }
-      .product-info h3 { font-size: 13px; }
-      .product-price { font-size: 14px; }
+      .store-tabs { flex-direction: column; width: 100%; border-radius: 10px; }
+      .tab-btn { padding: 12px; border-radius: 5px; }
+    }
+    @media (max-width: 650px) {
+      .announcement { font-size: 8px; }
+      .site-header { height: 70px; }
+      .menu-toggle { display: block; margin-left: auto; margin-right: 14px; }
+      .site-header nav { display: none; position: absolute; top: 70px; left: 0; right: 0; background: #fff; padding: 18px 6%; flex-direction: column; gap: 18px; border-top: 1px solid var(--line); box-shadow: 0 12px 18px #0001; }
+      .site-header nav.open { display: flex; }
+      .header-wa { padding: 11px; font-size: 10px; }
+      .brand-mark { width: 36px; height: 36px; }
+      .brand strong { font-size: 12px; }
+      .brand small { font-size: 7px; }
+      .hero { height: 400px; padding: 0 7%; }
+      .hero h1 { font-size: 40px; }
+      .shop-controls { flex-wrap: wrap; }
+      .search-field { flex-basis: 100%; }
+      .shop-controls select { flex: 1; min-width: 0; height: 43px; }
+      .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 12px; }
+      .product-info h3 { font-size: 15px; }
       .product-actions { flex-direction: column; }
-      .sticky-bottom-bar { flex-direction: column; gap: 10px; text-align: center; }
-      .btn-whatsapp { width: 100%; }
+      .small-button { width: 100%; }
+      .dialog-layout { grid-template-columns: 1fr; }
+      .dialog-layout img { height: 280px; min-height: 0; }
+      .dialog-details { padding: 25px; }
     }
   </style>
 </head>
 <body>
-  <header class="modern-header">
-    <div class="header-top">
-      <a class="brand" href="#">
-        <span class="brand-icon">AM</span>
-        <span class="brand-text">Aaradhya Mart</span>
-      </a>
-      <div class="header-actions">
-        <a href="https://wa.me/918931911428" target="_blank" class="icon-btn">💬</a>
-        <a href="admin.html" class="icon-btn">⚙️</a>
-      </div>
-    </div>
-    
-    <div class="search-container">
-      <div class="search-box">
-        <span>🔍</span>
-        <input id="searchInput" type="search" placeholder="Search for products, brands..." autocomplete="off">
-      </div>
-    </div>
-    
-    <div class="modern-tabs">
-      <button class="tab-btn active" data-store="Fashion" onclick="switchStore('Fashion')">Fashion</button>
-      <button class="tab-btn" data-store="Print" onclick="switchStore('Print')">A-Print</button>
-      <button class="tab-btn" data-store="Kirana" onclick="switchStore('Kirana')">Kirana</button>
-    </div>
+  <div class="announcement">AARADHYA MART • FASHION | PRINT | KIRANA</div>
+  
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">AM</span>
+      <span><strong>AARADHYA MART</strong><small>YOUR EVERYDAY STORE</small></span>
+    </a>
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
+    <nav id="mainNav">
+      <a onclick="switchStore('Fashion')">Fashion</a>
+      <a onclick="switchStore('Print')">A-Print</a>
+      <a onclick="switchStore('Kirana')">Kirana</a>
+      <a href="admin.html">Admin</a>
+    </nav>
+    <a class="header-wa" href="https://wa.me/918931911428" target="_blank" rel="noopener">WhatsApp ↗</a>
   </header>
 
-  <main class="app-container">
-    <div id="printBanner" class="hidden custom-banner">
-      <div>
-        <h3>Custom Printing Services</h3>
-        <p>T-Shirts, Banners, Visiting Cards & more.</p>
+  <main>
+    <section class="hero">
+      <div class="hero-shade"></div>
+      <div class="hero-copy">
+        <span class="eyebrow">WELCOME TO AARADHYA MART</span>
+        <h1>Everything you need,<br><em>in one place.</em></h1>
+        <p>Clothing, Custom Printing, and Daily Grocery essentials.</p>
       </div>
-      <a href="https://wa.me/918931911428?text=Hello%20A-Print,%20I%20want%20a%20custom%20quote." target="_blank" class="btn-primary">Get Quote ↗</a>
+    </section>
+
+    <div class="store-tabs-container">
+      <div class="store-tabs">
+        <button class="tab-btn active" data-store="Fashion" onclick="switchStore('Fashion')">👗 Aaradhya Fashion</button>
+        <button class="tab-btn" data-store="Print" onclick="switchStore('Print')">🖨️ A-Print (Custom)</button>
+        <button class="tab-btn" data-store="Kirana" onclick="switchStore('Kirana')">🛒 Kirana Store</button>
+      </div>
     </div>
 
-    <div class="section-head">
-      <h2 id="currentStoreTitle">Clothing & Apparel</h2>
-      <span id="productCount" class="count-badge">Loading...</span>
-    </div>
+    <section class="shop-section section-wrap" id="main-shop">
+      <div class="section-heading shop-heading">
+        <div>
+          <span class="eyebrow" id="currentStoreTag">AARADHYA FASHION</span>
+          <h2 id="currentStoreTitle">Clothing & Apparel</h2>
+        </div>
+        <span class="product-count" id="productCount">Loading...</span>
+      </div>
 
-    <div class="filters-row">
-      <select id="categoryFilter" aria-label="Filter by category">
-        <option value="All">All Categories</option>
-      </select>
-      <select id="sortFilter" aria-label="Sort products">
-        <option value="featured">Sort: Featured</option>
-        <option value="low">Price: Low to High</option>
-        <option value="high">Price: High to Low</option>
-      </select>
-    </div>
+      <div id="printBanner" class="hidden custom-banner">
+        <h3>Custom Printing Services</h3>
+        <p>We print custom T-shirts, Banners, and Visiting Cards. Prices vary by design.</p>
+        <a href="https://wa.me/918931911428?text=Hello%20A-Print,%20I%20want%20a%20custom%20quote." target="_blank" class="button button-navy">GET CUSTOM QUOTE ↗</a>
+      </div>
 
-    <div class="product-grid" id="productGrid" aria-live="polite"></div>
-    <div class="empty-state hidden" id="emptyState">
-      <span>🛒</span>
-      <h3>No products found</h3>
-      <p>Try a different search or category.</p>
-    </div>
+      <div class="shop-controls" id="storeFilters">
+        <label class="search-field"><span>⌕</span><input id="searchInput" type="search" placeholder="Search products..." autocomplete="off"></label>
+        <select id="categoryFilter" aria-label="Filter by category">
+          <option value="All">All Categories</option>
+        </select>
+        <select id="sortFilter" aria-label="Sort products">
+          <option value="featured">Featured</option>
+          <option value="low">Price: Low to High</option>
+          <option value="high">Price: High to Low</option>
+        </select>
+      </div>
+
+      <div class="product-grid" id="productGrid" aria-live="polite"></div>
+      <div class="empty-state hidden" id="emptyState"><span>✧</span><h3>No products found</h3><p>Try another search or category.</p></div>
+    </section>
   </main>
 
-  <div class="sticky-bottom-bar">
-    <div>
-      <span class="bottom-bar-title">Need help choosing?</span>
-      <span class="bottom-bar-sub">Chat with us on WhatsApp</span>
-    </div>
-    <a href="https://wa.me/918931911428" target="_blank" class="btn-whatsapp">Order on WhatsApp ↗</a>
-  </div>
+  <footer class="site-footer">
+    <a class="brand footer-brand" href="index.html"><span class="brand-mark">AM</span><span><strong>AARADHYA MART</strong><small>YOUR EVERYDAY STORE</small></span></a>
+    <p>Fashion · A-Print · Kirana</p>
+    <div class="footer-links"><a href="#main-shop">Shop</a><a href="admin.html">Admin</a></div>
+    <small>© <span id="year"></span> Aaradhya Mart. All rights reserved.</small>
+  </footer>
 
   <dialog class="product-dialog" id="productDialog">
     <button class="dialog-close" id="dialogClose" aria-label="Close">×</button>
     <div id="dialogContent"></div>
   </dialog>
   
-  <!-- INLINE JAVASCRIPT & STARTER PRODUCTS (Logic Fix) -->
+  <!-- INLINE JAVASCRIPT (Products & Logic) -->
   <script>
-    // STARTER PRODUCTS DATA
     window.STARTER_PRODUCTS = [
       {id:"F1",store:"Fashion",name:"Classic Winter Jacket",category:"Winter Wear",price:999,originalPrice:1299,sizes:["M","L"],colors:["Black","Navy"],image:"https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=900&q=80",description:"A versatile layer for cooler days.",stock:10,tag:"NEW"},
       {id:"F2",store:"Fashion",name:"Everyday Casual Shirt",category:"Men",price:699,originalPrice:899,sizes:["S","M","L"],colors:["White","Blue"],image:"https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=900&q=80",description:"Smart casual shirt.",stock:12,tag:"POPULAR"},
@@ -197,7 +245,6 @@
       {id:"K2",store:"Kirana",name:"Fortune Sunflower Oil (1L)",category:"Grocery",price:140,originalPrice:160,sizes:["1L"],colors:["Yellow"],image:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=900&q=80",description:"Refined sunflower oil.",stock:15,tag:"POPULAR"}
     ];
 
-    // APP LOGIC
     const STORE_KEY = "aaradhyaMartProductsV1";
     const WHATSAPP_NUMBER = "918931911428";
     let products = [];
@@ -224,11 +271,12 @@
       if(activeTab) activeTab.classList.add('active');
 
       const titles = {
-        "Fashion": "Clothing & Apparel",
-        "Print": "Custom Printing Services",
-        "Kirana": "Grocery & Daily Needs"
+        "Fashion": { tag: "AARADHYA FASHION", title: "Clothing & Apparel" },
+        "Print": { tag: "A-PRINT", title: "Custom Printing Services" },
+        "Kirana": { tag: "AARADHYA KIRANA", title: "Grocery & Daily Needs" }
       };
-      document.getElementById("currentStoreTitle").textContent = titles[storeName];
+      document.getElementById("currentStoreTag").textContent = titles[storeName].tag;
+      document.getElementById("currentStoreTitle").textContent = titles[storeName].title;
       document.getElementById("printBanner").classList.toggle("hidden", storeName !== "Print");
 
       const catSelect = document.getElementById("categoryFilter");
@@ -241,6 +289,7 @@
 
       document.getElementById("searchInput").value = "";
       renderStore();
+      document.getElementById("main-shop").scrollIntoView({ behavior: "smooth" });
     }
 
     function renderStore() {
@@ -273,8 +322,8 @@
             <h3>${escapeText(p.name)}</h3>
             <div class="product-price">${p.price === 0 ? 'Custom Quote' : money(p.price)} ${Number(p.originalPrice)>Number(p.price)&&p.originalPrice>0?`<span class="old-price">${money(p.originalPrice)}</span>`:""}</div>
             <div class="product-actions">
-              <button class="btn-view" data-open="${escapeText(p.id)}">Details</button>
-              <button class="btn-order" data-order="${escapeText(p.id)}" ${isOut ? 'disabled' : ''}>${isOut ? 'Sold Out' : 'Order'}</button>
+              <button class="small-button" data-open="${escapeText(p.id)}">DETAILS</button>
+              <button class="small-button primary" data-order="${escapeText(p.id)}" ${isOut ? 'disabled' : ''}>${isOut ? 'SOLD OUT' : 'ORDER ↗'}</button>
             </div>
           </div>
         </article>`;
@@ -287,7 +336,7 @@
       const dialog = document.getElementById("productDialog");
       
       const priceHtml = p.price === 0 
-        ? `<span style="color:var(--gold);font-weight:bold;">Custom Quote</span>` 
+        ? `<span style="color:var(--gold);font-weight:bold;">Custom Quote on WhatsApp</span>` 
         : `${money(p.price)} ${Number(p.originalPrice)>Number(p.price)?`<span class="old-price">${money(p.originalPrice)}</span>`:""}`;
       
       document.getElementById("dialogContent").innerHTML = `
@@ -300,17 +349,17 @@
             <p>${escapeText(p.description)}</p>
             
             ${p.sizes && p.sizes.length > 0 ? `
-            <label>Select Size / Qty</label>
+            <label for="sizeChoice">Choose Size/Quantity</label>
             <select id="sizeChoice">${p.sizes.map(s=>`<option>${escapeText(s)}</option>`).join("")}</select>` : ''}
             
             ${p.colors && p.colors.length > 0 ? `
-            <label>Select Colour</label>
+            <label for="colorChoice">Choose Colour</label>
             <select id="colorChoice">${p.colors.map(c=>`<option>${escapeText(c)}</option>`).join("")}</select>` : ''}
             
-            <p style="margin-top:10px;">Status: ${Number(p.stock)>0? "<span style='color:var(--success);font-weight:bold;'>In Stock</span>" : "<span style='color:#ef4444;font-weight:bold;'>Out of Stock</span>"}</p>
+            <p style="margin-top:10px;">Availability: ${Number(p.stock)>0? "<span style='color:var(--gold);font-weight:bold;'>In stock</span>" : "<span style='color:#a22;font-weight:bold;'>Out of stock</span>"}</p>
             
-            <button class="btn-order" id="dialogOrder" ${Number(p.stock)<=0 ? 'disabled' : ''} style="margin-top:15px;">
-              ${Number(p.stock)<=0 ? 'Out of Stock' : 'Order on WhatsApp ↗'}
+            <button class="button button-navy" id="dialogOrder" ${Number(p.stock)<=0 ? 'disabled style="background:#999"' : ''}>
+              ${Number(p.stock)<=0 ? 'OUT OF STOCK' : 'ORDER ON WHATSAPP ↗'}
             </button>
           </div>
         </div>`;
@@ -330,13 +379,14 @@
       if (!p) return;
       const storeName = p.store === "Fashion" ? "Aaradhya Fashion" : p.store === "Print" ? "A-Print" : "Aaradhya Kirana";
       
-      const msg = `Hello ${storeName}!\nI want to order:\n\nProduct: ${p.name}\nPrice: ${p.price === 0 ? 'Custom Quote' : money(p.price)}\nSize/Qty: ${size}\nColour: ${color}\n\nPlease confirm.`;
+      const msg = `Hello ${storeName}!\nI want to order:\n\nProduct: ${p.name}\nID: ${p.id}\nPrice: ${p.price === 0 ? 'Custom Quote' : money(p.price)}\nSize/Qty: ${size}\nColour: ${color}\n\nPlease confirm availability.`;
       window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
     }
 
     document.addEventListener("DOMContentLoaded", () => {
       loadStoreProducts();
       switchStore('Fashion');
+      document.getElementById("year").textContent = new Date().getFullYear();
       
       document.getElementById("searchInput").addEventListener("input", renderStore);
       document.getElementById("categoryFilter").addEventListener("change", renderStore);
@@ -351,6 +401,7 @@
       
       document.getElementById("dialogClose").addEventListener("click",()=>document.getElementById("productDialog").close());
       document.getElementById("productDialog").addEventListener("click",e=>{if(e.target.id==="productDialog")e.target.close();});
+      document.getElementById("menuToggle").addEventListener("click",()=>document.getElementById("mainNav").classList.toggle("open"));
     });
   </script>
 </body>
