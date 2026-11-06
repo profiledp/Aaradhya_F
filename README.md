@@ -1,1 +1,0 @@
-# Aaradhya Fashion Catalog
