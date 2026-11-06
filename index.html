@@ -3,406 +3,70 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#10243b">
-  <title>Aaradhya Mart | Fashion, Print & Kirana</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Georgia&display=swap" rel="stylesheet">
-  
-  <!-- INLINE CSS (Classic Premium Theme) -->
-  <style>
-    :root {
-      --navy: #10243b;
-      --gold: #c5a36b;
-      --cream: #f7f5f0;
-      --ink: #182333;
-      --muted: #777f89;
-      --line: #e6e5e1;
-      --white: #fff;
-    }
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body { margin: 0; background: #fff; color: var(--ink); font-family: Arial, Helvetica, sans-serif; }
-    a { color: inherit; text-decoration: none; }
-    button, input, select { font: inherit; }
-
-    /* HEADER */
-    .announcement { background: var(--navy); color: #e9d5b1; text-align: center; padding: 9px 12px; font-size: 10px; letter-spacing: 2px; }
-    .site-header { height: 82px; padding: 0 6.5%; display: flex; align-items: center; justify-content: space-between; background: #fff; position: sticky; top: 0; z-index: 20; border-bottom: 1px solid #f0efec; }
-    .brand { display: flex; align-items: center; gap: 11px; }
-    .brand-mark { width: 42px; height: 42px; display: grid; place-items: center; background: var(--navy); color: #fff; font-family: Georgia, serif; font-size: 17px; border: 1px solid var(--gold); }
-    .brand strong { display: block; font-family: Georgia, serif; font-size: 15px; letter-spacing: 1.3px; }
-    .brand small { display: block; color: #a88756; font-size: 8px; letter-spacing: 2px; margin-top: 5px; }
-    .site-header nav { display: flex; gap: 32px; }
-    .site-header nav a { font-size: 12px; color: #4d5661; cursor: pointer; font-weight: bold; }
-    .site-header nav a:hover { color: var(--gold); }
-    .header-wa { font-size: 11px; background: var(--navy); color: #fff; padding: 13px 18px; letter-spacing: .5px; }
-    .menu-toggle { display: none; border: 0; background: none; font-size: 24px; color: var(--navy); cursor: pointer; }
-
-    /* HERO */
-    .hero { height: 480px; position: relative; background: #263a4d url('https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=2000&q=85') center 38%/cover; display: flex; align-items: center; padding: 0 11%; color: #fff; }
-    .hero-shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(8,24,42,.92), rgba(8,24,42,.56) 48%, rgba(8,24,42,.08)); }
-    .hero-copy { position: relative; max-width: 570px; }
-    .eyebrow { font-size: 10px; letter-spacing: 3px; color: var(--gold); font-weight: bold; }
-    .hero h1 { font: normal clamp(40px,5vw,64px)/1.04 Georgia, serif; margin: 23px 0; }
-    .hero h1 em { color: #d5b681; font-weight: normal; }
-    .hero-copy p { font-size: 14px; line-height: 1.9; color: #e2e6e9; max-width: 430px; }
-
-    /* TABS */
-    .store-tabs-container { margin-top: -25px; position: relative; z-index: 10; display: flex; justify-content: center; padding: 0 7%; }
-    .store-tabs { display: flex; background: #fff; border-radius: 50px; box-shadow: 0 10px 30px rgba(16,36,59,0.15); padding: 6px; gap: 5px; }
-    .tab-btn { border: none; background: transparent; padding: 15px 30px; font-size: 13px; font-weight: bold; color: var(--navy); border-radius: 40px; cursor: pointer; transition: 0.3s; }
-    .tab-btn:hover { background: #f0f0f0; }
-    .tab-btn.active { background: var(--navy); color: #fff; }
-
-    /* SHOP SECTION */
-    .section-wrap { padding-left: 7%; padding-right: 7%; }
-    .shop-section { padding-top: 40px; padding-bottom: 85px; }
-    .section-heading { display: flex; align-items: end; justify-content: space-between; margin-bottom: 26px; }
-    .section-heading h2 { font: normal 38px Georgia, serif; margin: 12px 0 0; color: var(--navy); }
-    .product-count { font-size: 12px; color: var(--muted); }
-    
-    .shop-controls { display: flex; gap: 12px; margin-bottom: 28px; }
-    .search-field { height: 46px; border: 1px solid var(--line); display: flex; align-items: center; gap: 10px; padding: 0 14px; flex: 1; }
-    .search-field span { font-size: 23px; color: #9a8a70; }
-    .search-field input { border: 0; outline: 0; width: 100%; font-size: 12px; }
-    .shop-controls select { border: 1px solid var(--line); background: #fff; padding: 0 14px; min-width: 155px; color: #4c5662; font-size: 11px; outline: none; }
-
-    /* PRODUCT GRID */
-    .product-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px 18px; }
-    .product-card { min-width: 0; }
-    .product-image-wrap { position: relative; background: #f1f0ed; overflow: hidden; aspect-ratio: 3/4; cursor: pointer; }
-    .product-image-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .5s; }
-    .product-card:hover .product-image-wrap img { transform: scale(1.04); }
-    .product-tag { position: absolute; top: 12px; left: 12px; background: #fff; color: var(--navy); padding: 7px 9px; font-size: 9px; letter-spacing: 1px; }
-    .out-of-stock-tag { position: absolute; top: 12px; right: 12px; background: #a22; color: #fff; padding: 7px 9px; font-size: 9px; letter-spacing: 1px; font-weight: bold; }
-    .product-info { padding: 13px 2px; }
-    .product-category { font-size: 9px; letter-spacing: 1.5px; color: #a18456; text-transform: uppercase; }
-    .product-info h3 { font: normal 17px Georgia, serif; margin: 8px 0; color: var(--navy); }
-    .product-price { font-size: 13px; font-weight: bold; }
-    .old-price { font-size: 11px; color: #9a9a9a; text-decoration: line-through; margin-left: 7px; font-weight: normal; }
-    .product-actions { display: flex; gap: 8px; margin-top: 12px; }
-    .small-button { border: 1px solid var(--navy); background: #fff; color: var(--navy); padding: 10px 12px; font-size: 9px; letter-spacing: .6px; cursor: pointer; flex: 1; text-align: center; }
-    .small-button.primary { background: var(--navy); color: #fff; }
-    .small-button:disabled { background: #ccc; border-color: #ccc; cursor: not-allowed; }
-
-    /* BANNER & EMPTY STATE */
-    .custom-banner { background: var(--cream); padding: 30px; text-align: center; border: 1px solid var(--gold); margin-bottom: 30px; }
-    .custom-banner h3 { font-family: Georgia, serif; color: var(--navy); font-size: 24px; margin: 0 0 10px; }
-    .custom-banner p { color: #666; margin: 0 0 20px; font-size: 14px; }
-    .button { display: inline-flex; align-items: center; justify-content: center; gap: 15px; padding: 16px 21px; font-size: 10px; letter-spacing: 1px; font-weight: bold; border: none; cursor: pointer; text-decoration: none; }
-    .button-navy { background: var(--navy); color: #fff; }
-    .empty-state { text-align: center; padding: 55px 15px; color: var(--muted); }
-    .empty-state span { font-size: 30px; color: var(--gold); }
-    .empty-state h3 { font: normal 25px Georgia, serif; color: var(--navy); }
-    .hidden { display: none !important; }
-
-    /* DIALOG */
-    .product-dialog { border: 0; padding: 0; width: min(760px, 92vw); max-width: none; box-shadow: 0 20px 80px #0005; }
-    .product-dialog::backdrop { background: #07182bbd; }
-    .dialog-close { position: absolute; right: 12px; top: 8px; border: 0; background: #fff; width: 34px; height: 34px; border-radius: 50%; font-size: 24px; cursor: pointer; z-index: 2; }
-    .dialog-layout { display: grid; grid-template-columns: 1fr 1fr; }
-    .dialog-layout img { width: 100%; height: 100%; min-height: 400px; object-fit: cover; }
-    .dialog-details { padding: 45px 30px; }
-    .dialog-details h2 { font: normal 29px Georgia, serif; color: var(--navy); margin: 10px 0; }
-    .dialog-details p { font-size: 13px; line-height: 1.8; color: #68717a; }
-    .dialog-details label { display: block; font-size: 11px; margin: 18px 0 7px; }
-    .dialog-details select { width: 100%; padding: 12px; border: 1px solid var(--line); outline: none; margin-bottom: 15px; }
-    .dialog-details .button { margin-top: 10px; width: 100%; }
-
-    /* FOOTER */
-    .site-footer { background: #0b1b2d; color: #fff; padding: 45px 7% 25px; text-align: center; }
-    .footer-brand { justify-content: center; }
-    .footer-brand .brand-mark { border-color: var(--gold); }
-    .site-footer p { font-size: 11px; color: #b8c1ca; margin: 22px 0; }
-    .footer-links { display: flex; justify-content: center; gap: 25px; margin: 22px; }
-    .footer-links a { font-size: 11px; color: #d9dfe5; }
-    .site-footer > small { display: block; border-top: 1px solid #28394b; padding-top: 20px; color: #8e9ba8; font-size: 10px; }
-
-    /* RESPONSIVE */
-    @media (max-width: 900px) {
-      .product-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-      .site-header { padding: 0 4%; }
-      .site-header nav { gap: 17px; }
-      .hero { padding-left: 7%; }
-    }
-    @media (max-width: 768px) {
-      .store-tabs { flex-direction: column; width: 100%; border-radius: 10px; }
-      .tab-btn { padding: 12px; border-radius: 5px; }
-    }
-    @media (max-width: 650px) {
-      .announcement { font-size: 8px; }
-      .site-header { height: 70px; }
-      .menu-toggle { display: block; margin-left: auto; margin-right: 14px; }
-      .site-header nav { display: none; position: absolute; top: 70px; left: 0; right: 0; background: #fff; padding: 18px 6%; flex-direction: column; gap: 18px; border-top: 1px solid var(--line); box-shadow: 0 12px 18px #0001; }
-      .site-header nav.open { display: flex; }
-      .header-wa { padding: 11px; font-size: 10px; }
-      .brand-mark { width: 36px; height: 36px; }
-      .brand strong { font-size: 12px; }
-      .brand small { font-size: 7px; }
-      .hero { height: 400px; padding: 0 7%; }
-      .hero h1 { font-size: 40px; }
-      .shop-controls { flex-wrap: wrap; }
-      .search-field { flex-basis: 100%; }
-      .shop-controls select { flex: 1; min-width: 0; height: 43px; }
-      .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 12px; }
-      .product-info h3 { font-size: 15px; }
-      .product-actions { flex-direction: column; }
-      .small-button { width: 100%; }
-      .dialog-layout { grid-template-columns: 1fr; }
-      .dialog-layout img { height: 280px; min-height: 0; }
-      .dialog-details { padding: 25px; }
-    }
-  </style>
+  <title>Aaradhya Mart | Home</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="announcement">AARADHYA MART • FASHION | PRINT | KIRANA</div>
-  
   <header class="site-header">
     <a class="brand" href="index.html">
       <span class="brand-mark">AM</span>
       <span><strong>AARADHYA MART</strong><small>YOUR EVERYDAY STORE</small></span>
     </a>
-    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
-    <nav id="mainNav">
-      <a onclick="switchStore('Fashion')">Fashion</a>
-      <a onclick="switchStore('Print')">A-Print</a>
-      <a onclick="switchStore('Kirana')">Kirana</a>
-      <a href="admin.html">Admin</a>
-    </nav>
-    <a class="header-wa" href="https://wa.me/918931911428" target="_blank" rel="noopener">WhatsApp ↗</a>
+    <a class="header-wa" href="admin.html">Admin Login ⚙️</a>
   </header>
 
   <main>
-    <section class="hero">
+    <section class="hero" style="height: 350px;">
       <div class="hero-shade"></div>
       <div class="hero-copy">
         <span class="eyebrow">WELCOME TO AARADHYA MART</span>
-        <h1>Everything you need,<br><em>in one place.</em></h1>
+        <h1>Choose your<br><em>Store.</em></h1>
         <p>Clothing, Custom Printing, and Daily Grocery essentials.</p>
       </div>
     </section>
 
-    <div class="store-tabs-container">
-      <div class="store-tabs">
-        <button class="tab-btn active" data-store="Fashion" onclick="switchStore('Fashion')">👗 Aaradhya Fashion</button>
-        <button class="tab-btn" data-store="Print" onclick="switchStore('Print')">🖨️ A-Print (Custom)</button>
-        <button class="tab-btn" data-store="Kirana" onclick="switchStore('Kirana')">🛒 Kirana Store</button>
-      </div>
-    </div>
-
-    <section class="shop-section section-wrap" id="main-shop">
-      <div class="section-heading shop-heading">
-        <div>
-          <span class="eyebrow" id="currentStoreTag">AARADHYA FASHION</span>
-          <h2 id="currentStoreTitle">Clothing & Apparel</h2>
-        </div>
-        <span class="product-count" id="productCount">Loading...</span>
+    <section class="section-wrap" style="padding-top: 60px; padding-bottom: 80px;">
+      <div class="section-heading" style="text-align: center; display: block;">
+        <span class="eyebrow">EXPLORE OUR VERTICALS</span>
+        <h2>Our Stores</h2>
       </div>
 
-      <div id="printBanner" class="hidden custom-banner">
-        <h3>Custom Printing Services</h3>
-        <p>We print custom T-shirts, Banners, and Visiting Cards. Prices vary by design.</p>
-        <a href="https://wa.me/918931911428?text=Hello%20A-Print,%20I%20want%20a%20custom%20quote." target="_blank" class="button button-navy">GET CUSTOM QUOTE ↗</a>
-      </div>
+      <!-- STORE CARDS (Aapke sketch ke mutabiq) -->
+      <div class="store-directory-grid">
+        
+        <a href="fashion.html" class="store-dir-card">
+          <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=800&q=80" alt="Aaradhya Fashion">
+          <div class="store-dir-info">
+            <h3>Aaradhya Fashion</h3>
+            <p>Men's Wear, Women's Wear, Kids, Sports & more.</p>
+            <span>Explore Collection →</span>
+          </div>
+        </a>
 
-      <div class="shop-controls" id="storeFilters">
-        <label class="search-field"><span>⌕</span><input id="searchInput" type="search" placeholder="Search products..." autocomplete="off"></label>
-        <select id="categoryFilter" aria-label="Filter by category">
-          <option value="All">All Categories</option>
-        </select>
-        <select id="sortFilter" aria-label="Sort products">
-          <option value="featured">Featured</option>
-          <option value="low">Price: Low to High</option>
-          <option value="high">Price: High to Low</option>
-        </select>
-      </div>
+        <a href="print.html" class="store-dir-card">
+          <img src="https://images.unsplash.com/photo-1563206767-5b1d972b9a52?auto=format&fit=crop&w=800&q=80" alt="A-Print">
+          <div class="store-dir-info">
+            <h3>A-Print (By Aaradhya Fashion)</h3>
+            <p>Custom Printing, T-Shirts, Visiting Cards & Banners.</p>
+            <span>Get Custom Quote →</span>
+          </div>
+        </a>
 
-      <div class="product-grid" id="productGrid" aria-live="polite"></div>
-      <div class="empty-state hidden" id="emptyState"><span>✧</span><h3>No products found</h3><p>Try another search or category.</p></div>
+        <a href="kirana.html" class="store-dir-card">
+          <img src="https://images.unsplash.com/photo-1578916171728-46686eac8d58?auto=format&fit=crop&w=800&q=80" alt="Aaradhya Kirana Store">
+          <div class="store-dir-info">
+            <h3>Aaradhya Kirana Store</h3>
+            <p>Daily Grocery, Essentials & Household items.</p>
+            <span>Order Groceries →</span>
+          </div>
+        </a>
+
+      </div>
     </section>
   </main>
 
   <footer class="site-footer">
-    <a class="brand footer-brand" href="index.html"><span class="brand-mark">AM</span><span><strong>AARADHYA MART</strong><small>YOUR EVERYDAY STORE</small></span></a>
-    <p>Fashion · A-Print · Kirana</p>
-    <div class="footer-links"><a href="#main-shop">Shop</a><a href="admin.html">Admin</a></div>
-    <small>© <span id="year"></span> Aaradhya Mart. All rights reserved.</small>
+    <p>© 2026 Aaradhya Mart. All rights reserved.</p>
   </footer>
-
-  <dialog class="product-dialog" id="productDialog">
-    <button class="dialog-close" id="dialogClose" aria-label="Close">×</button>
-    <div id="dialogContent"></div>
-  </dialog>
-  
-  <!-- INLINE JAVASCRIPT (Products & Logic) -->
-  <script>
-    window.STARTER_PRODUCTS = [
-      {id:"F1",store:"Fashion",name:"Classic Winter Jacket",category:"Winter Wear",price:999,originalPrice:1299,sizes:["M","L"],colors:["Black","Navy"],image:"https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=900&q=80",description:"A versatile layer for cooler days.",stock:10,tag:"NEW"},
-      {id:"F2",store:"Fashion",name:"Everyday Casual Shirt",category:"Men",price:699,originalPrice:899,sizes:["S","M","L"],colors:["White","Blue"],image:"https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=900&q=80",description:"Smart casual shirt.",stock:12,tag:"POPULAR"},
-      {id:"F3",store:"Fashion",name:"Women's Casual Look",category:"Women",price:899,originalPrice:1099,sizes:["S","M","L"],colors:["Cream","Black"],image:"https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=900&q=80",description:"Easy styling for everyday wear.",stock:9,tag:""},
-      {id:"P1",store:"Print",name:"Custom Printed T-Shirt",category:"Custom T-Shirts",price:299,originalPrice:0,sizes:["S","M","L"],colors:["White"],image:"https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9?auto=format&fit=crop&w=900&q=80",description:"High-quality print on your own design. Price varies by design.",stock:999,tag:"CUSTOM"},
-      {id:"P2",store:"Print",name:"Visiting Cards (Pack of 100)",category:"Stationery",price:499,originalPrice:699,sizes:["Standard"],colors:["White"],image:"https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=900&q=80",description:"Premium matte finish visiting cards.",stock:50,tag:""},
-      {id:"K1",store:"Kirana",name:"Tata Salt (1kg)",category:"Grocery",price:28,originalPrice:30,sizes:["1kg"],colors:["White"],image:"https://images.unsplash.com/photo-1626132618954-6c24859f4bb3?auto=format&fit=crop&w=900&q=80",description:"Iodized salt for daily use.",stock:40,tag:""},
-      {id:"K2",store:"Kirana",name:"Fortune Sunflower Oil (1L)",category:"Grocery",price:140,originalPrice:160,sizes:["1L"],colors:["Yellow"],image:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=900&q=80",description:"Refined sunflower oil.",stock:15,tag:"POPULAR"}
-    ];
-
-    const STORE_KEY = "aaradhyaMartProductsV1";
-    const WHATSAPP_NUMBER = "918931911428";
-    let products = [];
-    let currentStore = "Fashion";
-
-    function loadStoreProducts() {
-      try {
-        const saved = localStorage.getItem(STORE_KEY);
-        products = saved ? JSON.parse(saved) : [...(window.STARTER_PRODUCTS || [])];
-        if (!Array.isArray(products)) products = [...(window.STARTER_PRODUCTS || [])];
-      } catch (e) {
-        products = [...(window.STARTER_PRODUCTS || [])];
-      }
-    }
-
-    function money(value) { return "₹" + Number(value || 0).toLocaleString("en-IN"); }
-    function escapeText(value) { return String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
-    function safeImage(value) { return /^(https:\/\/|assets\/)/i.test(String(value)) ? escapeText(value) : "https://placehold.co/600x800/f1f0ed/10243b?text=No+Image"; }
-
-    function switchStore(storeName) {
-      currentStore = storeName;
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      const activeTab = document.querySelector(`.tab-btn[data-store="${storeName}"]`);
-      if(activeTab) activeTab.classList.add('active');
-
-      const titles = {
-        "Fashion": { tag: "AARADHYA FASHION", title: "Clothing & Apparel" },
-        "Print": { tag: "A-PRINT", title: "Custom Printing Services" },
-        "Kirana": { tag: "AARADHYA KIRANA", title: "Grocery & Daily Needs" }
-      };
-      document.getElementById("currentStoreTag").textContent = titles[storeName].tag;
-      document.getElementById("currentStoreTitle").textContent = titles[storeName].title;
-      document.getElementById("printBanner").classList.toggle("hidden", storeName !== "Print");
-
-      const catSelect = document.getElementById("categoryFilter");
-      catSelect.innerHTML = `<option value="All">All Categories</option>`;
-      const storeProducts = products.filter(p => p.store === storeName);
-      const uniqueCats = [...new Set(storeProducts.map(p => p.category))];
-      uniqueCats.forEach(cat => {
-        catSelect.innerHTML += `<option value="${escapeText(cat)}">${escapeText(cat)}</option>`;
-      });
-
-      document.getElementById("searchInput").value = "";
-      renderStore();
-      document.getElementById("main-shop").scrollIntoView({ behavior: "smooth" });
-    }
-
-    function renderStore() {
-      const query = (document.getElementById("searchInput")?.value || "").trim().toLowerCase();
-      const category = document.getElementById("categoryFilter")?.value || "All";
-      const sort = document.getElementById("sortFilter")?.value || "featured";
-      
-      let list = products.filter(p => p.store === currentStore);
-      if (category !== "All") list = list.filter(p => p.category === category);
-      list = list.filter(p => [p.name, p.category, p.description].join(" ").toLowerCase().includes(query));
-      
-      if (sort === "low") list.sort((a,b)=>Number(a.price)-Number(b.price));
-      if (sort === "high") list.sort((a,b)=>Number(b.price)-Number(a.price));
-
-      document.getElementById("productCount").textContent = `${list.length} ITEMS`;
-      const grid = document.getElementById("productGrid");
-      document.getElementById("emptyState").classList.toggle("hidden", list.length !== 0);
-
-      grid.innerHTML = list.map(p => {
-        const isOut = Number(p.stock) <= 0;
-        return `
-        <article class="product-card" style="${isOut ? 'opacity: 0.8;' : ''}">
-          <div class="product-image-wrap" data-open="${escapeText(p.id)}">
-            <img src="${safeImage(p.image)}" alt="${escapeText(p.name)}" loading="lazy">
-            ${p.tag ? `<span class="product-tag">${escapeText(p.tag)}</span>` : ""}
-            ${isOut ? `<span class="out-of-stock-tag">SOLD OUT</span>` : ""}
-          </div>
-          <div class="product-info">
-            <span class="product-category">${escapeText(p.category)}</span>
-            <h3>${escapeText(p.name)}</h3>
-            <div class="product-price">${p.price === 0 ? 'Custom Quote' : money(p.price)} ${Number(p.originalPrice)>Number(p.price)&&p.originalPrice>0?`<span class="old-price">${money(p.originalPrice)}</span>`:""}</div>
-            <div class="product-actions">
-              <button class="small-button" data-open="${escapeText(p.id)}">DETAILS</button>
-              <button class="small-button primary" data-order="${escapeText(p.id)}" ${isOut ? 'disabled' : ''}>${isOut ? 'SOLD OUT' : 'ORDER ↗'}</button>
-            </div>
-          </div>
-        </article>`;
-      }).join("");
-    }
-
-    function openProduct(id) {
-      const p = products.find(x => x.id === id);
-      if (!p) return;
-      const dialog = document.getElementById("productDialog");
-      
-      const priceHtml = p.price === 0 
-        ? `<span style="color:var(--gold);font-weight:bold;">Custom Quote on WhatsApp</span>` 
-        : `${money(p.price)} ${Number(p.originalPrice)>Number(p.price)?`<span class="old-price">${money(p.originalPrice)}</span>`:""}`;
-      
-      document.getElementById("dialogContent").innerHTML = `
-        <div class="dialog-layout">
-          <img src="${safeImage(p.image)}" alt="${escapeText(p.name)}">
-          <div class="dialog-details">
-            <span class="product-category">${escapeText(p.category)}</span>
-            <h2>${escapeText(p.name)}</h2>
-            <div class="product-price">${priceHtml}</div>
-            <p>${escapeText(p.description)}</p>
-            
-            ${p.sizes && p.sizes.length > 0 ? `
-            <label for="sizeChoice">Choose Size/Quantity</label>
-            <select id="sizeChoice">${p.sizes.map(s=>`<option>${escapeText(s)}</option>`).join("")}</select>` : ''}
-            
-            ${p.colors && p.colors.length > 0 ? `
-            <label for="colorChoice">Choose Colour</label>
-            <select id="colorChoice">${p.colors.map(c=>`<option>${escapeText(c)}</option>`).join("")}</select>` : ''}
-            
-            <p style="margin-top:10px;">Availability: ${Number(p.stock)>0? "<span style='color:var(--gold);font-weight:bold;'>In stock</span>" : "<span style='color:#a22;font-weight:bold;'>Out of stock</span>"}</p>
-            
-            <button class="button button-navy" id="dialogOrder" ${Number(p.stock)<=0 ? 'disabled style="background:#999"' : ''}>
-              ${Number(p.stock)<=0 ? 'OUT OF STOCK' : 'ORDER ON WHATSAPP ↗'}
-            </button>
-          </div>
-        </div>`;
-      dialog.showModal();
-      
-      if (Number(p.stock) > 0) {
-        document.getElementById("dialogOrder").addEventListener("click", () => {
-          const size = document.getElementById("sizeChoice")?.value || "N/A";
-          const color = document.getElementById("colorChoice")?.value || "N/A";
-          orderProduct(p.id, size, color);
-        });
-      }
-    }
-
-    function orderProduct(id, size, color) {
-      const p = products.find(x=>x.id===id);
-      if (!p) return;
-      const storeName = p.store === "Fashion" ? "Aaradhya Fashion" : p.store === "Print" ? "A-Print" : "Aaradhya Kirana";
-      
-      const msg = `Hello ${storeName}!\nI want to order:\n\nProduct: ${p.name}\nID: ${p.id}\nPrice: ${p.price === 0 ? 'Custom Quote' : money(p.price)}\nSize/Qty: ${size}\nColour: ${color}\n\nPlease confirm availability.`;
-      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      loadStoreProducts();
-      switchStore('Fashion');
-      document.getElementById("year").textContent = new Date().getFullYear();
-      
-      document.getElementById("searchInput").addEventListener("input", renderStore);
-      document.getElementById("categoryFilter").addEventListener("change", renderStore);
-      document.getElementById("sortFilter").addEventListener("change", renderStore);
-      
-      document.getElementById("productGrid").addEventListener("click", e=>{
-        const open = e.target.closest("[data-open]");
-        const order = e.target.closest("[data-order]");
-        if (open) openProduct(open.dataset.open);
-        if (order && !order.disabled) orderProduct(order.dataset.order, "N/A", "N/A");
-      });
-      
-      document.getElementById("dialogClose").addEventListener("click",()=>document.getElementById("productDialog").close());
-      document.getElementById("productDialog").addEventListener("click",e=>{if(e.target.id==="productDialog")e.target.close();});
-      document.getElementById("menuToggle").addEventListener("click",()=>document.getElementById("mainNav").classList.toggle("open"));
-    });
-  </script>
 </body>
 </html>
