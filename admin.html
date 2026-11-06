@@ -1,71 +1,398 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#10243b"><title>Admin | Aaradhya Mart</title><link rel="stylesheet" href="style.css"></head>
-<body class="admin-body">
-  <div id="loginView" class="admin-login">
-    <a class="brand" href="index.html"><span class="brand-mark">AM</span><span><strong>AARADHYA MART</strong><small>ADMINISTRATION</small></span></a>
-    <h1>Admin login</h1>
-    <p>Manage inventory across all stores.</p>
-    <div class="admin-notice">Local browser storage only. Do not use real passwords.</div>
-    <label for="adminUser">Username</label><input id="adminUser" autocomplete="username" value="admin">
-    <label for="adminPass">Password</label><input id="adminPass" type="password" autocomplete="current-password" placeholder="Enter admin password">
-    <button class="button button-navy" id="loginButton" style="width:100%;justify-content:center;margin-top:18px">LOGIN →</button>
-    <p id="loginError" class="admin-status"></p>
-    <p><a class="text-link" href="index.html" style="color:var(--gold);font-size:12px;">← BACK TO WEBSITE</a></p>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aaradhya Mart | Admin Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary: #10243b;
+      --primary-hover: #1e3a5f;
+      --gold: #c5a36b;
+      --bg: #f4f6f8;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --danger: #ef4444;
+      --success: #10b981;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+    body { background-color: var(--bg); color: var(--text-main); }
+    a { text-decoration: none; color: inherit; }
+    
+    /* LOGIN SCREEN */
+    .login-wrapper { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+    .login-card { background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); width: 100%; max-width: 400px; }
+    .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 30px; justify-content: center; }
+    .brand-icon { background: var(--primary); color: #fff; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 8px; font-weight: bold; font-size: 16px; border: 1px solid var(--gold); }
+    .brand-text h1 { font-size: 18px; font-weight: 700; color: var(--primary); line-height: 1.2; }
+    .brand-text p { font-size: 10px; letter-spacing: 1px; color: var(--text-muted); text-transform: uppercase; }
+    .login-card h2 { font-size: 22px; margin-bottom: 10px; color: var(--primary); }
+    .login-card > p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+    
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px; color: var(--text-main); }
+    .form-group input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; outline: none; transition: 0.2s; }
+    .form-group input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(16,36,59,0.1); }
+    
+    .btn { background: var(--primary); color: #fff; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; width: 100%; transition: 0.2s; }
+    .btn:hover { background: var(--primary-hover); }
+    
+    .error-msg { color: var(--danger); font-size: 12px; margin-top: 10px; text-align: center; font-weight: 500; }
+    
+    /* DASHBOARD */
+    .admin-container { display: none; }
+    .admin-header { background: #fff; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 30px; }
+    .admin-header .brand { margin: 0; }
+    .header-actions { display: flex; gap: 10px; }
+    .btn-outline { background: #fff; border: 1px solid var(--border); color: var(--text-main); padding: 8px 15px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .btn-outline:hover { background: var(--bg); }
+    .btn-danger { color: var(--danger); border-color: #fca5a5; }
+    .btn-danger:hover { background: #fef2f2; }
+
+    .admin-content { max-width: 1200px; margin: 0 auto; padding: 0 20px 50px; }
+    
+    /* PANELS */
+    .panel { background: #fff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); padding: 25px; margin-bottom: 25px; border: 1px solid var(--border); }
+    .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+    .panel-title { font-size: 18px; font-weight: 700; color: var(--primary); }
+    
+    .grid-form { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    .full-width { grid-column: 1 / -1; }
+    .form-group textarea { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; outline: none; min-height: 80px; resize: vertical; }
+    
+    /* TABLE */
+    .table-responsive { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border); }
+    th { background: #f8fafc; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    tr:hover { background: #f8fafc; }
+    .badge { padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; background: #e2e8f0; color: var(--text-main); }
+    
+    .stock-input { width: 70px; padding: 8px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; outline: none; text-align: center; font-weight: bold; transition: 0.2s; }
+    .stock-input:focus { border-color: var(--primary); }
+    
+    .action-btn { padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border); background: #fff; cursor: pointer; font-size: 11px; font-weight: 600; transition: 0.2s; }
+    .action-btn:hover { background: var(--bg); }
+    .action-btn.danger { color: var(--danger); border-color: #fca5a5; margin-left: 5px; }
+    .action-btn.danger:hover { background: #fef2f2; }
+    
+    .success-toast { display: none; background: #ecfdf5; color: var(--success); padding: 10px; border-radius: 8px; font-size: 13px; margin-top: 15px; font-weight: 500; text-align: center; border: 1px solid #a7f3d0; }
+  </style>
+</head>
+<body>
+
+  <!-- LOGIN VIEW -->
+  <div class="login-wrapper" id="loginView">
+    <div class="login-card">
+      <div class="brand">
+        <div class="brand-icon">AM</div>
+        <div class="brand-text">
+          <h1>Aaradhya Mart</h1>
+          <p>Administration</p>
+        </div>
+      </div>
+      <h2>Welcome Back</h2>
+      <p>Please enter your credentials to access the stock manager.</p>
+      
+      <div class="form-group">
+        <label>Username</label>
+        <input id="adminUser" type="text" value="admin" autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input id="adminPass" type="password" placeholder="Enter admin password" autocomplete="current-password">
+      </div>
+      <button class="btn" id="loginButton">Login to Dashboard</button>
+      <p id="loginError" class="error-msg"></p>
+      <div style="text-align:center; margin-top:20px;">
+        <a href="index.html" style="font-size:12px; color:var(--text-muted); text-decoration:underline;">← Back to Website</a>
+      </div>
+    </div>
   </div>
 
-  <main id="adminView" class="admin-shell hidden">
-    <div class="admin-top">
-      <div><span class="eyebrow">AARADHYA MART</span><h1>Stock Manager</h1></div>
-      <div class="admin-actions"><a class="small-button" href="index.html">VIEW WEBSITE ↗</a><button class="small-button" id="logoutButton">LOG OUT</button></div>
-    </div>
-    
-    <section class="admin-panel">
-      <h2 id="formTitle">Add a product</h2>
-      <form id="productForm">
-        <input type="hidden" id="editId">
-        <div class="admin-form-grid">
+  <!-- DASHBOARD VIEW -->
+  <div class="admin-container" id="adminView">
+    <header class="admin-header">
+      <div class="brand">
+        <div class="brand-icon">AM</div>
+        <div class="brand-text"><h1>Stock Manager</h1></div>
+      </div>
+      <div class="header-actions">
+        <a href="index.html" class="btn-outline">View Website ↗</a>
+        <button class="btn-outline btn-danger" id="logoutButton">Log Out</button>
+      </div>
+    </header>
+
+    <div class="admin-content">
+      
+      <!-- ADD/EDIT PRODUCT FORM -->
+      <div class="panel">
+        <div class="panel-header">
+          <h2 class="panel-title" id="formTitle">Add New Product</h2>
+          <span style="font-size:12px; color:var(--text-muted);">Fill all required fields</span>
+        </div>
+        <form id="productForm">
+          <input type="hidden" id="editId">
           
-          <div class="form-field">
-            <label for="pStore">Select Store *</label>
-            <select id="pStore" required>
-              <option value="Fashion">Aaradhya Fashion (Clothing)</option>
-              <option value="Print">A-Print (Custom Printing)</option>
-              <option value="Kirana">Aaradhya Kirana Store (Grocery)</option>
-            </select>
+          <div class="grid-form">
+            <div class="form-group">
+              <label>Select Store *</label>
+              <select id="pStore" style="width:100%; padding:12px; border:1px solid var(--border); border-radius:8px; outline:none;">
+                <option value="Fashion">Aaradhya Fashion</option>
+                <option value="Print">A-Print (Custom)</option>
+                <option value="Kirana">Aaradhya Kirana</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Product Name *</label>
+              <input id="pName" required maxlength="80" placeholder="e.g. Cotton T-Shirt">
+            </div>
+            
+            <div class="form-group">
+              <label>Category *</label>
+              <input id="pCategory" required placeholder="e.g. Men, Grocery, T-Shirts">
+            </div>
+
+            <div class="form-group">
+              <label>Selling Price (₹) *</label>
+              <input id="pPrice" type="number" min="0" required placeholder="499">
+            </div>
+
+            <div class="form-group">
+              <label>Original Price (₹) (Optional)</label>
+              <input id="pOriginal" type="number" min="0" placeholder="799">
+            </div>
+
+            <div class="form-group">
+              <label>Stock Quantity *</label>
+              <input id="pStock" type="number" min="0" required value="10">
+            </div>
+
+            <div class="form-group">
+              <label>Label / Tag (Optional)</label>
+              <input id="pTag" placeholder="NEW / BESTSELLER">
+            </div>
+            
+            <div class="form-group">
+              <label>Sizes (Comma separated)</label>
+              <input id="pSizes" placeholder="M, L, XL">
+            </div>
+
+            <div class="form-group full-width">
+              <label>Image URL (Must start with https://) *</label>
+              <input id="pImage" required placeholder="https://images.unsplash.com/photo-...">
+            </div>
+
+            <div class="form-group full-width">
+              <label>Description</label>
+              <textarea id="pDescription" placeholder="Product details..."></textarea>
+            </div>
           </div>
 
-          <div class="form-field"><label for="pName">Product name *</label><input id="pName" required maxlength="80"></div>
-          
-          <div class="form-field"><label for="pCategory">Category *</label><input id="pCategory" required placeholder="e.g. Men, Grocery, T-Shirts"></div>
-          
-          <div class="form-field"><label for="pPrice">Selling price (₹) *</label><input id="pPrice" type="number" min="0" required></div>
-          <div class="form-field"><label for="pOriginal">Original price (₹)</label><input id="pOriginal" type="number" min="0"></div>
-          
-          <div class="form-field"><label for="pStock">Stock quantity * (Updates live)</label><input id="pStock" type="number" min="0" required value="10"></div>
-          <div class="form-field"><label for="pTag">Label (optional)</label><input id="pTag" placeholder="NEW / BESTSELLER"></div>
-          
-          <div class="form-field full"><label for="pImage">Image URL (HTTPS)</label><input id="pImage" placeholder="https://..."></div>
-          
-          <div class="form-field"><label for="pSizes">Sizes / Variations (comma separated)</label><input id="pSizes" placeholder="M, L, XL OR 1kg, 500g"></div>
-          <div class="form-field"><label for="pColors">Colours (comma separated)</label><input id="pColors" placeholder="Black, Blue"></div>
-          
-          <div class="form-field full"><label for="pDescription">Description</label><textarea id="pDescription"></textarea></div>
-        </div>
-        <div class="admin-actions" style="margin-top:18px"><button class="button button-navy" type="submit" id="saveButton">SAVE PRODUCT</button><button class="small-button" type="button" id="resetButton">CLEAR FORM</button></div>
-        <p id="saveStatus" class="admin-status"></p>
-      </form>
-    </section>
-
-    <section class="admin-panel">
-      <div class="admin-top"><h2>All Products</h2><div class="admin-actions"><button class="small-button" id="exportButton">EXPORT BACKUP</button><label class="small-button" for="importFile" style="cursor:pointer">IMPORT BACKUP</label><input id="importFile" type="file" accept="application/json" hidden></div></div>
-      <div class="admin-table-wrap">
-        <table class="admin-table">
-          <thead><tr><th>STORE</th><th>PRODUCT</th><th>CATEGORY</th><th>PRICE</th><th>STOCK (Quick Edit)</th><th>ACTIONS</th></tr></thead>
-          <tbody id="adminProductRows"></tbody>
-        </table>
+          <div style="margin-top:20px; display:flex; gap:10px;">
+            <button class="btn" type="submit" id="saveButton" style="width:auto;">Save Product</button>
+            <button class="btn-outline" type="button" id="resetButton">Clear Form</button>
+          </div>
+          <div id="saveStatus" class="success-toast"></div>
+        </form>
       </div>
-    </section>
-  </main>
-  <script src="products.js"></script><script src="admin.js"></script>
-</body></html>
+
+      <!-- INVENTORY TABLE -->
+      <div class="panel">
+        <div class="panel-header">
+          <h2 class="panel-title">Live Inventory</h2>
+          <div>
+            <button class="btn-outline" id="exportButton">Export Backup</button>
+            <label class="btn-outline" for="importFile" style="cursor:pointer">Import Backup</label>
+            <input id="importFile" type="file" accept="application/json" hidden>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Store</th>
+                <th>Product</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Quick Stock Update</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="adminProductRows">
+              <!-- Rows injected by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="products.js"></script>
+  <script>
+    const ADMIN_USERNAME = "admin";
+    const ADMIN_PASSWORD = "AF2026!"; 
+    const ADMIN_STORE_KEY = "aaradhyaMartProductsV1";
+    let adminProducts = [];
+
+    function getAdminProducts() {
+      try {
+        const saved = localStorage.getItem(ADMIN_STORE_KEY);
+        adminProducts = saved ? JSON.parse(saved) : [...(window.STARTER_PRODUCTS || [])];
+        if (!Array.isArray(adminProducts)) adminProducts = [...(window.STARTER_PRODUCTS || [])];
+      } catch (e) { adminProducts = [...(window.STARTER_PRODUCTS || [])]; }
+    }
+    function saveAdminProducts() { localStorage.setItem(ADMIN_STORE_KEY, JSON.stringify(adminProducts)); }
+    
+    function showAdmin() {
+      document.getElementById("loginView").style.display = "none";
+      document.getElementById("adminView").style.display = "block";
+      renderAdminRows();
+    }
+
+    function renderAdminRows() {
+      document.getElementById("adminProductRows").innerHTML = adminProducts.map(p=>`
+        <tr>
+          <td><span class="badge">${p.store || "Fashion"}</span></td>
+          <td style="font-weight:600;">${p.name}</td>
+          <td>${p.category}</td>
+          <td>₹${Number(p.price).toLocaleString("en-IN")}</td>
+          <td>
+            <input type="number" class="stock-input" value="${Number(p.stock)||0}" data-stock-id="${p.id}" min="0">
+          </td>
+          <td>
+            <button class="action-btn" data-edit="${p.id}">Edit</button> 
+            <button class="action-btn danger" data-delete="${p.id}">Delete</button>
+          </td>
+        </tr>`).join("") || '<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--text-muted);">No products found. Add one above!</td></tr>';
+    }
+
+    function clearForm() {
+      document.getElementById("productForm").reset();
+      document.getElementById("editId").value="";
+      document.getElementById("pStock").value="10";
+      document.getElementById("formTitle").textContent="Add New Product";
+      document.getElementById("saveButton").textContent="Save Product";
+    }
+
+    document.addEventListener("DOMContentLoaded",()=>{
+      getAdminProducts();
+      
+      // Login Logic
+      document.getElementById("loginButton").addEventListener("click",()=>{
+        const u=document.getElementById("adminUser").value;
+        const p=document.getElementById("adminPass").value;
+        if(u===ADMIN_USERNAME && p===ADMIN_PASSWORD){showAdmin();}
+        else document.getElementById("loginError").textContent="Incorrect username or password.";
+      });
+      document.getElementById("adminPass").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("loginButton").click();});
+      document.getElementById("logoutButton").addEventListener("click",()=>location.reload());
+      
+      // Add / Edit Product
+      document.getElementById("productForm").addEventListener("submit",e=>{
+        e.preventDefault();
+        const id = document.getElementById("editId").value || "P" + Date.now().toString().slice(-6);
+        const old = adminProducts.find(p=>p.id===id);
+        
+        const product = {
+          id: id,
+          store: document.getElementById("pStore").value,
+          name: document.getElementById("pName").value.trim(),
+          category: document.getElementById("pCategory").value.trim(),
+          price: Number(document.getElementById("pPrice").value),
+          originalPrice: Number(document.getElementById("pOriginal").value)||0,
+          sizes: document.getElementById("pSizes").value.split(",").map(x=>x.trim()).filter(Boolean),
+          image: document.getElementById("pImage").value.trim(),
+          description: document.getElementById("pDescription").value.trim(),
+          stock: Number(document.getElementById("pStock").value)||0,
+          tag: document.getElementById("pTag").value.trim()
+        };
+        
+        if(old) adminProducts = adminProducts.map(p=>p.id===id?product:p);
+        else adminProducts.unshift(product);
+        
+        saveAdminProducts();
+        renderAdminRows();
+        clearForm();
+        
+        const toast = document.getElementById("saveStatus");
+        toast.textContent = "✅ Product saved successfully!";
+        toast.style.display = "block";
+        setTimeout(()=>toast.style.display = "none", 3000);
+      });
+      
+      document.getElementById("resetButton").addEventListener("click",clearForm);
+      
+      // Table Actions
+      document.getElementById("adminProductRows").addEventListener("click",e=>{
+        const edit = e.target.closest("[data-edit]")?.dataset.edit;
+        const del = e.target.closest("[data-delete]")?.dataset.delete;
+        
+        if(edit){
+          const p = adminProducts.find(x=>x.id===edit); if(!p) return;
+          document.getElementById("editId").value = p.id;
+          document.getElementById("pStore").value = p.store || "Fashion";
+          document.getElementById("pName").value = p.name;
+          document.getElementById("pCategory").value = p.category;
+          document.getElementById("pPrice").value = p.price;
+          document.getElementById("pOriginal").value = p.originalPrice||"";
+          document.getElementById("pSizes").value = (p.sizes||[]).join(", ");
+          document.getElementById("pImage").value = p.image||"";
+          document.getElementById("pStock").value = p.stock||0;
+          document.getElementById("pTag").value = p.tag||"";
+          document.getElementById("pDescription").value = p.description||"";
+          
+          document.getElementById("formTitle").textContent = "Edit Product";
+          document.getElementById("saveButton").textContent = "Update Product";
+          window.scrollTo({top:0,behavior:"smooth"});
+        }
+        
+        if(del && confirm("Are you sure you want to delete this product?")){
+          adminProducts = adminProducts.filter(p=>p.id!==del);
+          saveAdminProducts();
+          renderAdminRows();
+        }
+      });
+
+      // Quick Stock Update
+      document.getElementById("adminProductRows").addEventListener("change", e => {
+        if(e.target.hasAttribute("data-stock-id")) {
+          const id = e.target.dataset.stockId;
+          const newStock = Number(e.target.value) || 0;
+          adminProducts = adminProducts.map(p => p.id === id ? {...p, stock: newStock} : p);
+          saveAdminProducts();
+          
+          e.target.style.backgroundColor = "#d4edda";
+          e.target.style.borderColor = "#10b981";
+          setTimeout(() => {
+            e.target.style.backgroundColor = "";
+            e.target.style.borderColor = "";
+          }, 1000);
+        }
+      });
+      
+      // Export / Import
+      document.getElementById("exportButton").addEventListener("click",()=>{
+        const blob = new Blob([JSON.stringify(adminProducts,null,2)],{type:"application/json"});
+        const a = document.createElement("a");a.href=URL.createObjectURL(blob);a.download="aaradhya-mart-backup.json";a.click();URL.revokeObjectURL(a.href);
+      });
+      
+      document.getElementById("importFile").addEventListener("change",async e=>{
+        const file=e.target.files[0];if(!file)return;
+        try{
+          const data=JSON.parse(await file.text());
+          if(!Array.isArray(data)||!data.every(p=>p.id&&p.name))throw new Error("Invalid");
+          adminProducts=data;saveAdminProducts();renderAdminRows();alert("Backup imported successfully!");
+        }catch(err){alert("Invalid backup file.");}
+        e.target.value="";
+      });
+    });
+  </script>
+</body>
+</html>
