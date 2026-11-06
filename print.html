@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A-Print | Custom Printing</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html"><span class="brand-mark">AM</span><span><strong>A-PRINT</strong><small>BY AARADHYA FASHION</small></span></a>
+    <a href="index.html" class="header-wa" style="background:#fff; color:var(--navy); border:1px solid var(--navy);">← Back to Home</a>
+  </header>
+
+  <main class="section-wrap shop-section" style="padding-top: 40px;">
+    <div class="section-heading" style="margin-bottom: 20px;">
+      <span class="eyebrow">CUSTOM PRINTING</span>
+      <h2>A-Print Services</h2>
+    </div>
+
+    <div class="shop-controls">
+      <label class="search-field"><span>⌕</span><input id="searchInput" type="search" placeholder="Search prints..." autocomplete="off"></label>
+      <select id="categoryFilter"><option value="All">All Categories</option></select>
+    </div>
+
+    <div class="product-grid" id="productGrid"></div>
+  </main>
+
+  <dialog class="product-dialog" id="productDialog">
+    <button class="dialog-close" id="dialogClose">×</button>
+    <div id="dialogContent"></div>
+  </dialog>
+
+  <script src="products.js"></script>
+  <script>
+    const PAGE_STORE = "Print";
+    const WHATSAPP_NUMBER = "918931911428";
+    let products = [];
+
+    function load() {
+      const saved = localStorage.getItem("aaradhyaMartProductsV1");
+      products = saved ? JSON.parse(saved) : window.STARTER_PRODUCTS;
+    }
+    function money(v) { return "₹" + Number(v||0).toLocaleString("en-IN"); }
+    
+    function render() {
+      const query = document.getElementById("searchInput").value.toLowerCase();
+      const cat = document.getElementById("categoryFilter").value;
+      
+      let list = products.filter(p => p.store === PAGE_STORE);
+      const cats = [...new Set(list.map(p => p.category))];
+      const catSelect = document.getElementById("categoryFilter");
+      if(catSelect.options.length <= 1) {
+        cats.forEach(c => catSelect.innerHTML += `<option value="${c}">${c}</option>`);
+      }
+
+      if (cat !== "All") list = list.filter(p => p.category === cat);
+      list = list.filter(p => [p.name, p.category].join(" ").toLowerCase().includes(query));
+
+      document.getElementById("productGrid").innerHTML = list.map(p => `
+        <article class="product-card">
+          <div class="product-image-wrap" data-open="${p.id}">
+            <img src="${p.image}" alt="${p.name}">
+          </div>
+          <div class="product-info">
+            <span class="product-category">${p.category}</span>
+            <h3>${p.name}</h3>
+            <div class="product-price">${p.price === 0 ? 'Custom Quote' : money(p.price)}</div>
+            <div class="product-actions">
+              <button class="small-button primary" data-order="${p.id}">GET QUOTE ↗</button>
+            </div>
+          </div>
+        </article>`).join("");
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      load(); render();
+      document.getElementById("searchInput").addEventListener("input", render);
+      document.getElementById("categoryFilter").addEventListener("change", render);
+      
+      document.getElementById("productGrid").addEventListener("click", e => {
+        const order = e.target.closest("[data-order]");
+        if(order) {
+          const p = products.find(x=>x.id===order.dataset.order);
+          const msg = `Hello A-Print!\nI want a custom quote for: ${p.name}`;
+          window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
+        }
+      });
+    });
+  </script>
+</body>
+</html>
