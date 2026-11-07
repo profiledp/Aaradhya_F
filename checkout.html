@@ -6,26 +6,21 @@
   <title>Checkout | Aaradhya Mart</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Checkout Specific Styles */
     .checkout-container { max-width: 600px; margin: 40px auto; padding: 30px; background: #fff; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 10px 30px rgba(16,36,59,0.05); }
     .checkout-container h2 { font: normal 28px Georgia, serif; color: var(--navy); margin-top: 0; margin-bottom: 20px; text-align: center; }
-    .product-summary { background: var(--cream); padding: 15px; border-radius: 8px; margin-bottom: 25px; display: flex; gap: 15px; align-items: center; border: 1px solid var(--line); }
-    .product-summary img { width: 70px; height: 70px; object-fit: cover; border-radius: 6px; }
+    .product-summary { background: var(--cream); padding: 15px; border-radius: 8px; margin-bottom: 25px; border: 1px solid var(--line); }
     .product-summary-info h4 { margin: 0 0 5px; font-size: 16px; color: var(--navy); font-family: Georgia, serif; }
     .product-summary-info p { margin: 0; font-size: 13px; color: var(--muted); }
-    
     .form-group { margin-bottom: 15px; }
     .form-group label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 6px; color: var(--ink); }
     .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 6px; font-family: inherit; font-size: 14px; outline: none; transition: 0.2s; }
     .form-group input:focus, .form-group textarea:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(16,36,59,0.1); }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-    
     .payment-options { display: flex; gap: 15px; margin-top: 5px; }
     .payment-option { flex: 1; border: 1px solid var(--line); padding: 15px; border-radius: 8px; cursor: pointer; text-align: center; transition: 0.2s; font-size: 13px; font-weight: bold; display: block; }
     .payment-option input { display: none; }
     .payment-option input:checked + span { color: var(--navy); }
     .payment-option:has(input:checked) { border-color: var(--navy); background: var(--cream); }
-    
     .place-order-btn { width: 100%; padding: 16px; background: var(--navy); color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.3s; }
     .place-order-btn:hover { background: #1e3a5f; }
     @media(max-width:650px){.form-row{grid-template-columns:1fr}.payment-options{flex-direction:column}}
@@ -33,37 +28,28 @@
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="index.html">
-      <span class="brand-mark">AM</span>
-      <span><strong>AARADHYA MART</strong><small>SECURE CHECKOUT</small></span>
-    </a>
-    <a href="index.html" class="header-wa" style="background:#fff; color:var(--navy); border:1px solid var(--navy);">← Back to Shop</a>
+    <a class="brand" href="index.html"><span class="brand-mark">AM</span><span><strong>AARADHYA MART</strong><small>SECURE CHECKOUT</small></span></a>
+    <a href="cart.html" class="header-wa" style="background:#fff; color:var(--navy); border:1px solid var(--navy);">← Back to Cart</a>
   </header>
 
   <main>
     <div class="checkout-container">
       <h2>Complete Your Order</h2>
-      
-      <div class="product-summary" id="productSummary">
-        <!-- JS will insert product -->
-      </div>
+      <div class="product-summary" id="productSummary"></div>
 
       <form id="checkoutForm">
         <div class="form-group">
           <label>Full Name *</label>
           <input type="text" id="custName" required placeholder="Enter your full name">
         </div>
-
         <div class="form-group">
           <label>Mobile Number *</label>
           <input type="tel" id="custPhone" required placeholder="10-digit mobile number" pattern="[0-9]{10}">
         </div>
-
         <div class="form-group">
           <label>Full Address (House No, Street, Landmark) *</label>
           <textarea id="custAddress" required placeholder="Enter your delivery address" rows="3"></textarea>
         </div>
-
         <div class="form-row">
           <div class="form-group">
             <label>City / Village *</label>
@@ -74,7 +60,6 @@
             <input type="text" id="custPincode" required placeholder="6-digit pincode" pattern="[0-9]{6}">
           </div>
         </div>
-
         <div class="form-group">
           <label>Payment Mode *</label>
           <div class="payment-options">
@@ -88,7 +73,6 @@
             </label>
           </div>
         </div>
-
         <button type="submit" class="place-order-btn">CONFIRM & SEND ON WHATSAPP ↗</button>
       </form>
     </div>
@@ -96,39 +80,65 @@
 
   <script src="products.js"></script>
   <script>
-    const WHATSAPP_NUMBER = "918931911428"; // Aapka number
-    let orderProduct = null;
-    let selectedSize = "N/A";
+    const WHATSAPP_NUMBER = "918931911428"; // Update if needed
+    let orderProducts = [];
     let selectedStore = "Aaradhya Mart";
+    let isCartOrder = false;
 
     document.addEventListener("DOMContentLoaded", () => {
       const urlParams = new URLSearchParams(window.location.search);
       const productId = urlParams.get('id');
-      selectedSize = urlParams.get('size') || "N/A";
+      const size = urlParams.get('size') || "N/A";
       selectedStore = urlParams.get('store') || "Aaradhya Mart";
 
-      const saved = localStorage.getItem("aaradhyaMartProductsV1");
-      const products = saved ? JSON.parse(saved) : window.STARTER_PRODUCTS;
-      orderProduct = products.find(p => p.id === productId);
+      const savedProds = localStorage.getItem("aaradhyaMartProductsV1");
+      const allProducts = savedProds ? JSON.parse(savedProds) : window.STARTER_PRODUCTS;
 
-      if (!orderProduct) {
-        alert("Product not found! Redirecting to home.");
-        window.location.href = "index.html";
-        return;
+      if (!productId) {
+        // CART ORDER
+        isCartOrder = true;
+        const savedCart = localStorage.getItem("aaradhyaMartCart");
+        const cart = savedCart ? JSON.parse(savedCart) : [];
+        
+        if (cart.length === 0) { alert("Your cart is empty!"); window.location.href = "index.html"; return; }
+
+        document.getElementById("productSummary").innerHTML = cart.map(item => {
+          const p = allProducts.find(x => x.id === item.id);
+          if(!p) return "";
+          orderProducts.push({ ...p, selectedSize: item.size, selectedQty: item.qty });
+          return `
+            <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px; border-bottom:1px solid #ddd; padding-bottom:10px;">
+              <img src="${p.image}" style="width:50px; height:50px; object-fit:cover; border-radius:4px;">
+              <div>
+                <h4 style="margin:0;">${p.name} (x${item.qty})</h4>
+                <p style="margin:0; font-size:12px;">Size: ${item.size} | Price: ₹${p.price}</p>
+              </div>
+            </div>
+          `;
+        }).join("");
+        selectedStore = "Multiple Stores (Cart)";
+
+      } else {
+        // DIRECT BUY
+        const p = allProducts.find(x => x.id === productId);
+        if (!p) { alert("Product not found!"); window.location.href = "index.html"; return; }
+        
+        orderProducts.push({ ...p, selectedSize: size, selectedQty: 1 });
+        
+        document.getElementById("productSummary").innerHTML = `
+          <div style="display:flex; gap:15px; align-items:center;">
+            <img src="${p.image}" style="width:70px; height:70px; object-fit:cover; border-radius:6px;">
+            <div class="product-summary-info">
+              <h4>${p.name}</h4>
+              <p>Size: ${size} | Price: ₹${p.price}</p>
+              <p style="font-size:11px; color:var(--gold); font-weight:bold; margin-top:3px;">Store: ${selectedStore}</p>
+            </div>
+          </div>
+        `;
       }
-
-      document.getElementById("productSummary").innerHTML = `
-        <img src="${orderProduct.image}" alt="${orderProduct.name}">
-        <div class="product-summary-info">
-          <h4>${orderProduct.name}</h4>
-          <p>Variant: ${selectedSize} | Price: ₹${orderProduct.price}</p>
-          <p style="font-size:11px; color:var(--gold); font-weight:bold; margin-top:3px;">Store: ${selectedStore}</p>
-        </div>
-      `;
 
       document.getElementById("checkoutForm").addEventListener("submit", (e) => {
         e.preventDefault();
-
         const name = document.getElementById("custName").value;
         const phone = document.getElementById("custPhone").value;
         const address = document.getElementById("custAddress").value;
@@ -136,11 +146,17 @@
         const pincode = document.getElementById("custPincode").value;
         const payment = document.querySelector('input[name="payment"]:checked').value;
 
+        let productDetailsText = "";
+        let totalAmount = 0;
+
+        orderProducts.forEach(item => {
+          productDetailsText += `- ${item.name} (Qty: ${item.selectedQty}, Size: ${item.selectedSize}) = ₹${item.price * item.selectedQty}\n`;
+          totalAmount += (item.price * item.selectedQty);
+        });
+
         const msg = `*NEW ORDER - ${selectedStore}*\n\n` +
-                    `*Product Details:*\n` +
-                    `Item: ${orderProduct.name}\n` +
-                    `Size/Qty: ${selectedSize}\n` +
-                    `Price: ₹${orderProduct.price}\n\n` +
+                    `*Product Details:*\n${productDetailsText}\n` +
+                    `*Total Amount: ₹${totalAmount}*\n\n` +
                     `*Customer Details:*\n` +
                     `Name: ${name}\n` +
                     `Phone: ${phone}\n` +
@@ -148,9 +164,10 @@
                     `*Payment Mode:* ${payment}\n\n` +
                     `Please confirm my order.`;
 
+        if(isCartOrder) localStorage.removeItem("aaradhyaMartCart");
+
         window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
-        // Optional: Redirect to home after order
-        // setTimeout(() => window.location.href = "index.html", 2000);
+        setTimeout(() => window.location.href = "index.html", 2000);
       });
     });
   </script>
