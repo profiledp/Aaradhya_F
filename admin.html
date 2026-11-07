@@ -24,7 +24,6 @@
     .btn-danger { background: #ef4444; color: #fff; }
     .hidden { display: none !important; }
     
-    /* Filter Tabs */
     .filter-tabs { display: flex; gap: 10px; margin-bottom: 15px; }
     .filter-btn { padding: 8px 15px; border: 1px solid #ccc; background: #fff; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: bold; }
     .filter-btn.active { background: #10243b; color: #fff; border-color: #10243b; }
@@ -64,7 +63,6 @@
           <div class="form-field"><label>Price (₹)</label><input id="pPrice" type="number" required></div>
           <div class="form-field"><label>Original Price (₹)</label><input id="pOriginal" type="number"></div>
           
-          <!-- NAYA FIELD: UNIT / WEIGHT -->
           <div class="form-field">
             <label>Unit (KG, Gram, Packet, Pieces)</label>
             <input id="pUnit" placeholder="e.g. 1kg, 500g, 1 Packet">
@@ -87,7 +85,6 @@
       <div style="display:flex; justify-content:space-between; align-items:center;">
         <h2>All Products (Live)</h2>
         
-        <!-- NAYA FILTER: STORE SELECTION -->
         <div class="filter-tabs">
           <button class="filter-btn active" onclick="filterTable('All', this)">All</button>
           <button class="filter-btn" onclick="filterTable('Fashion', this)">Fashion</button>
@@ -108,7 +105,6 @@
     import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-    // APNA FIREBASE CONFIG YAHAN PASTE KAREIN
     const firebaseConfig = {
       apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y",
       authDomain: "aaradhya-mart.firebaseapp.com",
@@ -124,7 +120,7 @@
     const auth = getAuth(app);
 
     let allProducts = [];
-    let currentFilter = "All"; // Naya variable filter ke liye
+    let currentFilter = "All";
 
     async function loadProducts() {
       const querySnapshot = await getDocs(collection(db, "products"));
@@ -133,7 +129,6 @@
       renderTable();
     }
 
-    // FILTER LOGIC
     window.filterTable = function(storeName, btnElement) {
       currentFilter = storeName;
       document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
@@ -142,7 +137,6 @@
     }
 
     function renderTable() {
-      // Pehle filter karein
       let filteredProducts = allProducts;
       if (currentFilter !== "All") {
         filteredProducts = allProducts.filter(p => p.store === currentFilter);
@@ -191,7 +185,7 @@
         category: document.getElementById("pCategory").value,
         price: Number(document.getElementById("pPrice").value),
         originalPrice: Number(document.getElementById("pOriginal").value) || 0,
-        unit: document.getElementById("pUnit").value, // Naya Field Save ho raha hai
+        unit: document.getElementById("pUnit").value,
         stock: Number(document.getElementById("pStock").value),
         image: document.getElementById("pImage").value,
         sizes: document.getElementById("pSizes").value.split(",").map(s=>s.trim()).filter(Boolean),
