@@ -74,6 +74,10 @@
 .cart-remove{color:red;font-size:12px;cursor:pointer;text-decoration:underline;background:none;border:none;margin-top:5px}
 .cart-summary-box{background:var(--cream);padding:20px;border-radius:8px;margin-top:30px;text-align:right}
 .cart-total{font-size:20px;font-weight:bold;color:var(--navy);margin-bottom:15px}
+/* Toast Notification (Pro Popup) */
+.toast-notification{position:fixed;top:100px;right:20px;background:#fff;color:var(--navy);padding:15px 25px;border-radius:8px;box-shadow:0 10px 30px rgba(0,0,0,0.15);display:flex;align-items:center;gap:12px;font-size:14px;font-weight:600;z-index:99999;border-left:4px solid #10b981;transform:translateX(150%);transition:transform 0.4s cubic-bezier(0.68,-0.55,0.265,1.55)}
+.toast-notification.show{transform:translateX(0)}
+.toast-icon{font-size:20px}
 /* Responsive */
 @media(max-width:900px){.product-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:650px){.site-header{padding:0 4%;height:70px}.hero{height:300px;padding:0 7%}.product-grid{grid-template-columns:repeat(2,1fr)}.dialog-layout{grid-template-columns:1fr}.dialog-layout img{min-height:250px;max-height:300px}.shop-controls{flex-wrap:wrap}.search-field{flex-basis:100%}.shop-controls select{flex:1}.category-nav{gap:8px}.cat-nav-btn{padding:8px 14px;font-size:11px}.global-cart-btn{bottom:20px;right:20px;padding:10px 15px}.cart-text{display:none}}
