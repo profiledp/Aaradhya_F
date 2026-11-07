@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Your Cart | Aaradhya Mart</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    .clear-cart-btn { background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; padding: 8px 15px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: bold; margin-bottom: 15px; }
+    .clear-cart-btn:hover { background: #fecaca; }
+  </style>
 </head>
 <body>
   <header class="site-header">
@@ -13,9 +17,12 @@
   </header>
 
   <main class="cart-container">
-    <h2 style="font-family:Georgia; color:var(--navy);">Shopping Cart</h2>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+      <h2 style="font-family:Georgia; color:var(--navy); margin: 0;">Shopping Cart</h2>
+      <button class="clear-cart-btn" onclick="clearAllCart()">Clear Cart 🗑️</button>
+    </div>
     
-    <!-- Loading Indicator -->
+    <!-- Loading Text -->
     <div id="loadingCart" style="text-align:center; padding: 20px; font-weight:bold; color: var(--muted);">
       Loading your items...
     </div>
@@ -37,7 +44,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // APNA FIREBASE CONFIG YAHAN DAALEIN
+    // FIREBASE CONFIG
     const firebaseConfig = {
       apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y",
       authDomain: "aaradhya-mart.firebaseapp.com",
@@ -54,62 +61,61 @@
     let allProducts = [];
     let cartData = [];
 
-    // Main Function
     async function initCart() {
       try {
-        // 1. Get Cart from LocalStorage
+        // 1. Get Cart
         const savedCart = localStorage.getItem("aaradhyaMartCart");
         cartData = savedCart ? JSON.parse(savedCart) : [];
         
-        if (cartData.length === 0) {
-          showEmpty();
-          return;
-        }
-
-        // 2. Fetch all products from Firebase
+        // 2. Fetch Firebase Products
         const querySnapshot = await getDocs(collection(db, "products"));
         allProducts = [];
         querySnapshot.forEach((doc) => {
           allProducts.push({ id: doc.id, ...doc.data() });
         });
 
-        // 3. Render Cart
+        // 3. Purane invalid products ko cart se hatayein
+        const initialLength = cartData.length;
+        cartData = cartData.filter(item => allProducts.some(p => String(p.id) === String(item.id)));
+        
+        // Agar kuch items hataye gaye, toh naya cart save karein
+        if(cartData.length !== initialLength) {
+          localStorage.setItem("aaradhyaMartCart", JSON.stringify(cartData));
+          if(typeof updateGlobalCart === 'function') updateGlobalCart();
+        }
+
+        // 4. Render
         renderCart();
 
       } catch (error) {
         console.error("Cart Error:", error);
-        document.getElementById("loadingCart").innerHTML = "<span style='color:red'>Error loading products. Please check console.</span>";
+        document.getElementById("loadingCart").innerHTML = "<span style='color:red'>Error loading products.</span>";
       }
-    }
-
-    function showEmpty() {
-      document.getElementById("loadingCart").style.display = "none";
-      document.getElementById("emptyCart").style.display = "block";
-      document.getElementById("cartSummary").style.display = "none";
     }
 
     function renderCart() {
       document.getElementById("loadingCart").style.display = "none";
       const container = document.getElementById("cartItems");
       const summary = document.getElementById("cartSummary");
+      const empty = document.getElementById("emptyCart");
       
       if (cartData.length === 0) {
-        showEmpty();
+        container.innerHTML = ""; 
+        summary.style.display = "none"; 
+        empty.style.display = "block"; 
         return;
       }
       
+      empty.style.display = "none"; 
       summary.style.display = "block";
+      
       let total = 0;
       let html = "";
 
       cartData.forEach((item, index) => {
-        // Match Product ID
         const p = allProducts.find(x => String(x.id) === String(item.id));
         
-        if (!p) {
-          console.warn("Product not found in Firebase for ID:", item.id);
-          return; // Skip if deleted from admin
-        }
+        if (!p) return;
         
         const itemTotal = Number(p.price) * Number(item.qty || 1);
         total += itemTotal;
@@ -135,20 +141,28 @@
       document.getElementById("cartTotal").textContent = total.toLocaleString("en-IN");
     }
 
-    // Global Functions for Buttons
+    window.clearAllCart = function() {
+      if(confirm("Are you sure you want to clear your cart?")) {
+        localStorage.removeItem("aaradhyaMartCart");
+        cartData = [];
+        renderCart();
+        if(typeof updateGlobalCart === 'function') updateGlobalCart();
+      }
+    }
+
     window.updateQty = function(index, newQty) {
       let qty = parseInt(newQty);
       if (qty < 1 || isNaN(qty)) qty = 1;
       cartData[index].qty = qty;
       localStorage.setItem("aaradhyaMartCart", JSON.stringify(cartData));
       renderCart();
+      if(typeof updateGlobalCart === 'function') updateGlobalCart();
     }
 
     window.removeFromCart = function(index) {
       cartData.splice(index, 1);
       localStorage.setItem("aaradhyaMartCart", JSON.stringify(cartData));
       renderCart();
-      // Update floating cart icon if exists
       if(typeof updateGlobalCart === 'function') updateGlobalCart();
     }
 
@@ -156,7 +170,6 @@
       if(cartData.length > 0) window.location.href = "checkout.html";
     }
 
-    // Start
     document.addEventListener("DOMContentLoaded", initCart);
   </script>
 </body>
