@@ -23,6 +23,11 @@
     .btn-primary { background: #10243b; color: #fff; }
     .btn-danger { background: #ef4444; color: #fff; }
     .hidden { display: none !important; }
+    
+    /* Filter Tabs */
+    .filter-tabs { display: flex; gap: 10px; margin-bottom: 15px; }
+    .filter-btn { padding: 8px 15px; border: 1px solid #ccc; background: #fff; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: bold; }
+    .filter-btn.active { background: #10243b; color: #fff; border-color: #10243b; }
   </style>
 </head>
 <body>
@@ -48,14 +53,26 @@
         <input type="hidden" id="editId">
         <div class="grid-form">
           <div class="form-field"><label>Store</label>
-            <select id="pStore"><option value="Fashion">Fashion</option><option value="Print">Print</option><option value="Kirana">Kirana</option></select>
+            <select id="pStore">
+              <option value="Fashion">Fashion</option>
+              <option value="Print">Print</option>
+              <option value="Kirana">Kirana</option>
+            </select>
           </div>
           <div class="form-field"><label>Product Name</label><input id="pName" required></div>
           <div class="form-field"><label>Category</label><input id="pCategory" required placeholder="e.g. Men, Grocery"></div>
           <div class="form-field"><label>Price (₹)</label><input id="pPrice" type="number" required></div>
           <div class="form-field"><label>Original Price (₹)</label><input id="pOriginal" type="number"></div>
-          <div class="form-field"><label>Stock</label><input id="pStock" type="number" required value="10"></div>
+          
+          <!-- NAYA FIELD: UNIT / WEIGHT -->
+          <div class="form-field">
+            <label>Unit (KG, Gram, Packet, Pieces)</label>
+            <input id="pUnit" placeholder="e.g. 1kg, 500g, 1 Packet">
+          </div>
+
+          <div class="form-field"><label>Stock Quantity</label><input id="pStock" type="number" required value="10"></div>
           <div class="form-field full"><label>Image URL</label><input id="pImage" required placeholder="https://..."></div>
+          
           <div class="form-field"><label>Sizes (Comma Separated)</label><input id="pSizes" placeholder="M, L, XL"></div>
           <div class="form-field"><label>Tag</label><input id="pTag" placeholder="NEW / POPULAR"></div>
           <div class="form-field full"><label>Description</label><textarea id="pDescription"></textarea></div>
@@ -67,9 +84,20 @@
     </div>
 
     <div class="admin-panel">
-      <h2>All Products (Live)</h2>
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h2>All Products (Live)</h2>
+        
+        <!-- NAYA FILTER: STORE SELECTION -->
+        <div class="filter-tabs">
+          <button class="filter-btn active" onclick="filterTable('All', this)">All</button>
+          <button class="filter-btn" onclick="filterTable('Fashion', this)">Fashion</button>
+          <button class="filter-btn" onclick="filterTable('Print', this)">Print</button>
+          <button class="filter-btn" onclick="filterTable('Kirana', this)">Kirana</button>
+        </div>
+      </div>
+
       <table class="admin-table">
-        <thead><tr><th>Store</th><th>Name</th><th>Price</th><th>Quick Stock</th><th>Actions</th></tr></thead>
+        <thead><tr><th>Store</th><th>Name</th><th>Unit</th><th>Price</th><th>Quick Stock</th><th>Actions</th></tr></thead>
         <tbody id="productRows"></tbody>
       </table>
     </div>
@@ -80,6 +108,7 @@
     import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
+    // APNA FIREBASE CONFIG YAHAN PASTE KAREIN
     const firebaseConfig = {
       apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y",
       authDomain: "aaradhya-mart.firebaseapp.com",
@@ -95,6 +124,7 @@
     const auth = getAuth(app);
 
     let allProducts = [];
+    let currentFilter = "All"; // Naya variable filter ke liye
 
     async function loadProducts() {
       const querySnapshot = await getDocs(collection(db, "products"));
@@ -103,11 +133,26 @@
       renderTable();
     }
 
+    // FILTER LOGIC
+    window.filterTable = function(storeName, btnElement) {
+      currentFilter = storeName;
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      btnElement.classList.add('active');
+      renderTable();
+    }
+
     function renderTable() {
-      document.getElementById("productRows").innerHTML = allProducts.map(p => `
+      // Pehle filter karein
+      let filteredProducts = allProducts;
+      if (currentFilter !== "All") {
+        filteredProducts = allProducts.filter(p => p.store === currentFilter);
+      }
+
+      document.getElementById("productRows").innerHTML = filteredProducts.map(p => `
         <tr>
-          <td>${p.store}</td>
+          <td><span class="badge">${p.store}</span></td>
           <td>${p.name}</td>
+          <td>${p.unit || '-'}</td>
           <td>₹${p.price}</td>
           <td><input type="number" class="stock-input" value="${p.stock}" data-stock-id="${p.id}"></td>
           <td>
@@ -146,6 +191,7 @@
         category: document.getElementById("pCategory").value,
         price: Number(document.getElementById("pPrice").value),
         originalPrice: Number(document.getElementById("pOriginal").value) || 0,
+        unit: document.getElementById("pUnit").value, // Naya Field Save ho raha hai
         stock: Number(document.getElementById("pStock").value),
         image: document.getElementById("pImage").value,
         sizes: document.getElementById("pSizes").value.split(",").map(s=>s.trim()).filter(Boolean),
@@ -177,6 +223,7 @@
         document.getElementById("pCategory").value = p.category;
         document.getElementById("pPrice").value = p.price;
         document.getElementById("pOriginal").value = p.originalPrice;
+        document.getElementById("pUnit").value = p.unit || "";
         document.getElementById("pStock").value = p.stock;
         document.getElementById("pImage").value = p.image;
         document.getElementById("pSizes").value = (p.sizes||[]).join(", ");
