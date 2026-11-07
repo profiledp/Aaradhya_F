@@ -13,7 +13,7 @@
     .product-summary-info p { margin: 0; font-size: 13px; color: var(--muted); }
     .form-group { margin-bottom: 15px; }
     .form-group label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 6px; color: var(--ink); }
-    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 6px; font-family: inherit; font-size: 14px; outline: none; transition: 0.2s; }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 6px; font-family: inherit; font-size: 14px; outline: none; transition: 0.2s; box-sizing: border-box; }
     .form-group input:focus, .form-group textarea:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(16,36,59,0.1); }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
     .payment-options { display: flex; gap: 15px; margin-top: 5px; }
@@ -35,7 +35,7 @@
   <main>
     <div class="checkout-container">
       <h2>Complete Your Order</h2>
-      <div class="product-summary" id="productSummary"></div>
+      <div class="product-summary" id="productSummary">Loading...</div>
 
       <form id="checkoutForm">
         <div class="form-group">
@@ -78,21 +78,39 @@
     </div>
   </main>
 
-  <script src="products.js"></script>
-  <script>
-    const WHATSAPP_NUMBER = "918931911428"; // Update if needed
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    // 🔴 APNA FIREBASE CONFIG YAHAN PASTE KAREIN 🔴
+    const firebaseConfig = {
+      apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y",
+      authDomain: "aaradhya-mart.firebaseapp.com",
+      projectId: "aaradhya-mart",
+      storageBucket: "aaradhya-mart.firebasestorage.app",
+      messagingSenderId: "146782544824",
+      appId: "1:146782544824:web:d605e1971d3480fab1654d",
+      measurementId: "G-L6VJBL7ESY"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const WHATSAPP_NUMBER = "918931911428"; // Apna WhatsApp number yahan check karein
     let orderProducts = [];
     let selectedStore = "Aaradhya Mart";
     let isCartOrder = false;
 
-    document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", async () => {
       const urlParams = new URLSearchParams(window.location.search);
       const productId = urlParams.get('id');
       const size = urlParams.get('size') || "N/A";
       selectedStore = urlParams.get('store') || "Aaradhya Mart";
 
-      const savedProds = localStorage.getItem("aaradhyaMartProductsV1");
-      const allProducts = savedProds ? JSON.parse(savedProds) : window.STARTER_PRODUCTS;
+      // Firebase se products load karein
+      const querySnapshot = await getDocs(collection(db, "products"));
+      const allProducts = [];
+      querySnapshot.forEach((doc) => allProducts.push({ id: doc.id, ...doc.data() }));
 
       if (!productId) {
         // CART ORDER
