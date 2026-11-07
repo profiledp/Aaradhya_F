@@ -5,20 +5,58 @@
   <title>Aaradhya Kirana | Grocery</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Naya Style for Quantity Selector */
+    /* Naya Style Blinkit Jaisa */
+    .product-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
+    
+    .product-card { 
+      border: 1px solid var(--line); 
+      border-radius: 8px; 
+      padding: 10px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+    }
+    .product-card:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+    
+    .product-image-wrap {
+      width: 100%;
+      aspect-ratio: 1 / 1; /* Square shape */
+      background: #fff; /* White background */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+    
+    .product-image-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* Image poori fit hogi, kategi nahi */
+      padding: 10px; /* Thoda gap image ke chaaro taraf */
+    }
+    
+    .product-info { padding: 0; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .product-info h3 { font-size: 14px; margin: 5px 0; line-height: 1.3; height: 38px; overflow: hidden; font-family: Arial, sans-serif; font-weight: bold; }
+    
     .unit-selector {
       width: 100%;
-      padding: 8px;
-      margin-top: 10px;
+      padding: 6px;
+      margin-top: 5px;
       border: 1px solid var(--line);
-      border-radius: 6px;
-      background: #fff;
-      font-size: 13px;
+      border-radius: 4px;
+      background: #f8f9fa;
+      font-size: 12px;
       color: var(--navy);
       font-weight: bold;
       outline: none;
       cursor: pointer;
     }
+    
+    .product-actions { display: flex; gap: 8px; margin-top: 10px; }
+    .small-button { font-size: 11px; padding: 8px 5px; border-radius: 4px; }
   </style>
 </head>
 <body>
@@ -86,8 +124,6 @@
       document.getElementById("productGrid").innerHTML = list.map(p => {
         const isOut = p.stock <= 0;
         
-        // Agar Admin ne "Sizes" mein comma lagakar multiple sizes dale hain (jaise 250G, 500G, 1KG)
-        // toh unko dropdown mein dikhayenge. Warna Admin ke "Unit" field ko dikhayenge.
         let optionsHtml = "";
         if(p.sizes && p.sizes.length > 0) {
             optionsHtml = p.sizes.map(s => `<option value="${s}">${s}</option>`).join("");
@@ -97,22 +133,23 @@
 
         return `
         <article class="product-card">
-          <div class="product-image-wrap"><img src="${p.image}" alt="${p.name}"></div>
+          <div class="product-image-wrap">
+            <img src="${p.image}" alt="${p.name}">
+          </div>
           <div class="product-info">
-            <span class="product-category">${p.category}</span>
+            <span class="product-category" style="font-size:10px;">${p.category}</span>
             <h3>${p.name}</h3>
-            <div class="product-price">${money(p.price)}</div>
+            <div class="product-price" style="margin-bottom:5px;">${money(p.price)}</div>
             
-            <!-- YAHAN HAI NAYA QUANTITY SELECTOR -->
             ${!isOut ? `
               <select id="unit-${p.id}" class="unit-selector">
                 ${optionsHtml}
               </select>
-            ` : ''}
+            ` : '<div style="color:red; font-size:12px; font-weight:bold; margin-bottom:10px;">OUT OF STOCK</div>'}
 
-            <div class="product-actions" style="margin-top:10px;">
-              <button class="small-button primary" data-order="${p.id}" ${isOut?'disabled':''}>BUY NOW</button>
-              <button class="small-button add-cart-btn" data-cart="${p.id}" ${isOut?'disabled':''}>ADD TO CART 🛒</button>
+            <div class="product-actions">
+              <button class="small-button primary" data-order="${p.id}" ${isOut?'disabled':''}>BUY</button>
+              <button class="small-button add-cart-btn" data-cart="${p.id}" ${isOut?'disabled':''}>ADD 🛒</button>
             </div>
           </div>
         </article>`;
