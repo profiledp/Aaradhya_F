@@ -19,11 +19,15 @@
 
     <div class="shop-controls">
       <label class="search-field"><span>⌕</span><input id="searchInput" type="search" placeholder="Search grocery..." autocomplete="off"></label>
-      <select id="sortFilter"><option value="featured">Featured</option><option value="low">Price: Low to High</option><option value="high">Price: High to Low</option></select>
+      <select id="sortFilter"><option value="featured">Sort: Featured</option><option value="low">Price: Low to High</option><option value="high">Price: High to Low</option></select>
     </div>
 
     <div class="product-grid" id="productGrid"></div>
   </main>
+
+  <a href="cart.html" class="floating-cart-btn" id="floatingCart" style="display:none;">
+    🛒 <span class="cart-count" id="cartCount">0</span>
+  </a>
 
   <script src="products.js"></script>
   <script>
@@ -45,7 +49,9 @@
       if (sort === "low") list.sort((a,b)=>a.price-b.price);
       if (sort === "high") list.sort((a,b)=>b.price-a.price);
 
-      document.getElementById("productGrid").innerHTML = list.map(p => `
+      document.getElementById("productGrid").innerHTML = list.map(p => {
+        const isOut = p.stock <= 0;
+        return `
         <article class="product-card">
           <div class="product-image-wrap">
             <img src="${p.image}" alt="${p.name}">
@@ -55,23 +61,43 @@
             <h3>${p.name}</h3>
             <div class="product-price">${money(p.price)}</div>
             <div class="product-actions">
-              <button class="small-button primary" data-order="${p.id}">ORDER ↗</button>
+              <button class="small-button primary" data-order="${p.id}" ${isOut?'disabled':''}>BUY NOW</button>
+              <button class="small-button add-cart-btn" data-cart="${p.id}" ${isOut?'disabled':''}>ADD TO CART 🛒</button>
             </div>
           </div>
-        </article>`).join("");
+        </article>`;
+      }).join("");
+    }
+
+    function addToCart(id) {
+      let cart = JSON.parse(localStorage.getItem("aaradhyaMartCart") || "[]");
+      cart.push({ id: id, size: "Standard", qty: 1 });
+      localStorage.setItem("aaradhyaMartCart", JSON.stringify(cart));
+      alert("Added to Cart! 🛒");
+      updateCartIcon();
+    }
+
+    function updateCartIcon() {
+      const cart = JSON.parse(localStorage.getItem("aaradhyaMartCart") || "[]");
+      const count = cart.reduce((sum, item) => sum + item.qty, 0);
+      const btn = document.getElementById("floatingCart");
+      if(count > 0) { btn.style.display = "flex"; document.getElementById("cartCount").textContent = count; }
+      else { btn.style.display = "none"; }
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      load(); render();
+      load(); render(); updateCartIcon();
       document.getElementById("searchInput").addEventListener("input", render);
       document.getElementById("sortFilter").addEventListener("change", render);
       
       document.getElementById("productGrid").addEventListener("click", e => {
         const order = e.target.closest("[data-order]");
-        if(order) {
+        const cartBtn = e.target.closest("[data-cart]");
+        if(order && !order.disabled) {
           const p = products.find(x=>x.id===order.dataset.order);
           window.location.href = `checkout.html?id=${p.id}&size=Standard&store=Aaradhya Kirana`;
         }
+        if(cartBtn && !cartBtn.disabled) addToCart(cartBtn.dataset.cart);
       });
     });
   </script>
