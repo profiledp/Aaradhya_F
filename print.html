@@ -4,60 +4,6 @@
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <title>A-Print | Custom Printing</title>
   <link rel="stylesheet" href="style.css">
-  <style>
-    /* Blinkit Jaisa Grid Design */
-    .product-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
-    
-    .product-card { 
-      border: 1px solid var(--line); 
-      border-radius: 8px; 
-      padding: 10px;
-      transition: transform 0.2s, box-shadow 0.2s;
-      background: #fff;
-      display: flex;
-      flex-direction: column;
-    }
-    .product-card:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-    
-    .product-image-wrap {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      background: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      border-radius: 6px;
-      margin-bottom: 10px;
-    }
-    
-    .product-image-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      padding: 5px;
-    }
-    
-    .product-info { padding: 0; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
-    .product-info h3 { font-size: 14px; margin: 5px 0; line-height: 1.3; height: 38px; overflow: hidden; font-family: Arial, sans-serif; font-weight: bold; }
-    
-    .unit-selector {
-      width: 100%;
-      padding: 6px;
-      margin-top: 5px;
-      border: 1px solid var(--line);
-      border-radius: 4px;
-      background: #f8f9fa;
-      font-size: 12px;
-      color: var(--navy);
-      font-weight: bold;
-      outline: none;
-      cursor: pointer;
-    }
-    
-    .product-actions { display: flex; gap: 8px; margin-top: 10px; }
-    .small-button { font-size: 11px; padding: 8px 5px; border-radius: 4px; }
-  </style>
 </head>
 <body>
   <header class="site-header">
@@ -81,6 +27,10 @@
 
   <a href="cart.html" id="globalCartBtn" class="global-cart-btn">
     <span class="cart-icon-svg">🛒</span><span class="cart-text">Cart</span><span class="cart-badge" id="globalCartCount">0</span>
+  </a>
+
+  <a href="https://wa.me/918931911428?text=Hello%20Aaradhya%20Mart,%20I%20need%20some%20help." target="_blank" class="whatsapp-float-btn" aria-label="Chat on WhatsApp">
+    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M16.004 2C8.28 2 2 8.28 2 16c0 2.47.64 4.79 1.76 6.81L2 30l7.39-1.71A13.93 13.93 0 0 0 16.004 30C23.72 30 30 23.72 30 16S23.72 2 16.004 2zm0 2.31c6.76 0 12.23 5.47 12.23 12.23 0 6.76-5.47 12.23-12.23 12.23-2.13 0-4.13-.55-5.86-1.51l-.42-.23-4.32 1 1-4.21-.24-.4A12.17 12.17 0 0 1 3.77 16c0-6.76 5.47-12.23 12.23-12.23z" fill="#fff"/><path d="M21.66 18.14c-.23-.12-1.38-.68-1.6-.76-.21-.08-.37-.12-.53.12-.16.24-.61.76-.75.92-.14.16-.28.18-.51.06-.23-.12-1-.37-1.91-1.18-.71-.63-1.18-1.41-1.32-1.65-.14-.24-.02-.37.1-.49.11-.11.23-.28.35-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.53-1.27-.72-1.74-.19-.46-.38-.4-.53-.4h-.45c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.69 2.58 4.1 3.62.57.25 1.02.4 1.37.51.57.18 1.09.15 1.5.09.46-.07 1.38-.56 1.58-1.11.2-.55.2-1.02.14-1.11-.06-.09-.22-.15-.45-.27z" fill="#fff"/></svg>
   </a>
 
   <script type="module">
@@ -122,7 +72,6 @@
 
       document.getElementById("productGrid").innerHTML = list.map(p => {
         const isOut = p.stock <= 0;
-        
         let optionsHtml = "";
         if(p.sizes && p.sizes.length > 0) {
             optionsHtml = p.sizes.map(s => `<option value="${s}">${s}</option>`).join("");
@@ -136,9 +85,9 @@
             <img src="${p.image}" alt="${p.name}">
           </div>
           <div class="product-info">
-            <span class="product-category" style="font-size:10px;">${p.category}</span>
+            <span class="product-category">${p.category}</span>
             <h3>${p.name}</h3>
-            <div class="product-price" style="margin-bottom:5px;">${p.price === 0 ? 'Custom Quote' : money(p.price)}</div>
+            <div class="product-price">${p.price === 0 ? 'Custom Quote' : money(p.price)}</div>
             
             ${!isOut ? `
               <select id="unit-${p.id}" class="unit-selector">
