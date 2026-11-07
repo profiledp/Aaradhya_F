@@ -103,4 +103,27 @@
         const badge = document.getElementById("globalCartCount");
         if (badge) {
           badge.textContent = count;
-          badge.style.background = count === 0 ? "#ccc" : "var(--
+          badge.style.background = count === 0 ? "#ccc" : "var(--gold)";
+          badge.style.color = count === 0 ? "#fff" : "var(--navy)";
+        }
+      } catch(e) {}
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadFirebaseProducts(); updateGlobalCart();
+      document.getElementById("searchInput").addEventListener("input", render);
+      document.getElementById("categoryFilter").addEventListener("change", render);
+      
+      document.getElementById("productGrid").addEventListener("click", e => {
+        const order = e.target.closest("[data-order]");
+        const cartBtn = e.target.closest("[data-cart]");
+        if(order) {
+          const p = products.find(x=>x.id===order.dataset.order);
+          window.location.href = `checkout.html?id=${p.id}&size=Custom&store=A-Print`;
+        }
+        if(cartBtn) addToCart(cartBtn.dataset.cart);
+      });
+    });
+  </script>
+</body>
+</html>
