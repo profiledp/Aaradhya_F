@@ -6,15 +6,15 @@
   <title>Admin Dashboard | Aaradhya Mart</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    body { background: #f4f6f8; }
+    body { background: #f4f6f8; margin: 0; font-family: Arial, sans-serif; }
     .login-wrapper { display: flex; justify-content: center; align-items: center; min-height: 100vh; }
     .login-card { background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); width: 100%; max-width: 400px; text-align: center; }
-    .login-card input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px; }
+    .login-card input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
     .admin-shell { max-width: 1200px; margin: 40px auto; padding: 20px; }
     .admin-panel { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
     .grid-form { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
     .form-field label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px; }
-    .form-field input, .form-field select, .form-field textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+    .form-field input, .form-field select, .form-field textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
     .form-field.full { grid-column: 1 / -1; }
     .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
     .admin-table th, .admin-table td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
@@ -22,14 +22,15 @@
     .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
     .btn-primary { background: #10243b; color: #fff; }
     .btn-danger { background: #ef4444; color: #fff; }
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
   <div id="loginView" class="login-wrapper">
     <div class="login-card">
       <h2>Admin Login</h2>
-      <input id="adminEmail" type="email" placeholder="Email">
-      <input id="adminPass" type="password" placeholder="Password">
+      <input id="adminEmail" type="email" placeholder="Email" required>
+      <input id="adminPass" type="password" placeholder="Password" required>
       <button class="btn btn-primary" id="loginButton" style="width:100%;">LOGIN</button>
       <p id="loginError" style="color:red; font-size:12px; margin-top:10px;"></p>
     </div>
@@ -37,7 +38,7 @@
 
   <div id="adminView" class="admin-shell hidden">
     <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-      <h1>Stock Manager (Firebase)</h1>
+      <h1>Stock Manager (Cloud)</h1>
       <button class="btn btn-danger" id="logoutButton">LOG OUT</button>
     </div>
 
@@ -66,7 +67,7 @@
     </div>
 
     <div class="admin-panel">
-      <h2>All Products</h2>
+      <h2>All Products (Live)</h2>
       <table class="admin-table">
         <thead><tr><th>Store</th><th>Name</th><th>Price</th><th>Quick Stock</th><th>Actions</th></tr></thead>
         <tbody id="productRows"></tbody>
@@ -79,14 +80,14 @@
     import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-    // 🔴 YAHAN APNA FIREBASE CONFIG PASTE KAREIN 🔴
     const firebaseConfig = {
-      apiKey: "AIzaSyC9...",
+      apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y",
       authDomain: "aaradhya-mart.firebaseapp.com",
       projectId: "aaradhya-mart",
-      storageBucket: "aaradhya-mart.appspot.com",
-      messagingSenderId: "14...",
-      appId: "1:14...:web:..."
+      storageBucket: "aaradhya-mart.firebasestorage.app",
+      messagingSenderId: "146782544824",
+      appId: "1:146782544824:web:d605e1971d3480fab1654d",
+      measurementId: "G-L6VJBL7ESY"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -95,7 +96,6 @@
 
     let allProducts = [];
 
-    // Load Products
     async function loadProducts() {
       const querySnapshot = await getDocs(collection(db, "products"));
       allProducts = [];
@@ -118,15 +118,10 @@
       `).join("");
     }
 
-    // Auth Logic
     document.getElementById("loginButton").onclick = async () => {
-      const email = document.getElementById("adminEmail").value;
-      const pass = document.getElementById("adminPass").value;
       try {
-        await signInWithEmailAndPassword(auth, email, pass);
-      } catch (e) {
-        document.getElementById("loginError").textContent = "Login failed: " + e.message;
-      }
+        await signInWithEmailAndPassword(auth, document.getElementById("adminEmail").value, document.getElementById("adminPass").value);
+      } catch (e) { document.getElementById("loginError").textContent = "Login failed: " + e.message; }
     };
 
     document.getElementById("logoutButton").onclick = () => signOut(auth);
@@ -142,7 +137,6 @@
       }
     });
 
-    // Save Product
     document.getElementById("productForm").onsubmit = async (e) => {
       e.preventDefault();
       const id = document.getElementById("editId").value || "P" + Date.now();
@@ -165,21 +159,16 @@
       alert("Product Saved to Cloud!");
     };
 
-    // Quick Stock Update
     document.getElementById("productRows").addEventListener("change", async (e) => {
       if(e.target.hasAttribute("data-stock-id")) {
-        const id = e.target.dataset.stockId;
-        await updateDoc(doc(db, "products", id), { stock: Number(e.target.value) });
-        e.target.style.background = "#d4edda";
-        setTimeout(() => e.target.style.background = "", 1000);
+        await updateDoc(doc(db, "products", e.target.dataset.stockId), { stock: Number(e.target.value) });
+        e.target.style.background = "#d4edda"; setTimeout(() => e.target.style.background = "", 1000);
       }
     });
 
-    // Edit / Delete
     document.getElementById("productRows").addEventListener("click", async (e) => {
       const editId = e.target.dataset.edit;
       const delId = e.target.dataset.delete;
-      
       if(editId) {
         const p = allProducts.find(x => x.id === editId);
         document.getElementById("editId").value = p.id;
@@ -196,7 +185,6 @@
         document.getElementById("formTitle").textContent = "Edit Product";
         window.scrollTo(0,0);
       }
-      
       if(delId && confirm("Delete this product?")) {
         await deleteDoc(doc(db, "products", delId));
         loadProducts();
