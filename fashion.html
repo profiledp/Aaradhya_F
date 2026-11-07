@@ -42,8 +42,16 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // 🔴 YAHAN APNA FIREBASE CONFIG PASTE KAREIN 🔴
-    const firebaseConfig = { /* SAME AS ADMIN CONFIG */ };
+    const firebaseConfig = {
+      apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y",
+      authDomain: "aaradhya-mart.firebaseapp.com",
+      projectId: "aaradhya-mart",
+      storageBucket: "aaradhya-mart.firebasestorage.app",
+      messagingSenderId: "146782544824",
+      appId: "1:146782544824:web:d605e1971d3480fab1654d",
+      measurementId: "G-L6VJBL7ESY"
+    };
+
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
@@ -73,9 +81,8 @@
       const grid = document.getElementById("productGrid");
       const emptyState = document.getElementById("emptyState");
 
-      if (list.length === 0) {
-        grid.innerHTML = ""; emptyState.classList.remove("hidden");
-      } else {
+      if (list.length === 0) { grid.innerHTML = ""; emptyState.classList.remove("hidden"); }
+      else {
         emptyState.classList.add("hidden");
         grid.innerHTML = list.map(p => {
           const isOut = p.stock <= 0;
@@ -117,15 +124,13 @@
           </div>
         </div>`;
       d.showModal();
-      
       document.getElementById("dialogOrder").onclick = () => {
         const size = document.getElementById("sizeChoice").value;
         window.location.href = `checkout.html?id=${p.id}&size=${encodeURIComponent(size)}&store=Aaradhya Fashion`;
       };
       document.getElementById("dialogCart").onclick = () => {
         const size = document.getElementById("sizeChoice").value;
-        addToCart(p.id, size);
-        d.close();
+        addToCart(p.id, size); d.close();
       };
     }
 
@@ -178,8 +183,7 @@
       const urlCat = new URLSearchParams(window.location.search).get('category');
       if (urlCat && fashionCats.includes(urlCat)) catSelect.value = urlCat;
 
-      loadFirebaseProducts();
-      updateGlobalCart();
+      loadFirebaseProducts(); updateGlobalCart();
       
       document.getElementById("searchInput").addEventListener("input", render);
       document.getElementById("sortFilter").addEventListener("change", render);
