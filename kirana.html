@@ -69,25 +69,27 @@
 
       document.getElementById("productGrid").innerHTML = list.map(p => {
         const isOut = p.stock <= 0;
+        const unitText = p.unit ? `(${p.unit})` : "";
+        
         return `
         <article class="product-card">
           <div class="product-image-wrap"><img src="${p.image}" alt="${p.name}"></div>
           <div class="product-info">
             <span class="product-category">${p.category}</span>
-            <h3>${p.name}</h3>
+            <h3>${p.name} <span style="font-size:12px; color:var(--muted); font-weight:normal;">${unitText}</span></h3>
             <div class="product-price">${money(p.price)}</div>
             <div class="product-actions">
               <button class="small-button primary" data-order="${p.id}" ${isOut?'disabled':''}>BUY NOW</button>
-              <button class="small-button add-cart-btn" data-cart="${p.id}" ${isOut?'disabled':''}>ADD TO CART 🛒</button>
+              <button class="small-button add-cart-btn" data-cart="${p.id}" data-unit="${p.unit || 'Standard'}" ${isOut?'disabled':''}>ADD TO CART 🛒</button>
             </div>
           </div>
         </article>`;
       }).join("");
     }
 
-    function addToCart(id) {
+    function addToCart(id, unit) {
       let cart = JSON.parse(localStorage.getItem("aaradhyaMartCart") || "[]");
-      cart.push({ id: id, size: "Standard", qty: 1 });
+      cart.push({ id: id, size: unit, qty: 1 });
       localStorage.setItem("aaradhyaMartCart", JSON.stringify(cart));
       showToast(); updateGlobalCart();
     }
@@ -123,9 +125,9 @@
         const cartBtn = e.target.closest("[data-cart]");
         if(order && !order.disabled) {
           const p = products.find(x=>x.id===order.dataset.order);
-          window.location.href = `checkout.html?id=${p.id}&size=Standard&store=Aaradhya Kirana`;
+          window.location.href = `checkout.html?id=${p.id}&size=${encodeURIComponent(p.unit || 'Standard')}&store=Aaradhya Kirana`;
         }
-        if(cartBtn && !cartBtn.disabled) addToCart(cartBtn.dataset.cart);
+        if(cartBtn && !cartBtn.disabled) addToCart(cartBtn.dataset.cart, cartBtn.dataset.unit);
       });
     });
   </script>
