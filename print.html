@@ -33,8 +33,16 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // 🔴 YAHAN APNA FIREBASE CONFIG PASTE KAREIN 🔴
-    const firebaseConfig = { /* SAME AS ADMIN CONFIG */ };
+    const firebaseConfig = {
+      apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y",
+      authDomain: "aaradhya-mart.firebaseapp.com",
+      projectId: "aaradhya-mart",
+      storageBucket: "aaradhya-mart.firebasestorage.app",
+      messagingSenderId: "146782544824",
+      appId: "1:146782544824:web:d605e1971d3480fab1654d",
+      measurementId: "G-L6VJBL7ESY"
+    };
+
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
@@ -95,30 +103,4 @@
         const badge = document.getElementById("globalCartCount");
         if (badge) {
           badge.textContent = count;
-          badge.style.background = count === 0 ? "#ccc" : "var(--gold)";
-          badge.style.color = count === 0 ? "#fff" : "var(--navy)";
-        }
-      } catch(e) {}
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      loadFirebaseProducts(); updateGlobalCart();
-      
-      const catSelect = document.getElementById("categoryFilter");
-      
-      document.getElementById("searchInput").addEventListener("input", render);
-      document.getElementById("categoryFilter").addEventListener("change", render);
-      
-      document.getElementById("productGrid").addEventListener("click", e => {
-        const order = e.target.closest("[data-order]");
-        const cartBtn = e.target.closest("[data-cart]");
-        if(order) {
-          const p = products.find(x=>x.id===order.dataset.order);
-          window.location.href = `checkout.html?id=${p.id}&size=Custom&store=A-Print`;
-        }
-        if(cartBtn) addToCart(cartBtn.dataset.cart);
-      });
-    });
-  </script>
-</body>
-</html>
+          badge.style.background = count === 0 ? "#ccc" : "var(--
