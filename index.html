@@ -81,19 +81,30 @@
     <p>© 2026 Aaradhya Mart. All rights reserved.</p>
   </footer>
 
-  <!-- FLOATING CART ICON -->
-  <a href="cart.html" class="floating-cart-btn" id="floatingCart" style="display:none;">
-    🛒 <span class="cart-count" id="cartCount">0</span>
+  <!-- FLOATING CART BUTTON (Always Visible) -->
+  <a href="cart.html" id="globalCartBtn" class="global-cart-btn">
+    <span class="cart-icon-svg">🛒</span>
+    <span class="cart-text">Cart</span>
+    <span class="cart-badge" id="globalCartCount">0</span>
   </a>
+
   <script>
-    function updateCartIcon() {
-      const cart = JSON.parse(localStorage.getItem("aaradhyaMartCart") || "[]");
-      const count = cart.reduce((sum, item) => sum + item.qty, 0);
-      const btn = document.getElementById("floatingCart");
-      if(count > 0) { btn.style.display = "flex"; document.getElementById("cartCount").textContent = count; }
-      else { btn.style.display = "none"; }
+    function updateGlobalCart() {
+      try {
+        const cart = JSON.parse(localStorage.getItem("aaradhyaMartCart") || "[]");
+        const count = cart.reduce((sum, item) => sum + (Number(item.qty) || 1), 0);
+        const badge = document.getElementById("globalCartCount");
+        if (badge) {
+          badge.textContent = count;
+          if (count === 0) {
+            badge.style.background = "#ccc"; badge.style.color = "#fff";
+          } else {
+            badge.style.background = "var(--gold)"; badge.style.color = "var(--navy)";
+          }
+        }
+      } catch(e) {}
     }
-    document.addEventListener("DOMContentLoaded", updateCartIcon);
+    document.addEventListener("DOMContentLoaded", updateGlobalCart);
   </script>
 </body>
 </html>
