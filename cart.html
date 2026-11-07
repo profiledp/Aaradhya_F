@@ -29,42 +29,59 @@
 
   <script src="products.js"></script>
   <script>
-    let products = [];
-    let cart = [];
+    let allProducts = [];
+    let cartData = [];
 
-    function load() {
-      const savedProds = localStorage.getItem("aaradhyaMartProductsV1");
-      products = savedProds ? JSON.parse(savedProds) : window.STARTER_PRODUCTS;
-      
-      const savedCart = localStorage.getItem("aaradhyaMartCart");
-      cart = savedCart ? JSON.parse(savedCart) : [];
+    function loadCart() {
+      try {
+        const savedProds = localStorage.getItem("aaradhyaMartProductsV1");
+        allProducts = savedProds ? JSON.parse(savedProds) : (window.STARTER_PRODUCTS || []);
+      } catch(e) { allProducts = window.STARTER_PRODUCTS || []; }
+
+      try {
+        const savedCart = localStorage.getItem("aaradhyaMartCart");
+        cartData = savedCart ? JSON.parse(savedCart) : [];
+      } catch(e) { cartData = []; }
+
+      renderCart();
     }
 
-    function money(v) { return "₹" + Number(v||0).toLocaleString("en-IN"); }
+    function formatMoney(amount) {
+      return "₹" + Number(amount || 0).toLocaleString("en-IN");
+    }
 
     function renderCart() {
       const container = document.getElementById("cartItems");
       const summary = document.getElementById("cartSummary");
       const empty = document.getElementById("emptyCart");
       
-      if (cart.length === 0) {
-        container.innerHTML = ""; summary.style.display = "none"; empty.style.display = "block"; return;
+      if (cartData.length === 0) {
+        container.innerHTML = ""; 
+        summary.style.display = "none"; 
+        empty.style.display = "block"; 
+        return;
       }
       
-      empty.style.display = "none"; summary.style.display = "block";
+      empty.style.display = "none"; 
+      summary.style.display = "block";
       
       let total = 0;
-      container.innerHTML = cart.map((item, index) => {
-        const p = products.find(x => x.id === item.id);
-        if(!p) return "";
-        total += (p.price * item.qty);
-        return `
+      let html = "";
+
+      cartData.forEach((item, index) => {
+        const p = allProducts.find(x => x.id === item.id);
+        if(!p) return;
+        
+        const itemTotal = Number(p.price) * Number(item.qty);
+        total += itemTotal;
+
+        html += `
           <div class="cart-item">
             <img src="${p.image}" alt="${p.name}">
             <div class="cart-item-info">
               <h4>${p.name}</h4>
               <p>Size: ${item.size} | Store: ${p.store}</p>
-              <p style="font-weight:bold; color:var(--navy); margin-top:5px;">${money(p.price)}</p>
+              <p style="font-weight:bold; color:var(--navy); margin-top:5px;">${formatMoney(p.price)}</p>
               <button class="cart-remove" onclick="removeFromCart(${index})">Remove</button>
             </div>
             <div>
@@ -73,32 +90,31 @@
             </div>
           </div>
         `;
-      }).join("");
-      
+      });
+
+      container.innerHTML = html;
       document.getElementById("cartTotal").textContent = total.toLocaleString("en-IN");
     }
 
     function updateQty(index, newQty) {
       let qty = parseInt(newQty);
-      if(qty < 1) qty = 1;
-      cart[index].qty = qty;
-      localStorage.setItem("aaradhyaMartCart", JSON.stringify(cart));
+      if(qty < 1 || isNaN(qty)) qty = 1;
+      cartData[index].qty = qty;
+      localStorage.setItem("aaradhyaMartCart", JSON.stringify(cartData));
       renderCart();
     }
 
     function removeFromCart(index) {
-      cart.splice(index, 1);
-      localStorage.setItem("aaradhyaMartCart", JSON.stringify(cart));
+      cartData.splice(index, 1);
+      localStorage.setItem("aaradhyaMartCart", JSON.stringify(cartData));
       renderCart();
     }
 
     function proceedToCheckout() {
-      if(cart.length > 0) window.location.href = "checkout.html";
+      if(cartData.length > 0) window.location.href = "checkout.html";
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-      load(); renderCart();
-    });
+    document.addEventListener("DOMContentLoaded", loadCart);
   </script>
 </body>
 </html>
