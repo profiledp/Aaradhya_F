@@ -14,6 +14,12 @@
 
   <main class="cart-container">
     <h2 style="font-family:Georgia; color:var(--navy);">Shopping Cart</h2>
+    
+    <!-- Loading Indicator -->
+    <div id="loadingCart" style="text-align:center; padding: 20px; font-weight:bold; color: var(--muted);">
+      Loading your items...
+    </div>
+
     <div id="cartItems"></div>
     
     <div class="cart-summary-box" id="cartSummary" style="display:none;">
@@ -31,7 +37,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // 🔴 APNA FIREBASE CONFIG YAHAN PASTE KAREIN 🔴
+    // APNA FIREBASE CONFIG YAHAN DAALEIN
     const firebaseConfig = {
       apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y",
       authDomain: "aaradhya-mart.firebaseapp.com",
@@ -48,62 +54,73 @@
     let allProducts = [];
     let cartData = [];
 
-    async function loadCart() {
-      // Show loading initially
-      document.getElementById("cartItems").innerHTML = "<p style='text-align:center; color:var(--muted);'>Loading your cart...</p>";
-
+    // Main Function
+    async function initCart() {
       try {
-        const querySnapshot = await getDocs(collection(db, "products"));
-        allProducts = [];
-        querySnapshot.forEach((doc) => allProducts.push({ id: doc.id, ...doc.data() }));
-        
+        // 1. Get Cart from LocalStorage
         const savedCart = localStorage.getItem("aaradhyaMartCart");
         cartData = savedCart ? JSON.parse(savedCart) : [];
-      } catch(e) { 
-        console.error(e);
-        cartData = []; 
-      }
+        
+        if (cartData.length === 0) {
+          showEmpty();
+          return;
+        }
 
-      renderCart();
+        // 2. Fetch all products from Firebase
+        const querySnapshot = await getDocs(collection(db, "products"));
+        allProducts = [];
+        querySnapshot.forEach((doc) => {
+          allProducts.push({ id: doc.id, ...doc.data() });
+        });
+
+        // 3. Render Cart
+        renderCart();
+
+      } catch (error) {
+        console.error("Cart Error:", error);
+        document.getElementById("loadingCart").innerHTML = "<span style='color:red'>Error loading products. Please check console.</span>";
+      }
     }
 
-    function formatMoney(amount) {
-      return "₹" + Number(amount || 0).toLocaleString("en-IN");
+    function showEmpty() {
+      document.getElementById("loadingCart").style.display = "none";
+      document.getElementById("emptyCart").style.display = "block";
+      document.getElementById("cartSummary").style.display = "none";
     }
 
     function renderCart() {
+      document.getElementById("loadingCart").style.display = "none";
       const container = document.getElementById("cartItems");
       const summary = document.getElementById("cartSummary");
-      const empty = document.getElementById("emptyCart");
       
       if (cartData.length === 0) {
-        container.innerHTML = ""; 
-        summary.style.display = "none"; 
-        empty.style.display = "block"; 
+        showEmpty();
         return;
       }
       
-      empty.style.display = "none"; 
       summary.style.display = "block";
-      
       let total = 0;
       let html = "";
 
       cartData.forEach((item, index) => {
-        // Product ko ID se dhoondhein
-        const p = allProducts.find(x => x.id === item.id);
-        if(!p) return; // Skip if product was deleted from admin
+        // Match Product ID
+        const p = allProducts.find(x => String(x.id) === String(item.id));
         
-        const itemTotal = Number(p.price) * Number(item.qty);
+        if (!p) {
+          console.warn("Product not found in Firebase for ID:", item.id);
+          return; // Skip if deleted from admin
+        }
+        
+        const itemTotal = Number(p.price) * Number(item.qty || 1);
         total += itemTotal;
 
         html += `
           <div class="cart-item">
-            <img src="${p.image}" alt="${p.name}">
+            <img src="${p.image || 'https://placehold.co/100'}" alt="${p.name}">
             <div class="cart-item-info">
               <h4>${p.name}</h4>
               <p>Size: ${item.size} | Store: ${p.store}</p>
-              <p style="font-weight:bold; color:var(--navy); margin-top:5px;">${formatMoney(p.price)}</p>
+              <p style="font-weight:bold; color:var(--navy); margin-top:5px;">₹${p.price}</p>
               <button class="cart-remove" onclick="removeFromCart(${index})">Remove</button>
             </div>
             <div>
@@ -118,9 +135,10 @@
       document.getElementById("cartTotal").textContent = total.toLocaleString("en-IN");
     }
 
+    // Global Functions for Buttons
     window.updateQty = function(index, newQty) {
       let qty = parseInt(newQty);
-      if(qty < 1 || isNaN(qty)) qty = 1;
+      if (qty < 1 || isNaN(qty)) qty = 1;
       cartData[index].qty = qty;
       localStorage.setItem("aaradhyaMartCart", JSON.stringify(cartData));
       renderCart();
@@ -130,13 +148,16 @@
       cartData.splice(index, 1);
       localStorage.setItem("aaradhyaMartCart", JSON.stringify(cartData));
       renderCart();
+      // Update floating cart icon if exists
+      if(typeof updateGlobalCart === 'function') updateGlobalCart();
     }
 
     window.proceedToCheckout = function() {
       if(cartData.length > 0) window.location.href = "checkout.html";
     }
 
-    document.addEventListener("DOMContentLoaded", loadCart);
+    // Start
+    document.addEventListener("DOMContentLoaded", initCart);
   </script>
 </body>
 </html>
