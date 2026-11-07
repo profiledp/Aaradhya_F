@@ -35,7 +35,7 @@
   <main>
     <div class="checkout-container">
       <h2>Complete Your Order</h2>
-      <div class="product-summary" id="productSummary">Loading...</div>
+      <div class="product-summary" id="productSummary">Loading order details...</div>
 
       <form id="checkoutForm">
         <div class="form-group">
@@ -107,7 +107,7 @@
       const size = urlParams.get('size') || "N/A";
       selectedStore = urlParams.get('store') || "Aaradhya Mart";
 
-      // Firebase se products load karein
+      // Firebase se products fetch karein
       const querySnapshot = await getDocs(collection(db, "products"));
       const allProducts = [];
       querySnapshot.forEach((doc) => allProducts.push({ id: doc.id, ...doc.data() }));
