@@ -49,13 +49,14 @@
     let cartData = [];
 
     async function loadCart() {
+      // Show loading initially
+      document.getElementById("cartItems").innerHTML = "<p style='text-align:center; color:var(--muted);'>Loading your cart...</p>";
+
       try {
-        // Firebase se saare products fetch karein
         const querySnapshot = await getDocs(collection(db, "products"));
         allProducts = [];
         querySnapshot.forEach((doc) => allProducts.push({ id: doc.id, ...doc.data() }));
         
-        // LocalStorage se cart items uthayein
         const savedCart = localStorage.getItem("aaradhyaMartCart");
         cartData = savedCart ? JSON.parse(savedCart) : [];
       } catch(e) { 
@@ -91,7 +92,7 @@
       cartData.forEach((item, index) => {
         // Product ko ID se dhoondhein
         const p = allProducts.find(x => x.id === item.id);
-        if(!p) return;
+        if(!p) return; // Skip if product was deleted from admin
         
         const itemTotal = Number(p.price) * Number(item.qty);
         total += itemTotal;
