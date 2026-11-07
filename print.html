@@ -25,11 +25,13 @@
     <div class="product-grid" id="productGrid"></div>
   </main>
 
+  <a href="cart.html" class="floating-cart-btn" id="floatingCart" style="display:none;">
+    🛒 <span class="cart-count" id="cartCount">0</span>
+  </a>
+
   <script src="products.js"></script>
   <script>
     const PAGE_STORE = "Print";
-    const WHATSAPP_NUMBER = "918931911428";
-    const EMAIL_ADDRESS = "your-email@gmail.com"; // Apna email yahan likhein
     let products = [];
 
     function load() {
@@ -55,16 +57,32 @@
             <span class="product-category">${p.category}</span>
             <h3>${p.name}</h3>
             <div class="product-price">${p.price === 0 ? 'Custom Quote' : money(p.price)}</div>
-            <div class="product-actions" style="flex-direction: column; gap: 5px;">
-              <button class="small-button primary" data-order="${p.id}">ORDER / QUOTE ↗</button>
-              <a href="mailto:${EMAIL_ADDRESS}?subject=Quote Request: ${p.name}" class="small-button" style="text-decoration:none; text-align:center;">EMAIL US ✉️</a>
+            <div class="product-actions">
+              <button class="small-button primary" data-order="${p.id}">BUY NOW</button>
+              <button class="small-button add-cart-btn" data-cart="${p.id}">ADD TO CART 🛒</button>
             </div>
           </div>
         </article>`).join("");
     }
 
+    function addToCart(id) {
+      let cart = JSON.parse(localStorage.getItem("aaradhyaMartCart") || "[]");
+      cart.push({ id: id, size: "Custom", qty: 1 });
+      localStorage.setItem("aaradhyaMartCart", JSON.stringify(cart));
+      alert("Added to Cart! 🛒");
+      updateCartIcon();
+    }
+
+    function updateCartIcon() {
+      const cart = JSON.parse(localStorage.getItem("aaradhyaMartCart") || "[]");
+      const count = cart.reduce((sum, item) => sum + item.qty, 0);
+      const btn = document.getElementById("floatingCart");
+      if(count > 0) { btn.style.display = "flex"; document.getElementById("cartCount").textContent = count; }
+      else { btn.style.display = "none"; }
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
-      load(); render();
+      load(); render(); updateCartIcon();
       
       const catSelect = document.getElementById("categoryFilter");
       const cats = [...new Set(products.filter(p => p.store === PAGE_STORE).map(p => p.category))];
@@ -75,10 +93,12 @@
       
       document.getElementById("productGrid").addEventListener("click", e => {
         const order = e.target.closest("[data-order]");
+        const cartBtn = e.target.closest("[data-cart]");
         if(order) {
           const p = products.find(x=>x.id===order.dataset.order);
           window.location.href = `checkout.html?id=${p.id}&size=Custom&store=A-Print`;
         }
+        if(cartBtn) addToCart(cartBtn.dataset.cart);
       });
     });
   </script>
