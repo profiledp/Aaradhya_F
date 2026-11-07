@@ -4,6 +4,60 @@
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <title>A-Print | Custom Printing</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Blinkit Jaisa Grid Design */
+    .product-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
+    
+    .product-card { 
+      border: 1px solid var(--line); 
+      border-radius: 8px; 
+      padding: 10px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+    }
+    .product-card:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+    
+    .product-image-wrap {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+    
+    .product-image-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 5px;
+    }
+    
+    .product-info { padding: 0; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .product-info h3 { font-size: 14px; margin: 5px 0; line-height: 1.3; height: 38px; overflow: hidden; font-family: Arial, sans-serif; font-weight: bold; }
+    
+    .unit-selector {
+      width: 100%;
+      padding: 6px;
+      margin-top: 5px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: #f8f9fa;
+      font-size: 12px;
+      color: var(--navy);
+      font-weight: bold;
+      outline: none;
+      cursor: pointer;
+    }
+    
+    .product-actions { display: flex; gap: 8px; margin-top: 10px; }
+    .small-button { font-size: 11px; padding: 8px 5px; border-radius: 4px; }
+  </style>
 </head>
 <body>
   <header class="site-header">
@@ -66,24 +120,44 @@
       if (cat !== "All") list = list.filter(p => p.category === cat);
       list = list.filter(p => [p.name, p.category].join(" ").toLowerCase().includes(query));
 
-      document.getElementById("productGrid").innerHTML = list.map(p => `
+      document.getElementById("productGrid").innerHTML = list.map(p => {
+        const isOut = p.stock <= 0;
+        
+        let optionsHtml = "";
+        if(p.sizes && p.sizes.length > 0) {
+            optionsHtml = p.sizes.map(s => `<option value="${s}">${s}</option>`).join("");
+        } else {
+            optionsHtml = `<option value="Standard">Standard</option>`;
+        }
+
+        return `
         <article class="product-card">
-          <div class="product-image-wrap"><img src="${p.image}" alt="${p.name}"></div>
+          <div class="product-image-wrap">
+            <img src="${p.image}" alt="${p.name}">
+          </div>
           <div class="product-info">
-            <span class="product-category">${p.category}</span>
+            <span class="product-category" style="font-size:10px;">${p.category}</span>
             <h3>${p.name}</h3>
-            <div class="product-price">${p.price === 0 ? 'Custom Quote' : money(p.price)}</div>
+            <div class="product-price" style="margin-bottom:5px;">${p.price === 0 ? 'Custom Quote' : money(p.price)}</div>
+            
+            ${!isOut ? `
+              <select id="unit-${p.id}" class="unit-selector">
+                ${optionsHtml}
+              </select>
+            ` : '<div style="color:red; font-size:12px; font-weight:bold; margin-bottom:10px;">OUT OF STOCK</div>'}
+
             <div class="product-actions">
-              <button class="small-button primary" data-order="${p.id}">BUY NOW</button>
-              <button class="small-button add-cart-btn" data-cart="${p.id}">ADD TO CART 🛒</button>
+              <button class="small-button primary" data-order="${p.id}" ${isOut?'disabled':''}>BUY</button>
+              <button class="small-button add-cart-btn" data-cart="${p.id}" ${isOut?'disabled':''}>ADD 🛒</button>
             </div>
           </div>
-        </article>`).join("");
+        </article>`;
+      }).join("");
     }
 
-    function addToCart(id) {
+    function addToCart(id, unit) {
       let cart = JSON.parse(localStorage.getItem("aaradhyaMartCart") || "[]");
-      cart.push({ id: id, size: "Custom", qty: 1 });
+      cart.push({ id: id, size: unit, qty: 1 });
       localStorage.setItem("aaradhyaMartCart", JSON.stringify(cart));
       showToast(); updateGlobalCart();
     }
@@ -111,17 +185,27 @@
 
     document.addEventListener("DOMContentLoaded", () => {
       loadFirebaseProducts(); updateGlobalCart();
+      
+      const catSelect = document.getElementById("categoryFilter");
+      
       document.getElementById("searchInput").addEventListener("input", render);
       document.getElementById("categoryFilter").addEventListener("change", render);
       
       document.getElementById("productGrid").addEventListener("click", e => {
         const order = e.target.closest("[data-order]");
         const cartBtn = e.target.closest("[data-cart]");
-        if(order) {
+        
+        if(order && !order.disabled) {
           const p = products.find(x=>x.id===order.dataset.order);
-          window.location.href = `checkout.html?id=${p.id}&size=Custom&store=A-Print`;
+          const selectedOption = document.getElementById(`unit-${p.id}`)?.value || "Standard";
+          window.location.href = `checkout.html?id=${p.id}&size=${encodeURIComponent(selectedOption)}&store=A-Print`;
         }
-        if(cartBtn) addToCart(cartBtn.dataset.cart);
+        
+        if(cartBtn && !cartBtn.disabled) {
+          const pId = cartBtn.dataset.cart;
+          const selectedOption = document.getElementById(`unit-${pId}`)?.value || "Standard";
+          addToCart(pId, selectedOption);
+        }
       });
     });
   </script>
