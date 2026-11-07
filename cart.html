@@ -27,21 +27,41 @@
     </div>
   </main>
 
-  <script src="products.js"></script>
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    // 🔴 APNA FIREBASE CONFIG YAHAN PASTE KAREIN 🔴
+    const firebaseConfig = {
+      apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y",
+      authDomain: "aaradhya-mart.firebaseapp.com",
+      projectId: "aaradhya-mart",
+      storageBucket: "aaradhya-mart.firebasestorage.app",
+      messagingSenderId: "146782544824",
+      appId: "1:146782544824:web:d605e1971d3480fab1654d",
+      measurementId: "G-L6VJBL7ESY"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
     let allProducts = [];
     let cartData = [];
 
-    function loadCart() {
+    async function loadCart() {
       try {
-        const savedProds = localStorage.getItem("aaradhyaMartProductsV1");
-        allProducts = savedProds ? JSON.parse(savedProds) : (window.STARTER_PRODUCTS || []);
-      } catch(e) { allProducts = window.STARTER_PRODUCTS || []; }
-
-      try {
+        // Firebase se saare products fetch karein
+        const querySnapshot = await getDocs(collection(db, "products"));
+        allProducts = [];
+        querySnapshot.forEach((doc) => allProducts.push({ id: doc.id, ...doc.data() }));
+        
+        // LocalStorage se cart items uthayein
         const savedCart = localStorage.getItem("aaradhyaMartCart");
         cartData = savedCart ? JSON.parse(savedCart) : [];
-      } catch(e) { cartData = []; }
+      } catch(e) { 
+        console.error(e);
+        cartData = []; 
+      }
 
       renderCart();
     }
@@ -69,6 +89,7 @@
       let html = "";
 
       cartData.forEach((item, index) => {
+        // Product ko ID se dhoondhein
         const p = allProducts.find(x => x.id === item.id);
         if(!p) return;
         
@@ -96,7 +117,7 @@
       document.getElementById("cartTotal").textContent = total.toLocaleString("en-IN");
     }
 
-    function updateQty(index, newQty) {
+    window.updateQty = function(index, newQty) {
       let qty = parseInt(newQty);
       if(qty < 1 || isNaN(qty)) qty = 1;
       cartData[index].qty = qty;
@@ -104,13 +125,13 @@
       renderCart();
     }
 
-    function removeFromCart(index) {
+    window.removeFromCart = function(index) {
       cartData.splice(index, 1);
       localStorage.setItem("aaradhyaMartCart", JSON.stringify(cartData));
       renderCart();
     }
 
-    function proceedToCheckout() {
+    window.proceedToCheckout = function() {
       if(cartData.length > 0) window.location.href = "checkout.html";
     }
 
