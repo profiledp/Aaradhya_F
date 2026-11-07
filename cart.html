@@ -182,4 +182,17 @@
     }
 
     window.removeFromCart = function(index) {
-      cartData.splice(index, 
+      cartData.splice(index, 1);
+      localStorage.setItem("aaradhyaMartCart", JSON.stringify(cartData));
+      renderCart();
+      if(typeof updateGlobalCart === 'function') updateGlobalCart();
+    }
+
+    window.proceedToCheckout = function() {
+      if(cartData.length > 0) window.location.href = "checkout.html";
+    }
+
+    document.addEventListener("DOMContentLoaded", initCart);
+  </script>
+</body>
+</html>
