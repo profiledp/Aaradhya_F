@@ -22,7 +22,6 @@
       <button class="clear-cart-btn" onclick="clearAllCart()">Clear Cart 🗑️</button>
     </div>
     
-    <!-- Loading Text -->
     <div id="loadingCart" style="text-align:center; padding: 20px; font-weight:bold; color: var(--muted);">
       Loading your items...
     </div>
@@ -44,7 +43,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // FIREBASE CONFIG
     const firebaseConfig = {
       apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y",
       authDomain: "aaradhya-mart.firebaseapp.com",
@@ -63,30 +61,24 @@
 
     async function initCart() {
       try {
-        // 1. Get Cart
         const savedCart = localStorage.getItem("aaradhyaMartCart");
         cartData = savedCart ? JSON.parse(savedCart) : [];
         
-        // 2. Fetch Firebase Products
         const querySnapshot = await getDocs(collection(db, "products"));
         allProducts = [];
         querySnapshot.forEach((doc) => {
           allProducts.push({ id: doc.id, ...doc.data() });
         });
 
-        // 3. Purane invalid products ko cart se hatayein
         const initialLength = cartData.length;
         cartData = cartData.filter(item => allProducts.some(p => String(p.id) === String(item.id)));
         
-        // Agar kuch items hataye gaye, toh naya cart save karein
         if(cartData.length !== initialLength) {
           localStorage.setItem("aaradhyaMartCart", JSON.stringify(cartData));
           if(typeof updateGlobalCart === 'function') updateGlobalCart();
         }
 
-        // 4. Render
         renderCart();
-
       } catch (error) {
         console.error("Cart Error:", error);
         document.getElementById("loadingCart").innerHTML = "<span style='color:red'>Error loading products.</span>";
@@ -114,7 +106,6 @@
 
       cartData.forEach((item, index) => {
         const p = allProducts.find(x => String(x.id) === String(item.id));
-        
         if (!p) return;
         
         const itemTotal = Number(p.price) * Number(item.qty || 1);
