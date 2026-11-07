@@ -99,4 +99,14 @@
       
       document.getElementById("productGrid").addEventListener("click", e => {
         const order = e.target.closest("[data-order]");
-        const cartBtn = e.target
+        const cartBtn = e.target.closest("[data-cart]");
+        if(order && !order.disabled) {
+          const p = products.find(x=>x.id===order.dataset.order);
+          window.location.href = `checkout.html?id=${p.id}&size=Standard&store=Aaradhya Kirana`;
+        }
+        if(cartBtn && !cartBtn.disabled) addToCart(cartBtn.dataset.cart);
+      });
+    });
+  </script>
+</body>
+</html>
