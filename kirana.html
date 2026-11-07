@@ -33,8 +33,16 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // 🔴 YAHAN APNA FIREBASE CONFIG PASTE KAREIN 🔴
-    const firebaseConfig = { /* SAME AS ADMIN CONFIG */ };
+    const firebaseConfig = {
+      apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y",
+      authDomain: "aaradhya-mart.firebaseapp.com",
+      projectId: "aaradhya-mart",
+      storageBucket: "aaradhya-mart.firebasestorage.app",
+      messagingSenderId: "146782544824",
+      appId: "1:146782544824:web:d605e1971d3480fab1654d",
+      measurementId: "G-L6VJBL7ESY"
+    };
+
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
