@@ -75,8 +75,23 @@
       let cart = JSON.parse(localStorage.getItem("aaradhyaMartCart") || "[]");
       cart.push({ id: id, size: "Standard", qty: 1 });
       localStorage.setItem("aaradhyaMartCart", JSON.stringify(cart));
-      alert("Added to Cart! 🛒");
+      showToast();
       updateGlobalCart();
+    }
+
+    function showToast() {
+      let existingToast = document.querySelector('.toast-notification');
+      if (existingToast) existingToast.remove();
+
+      const toast = document.createElement('div');
+      toast.className = 'toast-notification';
+      toast.innerHTML = `<span class="toast-icon">✅</span> Item added to cart!`;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.classList.add('show'), 10);
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 400);
+      }, 3000);
     }
 
     function updateGlobalCart() {
