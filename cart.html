@@ -6,8 +6,79 @@
   <title>Your Cart | Aaradhya Mart</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    .clear-cart-btn { background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; padding: 8px 15px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: bold; margin-bottom: 15px; }
+    /* Clear Cart Button */
+    .clear-cart-btn { background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; padding: 8px 15px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: bold; transition: 0.2s; }
     .clear-cart-btn:hover { background: #fecaca; }
+
+    /* Custom Popup Modal Styles */
+    .custom-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(16, 36, 59, 0.6); /* Navy transparent */
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .custom-modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .custom-modal {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+      transform: scale(0.8) translateY(20px);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .custom-modal-overlay.active .custom-modal {
+      transform: scale(1) translateY(0);
+    }
+    .custom-modal h3 {
+      font-family: Georgia, serif;
+      color: var(--navy);
+      margin-top: 0;
+      font-size: 22px;
+    }
+    .custom-modal p {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 25px;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    .modal-btn {
+      padding: 12px 25px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      transition: 0.2s;
+      flex: 1;
+    }
+    .btn-cancel {
+      background: #fff;
+      border: 1px solid var(--line);
+      color: var(--ink);
+    }
+    .btn-cancel:hover { background: #f4f6f8; }
+    .btn-danger {
+      background: #ef4444;
+      color: #fff;
+    }
+    .btn-danger:hover { background: #dc2626; }
   </style>
 </head>
 <body>
@@ -19,7 +90,8 @@
   <main class="cart-container">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
       <h2 style="font-family:Georgia; color:var(--navy); margin: 0;">Shopping Cart</h2>
-      <button class="clear-cart-btn" onclick="clearAllCart()">Clear Cart 🗑️</button>
+      <!-- Button calls the new modal -->
+      <button class="clear-cart-btn" onclick="openClearModal()">Clear Cart 🗑️</button>
     </div>
     
     <div id="loadingCart" style="text-align:center; padding: 20px; font-weight:bold; color: var(--muted);">
@@ -38,6 +110,19 @@
       <a href="index.html" class="button-navy" style="display:inline-block; margin-top:15px; text-decoration:none; width:auto; padding:12px 25px; border-radius:6px;">Start Shopping</a>
     </div>
   </main>
+
+  <!-- CUSTOM PREMIUM MODAL POPUP -->
+  <div class="custom-modal-overlay" id="clearCartModal">
+    <div class="custom-modal">
+      <div style="font-size: 40px; margin-bottom: 15px;">🗑️</div>
+      <h3>Clear Cart?</h3>
+      <p>Are you sure you want to remove all items from your shopping cart? This action cannot be undone.</p>
+      <div class="modal-actions">
+        <button class="modal-btn btn-cancel" onclick="closeClearModal()">Cancel</button>
+        <button class="modal-btn btn-danger" onclick="confirmClearCart()">Yes, Clear</button>
+      </div>
+    </div>
+  </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -132,15 +217,24 @@
       document.getElementById("cartTotal").textContent = total.toLocaleString("en-IN");
     }
 
-    window.clearAllCart = function() {
-      if(confirm("Are you sure you want to clear your cart?")) {
-        localStorage.removeItem("aaradhyaMartCart");
-        cartData = [];
-        renderCart();
-        if(typeof updateGlobalCart === 'function') updateGlobalCart();
-      }
+    // NAYA MODAL LOGIC
+    window.openClearModal = function() {
+      document.getElementById("clearCartModal").classList.add("active");
     }
 
+    window.closeClearModal = function() {
+      document.getElementById("clearCartModal").classList.remove("active");
+    }
+
+    window.confirmClearCart = function() {
+      localStorage.removeItem("aaradhyaMartCart");
+      cartData = [];
+      renderCart();
+      if(typeof updateGlobalCart === 'function') updateGlobalCart();
+      closeClearModal();
+    }
+
+    // Baaki Cart functions
     window.updateQty = function(index, newQty) {
       let qty = parseInt(newQty);
       if (qty < 1 || isNaN(qty)) qty = 1;
