@@ -26,20 +26,28 @@
   </main>
 
   <a href="cart.html" id="globalCartBtn" class="global-cart-btn">
-    <span class="cart-icon-svg">🛒</span>
-    <span class="cart-text">Cart</span>
-    <span class="cart-badge" id="globalCartCount">0</span>
+    <span class="cart-icon-svg">🛒</span><span class="cart-text">Cart</span><span class="cart-badge" id="globalCartCount">0</span>
   </a>
 
-  <script src="products.js"></script>
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    // 🔴 YAHAN APNA FIREBASE CONFIG PASTE KAREIN 🔴
+    const firebaseConfig = { /* SAME AS ADMIN CONFIG */ };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
     const PAGE_STORE = "Print";
     let products = [];
 
-    function load() {
-      const saved = localStorage.getItem("aaradhyaMartProductsV1");
-      products = saved ? JSON.parse(saved) : window.STARTER_PRODUCTS;
+    async function loadFirebaseProducts() {
+      const querySnapshot = await getDocs(collection(db, "products"));
+      products = [];
+      querySnapshot.forEach((doc) => products.push({ id: doc.id, ...doc.data() }));
+      render();
     }
+
     function money(v) { return "₹" + Number(v||0).toLocaleString("en-IN"); }
     
     function render() {
@@ -52,9 +60,7 @@
 
       document.getElementById("productGrid").innerHTML = list.map(p => `
         <article class="product-card">
-          <div class="product-image-wrap">
-            <img src="${p.image}" alt="${p.name}">
-          </div>
+          <div class="product-image-wrap"><img src="${p.image}" alt="${p.name}"></div>
           <div class="product-info">
             <span class="product-category">${p.category}</span>
             <h3>${p.name}</h3>
@@ -71,23 +77,15 @@
       let cart = JSON.parse(localStorage.getItem("aaradhyaMartCart") || "[]");
       cart.push({ id: id, size: "Custom", qty: 1 });
       localStorage.setItem("aaradhyaMartCart", JSON.stringify(cart));
-      showToast();
-      updateGlobalCart();
+      showToast(); updateGlobalCart();
     }
 
     function showToast() {
-      let existingToast = document.querySelector('.toast-notification');
-      if (existingToast) existingToast.remove();
-
-      const toast = document.createElement('div');
-      toast.className = 'toast-notification';
+      let t = document.querySelector('.toast-notification'); if (t) t.remove();
+      const toast = document.createElement('div'); toast.className = 'toast-notification';
       toast.innerHTML = `<span class="toast-icon">✅</span> Item added to cart!`;
-      document.body.appendChild(toast);
-      setTimeout(() => toast.classList.add('show'), 10);
-      setTimeout(() => {
-        toast.classList.remove('show');
-        setTimeout(() => toast.remove(), 400);
-      }, 3000);
+      document.body.appendChild(toast); setTimeout(() => toast.classList.add('show'), 10);
+      setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 3000);
     }
 
     function updateGlobalCart() {
@@ -97,19 +95,17 @@
         const badge = document.getElementById("globalCartCount");
         if (badge) {
           badge.textContent = count;
-          if (count === 0) { badge.style.background = "#ccc"; badge.style.color = "#fff"; }
-          else { badge.style.background = "var(--gold)"; badge.style.color = "var(--navy)"; }
+          badge.style.background = count === 0 ? "#ccc" : "var(--gold)";
+          badge.style.color = count === 0 ? "#fff" : "var(--navy)";
         }
       } catch(e) {}
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      load(); render(); updateGlobalCart();
+      loadFirebaseProducts(); updateGlobalCart();
       
       const catSelect = document.getElementById("categoryFilter");
-      const cats = [...new Set(products.filter(p => p.store === PAGE_STORE).map(p => p.category))];
-      cats.forEach(c => catSelect.innerHTML += `<option value="${c}">${c}</option>`);
-
+      
       document.getElementById("searchInput").addEventListener("input", render);
       document.getElementById("categoryFilter").addEventListener("change", render);
       
