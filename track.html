@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Track Order | Aaradhya Mart</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .track-container { max-width: 600px; margin: 50px auto; padding: 30px; background: #fff; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 10px 30px rgba(16,36,59,0.05); }
+    .track-container h2 { font: normal 28px Georgia, serif; color: var(--navy); margin-top: 0; margin-bottom: 10px; text-align: center; }
+    .track-container p { text-align: center; font-size: 13px; color: var(--muted); margin-bottom: 25px; }
+    
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 6px; color: var(--ink); }
+    .form-group input { width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 6px; font-family: inherit; font-size: 14px; outline: none; box-sizing: border-box; }
+    
+    .btn-track { width: 100%; padding: 15px; background: var(--navy); color: #fff; border: none; border-radius: 6px; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+    .btn-track:hover { background: #1e3a5f; }
+    
+    .result-box { display: none; margin-top: 30px; padding: 20px; border: 1px solid var(--line); border-radius: 8px; background: var(--cream); }
+    .result-box h3 { font: normal 20px Georgia, serif; color: var(--navy); margin-top: 0; border-bottom: 1px solid #ddd; padding-bottom: 10px; }
+    .result-box p { text-align: left; margin-bottom: 8px; color: var(--ink); font-size: 14px; }
+    
+    .status-badge { display: inline-block; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-top: 10px; }
+    .status-Pending { background: #fef3c7; color: #92400e; }
+    .status-Processing { background: #e0f2fe; color: #0369a1; }
+    .status-Delivered { background: #dcfce7; color: #166534; }
+    .status-Cancelled { background: #fee2e2; color: #991b1b; }
+    
+    .error-msg { color: #ef4444; font-size: 14px; text-align: center; margin-top: 15px; font-weight: bold; display: none; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html"><span class="brand-mark">AM</span><span><strong>AARADHYA MART</strong><small>ORDER TRACKING</small></span></a>
+    <a href="index.html" class="header-wa" style="background:#fff; color:var(--navy); border:1px solid var(--navy);">← Back to Home</a>
+  </header>
+
+  <main>
+    <div class="track-container">
+      <h2>Track Your Order</h2>
+      <p>Enter your registered 10-digit mobile number to check your order status.</p>
+      
+      <div class="form-group">
+        <label>Mobile Number</label>
+        <input type="tel" id="trackPhone" placeholder="e.g. 9876543210" pattern="[0-9]{10}" required>
+      </div>
+      <button class="btn-track" id="trackBtn">Check Status</button>
+      <p id="errorMsg" class="error-msg">No orders found for this number.</p>
+
+      <div id="orderResults"></div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y",
+      authDomain: "aaradhya-mart.firebaseapp.com",
+      projectId: "aaradhya-mart",
+      storageBucket: "aaradhya-mart.firebasestorage.app",
+      messagingSenderId: "146782544824",
+      appId: "1:146782544824:web:d605e1971d3480fab1654d",
+      measurementId: "G-L6VJBL7ESY"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    document.getElementById("trackBtn").addEventListener("click", async () => {
+      const phone = document.getElementById("trackPhone").value.trim();
+      const resultsDiv = document.getElementById("orderResults");
+      const errorMsg = document.getElementById("errorMsg");
+      const btn = document.getElementById("trackBtn");
+
+      if(phone.length !== 10) {
+        errorMsg.textContent = "Please enter a valid 10-digit number.";
+        errorMsg.style.display = "block";
+        resultsDiv.innerHTML = "";
+        return;
+      }
+
+      btn.textContent = "Searching...";
+      btn.disabled = true;
+      errorMsg.style.display = "none";
+      resultsDiv.innerHTML = "";
+
+      try {
+        const q = query(collection(db, "orders"), where("customerPhone", "==", phone));
+        const querySnapshot = await getDocs(q);
+
+        if (querySnapshot.empty) {
+          errorMsg.textContent = "No orders found for this number.";
+          errorMsg.style.display = "block";
+        } else {
+          let html = "";
+          querySnapshot.forEach((doc) => {
+            const o = doc.data();
+            const statusClass = `status-${o.status.replace(/\s+/g, '')}`;
+            const itemsStr = o.items.map(i => `${i.name} (x${i.qty})`).join(", ");
+            
+            html += `
+              <div class="result-box" style="display:block;">
+                <h3>Order ID: ${o.orderId}</h3>
+                <p><strong>Date:</strong> ${o.orderDate}</p>
+                <p><strong>Items:</strong> ${itemsStr}</p>
+                <p><strong>Total:</strong> ₹${o.totalAmount}</p>
+                <p><strong>Delivery Address:</strong> ${o.address}</p>
+                <div class="status-badge ${statusClass}">Status: ${o.status}</div>
+              </div>
+            `;
+          });
+          resultsDiv.innerHTML = html;
+        }
+      } catch (e) {
+        console.error(e);
+        errorMsg.textContent = "Error fetching orders. Please try again.";
+        errorMsg.style.display = "block";
+      } finally {
+        btn.textContent = "Check Status";
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
