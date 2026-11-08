@@ -65,11 +65,16 @@
     </div>
   </main>
 
+  <!-- SUCCESS MODAL WITH ORDER ID -->
   <div class="success-modal-overlay" id="successModal">
     <div class="success-modal">
       <div style="font-size: 50px; margin-bottom: 15px;">✅</div>
       <h3>Order Placed!</h3>
-      <p style="color:var(--muted); font-size:14px; margin-bottom:20px;">Your order has been sent successfully.</p>
+      <div style="background:#f4f6f8; padding:15px; border-radius:8px; margin-bottom:20px; border:1px dashed #ccc;">
+        <p style="color:var(--muted); font-size:12px; margin:0 0 5px;">Your Order ID</p>
+        <h4 style="color:var(--navy); font-size:20px; margin:0; font-family:monospace;" id="displayOrderId">ORD-000000</h4>
+        <p style="color:#ef4444; font-size:11px; margin:5px 0 0;">Please save this ID for tracking.</p>
+      </div>
       <a href="track.html" style="display:block; width:100%; background:var(--gold); color:var(--navy); padding:12px; border-radius:8px; font-weight:bold; text-decoration:none; margin-bottom:10px; box-sizing:border-box;">📦 Track My Order</a>
       <button onclick="closeSuccessAndRedirect()" style="background:var(--navy); color:#fff; border:none; padding:12px 25px; border-radius:8px; font-weight:bold; cursor:pointer; width:100%;">Go to Home</button>
     </div>
@@ -148,6 +153,9 @@
         const name = custName.value, phone = custPhone.value, address = custAddress.value, mapLink = custMapLink.value, city = custCity.value, pincode = custPincode.value;
         const payment = document.querySelector('input[name="payment"]:checked').value;
         let productDetailsText = "", totalAmount = 0, itemsArray = [];
+        
+        // ORDER ID GENERATE KAREIN
+        const newOrderId = "ORD-" + Date.now().toString().slice(-6); 
 
         orderProducts.forEach(item => {
           productDetailsText += `- ${item.name} (Qty: ${item.selectedQty}, Size: ${item.selectedSize}) = ₹${item.price * item.selectedQty}\n`;
@@ -157,18 +165,24 @@
 
         try {
           await addDoc(collection(db, "orders"), {
-            orderId: "ORD-" + Date.now().toString().slice(-6), customerName: name, customerPhone: phone, address: address + ", " + city + " - " + pincode, mapLink: mapLink || "Not Provided", paymentMode: payment, store: selectedStore, items: itemsArray, totalAmount: totalAmount, orderDate: new Date().toLocaleString("en-IN"), status: "Pending"
+            orderId: newOrderId, // Save Order ID
+            customerName: name, customerPhone: phone, address: address + ", " + city + " - " + pincode, mapLink: mapLink || "Not Provided", paymentMode: payment, store: selectedStore, items: itemsArray, totalAmount: totalAmount, orderDate: new Date().toLocaleString("en-IN"), status: "Pending"
           });
 
           for (const item of orderProducts) {
              await updateDoc(doc(db, "products", item.id), { stock: increment(-item.selectedQty) });
           }
+          
+          // Show Order ID on Popup
+          document.getElementById("displayOrderId").textContent = newOrderId;
+
         } catch (error) {
           console.error("Error:", error); alert("Order failed. Try again."); submitBtn.textContent = "CONFIRM & SEND ON WHATSAPP ↗"; submitBtn.disabled = false; return;
         }
 
+        // WhatsApp Message
         const locationText = mapLink ? `\n*Map Link:* ${mapLink}\n` : "";
-        const msg = `*NEW ORDER - ${selectedStore}*\n\n*Products:*\n${productDetailsText}\n*Total: ₹${totalAmount}*\n\n*Customer:* ${name}\n*Phone:* ${phone}\n*Address:* ${address}, ${city} - ${pincode}\n${locationText}\n*Payment:* ${payment}`;
+        const msg = `*NEW ORDER - ${selectedStore}*\n\n*Order ID: ${newOrderId}*\n\n*Products:*\n${productDetailsText}\n*Total: ₹${totalAmount}*\n\n*Customer:* ${name}\n*Phone:* ${phone}\n*Address:* ${address}, ${city} - ${pincode}\n${locationText}\n*Payment:* ${payment}`;
         if(isCartOrder) localStorage.removeItem("aaradhyaMartCart");
         window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
         
