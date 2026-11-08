@@ -6,20 +6,90 @@
   <title>Your Cart | Aaradhya Mart</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    .clear-cart-btn { background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; padding: 8px 15px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-    .clear-cart-btn:hover { background: #fecaca; }
-    .custom-modal-overlay { position: fixed; inset: 0; background: rgba(16, 36, 59, 0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
-    .custom-modal-overlay.active { opacity: 1; visibility: visible; }
-    .custom-modal { background: #fff; padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2); transform: scale(0.8) translateY(20px); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-    .custom-modal-overlay.active .custom-modal { transform: scale(1) translateY(0); }
-    .custom-modal h3 { font-family: Georgia, serif; color: var(--navy); margin-top: 0; font-size: 22px; }
-    .custom-modal p { color: var(--muted); font-size: 14px; margin-bottom: 25px; }
-    .modal-actions { display: flex; gap: 10px; justify-content: center; }
-    .modal-btn { padding: 12px 25px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; border: none; transition: 0.2s; flex: 1; }
-    .btn-cancel { background: #fff; border: 1px solid var(--line); color: var(--ink); }
-    .btn-cancel:hover { background: #f4f6f8; }
-    .btn-danger { background: #ef4444; color: #fff; }
-    .btn-danger:hover { background: #dc2626; }
+    /* Custom Styles specifically for Cart Page */
+    .cart-page-wrap { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+    .cart-page-title { font: normal 28px Georgia, serif; color: var(--navy); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+    
+    .cart-item {
+      display: flex;
+      gap: 20px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 15px;
+      align-items: center;
+    }
+    
+    .cart-item-img {
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
+      border-radius: 8px;
+      border: 1px solid #f0f0f0;
+      padding: 5px;
+      background: #fff;
+    }
+    
+    .cart-item-details { flex: 1; }
+    .cart-item-details h4 { margin: 0 0 5px; font-family: Georgia, serif; font-size: 18px; color: var(--navy); }
+    .cart-item-details p { margin: 0 0 5px; font-size: 12px; color: var(--muted); }
+    .cart-item-price { font-weight: bold; font-size: 16px; color: var(--navy); }
+    
+    .cart-item-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+    }
+    
+    .qty-box {
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .qty-box input {
+      width: 40px;
+      text-align: center;
+      border: none;
+      outline: none;
+      padding: 8px 0;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    
+    .btn-remove {
+      background: none;
+      border: none;
+      color: #ef4444;
+      font-size: 12px;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 0;
+    }
+    
+    .cart-summary {
+      background: var(--cream);
+      padding: 25px;
+      border-radius: 12px;
+      margin-top: 30px;
+      text-align: right;
+      border: 1px solid var(--line);
+    }
+    .cart-summary-total { font-size: 24px; font-weight: bold; color: var(--navy); margin-bottom: 15px; }
+    
+    .empty-cart-msg { text-align: center; padding: 50px 20px; }
+    .empty-cart-msg h3 { color: var(--muted); font-size: 20px; margin-bottom: 20px; }
+    
+    /* Mobile Responsive */
+    @media (max-width: 650px) {
+      .cart-item { flex-direction: column; align-items: flex-start; position: relative; }
+      .cart-item-img { width: 80px; height: 80px; }
+      .cart-item-actions { width: 100%; flex-direction: row; justify-content: space-between; align-items: center; margin-top: 10px; }
+      .cart-page-title { font-size: 24px; }
+    }
   </style>
 </head>
 <body>
@@ -28,35 +98,35 @@
     <a href="index.html" class="header-wa" style="background:#fff; color:var(--navy); border:1px solid var(--navy);">← Continue Shopping</a>
   </header>
 
-  <main class="cart-container">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-      <h2 style="font-family:Georgia; color:var(--navy); margin: 0;">Shopping Cart</h2>
-      <button class="clear-cart-btn" onclick="openClearModal()">Clear Cart 🗑️</button>
+  <main class="cart-page-wrap">
+    <div class="cart-page-title">
+      <span>Shopping Cart</span>
+      <button id="clearCartBtn" style="display:none; background:#fee2e2; color:#ef4444; border:1px solid #fca5a5; padding:8px 15px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer;">Clear Cart 🗑️</button>
     </div>
     
     <div id="loadingCart" style="text-align:center; padding: 20px; font-weight:bold; color: var(--muted);">Loading your items...</div>
-
-    <div id="cartItems"></div>
+    <div id="cartItemsList"></div>
     
-    <div class="cart-summary-box" id="cartSummary" style="display:none;">
-      <div class="cart-total">Total: ₹<span id="cartTotal">0</span></div>
-      <button class="button-navy" onclick="proceedToCheckout()" style="width:auto; padding:15px 30px; border-radius:6px; cursor:pointer;">PROCEED TO CHECKOUT ↗</button>
+    <div class="cart-summary" id="cartSummary" style="display:none;">
+      <div class="cart-summary-total">Total: ₹<span id="cartTotal">0</span></div>
+      <button class="button-navy" onclick="proceedToCheckout()" style="width:100%; max-width:300px; padding:15px; border-radius:8px; cursor:pointer; border:none; font-size:14px; font-weight:bold;">PROCEED TO CHECKOUT ↗</button>
     </div>
     
-    <div id="emptyCart" style="text-align:center; padding: 50px; display:none;">
-      <h3 style="color:var(--muted);">Your cart is empty.</h3>
-      <a href="index.html" class="button-navy" style="display:inline-block; margin-top:15px; text-decoration:none; width:auto; padding:12px 25px; border-radius:6px;">Start Shopping</a>
+    <div id="emptyCart" class="empty-cart-msg" style="display:none;">
+      <h3>Your cart is empty.</h3>
+      <a href="index.html" class="button-navy" style="display:inline-block; padding:12px 25px; border-radius:6px; text-decoration:none;">Start Shopping</a>
     </div>
   </main>
 
-  <div class="custom-modal-overlay" id="clearCartModal">
-    <div class="custom-modal">
-      <div style="font-size: 40px; margin-bottom: 15px;">🗑️</div>
-      <h3>Clear Cart?</h3>
-      <p>Are you sure you want to remove all items from your shopping cart?</p>
-      <div class="modal-actions">
-        <button class="modal-btn btn-cancel" onclick="closeClearModal()">Cancel</button>
-        <button class="modal-btn btn-danger" onclick="confirmClearCart()">Yes, Clear</button>
+  <!-- Clear Cart Modal -->
+  <div id="clearCartModal" style="position:fixed; inset:0; background:rgba(0,0,0,0.5); display:none; align-items:center; justify-content:center; z-index:9999;">
+    <div style="background:#fff; padding:30px; border-radius:12px; text-align:center; max-width:350px; width:90%;">
+      <div style="font-size:40px; margin-bottom:10px;">🗑️</div>
+      <h3 style="font-family:Georgia; color:var(--navy); margin-bottom:10px;">Clear Cart?</h3>
+      <p style="font-size:13px; color:var(--muted); margin-bottom:20px;">Are you sure you want to remove all items?</p>
+      <div style="display:flex; gap:10px;">
+        <button onclick="document.getElementById('clearCartModal').style.display='none'" style="flex:1; padding:10px; border:1px solid #ccc; background:#fff; border-radius:6px; cursor:pointer;">Cancel</button>
+        <button onclick="confirmClearCart()" style="flex:1; padding:10px; border:none; background:#ef4444; color:#fff; border-radius:6px; cursor:pointer;">Yes, Clear</button>
       </div>
     </div>
   </div>
@@ -85,53 +155,67 @@
       try {
         const savedCart = localStorage.getItem("aaradhyaMartCart");
         cartData = savedCart ? JSON.parse(savedCart) : [];
+        
         const querySnapshot = await getDocs(collection(db, "products"));
         allProducts = [];
-        querySnapshot.forEach((doc) => allProducts.push({ id: doc.id, ...doc.data() }));
-        
+        querySnapshot.forEach((doc) => { allProducts.push({ id: doc.id, ...doc.data() }); });
+
+        // Remove items not found in Firebase
         const initialLength = cartData.length;
         cartData = cartData.filter(item => allProducts.some(p => String(p.id) === String(item.id)));
-        
         if(cartData.length !== initialLength) {
           localStorage.setItem("aaradhyaMartCart", JSON.stringify(cartData));
-          if(typeof updateGlobalCart === 'function') updateGlobalCart();
         }
+
         renderCart();
-      } catch (error) { document.getElementById("loadingCart").innerHTML = "Error loading."; }
+      } catch (error) {
+        console.error(error);
+        document.getElementById("loadingCart").innerHTML = "<span style='color:red'>Error loading cart.</span>";
+      }
     }
 
     function renderCart() {
       document.getElementById("loadingCart").style.display = "none";
-      const container = document.getElementById("cartItems");
+      const container = document.getElementById("cartItemsList");
       const summary = document.getElementById("cartSummary");
       const empty = document.getElementById("emptyCart");
+      const clearBtn = document.getElementById("clearCartBtn");
       
       if (cartData.length === 0) {
-        container.innerHTML = ""; summary.style.display = "none"; empty.style.display = "block"; return;
+        container.innerHTML = ""; 
+        summary.style.display = "none"; 
+        empty.style.display = "block"; 
+        clearBtn.style.display = "none";
+        return;
       }
       
-      empty.style.display = "none"; summary.style.display = "block";
+      empty.style.display = "none"; 
+      summary.style.display = "block";
+      clearBtn.style.display = "block";
+      
       let total = 0;
       let html = "";
 
       cartData.forEach((item, index) => {
         const p = allProducts.find(x => String(x.id) === String(item.id));
         if (!p) return;
+        
         const itemTotal = Number(p.price) * Number(item.qty || 1);
         total += itemTotal;
 
         html += `
           <div class="cart-item">
-            <img src="${p.image || 'https://placehold.co/100'}" alt="${p.name}">
-            <div class="cart-item-info">
+            <img src="${p.image || 'https://placehold.co/100'}" class="cart-item-img" alt="${p.name}">
+            <div class="cart-item-details">
               <h4>${p.name}</h4>
               <p>Size: ${item.size} | Store: ${p.store}</p>
-              <p style="font-weight:bold; color:var(--navy); margin-top:5px;">₹${p.price}</p>
-              <button class="cart-remove" onclick="removeFromCart(${index})">Remove</button>
+              <div class="cart-item-price">₹${p.price}</div>
             </div>
-            <div>
-              <label style="font-size:10px;">Qty (Max: ${p.stock}):</label><br>
-              <input type="number" class="cart-qty-input" value="${item.qty}" min="1" max="${p.stock}" onchange="updateQty(${index}, this.value)">
+            <div class="cart-item-actions">
+              <button class="btn-remove" onclick="removeFromCart(${index})">Remove</button>
+              <div class="qty-box">
+                <input type="number" value="${item.qty}" min="1" max="${p.stock}" onchange="updateQty(${index}, this.value)">
+              </div>
             </div>
           </div>
         `;
@@ -141,14 +225,6 @@
       document.getElementById("cartTotal").textContent = total.toLocaleString("en-IN");
     }
 
-    window.openClearModal = function() { document.getElementById("clearCartModal").classList.add("active"); }
-    window.closeClearModal = function() { document.getElementById("clearCartModal").classList.remove("active"); }
-    window.confirmClearCart = function() {
-      localStorage.removeItem("aaradhyaMartCart"); cartData = []; renderCart();
-      if(typeof updateGlobalCart === 'function') updateGlobalCart(); closeClearModal();
-    }
-
-    // SMART STOCK UPDATE LOGIC HERE
     window.updateQty = function(index, newQty) {
       let qty = parseInt(newQty);
       if (isNaN(qty) || qty < 1) qty = 1;
@@ -157,24 +233,33 @@
       const maxStock = p ? Number(p.stock) : 999;
 
       if (qty > maxStock) {
-        alert(`Sorry, only ${maxStock} items are available in stock.`);
+        alert(`Sorry, only ${maxStock} items are available.`);
         qty = maxStock;
       }
 
       cartData[index].qty = qty;
       localStorage.setItem("aaradhyaMartCart", JSON.stringify(cartData));
       renderCart();
-      if(typeof updateGlobalCart === 'function') updateGlobalCart();
     }
 
     window.removeFromCart = function(index) {
       cartData.splice(index, 1);
       localStorage.setItem("aaradhyaMartCart", JSON.stringify(cartData));
       renderCart();
-      if(typeof updateGlobalCart === 'function') updateGlobalCart();
     }
 
-    window.proceedToCheckout = function() { if(cartData.length > 0) window.location.href = "checkout.html"; }
+    window.proceedToCheckout = function() {
+      if(cartData.length > 0) window.location.href = "checkout.html";
+    }
+
+    document.getElementById("clearCartBtn").onclick = () => { document.getElementById("clearCartModal").style.display = "flex"; };
+    window.confirmClearCart = function() {
+      localStorage.removeItem("aaradhyaMartCart");
+      cartData = [];
+      document.getElementById("clearCartModal").style.display = "none";
+      renderCart();
+    }
+
     document.addEventListener("DOMContentLoaded", initCart);
   </script>
 </body>
