@@ -34,14 +34,19 @@
   <main>
     <div class="track-container">
       <h2>Track Your Order</h2>
-      <p>Enter your registered 10-digit mobile number to check your order status.</p>
+      <p>Enter your Order ID and Registered Mobile Number to check the status.</p>
       
       <div class="form-group">
-        <label>Mobile Number</label>
+        <label>Order ID *</label>
+        <input type="text" id="trackOrderId" placeholder="e.g. ORD-123456" required>
+      </div>
+      <div class="form-group">
+        <label>Registered Mobile Number *</label>
         <input type="tel" id="trackPhone" placeholder="e.g. 9876543210" pattern="[0-9]{10}" required>
       </div>
+      
       <button class="btn-track" id="trackBtn">Check Status</button>
-      <p id="errorMsg" class="error-msg">No orders found for this number.</p>
+      <p id="errorMsg" class="error-msg">Order not found. Please check your details.</p>
       <div id="orderResults"></div>
     </div>
   </main>
@@ -64,29 +69,25 @@
     const db = getFirestore(app);
 
     document.getElementById("trackBtn").addEventListener("click", async () => {
+      const orderId = document.getElementById("trackOrderId").value.trim().toUpperCase();
       const phone = document.getElementById("trackPhone").value.trim();
       const resultsDiv = document.getElementById("orderResults");
       const errorMsg = document.getElementById("errorMsg");
       const btn = document.getElementById("trackBtn");
 
-      if(phone.length !== 10) {
-        errorMsg.textContent = "Please enter a valid 10-digit number.";
-        errorMsg.style.display = "block";
-        resultsDiv.innerHTML = "";
-        return;
+      if(orderId === "" || phone.length !== 10) {
+        errorMsg.textContent = "Please enter both Order ID and a valid 10-digit number.";
+        errorMsg.style.display = "block"; resultsDiv.innerHTML = ""; return;
       }
 
-      btn.textContent = "Searching...";
-      btn.disabled = true;
-      errorMsg.style.display = "none";
-      resultsDiv.innerHTML = "";
+      btn.textContent = "Searching..."; btn.disabled = true; errorMsg.style.display = "none"; resultsDiv.innerHTML = "";
 
       try {
-        const q = query(collection(db, "orders"), where("customerPhone", "==", phone));
+        const q = query(collection(db, "orders"), where("orderId", "==", orderId), where("customerPhone", "==", phone));
         const querySnapshot = await getDocs(q);
 
         if (querySnapshot.empty) {
-          errorMsg.textContent = "No orders found for this number.";
+          errorMsg.textContent = "Order not found. Please check your Order ID and Phone Number.";
           errorMsg.style.display = "block";
         } else {
           let html = "";
@@ -94,7 +95,6 @@
             const o = doc.data();
             const statusClass = `status-${o.status.replace(/\s+/g, '')}`;
             const itemsStr = o.items.map(i => `${i.name} (x${i.qty})`).join(", ");
-            
             html += `
               <div class="result-box" style="display:block;">
                 <h3>Order ID: ${o.orderId}</h3>
@@ -103,19 +103,13 @@
                 <p><strong>Total:</strong> ₹${o.totalAmount}</p>
                 <p><strong>Delivery Address:</strong> ${o.address}</p>
                 <div class="status-badge ${statusClass}">Status: ${o.status}</div>
-              </div>
-            `;
+              </div>`;
           });
           resultsDiv.innerHTML = html;
         }
       } catch (e) {
-        console.error(e);
-        errorMsg.textContent = "Error fetching orders. Please try again.";
-        errorMsg.style.display = "block";
-      } finally {
-        btn.textContent = "Check Status";
-        btn.disabled = false;
-      }
+        console.error(e); errorMsg.textContent = "Error fetching order. Please try again."; errorMsg.style.display = "block";
+      } finally { btn.textContent = "Check Status"; btn.disabled = false; }
     });
   </script>
 </body>
