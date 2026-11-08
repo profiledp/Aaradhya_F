@@ -29,14 +29,20 @@
     .filter-btn { padding: 8px 15px; border: 1px solid #ccc; background: #fff; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: bold; }
     .filter-btn.active { background: #10243b; color: #fff; border-color: #10243b; }
 
-    /* Tabs for Product / Orders */
     .main-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #ccc; padding-bottom: 10px;}
     .main-tab-btn { background: none; border: none; font-size: 18px; font-weight: bold; color: #777; cursor: pointer; padding: 10px;}
     .main-tab-btn.active { color: #10243b; border-bottom: 3px solid #10243b;}
     
     .order-card { border: 1px solid #eee; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #fafafa; }
-    .order-card h4 { margin: 0 0 10px; color: #10243b; }
+    .order-card h4 { margin: 0 0 10px; color: #10243b; display:flex; justify-content:space-between; align-items:center;}
     .order-card p { margin: 5px 0; font-size: 13px; }
+    
+    /* Status Dropdown Style */
+    .status-select { padding: 6px 10px; border-radius: 20px; font-weight: bold; border: 1px solid #ccc; cursor: pointer; outline: none; font-size: 12px; }
+    .status-Pending { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
+    .status-Processing { background: #e0f2fe; color: #0369a1; border-color: #7dd3fc; }
+    .status-Delivered { background: #dcfce7; color: #166534; border-color: #86efac; }
+    .status-Cancelled { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
   </style>
 </head>
 <body>
@@ -56,10 +62,9 @@
       <button class="btn btn-danger" id="logoutButton">LOG OUT</button>
     </div>
 
-    <!-- MAIN TABS -->
     <div class="main-tabs">
       <button class="main-tab-btn active" onclick="switchMainTab('products', this)">🛍️ Manage Products</button>
-      <button class="main-tab-btn" onclick="switchMainTab('orders', this)">📦 View Orders</button>
+      <button class="main-tab-btn" onclick="switchMainTab('orders', this)">📦 Manage Orders</button>
     </div>
 
     <!-- ================= PRODUCTS SECTION ================= -->
@@ -80,15 +85,9 @@
             <div class="form-field"><label>Category</label><input id="pCategory" required placeholder="e.g. Men, Grocery"></div>
             <div class="form-field"><label>Price (₹)</label><input id="pPrice" type="number" required></div>
             <div class="form-field"><label>Original Price (₹)</label><input id="pOriginal" type="number"></div>
-            
-            <div class="form-field">
-              <label>Unit (KG, Gram, Packet, Pieces)</label>
-              <input id="pUnit" placeholder="e.g. 1kg, 500g, 1 Packet">
-            </div>
-
+            <div class="form-field"><label>Unit (KG, Gram, Packet, Pieces)</label><input id="pUnit" placeholder="e.g. 1kg, 500g, 1 Packet"></div>
             <div class="form-field"><label>Stock Quantity</label><input id="pStock" type="number" required value="10"></div>
             <div class="form-field full"><label>Image URL</label><input id="pImage" required placeholder="https://..."></div>
-            
             <div class="form-field"><label>Sizes (Comma Separated)</label><input id="pSizes" placeholder="M, L, XL (for Fashion) OR 250G, 500G (for Kirana)"></div>
             <div class="form-field"><label>Tag</label><input id="pTag" placeholder="NEW / POPULAR"></div>
             <div class="form-field full"><label>Description</label><textarea id="pDescription"></textarea></div>
@@ -102,7 +101,6 @@
       <div class="admin-panel">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <h2>All Products (Live)</h2>
-          
           <div class="filter-tabs">
             <button class="filter-btn active" onclick="filterTable('All', this)">All</button>
             <button class="filter-btn" onclick="filterTable('Fashion', this)">Fashion</button>
@@ -110,7 +108,6 @@
             <button class="filter-btn" onclick="filterTable('Kirana', this)">Kirana</button>
           </div>
         </div>
-
         <table class="admin-table">
           <thead><tr><th>Store</th><th>Name</th><th>Unit</th><th>Price</th><th>Quick Stock</th><th>Actions</th></tr></thead>
           <tbody id="productRows"></tbody>
@@ -152,11 +149,9 @@
     let allProducts = [];
     let currentFilter = "All";
 
-    // Main Tab Switch
     window.switchMainTab = function(tabName, btnElement) {
       document.querySelectorAll('.main-tab-btn').forEach(btn => btn.classList.remove('active'));
       btnElement.classList.add('active');
-
       if(tabName === 'products') {
         document.getElementById("productsSection").classList.remove("hidden");
         document.getElementById("ordersSection").classList.add("hidden");
@@ -188,7 +183,6 @@
       if (currentFilter !== "All") {
         filteredProducts = allProducts.filter(p => p.store === currentFilter);
       }
-
       document.getElementById("productRows").innerHTML = filteredProducts.map(p => `
         <tr>
           <td><span class="badge">${p.store}</span></td>
@@ -204,7 +198,7 @@
       `).join("");
     }
 
-    // === ORDER FUNCTIONS ===
+    // === ORDER FUNCTIONS WITH STATUS ===
     async function loadOrders() {
       const ordersList = document.getElementById("ordersList");
       ordersList.innerHTML = "<p>Loading orders...</p>";
@@ -219,23 +213,60 @@
         } else {
           querySnapshot.forEach((doc) => {
             const o = doc.data();
-            const itemsStr = o.items.map(i => `${i.name} (x${i.qty}, ${i.size})`).join(", ");
+            const orderDocId = doc.id; // Firebase Document ID for updating status
+            const itemsStr = o.items.map(i => `${i.name} (x${i.qty}, ${i.size})`).join("<br>");
+            
+            // Status Dropdown with dynamic colors
+            const statusClass = `status-${o.status.replace(/\s+/g, '')}`;
+            const statusDropdown = `
+              <select class="status-select ${statusClass}" onchange="updateOrderStatus('${orderDocId}', this.value, this)">
+                <option value="Pending" ${o.status === 'Pending' ? 'selected' : ''}>🟡 Pending</option>
+                <option value="Processing" ${o.status === 'Processing' ? 'selected' : ''}>🔵 Processing</option>
+                <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>🟢 Delivered</option>
+                <option value="Cancelled" ${o.status === 'Cancelled' ? 'selected' : ''}>🔴 Cancelled</option>
+              </select>
+            `;
+
             ordersHtml += `
               <div class="order-card">
-                <h4>${o.orderId} <span style="font-size:12px; color:#10b981;">(${o.status})</span></h4>
+                <h4>
+                  <span>${o.orderId} - <span style="font-weight:normal; font-size:14px;">${o.customerName}</span></span>
+                  ${statusDropdown}
+                </h4>
                 <p><strong>Date:</strong> ${o.orderDate}</p>
-                <p><strong>Name:</strong> ${o.customerName} | <strong>Phone:</strong> ${o.customerPhone}</p>
+                <p><strong>Phone:</strong> <a href="https://wa.me/91${o.customerPhone}" target="_blank" style="color:#10b981;">${o.customerPhone}</a></p>
                 <p><strong>Address:</strong> ${o.address}</p>
-                <p><strong>Products:</strong> ${itemsStr}</p>
+                <p><strong>Products:</strong><br> ${itemsStr}</p>
                 <p><strong>Total:</strong> ₹${o.totalAmount} | <strong>Payment:</strong> ${o.paymentMode}</p>
-                <a href="${o.mapLink}" target="_blank" style="color:#0369a1; font-size:12px;">View Google Map Location</a>
+                <a href="${o.mapLink}" target="_blank" style="color:#0369a1; font-size:12px;">📍 View Google Map Location</a>
               </div>
             `;
           });
         }
         ordersList.innerHTML = ordersHtml;
       } catch (e) {
-        ordersList.innerHTML = "<p>Error loading orders. Make sure Firebase Index is created if you used orderBy.</p>";
+        ordersList.innerHTML = "<p>Error loading orders. Make sure Firebase Index is created.</p>";
+        console.error(e);
+      }
+    }
+
+    // Function to Update Status in Firebase
+    window.updateOrderStatus = async function(docId, newStatus, selectElement) {
+      try {
+        selectElement.disabled = true; // Disable while saving
+        await updateDoc(doc(db, "orders", docId), { status: newStatus });
+        
+        // Update colors immediately
+        selectElement.className = `status-select status-${newStatus.replace(/\s+/g, '')}`;
+        
+        // Flash green to show success
+        selectElement.style.boxShadow = "0 0 0 3px rgba(16, 185, 129, 0.4)";
+        setTimeout(() => selectElement.style.boxShadow = "", 1000);
+      } catch (error) {
+        alert("Failed to update status. Check your internet.");
+        console.error(error);
+      } finally {
+        selectElement.disabled = false;
       }
     }
 
@@ -252,7 +283,7 @@
       if (user) {
         document.getElementById("loginView").style.display = "none";
         document.getElementById("adminView").classList.remove("hidden");
-        loadProducts(); // Default load
+        loadProducts();
       } else {
         document.getElementById("loginView").style.display = "flex";
         document.getElementById("adminView").classList.add("hidden");
