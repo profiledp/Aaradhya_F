@@ -17,16 +17,26 @@
     .form-field input, .form-field select, .form-field textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
     .form-field.full { grid-column: 1 / -1; }
     .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-    .admin-table th, .admin-table td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
+    .admin-table th, .admin-table td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; font-size: 13px; }
     .stock-input { width: 70px; padding: 5px; text-align: center; }
     .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
     .btn-primary { background: #10243b; color: #fff; }
     .btn-danger { background: #ef4444; color: #fff; }
+    .btn-success { background: #10b981; color: #fff; }
     .hidden { display: none !important; }
     
-    .filter-tabs { display: flex; gap: 10px; margin-bottom: 15px; }
+    .filter-tabs { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
     .filter-btn { padding: 8px 15px; border: 1px solid #ccc; background: #fff; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: bold; }
     .filter-btn.active { background: #10243b; color: #fff; border-color: #10243b; }
+
+    /* Tabs for Product / Orders */
+    .main-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #ccc; padding-bottom: 10px;}
+    .main-tab-btn { background: none; border: none; font-size: 18px; font-weight: bold; color: #777; cursor: pointer; padding: 10px;}
+    .main-tab-btn.active { color: #10243b; border-bottom: 3px solid #10243b;}
+    
+    .order-card { border: 1px solid #eee; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #fafafa; }
+    .order-card h4 { margin: 0 0 10px; color: #10243b; }
+    .order-card p { margin: 5px 0; font-size: 13px; }
   </style>
 </head>
 <body>
@@ -46,63 +56,83 @@
       <button class="btn btn-danger" id="logoutButton">LOG OUT</button>
     </div>
 
-    <div class="admin-panel">
-      <h2 id="formTitle">Add New Product</h2>
-      <form id="productForm">
-        <input type="hidden" id="editId">
-        <div class="grid-form">
-          <div class="form-field"><label>Store</label>
-            <select id="pStore">
-              <option value="Fashion">Fashion</option>
-              <option value="Print">Print</option>
-              <option value="Kirana">Kirana</option>
-            </select>
-          </div>
-          <div class="form-field"><label>Product Name</label><input id="pName" required></div>
-          <div class="form-field"><label>Category</label><input id="pCategory" required placeholder="e.g. Men, Grocery"></div>
-          <div class="form-field"><label>Price (₹)</label><input id="pPrice" type="number" required></div>
-          <div class="form-field"><label>Original Price (₹)</label><input id="pOriginal" type="number"></div>
-          
-          <div class="form-field">
-            <label>Unit (KG, Gram, Packet, Pieces)</label>
-            <input id="pUnit" placeholder="e.g. 1kg, 500g, 1 Packet">
-          </div>
-
-          <div class="form-field"><label>Stock Quantity</label><input id="pStock" type="number" required value="10"></div>
-          <div class="form-field full"><label>Image URL</label><input id="pImage" required placeholder="https://..."></div>
-          
-          <div class="form-field"><label>Sizes (Comma Separated)</label><input id="pSizes" placeholder="M, L, XL (for Fashion) OR 250G, 500G (for Kirana)"></div>
-          <div class="form-field"><label>Tag</label><input id="pTag" placeholder="NEW / POPULAR"></div>
-          <div class="form-field full"><label>Description</label><textarea id="pDescription"></textarea></div>
-        </div>
-        <div style="margin-top: 15px;">
-          <button type="submit" class="btn btn-primary">SAVE PRODUCT</button>
-        </div>
-      </form>
+    <!-- MAIN TABS -->
+    <div class="main-tabs">
+      <button class="main-tab-btn active" onclick="switchMainTab('products', this)">🛍️ Manage Products</button>
+      <button class="main-tab-btn" onclick="switchMainTab('orders', this)">📦 View Orders</button>
     </div>
 
-    <div class="admin-panel">
-      <div style="display:flex; justify-content:space-between; align-items:center;">
-        <h2>All Products (Live)</h2>
-        
-        <div class="filter-tabs">
-          <button class="filter-btn active" onclick="filterTable('All', this)">All</button>
-          <button class="filter-btn" onclick="filterTable('Fashion', this)">Fashion</button>
-          <button class="filter-btn" onclick="filterTable('Print', this)">Print</button>
-          <button class="filter-btn" onclick="filterTable('Kirana', this)">Kirana</button>
-        </div>
+    <!-- ================= PRODUCTS SECTION ================= -->
+    <div id="productsSection">
+      <div class="admin-panel">
+        <h2 id="formTitle">Add New Product</h2>
+        <form id="productForm">
+          <input type="hidden" id="editId">
+          <div class="grid-form">
+            <div class="form-field"><label>Store</label>
+              <select id="pStore">
+                <option value="Fashion">Fashion</option>
+                <option value="Print">Print</option>
+                <option value="Kirana">Kirana</option>
+              </select>
+            </div>
+            <div class="form-field"><label>Product Name</label><input id="pName" required></div>
+            <div class="form-field"><label>Category</label><input id="pCategory" required placeholder="e.g. Men, Grocery"></div>
+            <div class="form-field"><label>Price (₹)</label><input id="pPrice" type="number" required></div>
+            <div class="form-field"><label>Original Price (₹)</label><input id="pOriginal" type="number"></div>
+            
+            <div class="form-field">
+              <label>Unit (KG, Gram, Packet, Pieces)</label>
+              <input id="pUnit" placeholder="e.g. 1kg, 500g, 1 Packet">
+            </div>
+
+            <div class="form-field"><label>Stock Quantity</label><input id="pStock" type="number" required value="10"></div>
+            <div class="form-field full"><label>Image URL</label><input id="pImage" required placeholder="https://..."></div>
+            
+            <div class="form-field"><label>Sizes (Comma Separated)</label><input id="pSizes" placeholder="M, L, XL (for Fashion) OR 250G, 500G (for Kirana)"></div>
+            <div class="form-field"><label>Tag</label><input id="pTag" placeholder="NEW / POPULAR"></div>
+            <div class="form-field full"><label>Description</label><textarea id="pDescription"></textarea></div>
+          </div>
+          <div style="margin-top: 15px;">
+            <button type="submit" class="btn btn-primary">SAVE PRODUCT</button>
+          </div>
+        </form>
       </div>
 
-      <table class="admin-table">
-        <thead><tr><th>Store</th><th>Name</th><th>Unit</th><th>Price</th><th>Quick Stock</th><th>Actions</th></tr></thead>
-        <tbody id="productRows"></tbody>
-      </table>
+      <div class="admin-panel">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h2>All Products (Live)</h2>
+          
+          <div class="filter-tabs">
+            <button class="filter-btn active" onclick="filterTable('All', this)">All</button>
+            <button class="filter-btn" onclick="filterTable('Fashion', this)">Fashion</button>
+            <button class="filter-btn" onclick="filterTable('Print', this)">Print</button>
+            <button class="filter-btn" onclick="filterTable('Kirana', this)">Kirana</button>
+          </div>
+        </div>
+
+        <table class="admin-table">
+          <thead><tr><th>Store</th><th>Name</th><th>Unit</th><th>Price</th><th>Quick Stock</th><th>Actions</th></tr></thead>
+          <tbody id="productRows"></tbody>
+        </table>
+      </div>
     </div>
+
+    <!-- ================= ORDERS SECTION ================= -->
+    <div id="ordersSection" class="hidden">
+      <div class="admin-panel">
+        <h2>All Orders (Live)</h2>
+        <div id="ordersList">
+          <!-- Orders will be injected here -->
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
     const firebaseConfig = {
@@ -122,6 +152,23 @@
     let allProducts = [];
     let currentFilter = "All";
 
+    // Main Tab Switch
+    window.switchMainTab = function(tabName, btnElement) {
+      document.querySelectorAll('.main-tab-btn').forEach(btn => btn.classList.remove('active'));
+      btnElement.classList.add('active');
+
+      if(tabName === 'products') {
+        document.getElementById("productsSection").classList.remove("hidden");
+        document.getElementById("ordersSection").classList.add("hidden");
+        loadProducts();
+      } else {
+        document.getElementById("productsSection").classList.add("hidden");
+        document.getElementById("ordersSection").classList.remove("hidden");
+        loadOrders();
+      }
+    }
+
+    // === PRODUCT FUNCTIONS ===
     async function loadProducts() {
       const querySnapshot = await getDocs(collection(db, "products"));
       allProducts = [];
@@ -157,6 +204,42 @@
       `).join("");
     }
 
+    // === ORDER FUNCTIONS ===
+    async function loadOrders() {
+      const ordersList = document.getElementById("ordersList");
+      ordersList.innerHTML = "<p>Loading orders...</p>";
+
+      try {
+        const q = query(collection(db, "orders"), orderBy("orderDate", "desc"));
+        const querySnapshot = await getDocs(q);
+        
+        let ordersHtml = "";
+        if(querySnapshot.empty) {
+          ordersHtml = "<p>No orders found yet.</p>";
+        } else {
+          querySnapshot.forEach((doc) => {
+            const o = doc.data();
+            const itemsStr = o.items.map(i => `${i.name} (x${i.qty}, ${i.size})`).join(", ");
+            ordersHtml += `
+              <div class="order-card">
+                <h4>${o.orderId} <span style="font-size:12px; color:#10b981;">(${o.status})</span></h4>
+                <p><strong>Date:</strong> ${o.orderDate}</p>
+                <p><strong>Name:</strong> ${o.customerName} | <strong>Phone:</strong> ${o.customerPhone}</p>
+                <p><strong>Address:</strong> ${o.address}</p>
+                <p><strong>Products:</strong> ${itemsStr}</p>
+                <p><strong>Total:</strong> ₹${o.totalAmount} | <strong>Payment:</strong> ${o.paymentMode}</p>
+                <a href="${o.mapLink}" target="_blank" style="color:#0369a1; font-size:12px;">View Google Map Location</a>
+              </div>
+            `;
+          });
+        }
+        ordersList.innerHTML = ordersHtml;
+      } catch (e) {
+        ordersList.innerHTML = "<p>Error loading orders. Make sure Firebase Index is created if you used orderBy.</p>";
+      }
+    }
+
+    // === AUTH & LOGIN ===
     document.getElementById("loginButton").onclick = async () => {
       try {
         await signInWithEmailAndPassword(auth, document.getElementById("adminEmail").value, document.getElementById("adminPass").value);
@@ -169,13 +252,14 @@
       if (user) {
         document.getElementById("loginView").style.display = "none";
         document.getElementById("adminView").classList.remove("hidden");
-        loadProducts();
+        loadProducts(); // Default load
       } else {
         document.getElementById("loginView").style.display = "flex";
         document.getElementById("adminView").classList.add("hidden");
       }
     });
 
+    // === ADD/EDIT/DELETE PRODUCT ===
     document.getElementById("productForm").onsubmit = async (e) => {
       e.preventDefault();
       const id = document.getElementById("editId").value || "P" + Date.now();
