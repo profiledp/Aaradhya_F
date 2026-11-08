@@ -32,15 +32,17 @@
 
     @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(37,211,102,0.7); } 70% { box-shadow: 0 0 0 15px rgba(37,211,102,0); } 100% { box-shadow: 0 0 0 0 rgba(37,211,102,0); } }
 
-    @media (max-width: 650px) {
-      .global-cart-btn { bottom: 20px; right: 15px; padding: 10px 16px; } .cart-text { display: none; }
-      .whatsapp-float-btn { bottom: 20px; left: 15px; width: 50px; height: 50px; } .whatsapp-float-btn svg { width: 28px; height: 28px; }
-      .track-float-btn { bottom: 85px; left: 15px; padding: 8px 14px; } .track-float-btn span { font-size: 10px; } .track-float-btn svg { width: 14px; height: 14px; }
+    /* Mobile Fix */
+    @media (max-width: 768px) {
+      .track-float-btn { bottom: 85px !important; left: 15px !important; padding: 8px 12px !important; border-width: 1px !important; }
+      .track-float-btn span { display: none !important; }
+      .track-float-btn svg { width: 20px !important; height: 20px !important; }
+      .whatsapp-float-btn { bottom: 20px !important; left: 15px !important; width: 48px !important; height: 48px !important; }
+      .whatsapp-float-btn svg { width: 24px !important; height: 24px !important; }
+      .global-cart-btn { bottom: 20px !important; right: 15px !important; padding: 10px 14px !important; }
+      .global-cart-btn .cart-text { display: none !important; }
+      .global-cart-btn .cart-badge { width: 20px !important; height: 20px !important; font-size: 10px !important; }
     }
-    
-    /* Deal Section Style */
-    #dealGrid .product-card { border: 2px solid #ef4444; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2); transition: transform 0.3s; }
-    #dealGrid .product-card:hover { transform: scale(1.03); }
   </style>
 </head>
 <body>
@@ -59,15 +61,7 @@
       </div>
     </section>
 
-    <!-- GLOBAL DEAL OF THE DAY SECTION -->
-    <section class="section-wrap" id="dealSection" style="display:none; padding-top: 40px; padding-bottom: 20px;">
-      <div class="section-heading" style="text-align: center; display: block; margin-bottom: 20px;">
-        <span class="eyebrow" style="color: #ef4444; font-weight:bold; font-size:12px;">🔥 LIMITED TIME OFFER</span>
-        <h2 style="color: var(--navy); margin:5px 0;">Deal of the Day</h2>
-      </div>
-      <div class="product-grid" id="dealGrid" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); max-width: 1000px; margin: 0 auto;"></div>
-    </section>
-
+    <!-- STORE DIRECTORY (No Deal Section Here) -->
     <section class="section-wrap" style="padding-top: 60px; padding-bottom: 80px;">
       <div class="section-heading" style="text-align: center; display: block; margin-bottom: 40px;">
         <span class="eyebrow">EXPLORE OUR VERTICALS</span>
@@ -102,38 +96,21 @@
   <a href="https://wa.me/918931911428?text=Hello%20Aaradhya%20Mart,%20I%20need%20some%20help." target="_blank" class="whatsapp-float-btn" aria-label="Chat on WhatsApp"><svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M16.004 2C8.28 2 2 8.28 2 16c0 2.47.64 4.79 1.76 6.81L2 30l7.39-1.71A13.93 13.93 0 0 0 16.004 30C23.72 30 30 23.72 30 16S23.72 2 16.004 2zm0 2.31c6.76 0 12.23 5.47 12.23 12.23 0 6.76-5.47 12.23-12.23 12.23-2.13 0-4.13-.55-5.86-1.51l-.42-.23-4.32 1 1-4.21-.24-.4A12.17 12.17 0 0 1 3.77 16c0-6.76 5.47-12.23 12.23-12.23z" fill="#fff"/><path d="M21.66 18.14c-.23-.12-1.38-.68-1.6-.76-.21-.08-.37-.12-.53.12-.16.24-.61.76-.75.92-.14.16-.28.18-.51.06-.23-.12-1-.37-1.91-1.18-.71-.63-1.18-1.41-1.32-1.65-.14-.24-.02-.37.1-.49.11-.11.23-.28.35-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.53-1.27-.72-1.74-.19-.46-.38-.4-.53-.4h-.45c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.69 2.58 4.1 3.62.57.25 1.02.4 1.37.51.57.18 1.09.15 1.5.09.46-.07 1.38-.56 1.58-1.11.2-.55.2-1.02.14-1.11-.06-.09-.22-.15-.45-.27z" fill="#fff"/></svg></a>
   <a href="track.html" class="track-float-btn" aria-label="Track Order"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg><span>Track Order</span></a>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-    const firebaseConfig = { apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y", authDomain: "aaradhya-mart.firebaseapp.com", projectId: "aaradhya-mart", storageBucket: "aaradhya-mart.firebasestorage.app", messagingSenderId: "146782544824", appId: "1:146782544824:web:d605e1971d3480fab1654d", measurementId: "G-L6VJBL7ESY" };
-    const app = initializeApp(firebaseConfig); const db = getFirestore(app);
-
+  <script>
+    // Cart update logic only
     function updateGlobalCart() {
       try {
         const cart = JSON.parse(localStorage.getItem("aaradhyaMartCart") || "[]");
         const count = cart.reduce((sum, item) => sum + (Number(item.qty) || 1), 0);
         const badge = document.getElementById("globalCartCount");
-        if (badge) { badge.textContent = count; badge.style.background = count === 0 ? "#ccc" : "var(--gold)"; badge.style.color = count === 0 ? "#fff" : "var(--navy)"; }
+        if (badge) {
+          badge.textContent = count;
+          if (count === 0) { badge.style.background = "#ccc"; badge.style.color = "#fff"; }
+          else { badge.style.background = "var(--gold)"; badge.style.color = "var(--navy)"; }
+        }
       } catch(e) {}
     }
-
-    async function loadDeals() {
-      try {
-        const q = query(collection(db, "products"), where("isDeal", "==", true));
-        const querySnapshot = await getDocs(q);
-        const dealGrid = document.getElementById("dealGrid"); const dealSection = document.getElementById("dealSection");
-        if(querySnapshot.empty) { dealSection.style.display = "none"; return; }
-        dealSection.style.display = "block";
-        let html = "";
-        querySnapshot.forEach((doc) => {
-          const p = doc.data();
-          html += `<article class="product-card"><div class="product-image-wrap"><img src="${p.image}" alt="${p.name}"><span style="position:absolute; top:10px; left:10px; background:#ef4444; color:#fff; padding:5px 10px; border-radius:4px; font-size:10px; font-weight:bold; z-index:2;">DEAL 🔥</span></div><div class="product-info"><h3>${p.name}</h3><div class="product-price" style="color:#ef4444;">₹${p.price} <span style="font-size:11px; color:#aaa; text-decoration:line-through; font-weight:normal;">₹${p.originalPrice}</span></div><a href="${p.store.toLowerCase()}.html" style="display:block; text-align:center; margin-top:10px; background:var(--navy); color:#fff; padding:10px; border-radius:6px; font-size:12px; font-weight:bold; text-decoration:none;">Buy Now ↗</a></div></article>`;
-        });
-        dealGrid.innerHTML = html;
-      } catch(e) {}
-    }
-    document.addEventListener("DOMContentLoaded", () => { updateGlobalCart(); loadDeals(); });
+    document.addEventListener("DOMContentLoaded", updateGlobalCart);
   </script>
 </body>
 </html>
