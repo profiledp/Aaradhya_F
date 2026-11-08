@@ -8,7 +8,6 @@
   <style>
     .clear-cart-btn { background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; padding: 8px 15px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: bold; transition: 0.2s; }
     .clear-cart-btn:hover { background: #fecaca; }
-
     .custom-modal-overlay { position: fixed; inset: 0; background: rgba(16, 36, 59, 0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
     .custom-modal-overlay.active { opacity: 1; visibility: visible; }
     .custom-modal { background: #fff; padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2); transform: scale(0.8) translateY(20px); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -35,9 +34,7 @@
       <button class="clear-cart-btn" onclick="openClearModal()">Clear Cart 🗑️</button>
     </div>
     
-    <div id="loadingCart" style="text-align:center; padding: 20px; font-weight:bold; color: var(--muted);">
-      Loading your items...
-    </div>
+    <div id="loadingCart" style="text-align:center; padding: 20px; font-weight:bold; color: var(--muted);">Loading your items...</div>
 
     <div id="cartItems"></div>
     
@@ -52,12 +49,11 @@
     </div>
   </main>
 
-  <!-- CUSTOM PREMIUM MODAL POPUP -->
   <div class="custom-modal-overlay" id="clearCartModal">
     <div class="custom-modal">
       <div style="font-size: 40px; margin-bottom: 15px;">🗑️</div>
       <h3>Clear Cart?</h3>
-      <p>Are you sure you want to remove all items from your shopping cart? This action cannot be undone.</p>
+      <p>Are you sure you want to remove all items from your shopping cart?</p>
       <div class="modal-actions">
         <button class="modal-btn btn-cancel" onclick="closeClearModal()">Cancel</button>
         <button class="modal-btn btn-danger" onclick="confirmClearCart()">Yes, Clear</button>
@@ -89,13 +85,10 @@
       try {
         const savedCart = localStorage.getItem("aaradhyaMartCart");
         cartData = savedCart ? JSON.parse(savedCart) : [];
-        
         const querySnapshot = await getDocs(collection(db, "products"));
         allProducts = [];
-        querySnapshot.forEach((doc) => {
-          allProducts.push({ id: doc.id, ...doc.data() });
-        });
-
+        querySnapshot.forEach((doc) => allProducts.push({ id: doc.id, ...doc.data() }));
+        
         const initialLength = cartData.length;
         cartData = cartData.filter(item => allProducts.some(p => String(p.id) === String(item.id)));
         
@@ -103,12 +96,8 @@
           localStorage.setItem("aaradhyaMartCart", JSON.stringify(cartData));
           if(typeof updateGlobalCart === 'function') updateGlobalCart();
         }
-
         renderCart();
-      } catch (error) {
-        console.error("Cart Error:", error);
-        document.getElementById("loadingCart").innerHTML = "<span style='color:red'>Error loading products.</span>";
-      }
+      } catch (error) { document.getElementById("loadingCart").innerHTML = "Error loading."; }
     }
 
     function renderCart() {
@@ -118,22 +107,16 @@
       const empty = document.getElementById("emptyCart");
       
       if (cartData.length === 0) {
-        container.innerHTML = ""; 
-        summary.style.display = "none"; 
-        empty.style.display = "block"; 
-        return;
+        container.innerHTML = ""; summary.style.display = "none"; empty.style.display = "block"; return;
       }
       
-      empty.style.display = "none"; 
-      summary.style.display = "block";
-      
+      empty.style.display = "none"; summary.style.display = "block";
       let total = 0;
       let html = "";
 
       cartData.forEach((item, index) => {
         const p = allProducts.find(x => String(x.id) === String(item.id));
         if (!p) return;
-        
         const itemTotal = Number(p.price) * Number(item.qty || 1);
         total += itemTotal;
 
@@ -147,8 +130,8 @@
               <button class="cart-remove" onclick="removeFromCart(${index})">Remove</button>
             </div>
             <div>
-              <label style="font-size:10px;">Qty:</label><br>
-              <input type="number" class="cart-qty-input" value="${item.qty}" min="1" onchange="updateQty(${index}, this.value)">
+              <label style="font-size:10px;">Qty (Max: ${p.stock}):</label><br>
+              <input type="number" class="cart-qty-input" value="${item.qty}" min="1" max="${p.stock}" onchange="updateQty(${index}, this.value)">
             </div>
           </div>
         `;
@@ -158,23 +141,26 @@
       document.getElementById("cartTotal").textContent = total.toLocaleString("en-IN");
     }
 
-    window.openClearModal = function() {
-      document.getElementById("clearCartModal").classList.add("active");
-    }
-    window.closeClearModal = function() {
-      document.getElementById("clearCartModal").classList.remove("active");
-    }
+    window.openClearModal = function() { document.getElementById("clearCartModal").classList.add("active"); }
+    window.closeClearModal = function() { document.getElementById("clearCartModal").classList.remove("active"); }
     window.confirmClearCart = function() {
-      localStorage.removeItem("aaradhyaMartCart");
-      cartData = [];
-      renderCart();
-      if(typeof updateGlobalCart === 'function') updateGlobalCart();
-      closeClearModal();
+      localStorage.removeItem("aaradhyaMartCart"); cartData = []; renderCart();
+      if(typeof updateGlobalCart === 'function') updateGlobalCart(); closeClearModal();
     }
 
+    // SMART STOCK UPDATE LOGIC HERE
     window.updateQty = function(index, newQty) {
       let qty = parseInt(newQty);
-      if (qty < 1 || isNaN(qty)) qty = 1;
+      if (isNaN(qty) || qty < 1) qty = 1;
+      
+      const p = allProducts.find(x => String(x.id) === String(cartData[index].id));
+      const maxStock = p ? Number(p.stock) : 999;
+
+      if (qty > maxStock) {
+        alert(`Sorry, only ${maxStock} items are available in stock.`);
+        qty = maxStock;
+      }
+
       cartData[index].qty = qty;
       localStorage.setItem("aaradhyaMartCart", JSON.stringify(cartData));
       renderCart();
@@ -188,10 +174,7 @@
       if(typeof updateGlobalCart === 'function') updateGlobalCart();
     }
 
-    window.proceedToCheckout = function() {
-      if(cartData.length > 0) window.location.href = "checkout.html";
-    }
-
+    window.proceedToCheckout = function() { if(cartData.length > 0) window.location.href = "checkout.html"; }
     document.addEventListener("DOMContentLoaded", initCart);
   </script>
 </body>
