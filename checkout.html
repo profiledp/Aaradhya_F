@@ -22,19 +22,12 @@
     .payment-option input:checked + span { color: var(--navy); }
     .payment-option:has(input:checked) { border-color: var(--navy); background: var(--cream); }
     .place-order-btn { width: 100%; padding: 16px; background: var(--navy); color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.3s; }
-    .place-order-btn:hover { background: #1e3a5f; }
-    
     .share-loc-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 12px; background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.2s; }
-    .share-loc-btn:hover { background: #bae6fd; }
-    
     .success-modal-overlay { position: fixed; inset: 0; background: rgba(16,36,59,0.7); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; visibility: hidden; transition: 0.3s; }
     .success-modal-overlay.active { opacity: 1; visibility: visible; }
     .success-modal { background: #fff; padding: 40px; border-radius: 16px; text-align: center; max-width: 400px; transform: scale(0.8); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     .success-modal-overlay.active .success-modal { transform: scale(1); }
-    .success-icon { font-size: 50px; margin-bottom: 15px; }
     .success-modal h3 { color: var(--navy); font-family: Georgia, serif; font-size: 24px; margin: 0 0 10px; }
-    .success-modal p { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
-    .success-modal button { background: var(--navy); color: #fff; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; }
     @media(max-width:650px){.form-row{grid-template-columns:1fr}.payment-options{flex-direction:column}}
   </style>
 </head>
@@ -47,47 +40,26 @@
   <main>
     <div class="checkout-container">
       <h2>Complete Your Order</h2>
-      <div class="product-summary" id="productSummary">Loading order details...</div>
+      <div class="product-summary" id="productSummary">Loading...</div>
 
       <form id="checkoutForm">
+        <div class="form-group"><label>Full Name *</label><input type="text" id="custName" required placeholder="Enter your full name"></div>
+        <div class="form-group"><label>Mobile Number *</label><input type="tel" id="custPhone" required placeholder="10-digit mobile number" pattern="[0-9]{10}"></div>
         <div class="form-group">
-          <label>Full Name *</label>
-          <input type="text" id="custName" required placeholder="Enter your full name">
-        </div>
-        <div class="form-group">
-          <label>Mobile Number *</label>
-          <input type="tel" id="custPhone" required placeholder="10-digit mobile number" pattern="[0-9]{10}">
-        </div>
-        <div class="form-group">
-          <label>Full Address (House No, Street, Landmark) *</label>
+          <label>Full Address *</label>
           <textarea id="custAddress" required placeholder="Enter your delivery address" rows="3"></textarea>
           <button type="button" class="share-loc-btn" onclick="shareLocationOnWhatsApp()">📍 Share Your Live Location</button>
         </div>
-        <div class="form-group">
-          <label>Google Maps Link (Optional)</label>
-          <input type="url" id="custMapLink" placeholder="Paste Google Maps location link here">
-        </div>
+        <div class="form-group"><label>Google Maps Link (Optional)</label><input type="url" id="custMapLink" placeholder="Paste Google Maps location link here"></div>
         <div class="form-row">
-          <div class="form-group">
-            <label>City / Village *</label>
-            <input type="text" id="custCity" required placeholder="e.g. Azamgarh">
-          </div>
-          <div class="form-group">
-            <label>Pincode *</label>
-            <input type="text" id="custPincode" required placeholder="6-digit pincode" pattern="[0-9]{6}">
-          </div>
+          <div class="form-group"><label>City / Village *</label><input type="text" id="custCity" required placeholder="e.g. Azamgarh"></div>
+          <div class="form-group"><label>Pincode *</label><input type="text" id="custPincode" required placeholder="6-digit pincode" pattern="[0-9]{6}"></div>
         </div>
         <div class="form-group">
           <label>Payment Mode *</label>
           <div class="payment-options">
-            <label class="payment-option">
-              <input type="radio" name="payment" value="Cash on Delivery (COD)" checked>
-              <span>💵 Cash on Delivery</span>
-            </label>
-            <label class="payment-option">
-              <input type="radio" name="payment" value="Online Payment (UPI/Bank)">
-              <span>💳 Online Payment</span>
-            </label>
+            <label class="payment-option"><input type="radio" name="payment" value="COD" checked><span>💵 Cash on Delivery</span></label>
+            <label class="payment-option"><input type="radio" name="payment" value="Online"><span>💳 Online Payment</span></label>
           </div>
         </div>
         <button type="submit" class="place-order-btn" id="submitBtn">CONFIRM & SEND ON WHATSAPP ↗</button>
@@ -97,16 +69,17 @@
 
   <div class="success-modal-overlay" id="successModal">
     <div class="success-modal">
-      <div class="success-icon">✅</div>
+      <div style="font-size: 50px; margin-bottom: 15px;">✅</div>
       <h3>Order Placed!</h3>
-      <p>Your order has been successfully placed and sent to WhatsApp.</p>
-      <button onclick="closeSuccessAndRedirect()">Go to Home</button>
+      <p style="color:var(--muted); font-size:14px; margin-bottom:20px;">Your order has been sent to WhatsApp.</p>
+      <button onclick="closeSuccessAndRedirect()" style="background:var(--navy); color:#fff; border:none; padding:12px 25px; border-radius:8px; font-weight:bold; cursor:pointer;">Go to Home</button>
     </div>
   </div>
 
   <script type="module">
+    // NAYA: Import updateDoc & increment for stock minus
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, addDoc, doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y",
@@ -122,20 +95,11 @@
     const db = getFirestore(app);
 
     const WHATSAPP_NUMBER = "918931911428";
-    let orderProducts = [];
-    let selectedStore = "Aaradhya Mart";
-    let isCartOrder = false;
+    let orderProducts = [], selectedStore = "Aaradhya Mart", isCartOrder = false;
 
     function saveAddressToLocal() {
-      const customerData = {
-        name: document.getElementById("custName").value,
-        phone: document.getElementById("custPhone").value,
-        address: document.getElementById("custAddress").value,
-        mapLink: document.getElementById("custMapLink").value,
-        city: document.getElementById("custCity").value,
-        pincode: document.getElementById("custPincode").value
-      };
-      localStorage.setItem("aaradhyaCustomerDetails", JSON.stringify(customerData));
+      const data = { name: custName.value, phone: custPhone.value, address: custAddress.value, mapLink: custMapLink.value, city: custCity.value, pincode: custPincode.value };
+      localStorage.setItem("aaradhyaCustomerDetails", JSON.stringify(data));
     }
 
     function loadAddressFromLocal() {
@@ -143,155 +107,83 @@
         const saved = localStorage.getItem("aaradhyaCustomerDetails");
         if(saved) {
           const data = JSON.parse(saved);
-          document.getElementById("custName").value = data.name || "";
-          document.getElementById("custPhone").value = data.phone || "";
-          document.getElementById("custAddress").value = data.address || "";
-          document.getElementById("custMapLink").value = data.mapLink || "";
-          document.getElementById("custCity").value = data.city || "";
-          document.getElementById("custPincode").value = data.pincode || "";
+          custName.value = data.name || ""; custPhone.value = data.phone || ""; custAddress.value = data.address || "";
+          custMapLink.value = data.mapLink || ""; custCity.value = data.city || ""; custPincode.value = data.pincode || "";
         }
       } catch(e) {}
     }
 
-    window.shareLocationOnWhatsApp = function() {
-      const msg = `Hello Aaradhya Mart, Here is my live location for the order delivery:`;
-      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
-    }
+    window.shareLocationOnWhatsApp = function() { window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=Hello%20Aaradhya%20Mart,%20Here%20is%20my%20live%20location:`, "_blank"); }
 
     document.addEventListener("DOMContentLoaded", async () => {
       loadAddressFromLocal();
-
       const urlParams = new URLSearchParams(window.location.search);
-      const productId = urlParams.get('id');
-      const size = urlParams.get('size') || "N/A";
+      const productId = urlParams.get('id'); const size = urlParams.get('size') || "N/A";
       selectedStore = urlParams.get('store') || "Aaradhya Mart";
 
       const querySnapshot = await getDocs(collection(db, "products"));
-      const allProducts = [];
-      querySnapshot.forEach((doc) => allProducts.push({ id: doc.id, ...doc.data() }));
+      const allProducts = []; querySnapshot.forEach((doc) => allProducts.push({ id: doc.id, ...doc.data() }));
 
       if (!productId) {
         isCartOrder = true;
-        const savedCart = localStorage.getItem("aaradhyaMartCart");
-        const cart = savedCart ? JSON.parse(savedCart) : [];
-        
-        if (cart.length === 0) { alert("Your cart is empty!"); window.location.href = "index.html"; return; }
-
+        const cart = JSON.parse(localStorage.getItem("aaradhyaMartCart") || "[]");
+        if (cart.length === 0) { alert("Cart empty!"); window.location.href = "index.html"; return; }
         document.getElementById("productSummary").innerHTML = cart.map(item => {
-          const p = allProducts.find(x => x.id === item.id);
-          if(!p) return "";
+          const p = allProducts.find(x => x.id === item.id); if(!p) return "";
           orderProducts.push({ ...p, selectedSize: item.size, selectedQty: item.qty });
-          return `
-            <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px; border-bottom:1px solid #ddd; padding-bottom:10px;">
-              <img src="${p.image}" style="width:50px; height:50px; object-fit:contain; border-radius:4px;">
-              <div>
-                <h4 style="margin:0;">${p.name} (x${item.qty})</h4>
-                <p style="margin:0; font-size:12px;">Size: ${item.size} | Price: ₹${p.price}</p>
-              </div>
-            </div>
-          `;
+          return `<div style="display:flex; gap:10px; align-items:center; margin-bottom:10px; border-bottom:1px solid #ddd; padding-bottom:10px;"><img src="${p.image}" style="width:50px; height:50px; object-fit:contain;"><div><h4 style="margin:0;">${p.name} (x${item.qty})</h4><p style="margin:0; font-size:12px;">Size: ${item.size} | ₹${p.price}</p></div></div>`;
         }).join("");
         selectedStore = "Multiple Stores (Cart)";
       } else {
         const p = allProducts.find(x => x.id === productId);
         if (!p) { alert("Product not found!"); window.location.href = "index.html"; return; }
         orderProducts.push({ ...p, selectedSize: size, selectedQty: 1 });
-        document.getElementById("productSummary").innerHTML = `
-          <div style="display:flex; gap:15px; align-items:center;">
-            <img src="${p.image}" style="width:70px; height:70px; object-fit:contain; border-radius:6px;">
-            <div class="product-summary-info">
-              <h4>${p.name}</h4>
-              <p>Size: ${size} | Price: ₹${p.price}</p>
-              <p style="font-size:11px; color:var(--gold); font-weight:bold; margin-top:3px;">Store: ${selectedStore}</p>
-            </div>
-          </div>
-        `;
+        document.getElementById("productSummary").innerHTML = `<div style="display:flex; gap:15px; align-items:center;"><img src="${p.image}" style="width:70px; height:70px; object-fit:contain;"><div class="product-summary-info"><h4>${p.name}</h4><p>Size: ${size} | ₹${p.price}</p></div></div>`;
       }
 
       document.getElementById("checkoutForm").addEventListener("submit", async (e) => {
         e.preventDefault();
-        
         const submitBtn = document.getElementById("submitBtn");
-        submitBtn.textContent = "Processing...";
-        submitBtn.disabled = true;
-
+        submitBtn.textContent = "Processing..."; submitBtn.disabled = true;
         saveAddressToLocal();
 
-        const name = document.getElementById("custName").value;
-        const phone = document.getElementById("custPhone").value;
-        const address = document.getElementById("custAddress").value;
-        const mapLink = document.getElementById("custMapLink").value;
-        const city = document.getElementById("custCity").value;
-        const pincode = document.getElementById("custPincode").value;
+        const name = custName.value, phone = custPhone.value, address = custAddress.value, mapLink = custMapLink.value, city = custCity.value, pincode = custPincode.value;
         const payment = document.querySelector('input[name="payment"]:checked').value;
-
-        let productDetailsText = "";
-        let totalAmount = 0;
-        let itemsArray = [];
+        let productDetailsText = "", totalAmount = 0, itemsArray = [];
 
         orderProducts.forEach(item => {
           productDetailsText += `- ${item.name} (Qty: ${item.selectedQty}, Size: ${item.selectedSize}) = ₹${item.price * item.selectedQty}\n`;
           totalAmount += (item.price * item.selectedQty);
-          itemsArray.push({
-            name: item.name,
-            qty: item.selectedQty,
-            size: item.selectedSize,
-            price: item.price
-          });
+          itemsArray.push({ name: item.name, qty: item.selectedQty, size: item.selectedSize, price: item.price, id: item.id });
         });
 
-        // 1. SAVE ORDER TO FIREBASE CLOUD
         try {
+          // 1. Save Order
           await addDoc(collection(db, "orders"), {
-            orderId: "ORD-" + Date.now().toString().slice(-6),
-            customerName: name,
-            customerPhone: phone,
-            address: address + ", " + city + " - " + pincode,
-            mapLink: mapLink || "Not Provided",
-            paymentMode: payment,
-            store: selectedStore,
-            items: itemsArray,
-            totalAmount: totalAmount,
-            orderDate: new Date().toLocaleString("en-IN"),
-            status: "Pending"
+            orderId: "ORD-" + Date.now().toString().slice(-6), customerName: name, customerPhone: phone, address: address + ", " + city + " - " + pincode, mapLink: mapLink || "Not Provided", paymentMode: payment, store: selectedStore, items: itemsArray, totalAmount: totalAmount, orderDate: new Date().toLocaleString("en-IN"), status: "Pending"
           });
+
+          // 2. NAYA: MINUS STOCK AUTOMATICALLY
+          for (const item of orderProducts) {
+             const productRef = doc(db, "products", item.id);
+             await updateDoc(productRef, { stock: increment(-item.selectedQty) });
+          }
+
         } catch (error) {
-          console.error("Error saving order:", error);
-          alert("Order save failed. Please try again.");
-          submitBtn.textContent = "CONFIRM & SEND ON WHATSAPP ↗";
-          submitBtn.disabled = false;
-          return;
+          console.error("Error:", error); alert("Order failed. Try again."); submitBtn.textContent = "CONFIRM & SEND ON WHATSAPP ↗"; submitBtn.disabled = false; return;
         }
 
-        // 2. SEND TO WHATSAPP
-        const locationText = mapLink ? `\n*Map Location:* ${mapLink}\n` : "";
-        const msg = `*NEW ORDER - ${selectedStore}*\n\n` +
-                    `*Product Details:*\n${productDetailsText}\n` +
-                    `*Total Amount: ₹${totalAmount}*\n\n` +
-                    `*Customer Details:*\n` +
-                    `Name: ${name}\n` +
-                    `Phone: ${phone}\n` +
-                    `Address: ${address}, ${city} - ${pincode}\n` +
-                    locationText + `\n` +
-                    `*Payment Mode:* ${payment}\n\n` +
-                    `Please confirm my order.`;
-
+        // 3. Send WhatsApp
+        const locationText = mapLink ? `\n*Map Link:* ${mapLink}\n` : "";
+        const msg = `*NEW ORDER - ${selectedStore}*\n\n*Products:*\n${productDetailsText}\n*Total: ₹${totalAmount}*\n\n*Customer:* ${name}\n*Phone:* ${phone}\n*Address:* ${address}, ${city} - ${pincode}\n${locationText}\n*Payment:* ${payment}`;
         if(isCartOrder) localStorage.removeItem("aaradhyaMartCart");
-
         window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
         
-        // 3. SHOW SUCCESS POPUP
         document.getElementById("successModal").classList.add("active");
-        
-        submitBtn.textContent = "CONFIRM & SEND ON WHATSAPP ↗";
-        submitBtn.disabled = false;
+        submitBtn.textContent = "CONFIRM & SEND ON WHATSAPP ↗"; submitBtn.disabled = false;
       });
     });
-
-    window.closeSuccessAndRedirect = function() {
-      document.getElementById("successModal").classList.remove("active");
-      setTimeout(() => window.location.href = "index.html", 300);
-    }
+    window.closeSuccessAndRedirect = function() { document.getElementById("successModal").classList.remove("active"); setTimeout(() => window.location.href = "index.html", 300); }
   </script>
 </body>
 </html>
