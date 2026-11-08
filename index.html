@@ -25,53 +25,93 @@
   <link rel="stylesheet" href="style.css">
   
   <style>
-    /* NAYA: Floating Track Order Button with Text */
+    /* =========================================
+       FLOATING BUTTONS POSITIONING (FIXED)
+       ========================================= */
+       
+    /* 1. Cart Button (Right Side) */
+    .global-cart-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: var(--navy);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      box-shadow: 0 8px 25px rgba(16,36,59,0.3);
+      z-index: 9999;
+      transition: transform 0.3s, background 0.3s;
+      border: 1px solid var(--gold);
+    }
+    .global-cart-btn:hover { transform: translateY(-5px); background: #1e3a5f; }
+    .cart-icon-svg { font-size: 20px; }
+    .cart-text { font-size: 14px; font-weight: bold; letter-spacing: 0.5px; }
+    .cart-badge { background: var(--gold); color: var(--navy); width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 12px; font-weight: bold; }
+
+    /* 2. WhatsApp Button (Left Side - Bottom) */
+    .whatsapp-float-btn {
+      position: fixed;
+      bottom: 30px; /* Sabse niche */
+      left: 25px;
+      background-color: #25D366;
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(37,211,102,0.4);
+      z-index: 9999;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: pulse 2s infinite;
+    }
+    .whatsapp-float-btn svg { width: 32px; height: 32px; }
+    .whatsapp-float-btn:hover { transform: scale(1.1); animation: none; }
+
+    /* 3. Track Order Button (Left Side - Above WhatsApp) */
     .track-float-btn {
       position: fixed;
-      bottom: 100px; /* WhatsApp ke upar */
+      bottom: 100px; /* WhatsApp ke theek upar */
       left: 25px;
-      background-color: var(--navy);
-      color: var(--gold);
+      background-color: #fff;
+      color: var(--navy);
       padding: 10px 18px;
       border-radius: 50px;
       display: flex;
       align-items: center;
       gap: 8px;
-      box-shadow: 0 4px 15px rgba(16,36,59,0.3);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
       z-index: 9999;
       text-decoration: none;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
-      border: 1px solid var(--gold);
+      border: 2px solid var(--navy);
     }
-    .track-float-btn svg {
-      width: 20px;
-      height: 20px;
-      stroke: var(--gold);
-    }
-    .track-float-btn span {
-      font-size: 13px;
-      font-weight: bold;
-      letter-spacing: 0.5px;
-    }
-    .track-float-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 20px rgba(16,36,59,0.4);
-      background-color: #1e3a5f;
+    .track-float-btn svg { width: 18px; height: 18px; stroke: var(--navy); stroke-width: 2.5; }
+    .track-float-btn span { font-size: 12px; font-weight: 900; letter-spacing: 0.5px; text-transform: uppercase; }
+    .track-float-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.25); background-color: var(--navy); color: #fff; }
+    .track-float-btn:hover svg { stroke: #fff; }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(37,211,102,0.7); }
+      70% { box-shadow: 0 0 0 15px rgba(37,211,102,0); }
+      100% { box-shadow: 0 0 0 0 rgba(37,211,102,0); }
     }
 
+    /* Mobile Screen Adjustments */
     @media (max-width: 650px) {
-      .track-float-btn {
-        bottom: 85px;
-        left: 15px;
-        padding: 8px 14px;
-      }
-      .track-float-btn span {
-        font-size: 12px;
-      }
-      .track-float-btn svg {
-        width: 18px;
-        height: 18px;
-      }
+      .global-cart-btn { bottom: 20px; right: 15px; padding: 10px 16px; }
+      .cart-text { display: none; }
+      
+      .whatsapp-float-btn { bottom: 20px; left: 15px; width: 50px; height: 50px; }
+      .whatsapp-float-btn svg { width: 28px; height: 28px; }
+      
+      .track-float-btn { bottom: 85px; left: 15px; padding: 8px 14px; }
+      .track-float-btn span { font-size: 10px; }
+      .track-float-btn svg { width: 14px; height: 14px; }
     }
   </style>
 </head>
@@ -150,21 +190,21 @@
     <span class="cart-icon-svg">🛒</span><span class="cart-text">Cart</span><span class="cart-badge" id="globalCartCount">0</span>
   </a>
 
-  <!-- NAYA: FLOATING TRACK ORDER BUTTON (Left Side, above WhatsApp) -->
-  <a href="track.html" class="track-float-btn" aria-label="Track Order">
-    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="12" r="10"></circle>
-      <polyline points="12 6 12 12 16 14"></polyline>
-    </svg>
-    <span>Track Order</span>
-  </a>
-
-  <!-- FLOATING WHATSAPP BUTTON (Left Side, Bottom) -->
+  <!-- FLOATING WHATSAPP BUTTON (Left Side - Bottom) -->
   <a href="https://wa.me/918931911428?text=Hello%20Aaradhya%20Mart,%20I%20need%20some%20help." target="_blank" class="whatsapp-float-btn" aria-label="Chat on WhatsApp">
     <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
       <path d="M16.004 2C8.28 2 2 8.28 2 16c0 2.47.64 4.79 1.76 6.81L2 30l7.39-1.71A13.93 13.93 0 0 0 16.004 30C23.72 30 30 23.72 30 16S23.72 2 16.004 2zm0 2.31c6.76 0 12.23 5.47 12.23 12.23 0 6.76-5.47 12.23-12.23 12.23-2.13 0-4.13-.55-5.86-1.51l-.42-.23-4.32 1 1-4.21-.24-.4A12.17 12.17 0 0 1 3.77 16c0-6.76 5.47-12.23 12.23-12.23z" fill="#fff"/>
       <path d="M21.66 18.14c-.23-.12-1.38-.68-1.6-.76-.21-.08-.37-.12-.53.12-.16.24-.61.76-.75.92-.14.16-.28.18-.51.06-.23-.12-1-.37-1.91-1.18-.71-.63-1.18-1.41-1.32-1.65-.14-.24-.02-.37.1-.49.11-.11.23-.28.35-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.53-1.27-.72-1.74-.19-.46-.38-.4-.53-.4h-.45c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.69 2.58 4.1 3.62.57.25 1.02.4 1.37.51.57.18 1.09.15 1.5.09.46-.07 1.38-.56 1.58-1.11.2-.55.2-1.02.14-1.11-.06-.09-.22-.15-.45-.27z" fill="#fff"/>
     </svg>
+  </a>
+
+  <!-- FLOATING TRACK ORDER BUTTON (Left Side - Above WhatsApp) -->
+  <a href="track.html" class="track-float-btn" aria-label="Track Order">
+    <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <polyline points="12 6 12 12 16 14"></polyline>
+    </svg>
+    <span>Track Order</span>
   </a>
 
   <script>
