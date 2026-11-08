@@ -18,26 +18,24 @@
     .form-field.full { grid-column: 1 / -1; }
     .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
     .admin-table th, .admin-table td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; font-size: 13px; }
-    .stock-input { width: 70px; padding: 5px; text-align: center; }
+    .stock-input { width: 70px; padding: 5px; text-align: center; border: 1px solid #ccc; border-radius: 4px;}
+    
+    /* LOW STOCK RED ALERT */
+    .stock-low { border: 2px solid #ef4444 !important; background: #fee2e2 !important; color: #b91c1c; font-weight: bold; }
+
     .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
     .btn-primary { background: #10243b; color: #fff; }
     .btn-danger { background: #ef4444; color: #fff; }
-    .btn-success { background: #10b981; color: #fff; }
     .hidden { display: none !important; }
-    
     .filter-tabs { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
     .filter-btn { padding: 8px 15px; border: 1px solid #ccc; background: #fff; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: bold; }
     .filter-btn.active { background: #10243b; color: #fff; border-color: #10243b; }
-
     .main-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #ccc; padding-bottom: 10px;}
     .main-tab-btn { background: none; border: none; font-size: 18px; font-weight: bold; color: #777; cursor: pointer; padding: 10px;}
     .main-tab-btn.active { color: #10243b; border-bottom: 3px solid #10243b;}
-    
     .order-card { border: 1px solid #eee; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #fafafa; }
     .order-card h4 { margin: 0 0 10px; color: #10243b; display:flex; justify-content:space-between; align-items:center;}
     .order-card p { margin: 5px 0; font-size: 13px; }
-    
-    /* Status Dropdown Style */
     .status-select { padding: 6px 10px; border-radius: 20px; font-weight: bold; border: 1px solid #ccc; cursor: pointer; outline: none; font-size: 12px; }
     .status-Pending { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
     .status-Processing { background: #e0f2fe; color: #0369a1; border-color: #7dd3fc; }
@@ -67,40 +65,32 @@
       <button class="main-tab-btn" onclick="switchMainTab('orders', this)">📦 Manage Orders</button>
     </div>
 
-    <!-- ================= PRODUCTS SECTION ================= -->
+    <!-- PRODUCTS SECTION -->
     <div id="productsSection">
       <div class="admin-panel">
         <h2 id="formTitle">Add New Product</h2>
         <form id="productForm">
           <input type="hidden" id="editId">
           <div class="grid-form">
-            <div class="form-field"><label>Store</label>
-              <select id="pStore">
-                <option value="Fashion">Fashion</option>
-                <option value="Print">Print</option>
-                <option value="Kirana">Kirana</option>
-              </select>
-            </div>
+            <div class="form-field"><label>Store</label><select id="pStore"><option value="Fashion">Fashion</option><option value="Print">Print</option><option value="Kirana">Kirana</option></select></div>
             <div class="form-field"><label>Product Name</label><input id="pName" required></div>
-            <div class="form-field"><label>Category</label><input id="pCategory" required placeholder="e.g. Men, Grocery"></div>
+            <div class="form-field"><label>Category</label><input id="pCategory" required></div>
             <div class="form-field"><label>Price (₹)</label><input id="pPrice" type="number" required></div>
             <div class="form-field"><label>Original Price (₹)</label><input id="pOriginal" type="number"></div>
-            <div class="form-field"><label>Unit (KG, Gram, Packet, Pieces)</label><input id="pUnit" placeholder="e.g. 1kg, 500g, 1 Packet"></div>
+            <div class="form-field"><label>Unit</label><input id="pUnit" placeholder="e.g. 1kg, 500g"></div>
             <div class="form-field"><label>Stock Quantity</label><input id="pStock" type="number" required value="10"></div>
-            <div class="form-field full"><label>Image URL</label><input id="pImage" required placeholder="https://..."></div>
-            <div class="form-field"><label>Sizes (Comma Separated)</label><input id="pSizes" placeholder="M, L, XL (for Fashion) OR 250G, 500G (for Kirana)"></div>
-            <div class="form-field"><label>Tag</label><input id="pTag" placeholder="NEW / POPULAR"></div>
+            <div class="form-field full"><label>Image URL</label><input id="pImage" required></div>
+            <div class="form-field"><label>Sizes</label><input id="pSizes" placeholder="M, L, XL"></div>
+            <div class="form-field"><label>Tag</label><input id="pTag" placeholder="NEW"></div>
             <div class="form-field full"><label>Description</label><textarea id="pDescription"></textarea></div>
           </div>
-          <div style="margin-top: 15px;">
-            <button type="submit" class="btn btn-primary">SAVE PRODUCT</button>
-          </div>
+          <div style="margin-top: 15px;"><button type="submit" class="btn btn-primary">SAVE PRODUCT</button></div>
         </form>
       </div>
 
       <div class="admin-panel">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <h2>All Products (Live)</h2>
+          <h2>All Products</h2>
           <div class="filter-tabs">
             <button class="filter-btn active" onclick="filterTable('All', this)">All</button>
             <button class="filter-btn" onclick="filterTable('Fashion', this)">Fashion</button>
@@ -115,16 +105,13 @@
       </div>
     </div>
 
-    <!-- ================= ORDERS SECTION ================= -->
+    <!-- ORDERS SECTION -->
     <div id="ordersSection" class="hidden">
       <div class="admin-panel">
-        <h2>All Orders (Live)</h2>
-        <div id="ordersList">
-          <!-- Orders will be injected here -->
-        </div>
+        <h2>All Orders</h2>
+        <div id="ordersList"></div>
       </div>
     </div>
-
   </div>
 
   <script type="module">
@@ -132,64 +119,36 @@
     import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y",
-      authDomain: "aaradhya-mart.firebaseapp.com",
-      projectId: "aaradhya-mart",
-      storageBucket: "aaradhya-mart.firebasestorage.app",
-      messagingSenderId: "146782544824",
-      appId: "1:146782544824:web:d605e1971d3480fab1654d",
-      measurementId: "G-L6VJBL7ESY"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
-
-    let allProducts = [];
-    let currentFilter = "All";
+    const firebaseConfig = { apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y", authDomain: "aaradhya-mart.firebaseapp.com", projectId: "aaradhya-mart", storageBucket: "aaradhya-mart.firebasestorage.app", messagingSenderId: "146782544824", appId: "1:146782544824:web:d605e1971d3480fab1654d", measurementId: "G-L6VJBL7ESY" };
+    const app = initializeApp(firebaseConfig); const db = getFirestore(app); const auth = getAuth(app);
+    let allProducts = []; let currentFilter = "All";
 
     window.switchMainTab = function(tabName, btnElement) {
-      document.querySelectorAll('.main-tab-btn').forEach(btn => btn.classList.remove('active'));
-      btnElement.classList.add('active');
-      if(tabName === 'products') {
-        document.getElementById("productsSection").classList.remove("hidden");
-        document.getElementById("ordersSection").classList.add("hidden");
-        loadProducts();
-      } else {
-        document.getElementById("productsSection").classList.add("hidden");
-        document.getElementById("ordersSection").classList.remove("hidden");
-        loadOrders();
-      }
+      document.querySelectorAll('.main-tab-btn').forEach(btn => btn.classList.remove('active')); btnElement.classList.add('active');
+      if(tabName === 'products') { productsSection.classList.remove("hidden"); ordersSection.classList.add("hidden"); loadProducts(); }
+      else { productsSection.classList.add("hidden"); ordersSection.classList.remove("hidden"); loadOrders(); }
     }
 
-    // === PRODUCT FUNCTIONS ===
     async function loadProducts() {
-      const querySnapshot = await getDocs(collection(db, "products"));
-      allProducts = [];
-      querySnapshot.forEach((doc) => allProducts.push({ id: doc.id, ...doc.data() }));
-      renderTable();
+      const querySnapshot = await getDocs(collection(db, "products")); allProducts = [];
+      querySnapshot.forEach((doc) => allProducts.push({ id: doc.id, ...doc.data() })); renderTable();
     }
 
     window.filterTable = function(storeName, btnElement) {
-      currentFilter = storeName;
-      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-      btnElement.classList.add('active');
-      renderTable();
+      currentFilter = storeName; document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active')); btnElement.classList.add('active'); renderTable();
     }
 
     function renderTable() {
       let filteredProducts = allProducts;
-      if (currentFilter !== "All") {
-        filteredProducts = allProducts.filter(p => p.store === currentFilter);
-      }
+      if (currentFilter !== "All") filteredProducts = allProducts.filter(p => p.store === currentFilter);
+
       document.getElementById("productRows").innerHTML = filteredProducts.map(p => `
         <tr>
           <td><span class="badge">${p.store}</span></td>
           <td>${p.name}</td>
           <td>${p.unit || '-'}</td>
           <td>₹${p.price}</td>
-          <td><input type="number" class="stock-input" value="${p.stock}" data-stock-id="${p.id}"></td>
+          <td><input type="number" class="stock-input ${p.stock <= 5 ? 'stock-low' : ''}" value="${p.stock}" data-stock-id="${p.id}" title="${p.stock <= 5 ? 'Low Stock Alert!' : ''}"></td>
           <td>
             <button class="btn btn-primary" style="padding:5px 10px; font-size:11px;" data-edit="${p.id}">Edit</button>
             <button class="btn btn-danger" style="padding:5px 10px; font-size:11px;" data-delete="${p.id}">Delete</button>
@@ -198,153 +157,73 @@
       `).join("");
     }
 
-    // === ORDER FUNCTIONS WITH STATUS ===
     async function loadOrders() {
-      const ordersList = document.getElementById("ordersList");
-      ordersList.innerHTML = "<p>Loading orders...</p>";
-
+      const ordersList = document.getElementById("ordersList"); ordersList.innerHTML = "<p>Loading...</p>";
       try {
-        const q = query(collection(db, "orders"), orderBy("orderDate", "desc"));
-        const querySnapshot = await getDocs(q);
-        
-        let ordersHtml = "";
-        if(querySnapshot.empty) {
-          ordersHtml = "<p>No orders found yet.</p>";
-        } else {
-          querySnapshot.forEach((doc) => {
-            const o = doc.data();
-            const orderDocId = doc.id; // Firebase Document ID for updating status
-            const itemsStr = o.items.map(i => `${i.name} (x${i.qty}, ${i.size})`).join("<br>");
-            
-            // Status Dropdown with dynamic colors
-            const statusClass = `status-${o.status.replace(/\s+/g, '')}`;
-            const statusDropdown = `
-              <select class="status-select ${statusClass}" onchange="updateOrderStatus('${orderDocId}', this.value, this)">
-                <option value="Pending" ${o.status === 'Pending' ? 'selected' : ''}>🟡 Pending</option>
-                <option value="Processing" ${o.status === 'Processing' ? 'selected' : ''}>🔵 Processing</option>
-                <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>🟢 Delivered</option>
-                <option value="Cancelled" ${o.status === 'Cancelled' ? 'selected' : ''}>🔴 Cancelled</option>
-              </select>
-            `;
-
-            ordersHtml += `
-              <div class="order-card">
-                <h4>
-                  <span>${o.orderId} - <span style="font-weight:normal; font-size:14px;">${o.customerName}</span></span>
-                  ${statusDropdown}
-                </h4>
-                <p><strong>Date:</strong> ${o.orderDate}</p>
-                <p><strong>Phone:</strong> <a href="https://wa.me/91${o.customerPhone}" target="_blank" style="color:#10b981;">${o.customerPhone}</a></p>
-                <p><strong>Address:</strong> ${o.address}</p>
-                <p><strong>Products:</strong><br> ${itemsStr}</p>
-                <p><strong>Total:</strong> ₹${o.totalAmount} | <strong>Payment:</strong> ${o.paymentMode}</p>
-                <a href="${o.mapLink}" target="_blank" style="color:#0369a1; font-size:12px;">📍 View Google Map Location</a>
-              </div>
-            `;
-          });
-        }
-        ordersList.innerHTML = ordersHtml;
-      } catch (e) {
-        ordersList.innerHTML = "<p>Error loading orders. Make sure Firebase Index is created.</p>";
-        console.error(e);
-      }
+        const q = query(collection(db, "orders"), orderBy("orderDate", "desc")); const querySnapshot = await getDocs(q);
+        if(querySnapshot.empty) { ordersList.innerHTML = "<p>No orders found.</p>"; return; }
+        let html = "";
+        querySnapshot.forEach((doc) => {
+          const o = doc.data(); const itemsStr = o.items.map(i => `${i.name} (x${i.qty})`).join("<br>");
+          const statusClass = `status-${o.status.replace(/\s+/g, '')}`;
+          html += `
+            <div class="order-card">
+              <h4>
+                <span>${o.orderId} - ${o.customerName}</span>
+                <select class="status-select ${statusClass}" onchange="updateOrderStatus('${doc.id}', this.value, this)">
+                  <option value="Pending" ${o.status === 'Pending' ? 'selected' : ''}>🟡 Pending</option>
+                  <option value="Processing" ${o.status === 'Processing' ? 'selected' : ''}>🔵 Processing</option>
+                  <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>🟢 Delivered</option>
+                  <option value="Cancelled" ${o.status === 'Cancelled' ? 'selected' : ''}>🔴 Cancelled</option>
+                </select>
+              </h4>
+              <p><strong>Date:</strong> ${o.orderDate}</p>
+              <p><strong>Phone:</strong> <a href="https://wa.me/91${o.customerPhone}" target="_blank" style="color:#10b981;">${o.customerPhone}</a></p>
+              <p><strong>Address:</strong> ${o.address}</p>
+              <p><strong>Products:</strong><br> ${itemsStr}</p>
+              <p><strong>Total:</strong> ₹${o.totalAmount} | <strong>Payment:</strong> ${o.paymentMode}</p>
+            </div>
+          `;
+        });
+        ordersList.innerHTML = html;
+      } catch (e) { ordersList.innerHTML = "Error loading orders."; }
     }
 
-    // Function to Update Status in Firebase
     window.updateOrderStatus = async function(docId, newStatus, selectElement) {
       try {
-        selectElement.disabled = true; // Disable while saving
-        await updateDoc(doc(db, "orders", docId), { status: newStatus });
-        
-        // Update colors immediately
+        selectElement.disabled = true; await updateDoc(doc(db, "orders", docId), { status: newStatus });
         selectElement.className = `status-select status-${newStatus.replace(/\s+/g, '')}`;
-        
-        // Flash green to show success
-        selectElement.style.boxShadow = "0 0 0 3px rgba(16, 185, 129, 0.4)";
-        setTimeout(() => selectElement.style.boxShadow = "", 1000);
-      } catch (error) {
-        alert("Failed to update status. Check your internet.");
-        console.error(error);
-      } finally {
-        selectElement.disabled = false;
-      }
+        selectElement.style.boxShadow = "0 0 0 3px rgba(16, 185, 129, 0.4)"; setTimeout(() => selectElement.style.boxShadow = "", 1000);
+      } catch (error) { alert("Failed to update."); } finally { selectElement.disabled = false; }
     }
 
-    // === AUTH & LOGIN ===
-    document.getElementById("loginButton").onclick = async () => {
-      try {
-        await signInWithEmailAndPassword(auth, document.getElementById("adminEmail").value, document.getElementById("adminPass").value);
-      } catch (e) { document.getElementById("loginError").textContent = "Login failed: " + e.message; }
-    };
-
+    document.getElementById("loginButton").onclick = async () => { try { await signInWithEmailAndPassword(auth, adminEmail.value, adminPass.value); } catch (e) { loginError.textContent = e.message; } };
     document.getElementById("logoutButton").onclick = () => signOut(auth);
+    onAuthStateChanged(auth, (user) => { if (user) { loginView.style.display = "none"; adminView.classList.remove("hidden"); loadProducts(); } else { loginView.style.display = "flex"; adminView.classList.add("hidden"); } });
 
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        document.getElementById("loginView").style.display = "none";
-        document.getElementById("adminView").classList.remove("hidden");
-        loadProducts();
-      } else {
-        document.getElementById("loginView").style.display = "flex";
-        document.getElementById("adminView").classList.add("hidden");
-      }
-    });
-
-    // === ADD/EDIT/DELETE PRODUCT ===
     document.getElementById("productForm").onsubmit = async (e) => {
-      e.preventDefault();
-      const id = document.getElementById("editId").value || "P" + Date.now();
-      const productData = {
-        store: document.getElementById("pStore").value,
-        name: document.getElementById("pName").value,
-        category: document.getElementById("pCategory").value,
-        price: Number(document.getElementById("pPrice").value),
-        originalPrice: Number(document.getElementById("pOriginal").value) || 0,
-        unit: document.getElementById("pUnit").value,
-        stock: Number(document.getElementById("pStock").value),
-        image: document.getElementById("pImage").value,
-        sizes: document.getElementById("pSizes").value.split(",").map(s=>s.trim()).filter(Boolean),
-        tag: document.getElementById("pTag").value,
-        description: document.getElementById("pDescription").value
-      };
-      await setDoc(doc(db, "products", id), productData);
-      document.getElementById("productForm").reset();
-      document.getElementById("editId").value = "";
-      loadProducts();
-      alert("Product Saved to Cloud!");
+      e.preventDefault(); const id = editId.value || "P" + Date.now();
+      await setDoc(doc(db, "products", id), {
+        store: pStore.value, name: pName.value, category: pCategory.value, price: Number(pPrice.value), originalPrice: Number(pOriginal.value) || 0, unit: pUnit.value, stock: Number(pStock.value), image: pImage.value, sizes: pSizes.value.split(",").map(s=>s.trim()).filter(Boolean), tag: pTag.value, description: pDescription.value
+      });
+      productForm.reset(); editId.value = ""; loadProducts(); alert("Saved!");
     };
 
-    document.getElementById("productRows").addEventListener("change", async (e) => {
+    productRows.addEventListener("change", async (e) => {
       if(e.target.hasAttribute("data-stock-id")) {
         await updateDoc(doc(db, "products", e.target.dataset.stockId), { stock: Number(e.target.value) });
         e.target.style.background = "#d4edda"; setTimeout(() => e.target.style.background = "", 1000);
       }
     });
 
-    document.getElementById("productRows").addEventListener("click", async (e) => {
-      const editId = e.target.dataset.edit;
-      const delId = e.target.dataset.delete;
-      if(editId) {
-        const p = allProducts.find(x => x.id === editId);
-        document.getElementById("editId").value = p.id;
-        document.getElementById("pStore").value = p.store;
-        document.getElementById("pName").value = p.name;
-        document.getElementById("pCategory").value = p.category;
-        document.getElementById("pPrice").value = p.price;
-        document.getElementById("pOriginal").value = p.originalPrice;
-        document.getElementById("pUnit").value = p.unit || "";
-        document.getElementById("pStock").value = p.stock;
-        document.getElementById("pImage").value = p.image;
-        document.getElementById("pSizes").value = (p.sizes||[]).join(", ");
-        document.getElementById("pTag").value = p.tag || "";
-        document.getElementById("pDescription").value = p.description || "";
-        document.getElementById("formTitle").textContent = "Edit Product";
-        window.scrollTo(0,0);
+    productRows.addEventListener("click", async (e) => {
+      const edit = e.target.dataset.edit; const del = e.target.dataset.delete;
+      if(edit) {
+        const p = allProducts.find(x => x.id === edit);
+        editId.value = p.id; pStore.value = p.store; pName.value = p.name; pCategory.value = p.category; pPrice.value = p.price; pOriginal.value = p.originalPrice; pUnit.value = p.unit || ""; pStock.value = p.stock; pImage.value = p.image; pSizes.value = (p.sizes||[]).join(", "); pTag.value = p.tag || ""; pDescription.value = p.description || "";
+        formTitle.textContent = "Edit Product"; window.scrollTo(0,0);
       }
-      if(delId && confirm("Delete this product?")) {
-        await deleteDoc(doc(db, "products", delId));
-        loadProducts();
-      }
+      if(del && confirm("Delete this product?")) { await deleteDoc(doc(db, "products", del)); loadProducts(); }
     });
   </script>
 </body>
