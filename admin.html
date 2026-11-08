@@ -19,10 +19,7 @@
     .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
     .admin-table th, .admin-table td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; font-size: 13px; }
     .stock-input { width: 70px; padding: 5px; text-align: center; border: 1px solid #ccc; border-radius: 4px;}
-    
-    /* LOW STOCK RED ALERT */
     .stock-low { border: 2px solid #ef4444 !important; background: #fee2e2 !important; color: #b91c1c; font-weight: bold; }
-
     .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
     .btn-primary { background: #10243b; color: #fff; }
     .btn-danger { background: #ef4444; color: #fff; }
@@ -82,6 +79,15 @@
             <div class="form-field full"><label>Image URL</label><input id="pImage" required></div>
             <div class="form-field"><label>Sizes</label><input id="pSizes" placeholder="M, L, XL"></div>
             <div class="form-field"><label>Tag</label><input id="pTag" placeholder="NEW"></div>
+            
+            <!-- NAYA: DEAL OF THE DAY CHECKBOX -->
+            <div class="form-field full">
+              <label style="display:flex; align-items:center; gap:10px; cursor:pointer; background:#fff3cd; padding:12px; border-radius:6px; border:1px solid #ffe69c;">
+                <input type="checkbox" id="pIsDeal" style="width:20px; height:20px; margin:0; cursor:pointer;">
+                <span style="font-weight:bold; color:#856404;">🔥 Mark as "Deal of the Day" (Homepage par alag se dikhega)</span>
+              </label>
+            </div>
+
             <div class="form-field full"><label>Description</label><textarea id="pDescription"></textarea></div>
           </div>
           <div style="margin-top: 15px;"><button type="submit" class="btn btn-primary">SAVE PRODUCT</button></div>
@@ -99,7 +105,7 @@
           </div>
         </div>
         <table class="admin-table">
-          <thead><tr><th>Store</th><th>Name</th><th>Unit</th><th>Price</th><th>Quick Stock</th><th>Actions</th></tr></thead>
+          <thead><tr><th>Store</th><th>Name</th><th>Deal</th><th>Price</th><th>Quick Stock</th><th>Actions</th></tr></thead>
           <tbody id="productRows"></tbody>
         </table>
       </div>
@@ -146,9 +152,9 @@
         <tr>
           <td><span class="badge">${p.store}</span></td>
           <td>${p.name}</td>
-          <td>${p.unit || '-'}</td>
+          <td>${p.isDeal ? '🔥 YES' : '-'}</td>
           <td>₹${p.price}</td>
-          <td><input type="number" class="stock-input ${p.stock <= 5 ? 'stock-low' : ''}" value="${p.stock}" data-stock-id="${p.id}" title="${p.stock <= 5 ? 'Low Stock Alert!' : ''}"></td>
+          <td><input type="number" class="stock-input ${p.stock <= 5 ? 'stock-low' : ''}" value="${p.stock}" data-stock-id="${p.id}"></td>
           <td>
             <button class="btn btn-primary" style="padding:5px 10px; font-size:11px;" data-edit="${p.id}">Edit</button>
             <button class="btn btn-danger" style="padding:5px 10px; font-size:11px;" data-delete="${p.id}">Delete</button>
@@ -168,22 +174,13 @@
           const statusClass = `status-${o.status.replace(/\s+/g, '')}`;
           html += `
             <div class="order-card">
-              <h4>
-                <span>${o.orderId} - ${o.customerName}</span>
-                <select class="status-select ${statusClass}" onchange="updateOrderStatus('${doc.id}', this.value, this)">
-                  <option value="Pending" ${o.status === 'Pending' ? 'selected' : ''}>🟡 Pending</option>
-                  <option value="Processing" ${o.status === 'Processing' ? 'selected' : ''}>🔵 Processing</option>
-                  <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>🟢 Delivered</option>
-                  <option value="Cancelled" ${o.status === 'Cancelled' ? 'selected' : ''}>🔴 Cancelled</option>
-                </select>
-              </h4>
+              <h4><span>${o.orderId} - ${o.customerName}</span><select class="status-select ${statusClass}" onchange="updateOrderStatus('${doc.id}', this.value, this)"><option value="Pending" ${o.status === 'Pending' ? 'selected' : ''}>🟡 Pending</option><option value="Processing" ${o.status === 'Processing' ? 'selected' : ''}>🔵 Processing</option><option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>🟢 Delivered</option><option value="Cancelled" ${o.status === 'Cancelled' ? 'selected' : ''}>🔴 Cancelled</option></select></h4>
               <p><strong>Date:</strong> ${o.orderDate}</p>
               <p><strong>Phone:</strong> <a href="https://wa.me/91${o.customerPhone}" target="_blank" style="color:#10b981;">${o.customerPhone}</a></p>
               <p><strong>Address:</strong> ${o.address}</p>
               <p><strong>Products:</strong><br> ${itemsStr}</p>
               <p><strong>Total:</strong> ₹${o.totalAmount} | <strong>Payment:</strong> ${o.paymentMode}</p>
-            </div>
-          `;
+            </div>`;
         });
         ordersList.innerHTML = html;
       } catch (e) { ordersList.innerHTML = "Error loading orders."; }
@@ -204,9 +201,9 @@
     document.getElementById("productForm").onsubmit = async (e) => {
       e.preventDefault(); const id = editId.value || "P" + Date.now();
       await setDoc(doc(db, "products", id), {
-        store: pStore.value, name: pName.value, category: pCategory.value, price: Number(pPrice.value), originalPrice: Number(pOriginal.value) || 0, unit: pUnit.value, stock: Number(pStock.value), image: pImage.value, sizes: pSizes.value.split(",").map(s=>s.trim()).filter(Boolean), tag: pTag.value, description: pDescription.value
+        store: pStore.value, name: pName.value, category: pCategory.value, price: Number(pPrice.value), originalPrice: Number(pOriginal.value) || 0, unit: pUnit.value, stock: Number(pStock.value), image: pImage.value, sizes: pSizes.value.split(",").map(s=>s.trim()).filter(Boolean), tag: pTag.value, isDeal: document.getElementById("pIsDeal").checked, description: pDescription.value
       });
-      productForm.reset(); editId.value = ""; loadProducts(); alert("Saved!");
+      productForm.reset(); editId.value = ""; document.getElementById("pIsDeal").checked = false; loadProducts(); alert("Saved!");
     };
 
     productRows.addEventListener("change", async (e) => {
@@ -220,7 +217,7 @@
       const edit = e.target.dataset.edit; const del = e.target.dataset.delete;
       if(edit) {
         const p = allProducts.find(x => x.id === edit);
-        editId.value = p.id; pStore.value = p.store; pName.value = p.name; pCategory.value = p.category; pPrice.value = p.price; pOriginal.value = p.originalPrice; pUnit.value = p.unit || ""; pStock.value = p.stock; pImage.value = p.image; pSizes.value = (p.sizes||[]).join(", "); pTag.value = p.tag || ""; pDescription.value = p.description || "";
+        editId.value = p.id; pStore.value = p.store; pName.value = p.name; pCategory.value = p.category; pPrice.value = p.price; pOriginal.value = p.originalPrice; pUnit.value = p.unit || ""; pStock.value = p.stock; pImage.value = p.image; pSizes.value = (p.sizes||[]).join(", "); pTag.value = p.tag || ""; document.getElementById("pIsDeal").checked = p.isDeal || false; pDescription.value = p.description || "";
         formTitle.textContent = "Edit Product"; window.scrollTo(0,0);
       }
       if(del && confirm("Delete this product?")) { await deleteDoc(doc(db, "products", del)); loadProducts(); }
