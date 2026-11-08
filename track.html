@@ -6,14 +6,27 @@
   <title>Track Order | Aaradhya Mart</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    .track-container { max-width: 600px; margin: 50px auto; padding: 30px; background: #fff; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 10px 30px rgba(16,36,59,0.05); }
-    .track-container h2 { font: normal 28px Georgia, serif; color: var(--navy); margin-top: 0; margin-bottom: 10px; text-align: center; }
-    .track-container p { text-align: center; font-size: 13px; color: var(--muted); margin-bottom: 25px; }
+    .track-container { max-width: 600px; margin: 40px auto; padding: 30px; background: #fff; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 10px 30px rgba(16,36,59,0.05); }
+    
+    /* NAYA: Tracking Header Graphic */
+    .track-header { text-align: center; margin-bottom: 30px; }
+    .track-icon-box {
+      width: 80px; height: 80px; background: var(--navy); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 15px; border: 3px solid var(--gold);
+      box-shadow: 0 5px 15px rgba(16,36,59,0.2);
+    }
+    .track-icon-box svg { width: 40px; height: 40px; stroke: var(--gold); }
+    .track-header h2 { font: normal 28px Georgia, serif; color: var(--navy); margin: 0 0 10px; }
+    .track-header p { font-size: 13px; color: var(--muted); margin: 0; }
+
     .form-group { margin-bottom: 15px; }
     .form-group label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 6px; color: var(--ink); }
     .form-group input { width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 6px; font-family: inherit; font-size: 14px; outline: none; box-sizing: border-box; }
+    .form-group input:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(16,36,59,0.1); }
     .btn-track { width: 100%; padding: 15px; background: var(--navy); color: #fff; border: none; border-radius: 6px; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.3s; }
     .btn-track:hover { background: #1e3a5f; }
+    
     .result-box { display: none; margin-top: 30px; padding: 20px; border: 1px solid var(--line); border-radius: 8px; background: var(--cream); }
     .result-box h3 { font: normal 20px Georgia, serif; color: var(--navy); margin-top: 0; border-bottom: 1px solid #ddd; padding-bottom: 10px; }
     .result-box p { text-align: left; margin-bottom: 8px; color: var(--ink); font-size: 14px; }
@@ -33,9 +46,21 @@
 
   <main>
     <div class="track-container">
-      <h2>Track Your Order</h2>
-      <p>Enter your Order ID and Registered Mobile Number to check the status.</p>
       
+      <!-- NAYA GRAPHIC HEADER -->
+      <div class="track-header">
+        <div class="track-icon-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="3" width="15" height="13"></rect>
+            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+            <circle cx="5.5" cy="18.5" r="2.5"></circle>
+            <circle cx="18.5" cy="18.5" r="2.5"></circle>
+          </svg>
+        </div>
+        <h2>Track Your Order</h2>
+        <p>Enter your Order ID and Mobile Number below.</p>
+      </div>
+
       <div class="form-group">
         <label>Order ID *</label>
         <input type="text" id="trackOrderId" placeholder="e.g. ORD-123456" required>
