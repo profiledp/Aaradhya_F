@@ -24,6 +24,10 @@
     .place-order-btn { width: 100%; padding: 16px; background: var(--navy); color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.3s; }
     .place-order-btn:hover { background: #1e3a5f; }
     
+    /* Location Share Button */
+    .share-loc-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 12px; background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.2s; }
+    .share-loc-btn:hover { background: #bae6fd; }
+    
     /* Success Popup */
     .success-modal-overlay { position: fixed; inset: 0; background: rgba(16,36,59,0.7); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; visibility: hidden; transition: 0.3s; }
     .success-modal-overlay.active { opacity: 1; visibility: visible; }
@@ -60,7 +64,19 @@
         <div class="form-group">
           <label>Full Address (House No, Street, Landmark) *</label>
           <textarea id="custAddress" required placeholder="Enter your delivery address" rows="3"></textarea>
+          
+          <!-- NAYA: Live Location Button -->
+          <button type="button" class="share-loc-btn" onclick="shareLocationOnWhatsApp()">
+            📍 Share Your Live Location (For Fast Delivery)
+          </button>
         </div>
+        
+        <!-- NAYA: Google Maps Link Input (Optional) -->
+        <div class="form-group">
+          <label>Google Maps Link (Optional - for exact location)</label>
+          <input type="url" id="custMapLink" placeholder="Paste Google Maps location link here">
+        </div>
+
         <div class="form-row">
           <div class="form-group">
             <label>City / Village *</label>
@@ -121,19 +137,20 @@
     let selectedStore = "Aaradhya Mart";
     let isCartOrder = false;
 
-    // Function to Save Address to LocalStorage
+    // Function to Save Address
     function saveAddressToLocal() {
       const customerData = {
         name: document.getElementById("custName").value,
         phone: document.getElementById("custPhone").value,
         address: document.getElementById("custAddress").value,
+        mapLink: document.getElementById("custMapLink").value,
         city: document.getElementById("custCity").value,
         pincode: document.getElementById("custPincode").value
       };
       localStorage.setItem("aaradhyaCustomerDetails", JSON.stringify(customerData));
     }
 
-    // Function to Load Address from LocalStorage
+    // Function to Load Address
     function loadAddressFromLocal() {
       try {
         const saved = localStorage.getItem("aaradhyaCustomerDetails");
@@ -142,14 +159,21 @@
           document.getElementById("custName").value = data.name || "";
           document.getElementById("custPhone").value = data.phone || "";
           document.getElementById("custAddress").value = data.address || "";
+          document.getElementById("custMapLink").value = data.mapLink || "";
           document.getElementById("custCity").value = data.city || "";
           document.getElementById("custPincode").value = data.pincode || "";
         }
       } catch(e) {}
     }
 
+    // Function to Share Location on WhatsApp
+    window.shareLocationOnWhatsApp = function() {
+      const msg = `Hello Aaradhya Mart, Here is my live location for the order delivery:`;
+      // Opens WhatsApp with a message to share live location in the chat
+      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
+    }
+
     document.addEventListener("DOMContentLoaded", async () => {
-      // Address Load karein agar pehle se save hai
       loadAddressFromLocal();
 
       const urlParams = new URLSearchParams(window.location.search);
@@ -208,12 +232,12 @@
       document.getElementById("checkoutForm").addEventListener("submit", (e) => {
         e.preventDefault();
         
-        // Save Address before sending
         saveAddressToLocal();
 
         const name = document.getElementById("custName").value;
         const phone = document.getElementById("custPhone").value;
         const address = document.getElementById("custAddress").value;
+        const mapLink = document.getElementById("custMapLink").value;
         const city = document.getElementById("custCity").value;
         const pincode = document.getElementById("custPincode").value;
         const payment = document.querySelector('input[name="payment"]:checked').value;
@@ -226,22 +250,23 @@
           totalAmount += (item.price * item.selectedQty);
         });
 
+        const locationText = mapLink ? `\n*Map Location:* ${mapLink}\n` : "";
+
         const msg = `*NEW ORDER - ${selectedStore}*\n\n` +
                     `*Product Details:*\n${productDetailsText}\n` +
                     `*Total Amount: ₹${totalAmount}*\n\n` +
                     `*Customer Details:*\n` +
                     `Name: ${name}\n` +
                     `Phone: ${phone}\n` +
-                    `Address: ${address}, ${city} - ${pincode}\n\n` +
+                    `Address: ${address}, ${city} - ${pincode}\n` +
+                    locationText + `\n` +
                     `*Payment Mode:* ${payment}\n\n` +
                     `Please confirm my order.`;
 
         if(isCartOrder) localStorage.removeItem("aaradhyaMartCart");
 
-        // Open WhatsApp
         window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
         
-        // Show Success Popup
         document.getElementById("successModal").classList.add("active");
       });
     });
