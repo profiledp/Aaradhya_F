@@ -5,7 +5,6 @@
   <title>Aaradhya Fashion | Clothing</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Styles for Quick WhatsApp Button */
     .wa-direct-btn { display: flex; align-items: center; justify-content: center; gap: 5px; background: #25D366; color: #fff; padding: 8px; border-radius: 4px; font-size: 11px; font-weight: bold; text-decoration: none; margin-top: 5px; cursor: pointer; }
     .wa-direct-btn svg { width: 14px; height: 14px; fill: #fff; }
     .wa-direct-btn:hover { background: #128C7E; }
@@ -19,7 +18,6 @@
 
   <main class="section-wrap shop-section" style="padding-top: 40px;">
     
-    <!-- DEAL OF THE DAY -->
     <section id="dealSection" style="display:none; background: #fff3cd; border: 2px dashed #ef4444; padding: 15px; border-radius: 12px; margin-bottom: 25px;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
         <h2 style="font: normal 20px Georgia, serif; color: #ef4444; margin:0;">🔥 Deal of the Day</h2>
@@ -85,8 +83,6 @@
         grid.innerHTML = list.map(p => {
           const isOut = p.stock <= 0;
           let optionsHtml = p.sizes?.length > 0 ? p.sizes.map(s => `<option value="${s}">${s}</option>`).join("") : `<option value="Standard">Standard</option>`;
-          
-          // WhatsApp Direct Link
           const waMsg = `Hi Aaradhya Mart, I want to order:\nProduct: ${p.name}\nPrice: ${money(p.price)}\nPlease confirm availability.`;
           const waLink = `https://wa.me/918931911428?text=${encodeURIComponent(waMsg)}`;
 
@@ -94,17 +90,19 @@
           <article class="product-card">
             <div class="product-image-wrap" data-open="${p.id}"><img src="${p.image}" alt="${p.name}">${p.tag ? `<span class="product-tag" style="top:5px; left:5px; font-size:8px; padding:4px;">${p.tag}</span>` : ""}</div>
             <div class="product-info">
-              <span class="product-category">${p.category}</span><h3>${p.name}</h3>
+              <!-- Yahan data-open lagaya hai taaki text par click karne se bhi popup khule -->
+              <span class="product-category" data-open="${p.id}">${p.category}</span>
+              <h3 data-open="${p.id}" style="cursor:pointer;">${p.name}</h3>
               <div class="product-price">${money(p.price)} ${p.originalPrice>p.price ? `<span class="old-price">${money(p.originalPrice)}</span>`:""}</div>
               ${!isOut ? `<select id="unit-${p.id}" class="unit-selector">${optionsHtml}</select>` : '<div style="color:red; font-size:10px; font-weight:bold; margin-bottom:5px;">OUT OF STOCK</div>'}
               
               <div class="product-actions">
+                <button class="small-button" data-open="${p.id}">VIEW</button>
                 <button class="small-button primary" data-order="${p.id}" ${isOut?'disabled':''}>BUY</button>
                 <button class="small-button add-cart-btn" data-cart="${p.id}" ${isOut?'disabled':''}>ADD 🛒</button>
               </div>
               
-              <!-- NAYA: WHATSAPP DIRECT ORDER -->
-              ${!isOut ? `<a href="${waLink}" target="_blank" class="wa-direct-btn"><svg viewBox="0 0 32 32"><path d="M16 2C8.3 2 2 8.3 2 16c0 2.5.6 4.8 1.8 6.8L2 30l7.4-1.7c1.9 1 4.1 1.6 6.6 1.6 7.7 0 14-6.3 14-14S23.7 2 16 2zm0 25.3c-2.2 0-4.3-.6-6.1-1.7l-.4-.2-4.5 1.2 1.2-4.4-.3-.4c-1.2-1.9-1.8-4.1-1.8-6.3 0-6.6 5.4-12 12-12s12 5.4 12 12-5.4 12-12 12zm6.6-9c-.4-.2-2.1-1-2.4-1.1-.3-.1-.6-.2-.8.2-.2.4-.9 1.1-1.1 1.4-.2.2-.4.3-.8.1-.4-.2-1.5-.6-2.9-1.8-1.1-1-1.8-2.1-2-2.5-.2-.4 0-.6.2-.8.2-.2.4-.4.6-.7.2-.2.3-.4.4-.6.1-.2 0-.4-.1-.6-.1-.2-.8-1.9-1.1-2.6-.3-.7-.6-.6-.8-.6h-.7c-.2 0-.6.1-.9.4-.3.3-1.2 1.2-1.2 2.8 0 1.6 1.2 3.2 1.4 3.4.2.2 2.4 3.6 5.8 5 1 .4 1.8.7 2.4.9.8.3 1.5.2 2.1.1.6-.1 2.1-.9 2.4-1.7.3-.8.3-1.5.2-1.6-.1-.1-.3-.2-.7-.4z"/></svg> Order on WhatsApp</a>` : ''}
+              ${!isOut ? `<a href="${waLink}" target="_blank" class="wa-direct-btn"><svg viewBox="0 0 32 32"><path d="M16 2C8.3 2 2 8.3 2 16c0 2.5.6 4.8 1.8 6.8L2 30l7.4-1.7c1.9 1 4.1 1.6 6.6 1.6 7.7 0 14-6.3 14-14S23.7 2 16 2zm0 25.3c-2.2 0-4.3-.6-6.1-1.7l-.4-.2-4.5 1.2 1.2-4.4-.3-.4c-1.2-1.9-1.8-4.1-1.8-6.3 0-6.6 5.4-12 12-12s12 5.4 12 12-5.4 12-12 12zm6.6-9c-.4-.2-2.1-1-2.4-1.1-.3-.1-.6-.2-.8.2-.2.4-.9 1.1-1.1 1.4-.2.2-.4.3-.8.1-.4-.2-1.5-.6-2.9-1.8-1.1-1-1.8-2.1-2-2.5-.2-.4 0-.6.2-.8.2-.2.4-.4.6-.7.2-.2.3-.4.4-.6.1-.2 0-.4-.1-.6-.1-.2-.8-1.9-1.1-2.6-.3-.7-.6-.6-.8-.6h-.7c-.2 0-.6.1-.9.4-.3.3-1.2 1.2-1.2 2.8 0 1.6 1.2 3.2 1.4 3.4.2.2 2.4 3.6 5.8 5 1 .4 1.8.7 2.4.9.8.3 1.5.2 2.1.1.6-.1 2.1-.9 2.4-1.7.3-.8.3-1.5.2-1.6-.1-.1-.3-.2-.7-.4z"/></svg> WhatsApp</a>` : ''}
             </div>
           </article>`;
         }).join("");
@@ -146,7 +144,7 @@
         let html = "";
         querySnapshot.forEach((doc) => {
           const p = doc.data();
-          html += `<article class="product-card" style="border: 1px solid #ef4444;"><div class="product-image-wrap"><img src="${p.image}" alt="${p.name}"><span style="position:absolute; top:5px; left:5px; background:#ef4444; color:#fff; padding:2px 6px; border-radius:4px; font-size:8px; font-weight:bold;">DEAL 🔥</span></div><div class="product-info"><h3 style="font-size:12px; height:32px;">${p.name}</h3><div style="font-size:11px; font-weight:bold; color:#ef4444;">₹${p.price} <span style="font-size:9px; color:#aaa; text-decoration:line-through;">₹${p.originalPrice}</span></div><button class="small-button primary" style="margin-top:5px; font-size:9px; padding:6px;" onclick="document.getElementById('searchInput').value='${p.name}'; document.getElementById('searchInput').dispatchEvent(new Event('input'));">View</button></div></article>`;
+          html += `<article class="product-card" style="border: 1px solid #ef4444;"><div class="product-image-wrap" data-open="${p.id}"><img src="${p.image}" alt="${p.name}"><span style="position:absolute; top:5px; left:5px; background:#ef4444; color:#fff; padding:2px 6px; border-radius:4px; font-size:8px; font-weight:bold;">DEAL 🔥</span></div><div class="product-info"><h3 data-open="${p.id}" style="font-size:12px; height:32px; cursor:pointer;">${p.name}</h3><div style="font-size:11px; font-weight:bold; color:#ef4444;">₹${p.price} <span style="font-size:9px; color:#aaa; text-decoration:line-through;">₹${p.originalPrice}</span></div><button class="small-button primary" style="margin-top:5px; font-size:9px; padding:6px;" data-open="${p.id}">View</button></div></article>`;
         });
         dealGrid.innerHTML = html;
       } catch(e) {}
@@ -168,11 +166,24 @@
       
       document.getElementById("searchInput").addEventListener("input", render); document.getElementById("sortFilter").addEventListener("change", render); document.getElementById("categoryFilter").addEventListener("change", render);
       
-      document.getElementById("productGrid").addEventListener("click", e => {
-        const open = e.target.closest("[data-open]"); const order = e.target.closest("[data-order]"); const cartBtn = e.target.closest("[data-cart]");
+      // Yahan click event handle kiya gaya hai
+      document.addEventListener("click", e => {
+        const open = e.target.closest("[data-open]"); 
+        const order = e.target.closest("[data-order]"); 
+        const cartBtn = e.target.closest("[data-cart]");
+        
         if(open) openProduct(open.dataset.open);
-        if(order && !order.disabled) { const p = products.find(x=>x.id===order.dataset.order); const selectedSize = document.getElementById(`unit-${p.id}`)?.value || "Standard"; window.location.href = `checkout.html?id=${p.id}&size=${encodeURIComponent(selectedSize)}&store=Aaradhya Fashion`; }
-        if(cartBtn && !cartBtn.disabled) { const pId = cartBtn.dataset.cart; const selectedSize = document.getElementById(`unit-${pId}`)?.value || "Standard"; addToCart(pId, selectedSize); }
+        
+        if(order && !order.disabled) { 
+          const p = products.find(x=>x.id===order.dataset.order); 
+          const selectedSize = document.getElementById(`unit-${p.id}`)?.value || "Standard"; 
+          window.location.href = `checkout.html?id=${p.id}&size=${encodeURIComponent(selectedSize)}&store=Aaradhya Fashion`; 
+        }
+        if(cartBtn && !cartBtn.disabled) { 
+          const pId = cartBtn.dataset.cart; 
+          const selectedSize = document.getElementById(`unit-${pId}`)?.value || "Standard"; 
+          addToCart(pId, selectedSize); 
+        }
       });
       document.getElementById("dialogClose").onclick = () => document.getElementById("productDialog").close();
     });
