@@ -4,13 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
-  <!-- GOOGLE SEARCH CONSOLE VERIFICATION -->
   <meta name="google-site-verification" content="hiQAkLa44zyk1N-KNLhALM6FzgBbLJ4TtERoyBT3tvU" />
-
-  <!-- SEO TAGS -->
   <title>Aaradhya Mart | Fashion, A-Print & Kirana Store in Azamgarh</title>
   <meta name="description" content="Shop the latest fashion clothes, custom printing (A-Print), and daily grocery essentials (Kirana) online at Aaradhya Mart. Fast delivery in Bongariya Bazar, Azamgarh.">
-  <meta name="keywords" content="Aaradhya Mart, Aaradhya Fashion, A-Print, Kirana Store, clothes shop Azamgarh, grocery delivery Azamgarh, custom printing Azamgarh, Bongariya Bazar">
   <meta property="og:title" content="Aaradhya Mart | Fashion, Print & Kirana">
   <meta property="og:description" content="Shop clothing, custom prints and groceries online. Fast delivery in Azamgarh.">
   <meta property="og:image" content="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=80">
@@ -64,9 +60,9 @@
       </div>
     </section>
 
-    <!-- NAYA: OFFER BANNER (First Order Discount) -->
-    <div style="background: #ef4444; color: #fff; text-align: center; padding: 12px; font-size: 14px; font-weight: bold; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2);">
-      🎉 First Order Par 10% OFF! Checkout Par Code <span style="background:#fff; color:#ef4444; padding:2px 8px; border-radius:4px; font-family:monospace;">FIRST10</span> Lagayein.
+    <!-- NAYA: DYNAMIC OFFER BANNER (Firebase se load hoga) -->
+    <div id="offerBanner" style="display:none; background: #ef4444; color: #fff; text-align: center; padding: 12px; font-size: 14px; font-weight: bold; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2);">
+      🎉 Get <span id="bannerDiscount">0</span>% OFF! Use Code <span id="bannerCode" style="background:#fff; color:#ef4444; padding:2px 8px; border-radius:4px; font-family:monospace;"></span> at Checkout.
     </div>
 
     <!-- STORE DIRECTORY -->
@@ -111,7 +107,14 @@
   
   <a href="track.html" class="track-float-btn" aria-label="Track Order"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg><span>Track Order</span></a>
 
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = { apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y", authDomain: "aaradhya-mart.firebaseapp.com", projectId: "aaradhya-mart", storageBucket: "aaradhya-mart.firebasestorage.app", messagingSenderId: "146782544824", appId: "1:146782544824:web:d605e1971d3480fab1654d" };
+    const app = initializeApp(firebaseConfig); const db = getFirestore(app);
+
+    // Update Cart Icon
     function updateGlobalCart() {
       try {
         const cart = JSON.parse(localStorage.getItem("aaradhyaMartCart") || "[]");
@@ -124,7 +127,27 @@
         }
       } catch(e) {}
     }
-    document.addEventListener("DOMContentLoaded", updateGlobalCart);
+
+    // Fetch Coupons for Banner
+    async function loadBannerCoupon() {
+      try {
+        const snap = await getDocs(collection(db, "coupons"));
+        if (!snap.empty) {
+          // Utha lein pehla coupon jo mile
+          const coupon = snap.docs[0].data();
+          document.getElementById("bannerDiscount").textContent = coupon.discount;
+          document.getElementById("bannerCode").textContent = coupon.code;
+          document.getElementById("offerBanner").style.display = "block";
+        }
+      } catch(e) {
+        console.log("Banner coupon error:", e);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      updateGlobalCart();
+      loadBannerCoupon();
+    });
   </script>
 </body>
 </html>
