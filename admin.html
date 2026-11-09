@@ -24,7 +24,6 @@
     .btn-primary { background: #10243b; color: #fff; }
     .btn-danger { background: #ef4444; color: #fff; }
     
-    /* TABS LOGIC FIX */
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
@@ -59,14 +58,13 @@
       <button class="btn btn-danger" id="logoutButton">LOG OUT</button>
     </div>
 
-    <!-- MAIN TABS -->
     <div class="main-tabs">
       <button class="main-tab-btn active" onclick="switchMainTab('products', this)">🛍️ Products</button>
       <button class="main-tab-btn" onclick="switchMainTab('orders', this)">📦 Orders</button>
       <button class="main-tab-btn" onclick="switchMainTab('coupons', this)">🎟️ Coupons</button>
     </div>
 
-    <!-- 1. PRODUCTS SECTION -->
+    <!-- PRODUCTS SECTION -->
     <div id="tab-products" class="tab-content active">
       <div class="admin-panel">
         <h2 id="formTitle">Add New Product</h2>
@@ -80,9 +78,7 @@
             <div class="form-field"><label>Original Price (₹)</label><input id="pOriginal" type="number"></div>
             <div class="form-field"><label>Unit</label><input id="pUnit" placeholder="e.g. 1kg, 500g"></div>
             <div class="form-field"><label>Stock</label><input id="pStock" type="number" required value="10"></div>
-            
             <div class="form-field full"><label>Image URL (Comma separated for multiple photos)</label><input id="pImage" required placeholder="url1, url2"></div>
-            
             <div class="form-field"><label>Sizes</label><input id="pSizes" placeholder="M, L, XL"></div>
             <div class="form-field"><label>Tag</label><input id="pTag" placeholder="NEW"></div>
             <div class="form-field full"><label style="display:flex; align-items:center; gap:10px; cursor:pointer; background:#fff3cd; padding:10px; border-radius:6px;"><input type="checkbox" id="pIsDeal" style="width:18px; height:18px; margin:0;"><span style="color:#856404;">🔥 Deal of the Day</span></label></div>
@@ -104,15 +100,12 @@
       </div>
     </div>
 
-    <!-- 2. ORDERS SECTION -->
+    <!-- ORDERS SECTION -->
     <div id="tab-orders" class="tab-content">
-      <div class="admin-panel">
-        <h2>All Orders (Live)</h2>
-        <div id="ordersList"></div>
-      </div>
+      <div class="admin-panel"><h2>All Orders (Live)</h2><div id="ordersList"></div></div>
     </div>
 
-    <!-- 3. COUPONS SECTION -->
+    <!-- COUPONS SECTION -->
     <div id="tab-coupons" class="tab-content">
       <div class="admin-panel">
         <h2>Create New Coupon</h2>
@@ -132,6 +125,19 @@
     </div>
   </div>
 
+  <!-- CUSTOM POPUP FOR DELETE CONFIRMATION -->
+  <div class="custom-modal-overlay" id="deleteModal">
+    <div class="custom-modal">
+      <div style="font-size: 40px; margin-bottom: 15px; color: #ef4444;">⚠️</div>
+      <h3 id="deleteTitle">Delete Item?</h3>
+      <p>Are you sure you want to delete this? This action cannot be undone.</p>
+      <div class="modal-actions">
+        <button class="modal-btn btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+        <button class="modal-btn btn-danger" id="confirmDeleteBtn">Yes, Delete</button>
+      </div>
+    </div>
+  </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -141,43 +147,27 @@
     const app = initializeApp(firebaseConfig); const db = getFirestore(app); const auth = getAuth(app);
     let allProducts = [];
 
-    // TAB SWITCHING LOGIC (FIXED)
     window.switchMainTab = function(tabName, btnElement) {
-      // 1. Remove active class from all buttons
-      document.querySelectorAll('.main-tab-btn').forEach(btn => btn.classList.remove('active'));
-      // 2. Add active class to clicked button
-      btnElement.classList.add('active');
-      
-      // 3. Hide all tab contents
+      document.querySelectorAll('.main-tab-btn').forEach(btn => btn.classList.remove('active')); btnElement.classList.add('active');
       document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-      
-      // 4. Show the selected tab content
       document.getElementById(`tab-${tabName}`).classList.add('active');
-
-      // 5. Load data based on tab
-      if(tabName === 'products') loadProducts();
-      else if(tabName === 'orders') loadOrders();
-      else if(tabName === 'coupons') loadCoupons();
+      if(tabName === 'products') loadProducts(); else if(tabName === 'orders') loadOrders(); else if(tabName === 'coupons') loadCoupons();
     }
 
-    // --- 1. PRODUCTS LOGIC ---
     async function loadProducts() {
       const snap = await getDocs(collection(db, "products")); allProducts = [];
       snap.forEach(d => allProducts.push({ id: d.id, ...d.data() }));
       document.getElementById("productRows").innerHTML = allProducts.map(p => `
         <tr>
-          <td>${p.store}</td>
-          <td>${p.name}</td>
-          <td>₹${p.price}</td>
+          <td>${p.store}</td><td>${p.name}</td><td>₹${p.price}</td>
           <td><input type="number" class="stock-input ${p.stock <= 5 ? 'stock-low' : ''}" value="${p.stock}" data-stock-id="${p.id}"></td>
           <td>
             <button class="btn btn-primary" style="padding:5px 10px; font-size:11px;" data-edit="${p.id}">Edit</button>
-            <button class="btn btn-danger" style="padding:5px 10px; font-size:11px;" data-del="${p.id}">Delete</button>
+            <button class="btn btn-danger" style="padding:5px 10px; font-size:11px;" onclick="openDeleteModal('product', '${p.id}')">Delete</button>
           </td>
         </tr>
       `).join("");
       
-      // Attach Stock Update Event
       document.querySelectorAll("[data-stock-id]").forEach(input => {
         input.addEventListener("change", async (e) => {
           await updateDoc(doc(db, "products", e.target.dataset.stockId), { stock: Number(e.target.value) });
@@ -185,17 +175,11 @@
         });
       });
 
-      // Attach Edit/Delete Events
       document.querySelectorAll("[data-edit]").forEach(btn => {
         btn.addEventListener("click", () => {
           const p = allProducts.find(x => x.id === btn.dataset.edit);
           editId.value = p.id; pStore.value = p.store; pName.value = p.name; pCategory.value = p.category; pPrice.value = p.price; pOriginal.value = p.originalPrice; pUnit.value = p.unit || ""; pStock.value = p.stock; pImage.value = p.image; pSizes.value = (p.sizes||[]).join(", "); pTag.value = p.tag || ""; document.getElementById("pIsDeal").checked = p.isDeal || false; pDescription.value = p.description || "";
           formTitle.textContent = "Edit Product"; window.scrollTo(0,0);
-        });
-      });
-      document.querySelectorAll("[data-del]").forEach(btn => {
-        btn.addEventListener("click", async () => {
-          if(confirm("Delete this product?")) { await deleteDoc(doc(db, "products", btn.dataset.del)); loadProducts(); }
         });
       });
     }
@@ -205,11 +189,10 @@
       await setDoc(doc(db, "products", id), {
         store: pStore.value, name: pName.value, category: pCategory.value, price: Number(pPrice.value), originalPrice: Number(pOriginal.value)||0, unit: pUnit.value, stock: Number(pStock.value), image: pImage.value, sizes: pSizes.value.split(",").map(s=>s.trim()).filter(Boolean), tag: pTag.value, isDeal: document.getElementById("pIsDeal").checked, description: pDescription.value
       });
-      productForm.reset(); editId.value = ""; document.getElementById("pIsDeal").checked = false; loadProducts(); alert("Product Saved!");
+      productForm.reset(); editId.value = ""; document.getElementById("pIsDeal").checked = false; loadProducts(); showToast("Product Saved!");
     };
     document.getElementById("clearBtn").onclick = () => { productForm.reset(); editId.value=""; formTitle.textContent="Add New Product"; };
 
-    // --- 2. ORDERS LOGIC ---
     async function loadOrders() {
       const ordersList = document.getElementById("ordersList"); ordersList.innerHTML = "<p>Loading...</p>";
       try {
@@ -237,23 +220,40 @@
     }
     window.updateOrder = async (id, val, sel) => { await updateDoc(doc(db, "orders", id), { status: val }); sel.className = `status-select status-${val}`; };
 
-    // --- 3. COUPONS LOGIC ---
     async function loadCoupons() {
       const snap = await getDocs(collection(db, "coupons"));
       document.getElementById("couponRows").innerHTML = snap.docs.map(d => {
         const c = d.data();
-        return `<tr><td><b>${c.code}</b></td><td>${c.discount}%</td><td><button class="btn btn-danger" style="padding:5px 10px; font-size:11px;" data-cdel="${d.id}">Delete</button></td></tr>`;
+        return `<tr><td><b>${c.code}</b></td><td>${c.discount}%</td><td><button class="btn btn-danger" style="padding:5px 10px; font-size:11px;" onclick="openDeleteModal('coupon', '${d.id}')">Delete</button></td></tr>`;
       }).join("");
-      document.querySelectorAll("[data-cdel]").forEach(b => b.onclick = async () => { await deleteDoc(doc(db, "coupons", b.dataset.cdel)); loadCoupons(); });
     }
     document.getElementById("couponForm").onsubmit = async (e) => {
-      e.preventDefault();
-      const code = document.getElementById("cCode").value.toUpperCase();
+      e.preventDefault(); const code = document.getElementById("cCode").value.toUpperCase();
       await setDoc(doc(db, "coupons", code), { code: code, discount: Number(document.getElementById("cDiscount").value) });
-      alert("Coupon Created!"); document.getElementById("couponForm").reset(); loadCoupons();
+      showToast("Coupon Created!"); document.getElementById("couponForm").reset(); loadCoupons();
     }
 
-    // --- AUTH LOGIN ---
+    // CUSTOM DELETE MODAL LOGIC
+    let deleteItemType = ""; let deleteItemId = "";
+    window.openDeleteModal = function(type, id) {
+      deleteItemType = type; deleteItemId = id;
+      document.getElementById("deleteTitle").textContent = type === 'product' ? "Delete Product?" : "Delete Coupon?";
+      document.getElementById("deleteModal").classList.add("active");
+    }
+    window.closeDeleteModal = function() { document.getElementById("deleteModal").classList.remove("active"); }
+    document.getElementById("confirmDeleteBtn").onclick = async () => {
+      if(deleteItemType === 'product') { await deleteDoc(doc(db, "products", deleteItemId)); loadProducts(); }
+      else if(deleteItemType === 'coupon') { await deleteDoc(doc(db, "coupons", deleteItemId)); loadCoupons(); }
+      closeDeleteModal(); showToast("Deleted Successfully!");
+    }
+
+    function showToast(msg) {
+      let t = document.querySelector('.toast-notification'); if(t) t.remove();
+      const toast = document.createElement('div'); toast.className='toast-notification'; toast.innerHTML = `<span class="toast-icon">✅</span> ${msg}`;
+      document.body.appendChild(toast); setTimeout(()=>toast.classList.add('show'),10);
+      setTimeout(()=>{toast.classList.remove('show'); setTimeout(()=>toast.remove(),400);},3000);
+    }
+
     document.getElementById("loginButton").onclick = async () => { try { await signInWithEmailAndPassword(auth, adminEmail.value, adminPass.value); } catch (e) { loginError.textContent = e.message; } };
     document.getElementById("logoutButton").onclick = () => signOut(auth);
     onAuthStateChanged(auth, (u) => { if(u) { loginView.style.display="none"; adminView.classList.remove("hidden"); loadProducts(); } else { loginView.style.display="flex"; adminView.classList.add("hidden"); } });
