@@ -19,23 +19,24 @@
     .slider-dot { width: 10px; height: 10px; background: #ccc; border-radius: 50%; cursor: pointer; }
     .slider-dot.active { background: var(--navy); width: 12px; height: 12px; }
 
-    /* NAYA: PREMIUM DEAL SECTION STYLE */
-    .deal-section-wrap { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 20px; margin-bottom: 30px; box-shadow: 0 5px 20px rgba(0,0,0,0.03); }
-    .deal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; }
-    .deal-header h2 { font: normal 22px Georgia, serif; color: #ef4444; margin: 0; display: flex; align-items: center; gap: 8px; }
-    .deal-header span { font-size: 11px; font-weight: bold; color: #fff; background: #ef4444; padding: 3px 8px; border-radius: 20px; animation: pulseRed 1.5s infinite; }
-    @keyframes pulseRed { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-    .deal-scroll-container { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: thin; scrollbar-color: var(--gold) #f0f0f0; }
-    .deal-scroll-container::-webkit-scrollbar { height: 6px; }
-    .deal-scroll-container::-webkit-scrollbar-track { background: #f0f0f0; border-radius: 10px; }
-    .deal-scroll-container::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
-    .deal-card { min-width: 160px; max-width: 160px; border: 1px solid #eee; border-radius: 8px; background: #fff; padding: 10px; position: relative; transition: 0.2s; }
-    .deal-card:hover { box-shadow: 0 4px 15px rgba(239,68,68,0.15); border-color: #ef4444; }
-    .deal-card img { width: 100%; height: 140px; object-fit: contain; border-radius: 6px; margin-bottom: 8px; }
-    .deal-card h4 { font-size: 12px; color: var(--navy); margin: 0 0 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .deal-card .price { font-size: 13px; font-weight: bold; color: #ef4444; }
-    .deal-card .old-price { font-size: 10px; color: #aaa; text-decoration: line-through; margin-left: 5px; }
-    .deal-card .view-btn { display: block; text-align: center; background: var(--navy); color: #fff; font-size: 10px; font-weight: bold; padding: 6px; border-radius: 4px; text-decoration: none; margin-top: 8px; }
+    .blinkit-deal-banner { background: linear-gradient(135deg, #fff3cd, #ffe69c); border: 2px solid #ffc107; border-radius: 12px; padding: 15px; margin-bottom: 25px; position: relative; overflow: hidden; box-shadow: 0 8px 25px rgba(255, 193, 7, 0.3); animation: pulseDeal 2s infinite alternate; }
+    @keyframes pulseDeal { 0% { box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3); transform: scale(1); } 100% { box-shadow: 0 10px 30px rgba(255, 193, 7, 0.6); transform: scale(1.01); } }
+    .blinkit-deal-banner::before { content: "🔥"; position: absolute; right: -10px; top: -10px; font-size: 80px; opacity: 0.1; transform: rotate(15deg); }
+    .deal-banner-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .deal-banner-header h3 { margin: 0; font: normal 20px Georgia, serif; color: #d97706; display: flex; align-items: center; gap: 8px; }
+    .deal-banner-header span { font-size: 10px; background: #ef4444; color: #fff; padding: 2px 8px; border-radius: 10px; animation: blinkText 1s infinite alternate; }
+    @keyframes blinkText { 0% { opacity: 1; } 100% { opacity: 0.5; } }
+    
+    .deal-products-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
+    .deal-products-scroll::-webkit-scrollbar { display: none; }
+    
+    .deal-mini-card { background: #fff; border-radius: 8px; padding: 8px; min-width: 130px; max-width: 130px; border: 1px solid #ffeeba; cursor: pointer; transition: 0.2s; }
+    .deal-mini-card:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+    .deal-mini-card img { width: 100%; height: 100px; object-fit: contain; border-radius: 6px; }
+    .deal-mini-card h4 { margin: 5px 0 2px; font-size: 11px; color: var(--navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .deal-mini-card .price { font-size: 13px; font-weight: bold; color: #ef4444; }
+    .deal-mini-card .price span { font-size: 10px; color: #aaa; text-decoration: line-through; margin-left: 3px; font-weight: normal; }
+    .deal-mini-card .offer-tag { font-size: 9px; color: #10b981; font-weight: bold; display: block; margin-top: 2px; }
   </style>
 </head>
 <body>
@@ -46,12 +47,11 @@
 
   <main class="section-wrap shop-section" style="padding-top: 40px;">
     
-    <section id="dealSection" class="deal-section-wrap" style="display:none;">
-      <div class="deal-header">
-        <h2>🔥 Deal of the Day <span>LIVE</span></h2>
-        <span style="font-size:11px; color:var(--muted); font-weight:normal;">Limited Time Offer!</span>
+    <section id="blinkitDealSection" class="blinkit-deal-banner" style="display:none;">
+      <div class="deal-banner-header">
+        <h3>⚡ Deal of the Day <span>ENDS SOON</span></h3>
       </div>
-      <div class="deal-scroll-container" id="dealGrid"></div>
+      <div class="deal-products-scroll" id="dealProductsScroll"></div>
     </section>
 
     <div class="section-heading" style="margin-bottom: 20px;">
@@ -201,8 +201,8 @@
       try {
         const q = query(collection(db, "products"), where("isDeal", "==", true), where("store", "==", "Print")); 
         const querySnapshot = await getDocs(q);
-        const dealGrid = document.getElementById("dealGrid"); 
-        const dealSection = document.getElementById("dealSection");
+        const scrollBox = document.getElementById("dealProductsScroll"); 
+        const dealSection = document.getElementById("blinkitDealSection");
         
         if(querySnapshot.empty) { dealSection.style.display = "none"; return; } 
         dealSection.style.display = "block";
@@ -211,16 +211,17 @@
         querySnapshot.forEach((doc) => {
           const p = doc.data();
           const firstImg = p.image ? p.image.split(',')[0].trim() : 'https://placehold.co/400';
+          const discount = p.originalPrice > p.price ? Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100) : 0;
           html += `
-            <div class="deal-card">
+            <div class="deal-mini-card" onclick="openProduct('${doc.id}')">
               <img src="${firstImg}" alt="${p.name}">
               <h4>${p.name}</h4>
-              <div class="price">₹${p.price} <span class="old-price">₹${p.originalPrice}</span></div>
-              <a href="print.html" class="view-btn">View Product</a>
+              <div class="price">₹${p.price} <span>₹${p.originalPrice}</span></div>
+              ${discount > 0 ? `<span class="offer-tag">${discount}% OFF</span>` : ''}
             </div>
           `;
         });
-        dealGrid.innerHTML = html;
+        scrollBox.innerHTML = html;
       } catch(e) {}
     }
 
