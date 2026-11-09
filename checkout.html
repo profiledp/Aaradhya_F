@@ -9,7 +9,6 @@
     .checkout-container { max-width: 600px; margin: 40px auto; padding: 30px; background: #fff; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 10px 30px rgba(16,36,59,0.05); }
     .checkout-container h2 { font: normal 28px Georgia, serif; color: var(--navy); margin-top: 0; margin-bottom: 20px; text-align: center; }
     
-    /* NAYA: Product Summary with Image */
     .product-summary { background: var(--cream); padding: 15px; border-radius: 8px; margin-bottom: 25px; border: 1px solid var(--line); }
     .product-item-row { display: flex; align-items: center; gap: 15px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #e5e5e5; }
     .product-item-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
@@ -40,8 +39,6 @@
   <main>
     <div class="checkout-container">
       <h2>Complete Your Order</h2>
-      
-      <!-- Product Summary Area -->
       <div class="product-summary" id="productSummary">Loading...</div>
 
       <form id="checkoutForm">
@@ -107,7 +104,6 @@
           const p = allProducts.find(x => x.id === item.id); if(!p) return "";
           orderProducts.push({ ...p, selectedSize: item.size, selectedQty: item.qty }); 
           currentSubtotal += (p.price * item.qty);
-          
           return `
             <div class="product-item-row">
               <img src="${p.image}" alt="${p.name}">
@@ -123,7 +119,6 @@
         const p = allProducts.find(x => x.id === productId);
         orderProducts.push({ ...p, selectedSize: size, selectedQty: 1 }); 
         currentSubtotal = p.price;
-        
         document.getElementById("productSummary").innerHTML = `
           <div class="product-item-row">
             <img src="${p.image}" alt="${p.name}">
@@ -135,7 +130,6 @@
           </div>
         `;
       }
-      
       updateTotals();
     });
 
@@ -146,6 +140,8 @@
       if(currentDiscount > 0) {
         document.getElementById("discountTxtRow").style.display = "block";
         document.getElementById("discountTxt").textContent = currentDiscount;
+      } else {
+        document.getElementById("discountTxtRow").style.display = "none";
       }
     }
 
@@ -166,7 +162,10 @@
           updateTotals();
         }
       });
-      if(!found) { msg.style.display = "block"; msg.style.color = "#ef4444"; msg.textContent = "❌ Invalid or Expired Coupon."; currentDiscount = 0; updateTotals(); }
+      if(!found) { 
+        msg.style.display = "block"; msg.style.color = "#ef4444"; msg.textContent = "❌ Invalid or Expired Coupon."; 
+        currentDiscount = 0; appliedCoupon = ""; updateTotals(); 
+      }
     }
 
     document.getElementById("checkoutForm").addEventListener("submit", async (e) => {
