@@ -6,6 +6,7 @@
   <title>Admin Dashboard | Aaradhya Mart</title>
   <link rel="stylesheet" href="style.css">
   <style>
+    /* Styles for Admin */
     body { background: #f4f6f8; margin: 0; font-family: Arial, sans-serif; }
     .login-wrapper { display: flex; justify-content: center; align-items: center; min-height: 100vh; }
     .login-card { background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); width: 100%; max-width: 400px; text-align: center; }
@@ -18,8 +19,6 @@
     .form-field.full { grid-column: 1 / -1; }
     .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
     .admin-table th, .admin-table td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; font-size: 13px; }
-    .stock-input { width: 70px; padding: 5px; text-align: center; border: 1px solid #ccc; border-radius: 4px;}
-    .stock-low { border: 2px solid #ef4444 !important; background: #fee2e2 !important; color: #b91c1c; font-weight: bold; }
     .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
     .btn-primary { background: #10243b; color: #fff; }
     .btn-danger { background: #ef4444; color: #fff; }
@@ -27,17 +26,15 @@
     .filter-tabs { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
     .filter-btn { padding: 8px 15px; border: 1px solid #ccc; background: #fff; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: bold; }
     .filter-btn.active { background: #10243b; color: #fff; border-color: #10243b; }
-    .main-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #ccc; padding-bottom: 10px;}
-    .main-tab-btn { background: none; border: none; font-size: 18px; font-weight: bold; color: #777; cursor: pointer; padding: 10px;}
+    .main-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #ccc; padding-bottom: 10px; flex-wrap: wrap;}
+    .main-tab-btn { background: none; border: none; font-size: 16px; font-weight: bold; color: #777; cursor: pointer; padding: 10px;}
     .main-tab-btn.active { color: #10243b; border-bottom: 3px solid #10243b;}
     .order-card { border: 1px solid #eee; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #fafafa; }
     .order-card h4 { margin: 0 0 10px; color: #10243b; display:flex; justify-content:space-between; align-items:center;}
-    .order-card p { margin: 5px 0; font-size: 13px; }
     .status-select { padding: 6px 10px; border-radius: 20px; font-weight: bold; border: 1px solid #ccc; cursor: pointer; outline: none; font-size: 12px; }
-    .status-Pending { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
-    .status-Processing { background: #e0f2fe; color: #0369a1; border-color: #7dd3fc; }
-    .status-Delivered { background: #dcfce7; color: #166534; border-color: #86efac; }
-    .status-Cancelled { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
+    .status-Pending { background: #fef3c7; color: #92400e; }
+    .status-Delivered { background: #dcfce7; color: #166534; }
+    .status-Cancelled { background: #fee2e2; color: #991b1b; }
   </style>
 </head>
 <body>
@@ -58,11 +55,12 @@
     </div>
 
     <div class="main-tabs">
-      <button class="main-tab-btn active" onclick="switchMainTab('products', this)">🛍️ Manage Products</button>
-      <button class="main-tab-btn" onclick="switchMainTab('orders', this)">📦 Manage Orders</button>
+      <button class="main-tab-btn active" onclick="switchMainTab('products', this)">🛍️ Products</button>
+      <button class="main-tab-btn" onclick="switchMainTab('orders', this)">📦 Orders</button>
+      <button class="main-tab-btn" onclick="switchMainTab('coupons', this)">🎟️ Coupons</button>
     </div>
 
-    <!-- PRODUCTS SECTION -->
+    <!-- 1. PRODUCTS SECTION -->
     <div id="productsSection">
       <div class="admin-panel">
         <h2 id="formTitle">Add New Product</h2>
@@ -75,19 +73,11 @@
             <div class="form-field"><label>Price (₹)</label><input id="pPrice" type="number" required></div>
             <div class="form-field"><label>Original Price (₹)</label><input id="pOriginal" type="number"></div>
             <div class="form-field"><label>Unit</label><input id="pUnit" placeholder="e.g. 1kg, 500g"></div>
-            <div class="form-field"><label>Stock Quantity</label><input id="pStock" type="number" required value="10"></div>
+            <div class="form-field"><label>Stock</label><input id="pStock" type="number" required value="10"></div>
             <div class="form-field full"><label>Image URL</label><input id="pImage" required></div>
             <div class="form-field"><label>Sizes</label><input id="pSizes" placeholder="M, L, XL"></div>
             <div class="form-field"><label>Tag</label><input id="pTag" placeholder="NEW"></div>
-            
-            <!-- NAYA: DEAL OF THE DAY CHECKBOX -->
-            <div class="form-field full">
-              <label style="display:flex; align-items:center; gap:10px; cursor:pointer; background:#fff3cd; padding:12px; border-radius:6px; border:1px solid #ffe69c;">
-                <input type="checkbox" id="pIsDeal" style="width:20px; height:20px; margin:0; cursor:pointer;">
-                <span style="font-weight:bold; color:#856404;">🔥 Mark as "Deal of the Day" (Homepage par alag se dikhega)</span>
-              </label>
-            </div>
-
+            <div class="form-field full"><label style="display:flex; align-items:center; gap:10px; cursor:pointer; background:#fff3cd; padding:10px; border-radius:6px;"><input type="checkbox" id="pIsDeal" style="width:18px; height:18px; margin:0;"><span style="color:#856404;">🔥 Deal of the Day</span></label></div>
             <div class="form-field full"><label>Description</label><textarea id="pDescription"></textarea></div>
           </div>
           <div style="margin-top: 15px;"><button type="submit" class="btn btn-primary">SAVE PRODUCT</button></div>
@@ -95,27 +85,34 @@
       </div>
 
       <div class="admin-panel">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <h2>All Products</h2>
-          <div class="filter-tabs">
-            <button class="filter-btn active" onclick="filterTable('All', this)">All</button>
-            <button class="filter-btn" onclick="filterTable('Fashion', this)">Fashion</button>
-            <button class="filter-btn" onclick="filterTable('Print', this)">Print</button>
-            <button class="filter-btn" onclick="filterTable('Kirana', this)">Kirana</button>
-          </div>
-        </div>
         <table class="admin-table">
-          <thead><tr><th>Store</th><th>Name</th><th>Deal</th><th>Price</th><th>Quick Stock</th><th>Actions</th></tr></thead>
+          <thead><tr><th>Store</th><th>Name</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
           <tbody id="productRows"></tbody>
         </table>
       </div>
     </div>
 
-    <!-- ORDERS SECTION -->
+    <!-- 2. ORDERS SECTION -->
     <div id="ordersSection" class="hidden">
+      <div class="admin-panel"><h2>All Orders</h2><div id="ordersList"></div></div>
+    </div>
+
+    <!-- 3. COUPONS SECTION (NAYAA) -->
+    <div id="couponsSection" class="hidden">
       <div class="admin-panel">
-        <h2>All Orders</h2>
-        <div id="ordersList"></div>
+        <h2>Create New Coupon</h2>
+        <form id="couponForm" class="grid-form">
+          <div class="form-field"><label>Coupon Code (e.g. FIRST10)</label><input id="cCode" required style="text-transform:uppercase;"></div>
+          <div class="form-field"><label>Discount % (e.g. 10)</label><input id="cDiscount" type="number" required min="1" max="100"></div>
+          <div class="form-field full"><button type="submit" class="btn btn-primary">CREATE COUPON</button></div>
+        </form>
+      </div>
+      <div class="admin-panel">
+        <h2>Active Coupons</h2>
+        <table class="admin-table">
+          <thead><tr><th>Code</th><th>Discount</th><th>Action</th></tr></thead>
+          <tbody id="couponRows"></tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -125,103 +122,65 @@
     import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-    const firebaseConfig = { apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y", authDomain: "aaradhya-mart.firebaseapp.com", projectId: "aaradhya-mart", storageBucket: "aaradhya-mart.firebasestorage.app", messagingSenderId: "146782544824", appId: "1:146782544824:web:d605e1971d3480fab1654d", measurementId: "G-L6VJBL7ESY" };
+    const firebaseConfig = { apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y", authDomain: "aaradhya-mart.firebaseapp.com", projectId: "aaradhya-mart", storageBucket: "aaradhya-mart.firebasestorage.app", messagingSenderId: "146782544824", appId: "1:146782544824:web:d605e1971d3480fab1654d" };
     const app = initializeApp(firebaseConfig); const db = getFirestore(app); const auth = getAuth(app);
-    let allProducts = []; let currentFilter = "All";
+    let allProducts = [];
 
-    window.switchMainTab = function(tabName, btnElement) {
-      document.querySelectorAll('.main-tab-btn').forEach(btn => btn.classList.remove('active')); btnElement.classList.add('active');
-      if(tabName === 'products') { productsSection.classList.remove("hidden"); ordersSection.classList.add("hidden"); loadProducts(); }
-      else { productsSection.classList.add("hidden"); ordersSection.classList.remove("hidden"); loadOrders(); }
+    window.switchMainTab = function(tab, btn) {
+      document.querySelectorAll('.main-tab-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
+      document.getElementById("productsSection").classList.add("hidden"); document.getElementById("ordersSection").classList.add("hidden"); document.getElementById("couponsSection").classList.add("hidden");
+      
+      if(tab === 'products') { document.getElementById("productsSection").classList.remove("hidden"); loadProducts(); }
+      else if(tab === 'orders') { document.getElementById("ordersSection").classList.remove("hidden"); loadOrders(); }
+      else { document.getElementById("couponsSection").classList.remove("hidden"); loadCoupons(); }
     }
 
+    // --- PRODUCTS LOGIC ---
     async function loadProducts() {
-      const querySnapshot = await getDocs(collection(db, "products")); allProducts = [];
-      querySnapshot.forEach((doc) => allProducts.push({ id: doc.id, ...doc.data() })); renderTable();
+      const snap = await getDocs(collection(db, "products")); allProducts = [];
+      snap.forEach(d => allProducts.push({ id: d.id, ...d.data() }));
+      document.getElementById("productRows").innerHTML = allProducts.map(p => `<tr><td>${p.store}</td><td>${p.name}</td><td>₹${p.price}</td><td>${p.stock}</td><td><button class="btn btn-danger" style="padding:5px; font-size:10px;" data-del="${p.id}">Delete</button></td></tr>`).join("");
+      document.querySelectorAll("[data-del]").forEach(b => b.onclick = async () => { if(confirm("Delete?")) { await deleteDoc(doc(db, "products", b.dataset.del)); loadProducts(); }});
     }
-
-    window.filterTable = function(storeName, btnElement) {
-      currentFilter = storeName; document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active')); btnElement.classList.add('active'); renderTable();
-    }
-
-    function renderTable() {
-      let filteredProducts = allProducts;
-      if (currentFilter !== "All") filteredProducts = allProducts.filter(p => p.store === currentFilter);
-
-      document.getElementById("productRows").innerHTML = filteredProducts.map(p => `
-        <tr>
-          <td><span class="badge">${p.store}</span></td>
-          <td>${p.name}</td>
-          <td>${p.isDeal ? '🔥 YES' : '-'}</td>
-          <td>₹${p.price}</td>
-          <td><input type="number" class="stock-input ${p.stock <= 5 ? 'stock-low' : ''}" value="${p.stock}" data-stock-id="${p.id}"></td>
-          <td>
-            <button class="btn btn-primary" style="padding:5px 10px; font-size:11px;" data-edit="${p.id}">Edit</button>
-            <button class="btn btn-danger" style="padding:5px 10px; font-size:11px;" data-delete="${p.id}">Delete</button>
-          </td>
-        </tr>
-      `).join("");
-    }
-
-    async function loadOrders() {
-      const ordersList = document.getElementById("ordersList"); ordersList.innerHTML = "<p>Loading...</p>";
-      try {
-        const q = query(collection(db, "orders"), orderBy("orderDate", "desc")); const querySnapshot = await getDocs(q);
-        if(querySnapshot.empty) { ordersList.innerHTML = "<p>No orders found.</p>"; return; }
-        let html = "";
-        querySnapshot.forEach((doc) => {
-          const o = doc.data(); const itemsStr = o.items.map(i => `${i.name} (x${i.qty})`).join("<br>");
-          const statusClass = `status-${o.status.replace(/\s+/g, '')}`;
-          html += `
-            <div class="order-card">
-              <h4><span>${o.orderId} - ${o.customerName}</span><select class="status-select ${statusClass}" onchange="updateOrderStatus('${doc.id}', this.value, this)"><option value="Pending" ${o.status === 'Pending' ? 'selected' : ''}>🟡 Pending</option><option value="Processing" ${o.status === 'Processing' ? 'selected' : ''}>🔵 Processing</option><option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>🟢 Delivered</option><option value="Cancelled" ${o.status === 'Cancelled' ? 'selected' : ''}>🔴 Cancelled</option></select></h4>
-              <p><strong>Date:</strong> ${o.orderDate}</p>
-              <p><strong>Phone:</strong> <a href="https://wa.me/91${o.customerPhone}" target="_blank" style="color:#10b981;">${o.customerPhone}</a></p>
-              <p><strong>Address:</strong> ${o.address}</p>
-              <p><strong>Products:</strong><br> ${itemsStr}</p>
-              <p><strong>Total:</strong> ₹${o.totalAmount} | <strong>Payment:</strong> ${o.paymentMode}</p>
-            </div>`;
-        });
-        ordersList.innerHTML = html;
-      } catch (e) { ordersList.innerHTML = "Error loading orders."; }
-    }
-
-    window.updateOrderStatus = async function(docId, newStatus, selectElement) {
-      try {
-        selectElement.disabled = true; await updateDoc(doc(db, "orders", docId), { status: newStatus });
-        selectElement.className = `status-select status-${newStatus.replace(/\s+/g, '')}`;
-        selectElement.style.boxShadow = "0 0 0 3px rgba(16, 185, 129, 0.4)"; setTimeout(() => selectElement.style.boxShadow = "", 1000);
-      } catch (error) { alert("Failed to update."); } finally { selectElement.disabled = false; }
-    }
-
-    document.getElementById("loginButton").onclick = async () => { try { await signInWithEmailAndPassword(auth, adminEmail.value, adminPass.value); } catch (e) { loginError.textContent = e.message; } };
-    document.getElementById("logoutButton").onclick = () => signOut(auth);
-    onAuthStateChanged(auth, (user) => { if (user) { loginView.style.display = "none"; adminView.classList.remove("hidden"); loadProducts(); } else { loginView.style.display = "flex"; adminView.classList.add("hidden"); } });
-
     document.getElementById("productForm").onsubmit = async (e) => {
-      e.preventDefault(); const id = editId.value || "P" + Date.now();
+      e.preventDefault(); const id = "P" + Date.now();
       await setDoc(doc(db, "products", id), {
-        store: pStore.value, name: pName.value, category: pCategory.value, price: Number(pPrice.value), originalPrice: Number(pOriginal.value) || 0, unit: pUnit.value, stock: Number(pStock.value), image: pImage.value, sizes: pSizes.value.split(",").map(s=>s.trim()).filter(Boolean), tag: pTag.value, isDeal: document.getElementById("pIsDeal").checked, description: pDescription.value
+        store: pStore.value, name: pName.value, category: pCategory.value, price: Number(pPrice.value), stock: Number(pStock.value), image: pImage.value, sizes: pSizes.value.split(",").map(s=>s.trim()).filter(Boolean), isDeal: document.getElementById("pIsDeal").checked, unit: pUnit.value, originalPrice: Number(pOriginal.value)||0
       });
-      productForm.reset(); editId.value = ""; document.getElementById("pIsDeal").checked = false; loadProducts(); alert("Saved!");
-    };
+      productForm.reset(); loadProducts(); alert("Saved!");
+    }
 
-    productRows.addEventListener("change", async (e) => {
-      if(e.target.hasAttribute("data-stock-id")) {
-        await updateDoc(doc(db, "products", e.target.dataset.stockId), { stock: Number(e.target.value) });
-        e.target.style.background = "#d4edda"; setTimeout(() => e.target.style.background = "", 1000);
-      }
-    });
+    // --- ORDERS LOGIC ---
+    async function loadOrders() {
+      const q = query(collection(db, "orders"), orderBy("orderDate", "desc")); const snap = await getDocs(q);
+      document.getElementById("ordersList").innerHTML = snap.docs.map(d => {
+        const o = d.data();
+        return `<div class="order-card"><h4>${o.orderId} - ${o.customerName}</h4><p>${o.address}</p><p>Total: ₹${o.totalAmount}</p><select class="status-select status-${o.status}" onchange="updateOrder('${d.id}', this.value, this)"><option ${o.status==='Pending'?'selected':''}>Pending</option><option ${o.status==='Delivered'?'selected':''}>Delivered</option><option ${o.status==='Cancelled'?'selected':''}>Cancelled</option></select></div>`;
+      }).join("");
+    }
+    window.updateOrder = async (id, val, sel) => { await updateDoc(doc(db, "orders", id), { status: val }); sel.className = `status-select status-${val}`; }
 
-    productRows.addEventListener("click", async (e) => {
-      const edit = e.target.dataset.edit; const del = e.target.dataset.delete;
-      if(edit) {
-        const p = allProducts.find(x => x.id === edit);
-        editId.value = p.id; pStore.value = p.store; pName.value = p.name; pCategory.value = p.category; pPrice.value = p.price; pOriginal.value = p.originalPrice; pUnit.value = p.unit || ""; pStock.value = p.stock; pImage.value = p.image; pSizes.value = (p.sizes||[]).join(", "); pTag.value = p.tag || ""; document.getElementById("pIsDeal").checked = p.isDeal || false; pDescription.value = p.description || "";
-        formTitle.textContent = "Edit Product"; window.scrollTo(0,0);
-      }
-      if(del && confirm("Delete this product?")) { await deleteDoc(doc(db, "products", del)); loadProducts(); }
-    });
+    // --- COUPON LOGIC (NAYAA) ---
+    async function loadCoupons() {
+      const snap = await getDocs(collection(db, "coupons"));
+      document.getElementById("couponRows").innerHTML = snap.docs.map(d => {
+        const c = d.data();
+        return `<tr><td><b>${c.code}</b></td><td>${c.discount}%</td><td><button class="btn btn-danger" style="padding:5px; font-size:10px;" data-cdel="${d.id}">Delete</button></td></tr>`;
+      }).join("");
+      document.querySelectorAll("[data-cdel]").forEach(b => b.onclick = async () => { await deleteDoc(doc(db, "coupons", b.dataset.cdel)); loadCoupons(); });
+    }
+
+    document.getElementById("couponForm").onsubmit = async (e) => {
+      e.preventDefault();
+      const code = document.getElementById("cCode").value.toUpperCase();
+      await setDoc(doc(db, "coupons", code), { code: code, discount: Number(document.getElementById("cDiscount").value) });
+      alert("Coupon Created!"); document.getElementById("couponForm").reset(); loadCoupons();
+    }
+
+    // --- AUTH ---
+    loginButton.onclick = async () => { try { await signInWithEmailAndPassword(auth, adminEmail.value, adminPass.value); } catch (e) { loginError.textContent = e.message; } };
+    logoutButton.onclick = () => signOut(auth);
+    onAuthStateChanged(auth, (u) => { if(u) { loginView.style.display="none"; adminView.classList.remove("hidden"); loadProducts(); } else { loginView.style.display="flex"; adminView.classList.add("hidden"); } });
   </script>
 </body>
 </html>
