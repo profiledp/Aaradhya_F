@@ -41,6 +41,17 @@
       .global-cart-btn .cart-text { display: none !important; }
       .global-cart-btn .cart-badge { width: 20px !important; height: 20px !important; font-size: 10px !important; }
     }
+
+    /* NAYA: Scrolling Banner Style */
+    .offer-banner-container { background: #ef4444; color: #fff; padding: 10px 0; overflow: hidden; white-space: nowrap; display: flex; align-items: center; }
+    .offer-banner-track { display: inline-flex; animation: scrollText 15s linear infinite; }
+    .offer-banner-item { display: inline-block; margin-right: 50px; font-size: 14px; font-weight: bold; }
+    .offer-banner-item span { background:#fff; color:#ef4444; padding:2px 8px; border-radius:4px; font-family:monospace; margin-left: 5px;}
+    
+    @keyframes scrollText {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
   </style>
 </head>
 <body>
@@ -59,9 +70,11 @@
       </div>
     </section>
 
-    <!-- DYNAMIC OFFER BANNER -->
-    <div id="offerBanner" style="display:none; background: #ef4444; color: #fff; text-align: center; padding: 12px; font-size: 14px; font-weight: bold; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2);">
-      🎉 Get <span id="bannerDiscount">0</span>% OFF! Use Code <span id="bannerCode" style="background:#fff; color:#ef4444; padding:2px 8px; border-radius:4px; font-family:monospace;"></span> at Checkout.
+    <!-- NAYA: SCROLLING OFFER BANNER (Multiple Coupons) -->
+    <div id="offerBanner" class="offer-banner-container" style="display:none;">
+      <div class="offer-banner-track" id="bannerTrack">
+        <!-- Javascript will insert coupons here -->
+      </div>
     </div>
 
     <!-- STORE DIRECTORY -->
@@ -119,29 +132,37 @@
       } catch(e) {}
     }
 
-    async function loadBannerCoupon() {
+    // Load ALL Coupons for scrolling banner
+    async function loadBannerCoupons() {
       try {
         const snap = await getDocs(collection(db, "coupons"));
         if (!snap.empty) {
-          let bestCoupon = null;
-          snap.forEach(doc => {
-            const data = doc.data();
-            if (!bestCoupon || data.discount > bestCoupon.discount) {
-              bestCoupon = data;
-            }
-          });
-          if (bestCoupon) {
-            document.getElementById("bannerDiscount").textContent = bestCoupon.discount;
-            document.getElementById("bannerCode").textContent = bestCoupon.code;
-            document.getElementById("offerBanner").style.display = "block";
+          let allCoupons = [];
+          snap.forEach(doc => allCoupons.push(doc.data()));
+          
+          let html = "";
+          // Hum coupons ko 2 baar loop karenge taaki scroll infinite lage
+          for(let i=0; i<2; i++) {
+            allCoupons.forEach(c => {
+              html += `
+                <div class="offer-banner-item">
+                  🎉 Get ${c.discount}% OFF! Use Code <span>${c.code}</span> at Checkout.
+                </div>
+              `;
+            });
           }
+          
+          document.getElementById("bannerTrack").innerHTML = html;
+          document.getElementById("offerBanner").style.display = "flex";
         }
-      } catch(e) {}
+      } catch(e) {
+        console.log("Banner coupon error:", e);
+      }
     }
 
     document.addEventListener("DOMContentLoaded", () => {
       updateGlobalCart();
-      loadBannerCoupon();
+      loadBannerCoupons();
     });
   </script>
 </body>
