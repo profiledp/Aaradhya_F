@@ -1,89 +1,28 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Your Cart | Aaradhya Mart</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Custom Styles specifically for Cart Page */
+    .clear-cart-btn { background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; padding: 8px 15px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+    .clear-cart-btn:hover { background: #fecaca; }
     .cart-page-wrap { max-width: 800px; margin: 40px auto; padding: 0 20px; }
     .cart-page-title { font: normal 28px Georgia, serif; color: var(--navy); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
-    
-    .cart-item {
-      display: flex;
-      gap: 20px;
-      background: #fff;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 15px;
-      margin-bottom: 15px;
-      align-items: center;
-    }
-    
-    .cart-item-img {
-      width: 90px;
-      height: 90px;
-      object-fit: contain;
-      border-radius: 8px;
-      border: 1px solid #f0f0f0;
-      padding: 5px;
-      background: #fff;
-    }
-    
+    .cart-item { display: flex; gap: 20px; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 15px; margin-bottom: 15px; align-items: center; }
+    .cart-item-img { width: 90px; height: 90px; object-fit: contain; border-radius: 8px; border: 1px solid #f0f0f0; padding: 5px; background: #fff; }
     .cart-item-details { flex: 1; }
     .cart-item-details h4 { margin: 0 0 5px; font-family: Georgia, serif; font-size: 18px; color: var(--navy); }
     .cart-item-details p { margin: 0 0 5px; font-size: 12px; color: var(--muted); }
     .cart-item-price { font-weight: bold; font-size: 16px; color: var(--navy); }
-    
-    .cart-item-actions {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 10px;
-    }
-    
-    .qty-box {
-      display: flex;
-      align-items: center;
-      border: 1px solid var(--line);
-      border-radius: 6px;
-      overflow: hidden;
-    }
-    .qty-box input {
-      width: 40px;
-      text-align: center;
-      border: none;
-      outline: none;
-      padding: 8px 0;
-      font-size: 14px;
-      font-weight: bold;
-    }
-    
-    .btn-remove {
-      background: none;
-      border: none;
-      color: #ef4444;
-      font-size: 12px;
-      cursor: pointer;
-      text-decoration: underline;
-      padding: 0;
-    }
-    
-    .cart-summary {
-      background: var(--cream);
-      padding: 25px;
-      border-radius: 12px;
-      margin-top: 30px;
-      text-align: right;
-      border: 1px solid var(--line);
-    }
+    .cart-item-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+    .qty-box { display: flex; align-items: center; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+    .qty-box input { width: 40px; text-align: center; border: none; outline: none; padding: 8px 0; font-size: 14px; font-weight: bold; }
+    .btn-remove { background: none; border: none; color: #ef4444; font-size: 12px; cursor: pointer; text-decoration: underline; padding: 0; }
+    .cart-summary { background: var(--cream); padding: 25px; border-radius: 12px; margin-top: 30px; text-align: right; border: 1px solid var(--line); }
     .cart-summary-total { font-size: 24px; font-weight: bold; color: var(--navy); margin-bottom: 15px; }
-    
     .empty-cart-msg { text-align: center; padding: 50px 20px; }
     .empty-cart-msg h3 { color: var(--muted); font-size: 20px; margin-bottom: 20px; }
-    
-    /* Mobile Responsive */
     @media (max-width: 650px) {
       .cart-item { flex-direction: column; align-items: flex-start; position: relative; }
       .cart-item-img { width: 80px; height: 80px; }
@@ -101,7 +40,7 @@
   <main class="cart-page-wrap">
     <div class="cart-page-title">
       <span>Shopping Cart</span>
-      <button id="clearCartBtn" style="display:none; background:#fee2e2; color:#ef4444; border:1px solid #fca5a5; padding:8px 15px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer;">Clear Cart 🗑️</button>
+      <button id="clearCartBtn" class="clear-cart-btn" style="display:none;">Clear Cart 🗑️</button>
     </div>
     
     <div id="loadingCart" style="text-align:center; padding: 20px; font-weight:bold; color: var(--muted);">Loading your items...</div>
@@ -118,15 +57,15 @@
     </div>
   </main>
 
-  <!-- Clear Cart Modal -->
-  <div id="clearCartModal" style="position:fixed; inset:0; background:rgba(0,0,0,0.5); display:none; align-items:center; justify-content:center; z-index:9999;">
-    <div style="background:#fff; padding:30px; border-radius:12px; text-align:center; max-width:350px; width:90%;">
-      <div style="font-size:40px; margin-bottom:10px;">🗑️</div>
-      <h3 style="font-family:Georgia; color:var(--navy); margin-bottom:10px;">Clear Cart?</h3>
-      <p style="font-size:13px; color:var(--muted); margin-bottom:20px;">Are you sure you want to remove all items?</p>
-      <div style="display:flex; gap:10px;">
-        <button onclick="document.getElementById('clearCartModal').style.display='none'" style="flex:1; padding:10px; border:1px solid #ccc; background:#fff; border-radius:6px; cursor:pointer;">Cancel</button>
-        <button onclick="confirmClearCart()" style="flex:1; padding:10px; border:none; background:#ef4444; color:#fff; border-radius:6px; cursor:pointer;">Yes, Clear</button>
+  <!-- CUSTOM CLEAR CART POPUP -->
+  <div class="custom-modal-overlay" id="clearCartModal">
+    <div class="custom-modal">
+      <div style="font-size: 40px; margin-bottom: 15px;">🗑️</div>
+      <h3>Clear Cart?</h3>
+      <p>Are you sure you want to remove all items from your shopping cart?</p>
+      <div class="modal-actions">
+        <button class="modal-btn btn-cancel" onclick="closeClearModal()">Cancel</button>
+        <button class="modal-btn btn-danger" onclick="confirmClearCart()">Yes, Clear</button>
       </div>
     </div>
   </div>
@@ -135,129 +74,78 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y",
-      authDomain: "aaradhya-mart.firebaseapp.com",
-      projectId: "aaradhya-mart",
-      storageBucket: "aaradhya-mart.firebasestorage.app",
-      messagingSenderId: "146782544824",
-      appId: "1:146782544824:web:d605e1971d3480fab1654d",
-      measurementId: "G-L6VJBL7ESY"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    let allProducts = [];
-    let cartData = [];
+    const firebaseConfig = { apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y", authDomain: "aaradhya-mart.firebaseapp.com", projectId: "aaradhya-mart", storageBucket: "aaradhya-mart.firebasestorage.app", messagingSenderId: "146782544824", appId: "1:146782544824:web:d605e1971d3480fab1654d" };
+    const app = initializeApp(firebaseConfig); const db = getFirestore(app);
+    let allProducts = []; let cartData = [];
 
     async function initCart() {
       try {
-        const savedCart = localStorage.getItem("aaradhyaMartCart");
-        cartData = savedCart ? JSON.parse(savedCart) : [];
-        
+        const savedCart = localStorage.getItem("aaradhyaMartCart"); cartData = savedCart ? JSON.parse(savedCart) : [];
         const querySnapshot = await getDocs(collection(db, "products"));
-        allProducts = [];
-        querySnapshot.forEach((doc) => { allProducts.push({ id: doc.id, ...doc.data() }); });
-
-        // Remove items not found in Firebase
+        allProducts = []; querySnapshot.forEach((doc) => { allProducts.push({ id: doc.id, ...doc.data() }); });
+        
         const initialLength = cartData.length;
         cartData = cartData.filter(item => allProducts.some(p => String(p.id) === String(item.id)));
-        if(cartData.length !== initialLength) {
-          localStorage.setItem("aaradhyaMartCart", JSON.stringify(cartData));
-        }
-
+        if(cartData.length !== initialLength) localStorage.setItem("aaradhyaMartCart", JSON.stringify(cartData));
+        
         renderCart();
       } catch (error) {
-        console.error(error);
         document.getElementById("loadingCart").innerHTML = "<span style='color:red'>Error loading cart.</span>";
       }
     }
 
     function renderCart() {
       document.getElementById("loadingCart").style.display = "none";
-      const container = document.getElementById("cartItemsList");
-      const summary = document.getElementById("cartSummary");
-      const empty = document.getElementById("emptyCart");
-      const clearBtn = document.getElementById("clearCartBtn");
+      const container = document.getElementById("cartItemsList"); const summary = document.getElementById("cartSummary");
+      const empty = document.getElementById("emptyCart"); const clearBtn = document.getElementById("clearCartBtn");
       
-      if (cartData.length === 0) {
-        container.innerHTML = ""; 
-        summary.style.display = "none"; 
-        empty.style.display = "block"; 
-        clearBtn.style.display = "none";
-        return;
-      }
+      if (cartData.length === 0) { container.innerHTML = ""; summary.style.display = "none"; empty.style.display = "block"; clearBtn.style.display = "none"; return; }
       
-      empty.style.display = "none"; 
-      summary.style.display = "block";
-      clearBtn.style.display = "block";
-      
-      let total = 0;
-      let html = "";
+      empty.style.display = "none"; summary.style.display = "block"; clearBtn.style.display = "block";
+      let total = 0; let html = "";
 
       cartData.forEach((item, index) => {
-        const p = allProducts.find(x => String(x.id) === String(item.id));
-        if (!p) return;
-        
-        const itemTotal = Number(p.price) * Number(item.qty || 1);
-        total += itemTotal;
+        const p = allProducts.find(x => String(x.id) === String(item.id)); if (!p) return;
+        const itemTotal = Number(p.price) * Number(item.qty || 1); total += itemTotal;
+        const firstImg = p.image ? p.image.split(',')[0].trim() : 'https://placehold.co/100';
 
         html += `
           <div class="cart-item">
-            <img src="${p.image || 'https://placehold.co/100'}" class="cart-item-img" alt="${p.name}">
+            <img src="${firstImg}" class="cart-item-img" alt="${p.name}">
             <div class="cart-item-details">
-              <h4>${p.name}</h4>
-              <p>Size: ${item.size} | Store: ${p.store}</p>
+              <h4>${p.name}</h4><p>Size: ${item.size} | Store: ${p.store}</p>
               <div class="cart-item-price">₹${p.price}</div>
             </div>
             <div class="cart-item-actions">
               <button class="btn-remove" onclick="removeFromCart(${index})">Remove</button>
-              <div class="qty-box">
-                <input type="number" value="${item.qty}" min="1" max="${p.stock}" onchange="updateQty(${index}, this.value)">
-              </div>
+              <div class="qty-box"><input type="number" value="${item.qty}" min="1" max="${p.stock}" onchange="updateQty(${index}, this.value)"></div>
             </div>
-          </div>
-        `;
+          </div>`;
       });
-
       container.innerHTML = html;
       document.getElementById("cartTotal").textContent = total.toLocaleString("en-IN");
     }
 
     window.updateQty = function(index, newQty) {
-      let qty = parseInt(newQty);
-      if (isNaN(qty) || qty < 1) qty = 1;
-      
+      let qty = parseInt(newQty); if (isNaN(qty) || qty < 1) qty = 1;
       const p = allProducts.find(x => String(x.id) === String(cartData[index].id));
-      const maxStock = p ? Number(p.stock) : 999;
-
-      if (qty > maxStock) {
-        alert(`Sorry, only ${maxStock} items are available.`);
-        qty = maxStock;
-      }
-
-      cartData[index].qty = qty;
-      localStorage.setItem("aaradhyaMartCart", JSON.stringify(cartData));
-      renderCart();
+      if (qty > Number(p.stock)) { showToast("Only "+p.stock+" items available!"); qty = p.stock; }
+      cartData[index].qty = qty; localStorage.setItem("aaradhyaMartCart", JSON.stringify(cartData)); renderCart();
     }
 
-    window.removeFromCart = function(index) {
-      cartData.splice(index, 1);
-      localStorage.setItem("aaradhyaMartCart", JSON.stringify(cartData));
-      renderCart();
-    }
+    window.removeFromCart = function(index) { cartData.splice(index, 1); localStorage.setItem("aaradhyaMartCart", JSON.stringify(cartData)); renderCart(); }
+    window.proceedToCheckout = function() { if(cartData.length > 0) window.location.href = "checkout.html"; }
 
-    window.proceedToCheckout = function() {
-      if(cartData.length > 0) window.location.href = "checkout.html";
-    }
+    // MODAL LOGIC
+    document.getElementById("clearCartBtn").onclick = () => { document.getElementById("clearCartModal").classList.add("active"); };
+    window.closeClearModal = function() { document.getElementById("clearCartModal").classList.remove("active"); }
+    window.confirmClearCart = function() { localStorage.removeItem("aaradhyaMartCart"); cartData = []; renderCart(); closeClearModal(); }
 
-    document.getElementById("clearCartBtn").onclick = () => { document.getElementById("clearCartModal").style.display = "flex"; };
-    window.confirmClearCart = function() {
-      localStorage.removeItem("aaradhyaMartCart");
-      cartData = [];
-      document.getElementById("clearCartModal").style.display = "none";
-      renderCart();
+    function showToast(msg) {
+      let t = document.querySelector('.toast-notification'); if(t) t.remove();
+      const toast = document.createElement('div'); toast.className='toast-notification'; toast.innerHTML = `<span class="toast-icon">⚠️</span> ${msg}`;
+      document.body.appendChild(toast); setTimeout(()=>toast.classList.add('show'),10);
+      setTimeout(()=>{toast.classList.remove('show'); setTimeout(()=>toast.remove(),400);},3000);
     }
 
     document.addEventListener("DOMContentLoaded", initCart);
