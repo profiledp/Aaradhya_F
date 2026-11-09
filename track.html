@@ -1,32 +1,20 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Track Order | Aaradhya Mart</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    .track-container { max-width: 600px; margin: 40px auto; padding: 30px; background: #fff; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 10px 30px rgba(16,36,59,0.05); }
-    
-    /* NAYA: Tracking Header Graphic */
+    .track-container { max-width: 600px; margin: 50px auto; padding: 30px; background: #fff; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 10px 30px rgba(16,36,59,0.05); }
     .track-header { text-align: center; margin-bottom: 30px; }
-    .track-icon-box {
-      width: 80px; height: 80px; background: var(--navy); border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 15px; border: 3px solid var(--gold);
-      box-shadow: 0 5px 15px rgba(16,36,59,0.2);
-    }
+    .track-icon-box { width: 80px; height: 80px; background: var(--navy); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; border: 3px solid var(--gold); box-shadow: 0 5px 15px rgba(16,36,59,0.2); }
     .track-icon-box svg { width: 40px; height: 40px; stroke: var(--gold); }
     .track-header h2 { font: normal 28px Georgia, serif; color: var(--navy); margin: 0 0 10px; }
     .track-header p { font-size: 13px; color: var(--muted); margin: 0; }
-
     .form-group { margin-bottom: 15px; }
     .form-group label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 6px; color: var(--ink); }
     .form-group input { width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 6px; font-family: inherit; font-size: 14px; outline: none; box-sizing: border-box; }
-    .form-group input:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(16,36,59,0.1); }
     .btn-track { width: 100%; padding: 15px; background: var(--navy); color: #fff; border: none; border-radius: 6px; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-    .btn-track:hover { background: #1e3a5f; }
-    
     .result-box { display: none; margin-top: 30px; padding: 20px; border: 1px solid var(--line); border-radius: 8px; background: var(--cream); }
     .result-box h3 { font: normal 20px Georgia, serif; color: var(--navy); margin-top: 0; border-bottom: 1px solid #ddd; padding-bottom: 10px; }
     .result-box p { text-align: left; margin-bottom: 8px; color: var(--ink); font-size: 14px; }
@@ -46,15 +34,10 @@
 
   <main>
     <div class="track-container">
-      
-      <!-- NAYA GRAPHIC HEADER -->
       <div class="track-header">
         <div class="track-icon-box">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="1" y="3" width="15" height="13"></rect>
-            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
-            <circle cx="5.5" cy="18.5" r="2.5"></circle>
-            <circle cx="18.5" cy="18.5" r="2.5"></circle>
+            <rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle>
           </svg>
         </div>
         <h2>Track Your Order</h2>
@@ -80,31 +63,16 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y",
-      authDomain: "aaradhya-mart.firebaseapp.com",
-      projectId: "aaradhya-mart",
-      storageBucket: "aaradhya-mart.firebasestorage.app",
-      messagingSenderId: "146782544824",
-      appId: "1:146782544824:web:d605e1971d3480fab1654d",
-      measurementId: "G-L6VJBL7ESY"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    const firebaseConfig = { apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y", authDomain: "aaradhya-mart.firebaseapp.com", projectId: "aaradhya-mart", storageBucket: "aaradhya-mart.firebasestorage.app", messagingSenderId: "146782544824", appId: "1:146782544824:web:d605e1971d3480fab1654d" };
+    const app = initializeApp(firebaseConfig); const db = getFirestore(app);
 
     document.getElementById("trackBtn").addEventListener("click", async () => {
       const orderId = document.getElementById("trackOrderId").value.trim().toUpperCase();
       const phone = document.getElementById("trackPhone").value.trim();
-      const resultsDiv = document.getElementById("orderResults");
-      const errorMsg = document.getElementById("errorMsg");
-      const btn = document.getElementById("trackBtn");
-
-      if(orderId === "" || phone.length !== 10) {
-        errorMsg.textContent = "Please enter both Order ID and a valid 10-digit number.";
-        errorMsg.style.display = "block"; resultsDiv.innerHTML = ""; return;
-      }
-
+      const resultsDiv = document.getElementById("orderResults"); const errorMsg = document.getElementById("errorMsg"); const btn = document.getElementById("trackBtn");
+      
+      if(orderId === "" || phone.length !== 10) { errorMsg.textContent = "Please enter both Order ID and a valid 10-digit number."; errorMsg.style.display = "block"; resultsDiv.innerHTML = ""; return; }
+      
       btn.textContent = "Searching..."; btn.disabled = true; errorMsg.style.display = "none"; resultsDiv.innerHTML = "";
 
       try {
@@ -112,13 +80,11 @@
         const querySnapshot = await getDocs(q);
 
         if (querySnapshot.empty) {
-          errorMsg.textContent = "Order not found. Please check your Order ID and Phone Number.";
-          errorMsg.style.display = "block";
+          errorMsg.textContent = "Order not found. Please check your Order ID and Phone Number."; errorMsg.style.display = "block";
         } else {
           let html = "";
           querySnapshot.forEach((doc) => {
-            const o = doc.data();
-            const statusClass = `status-${o.status.replace(/\s+/g, '')}`;
+            const o = doc.data(); const statusClass = `status-${o.status.replace(/\s+/g, '')}`;
             const itemsStr = o.items.map(i => `${i.name} (x${i.qty})`).join(", ");
             html += `
               <div class="result-box" style="display:block;">
@@ -132,9 +98,7 @@
           });
           resultsDiv.innerHTML = html;
         }
-      } catch (e) {
-        console.error(e); errorMsg.textContent = "Error fetching order. Please try again."; errorMsg.style.display = "block";
-      } finally { btn.textContent = "Check Status"; btn.disabled = false; }
+      } catch (e) { errorMsg.textContent = "Error fetching order. Please try again."; errorMsg.style.display = "block"; } finally { btn.textContent = "Check Status"; btn.disabled = false; }
     });
   </script>
 </body>
