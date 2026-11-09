@@ -50,57 +50,35 @@
 
     .place-order-btn { width: 100%; padding: 16px; background: var(--navy); color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 20px; }
     
-    /* =========================================
-       ORDER SLIP / RECEIPT POPUP DESIGN
-       ========================================= */
+    /* NAYA: ADVANCE PAYMENT NOTICE */
+    .advance-notice {
+      background: #e0f2fe; border: 1px dashed #7dd3fc; color: #0369a1;
+      padding: 12px; border-radius: 6px; font-size: 12px; font-weight: bold;
+      margin-bottom: 15px; display: flex; align-items: center; gap: 8px;
+    }
+
+    /* ORDER SLIP POPUP */
     .slip-modal-overlay { position: fixed; inset: 0; background: rgba(16,36,59,0.7); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; visibility: hidden; transition: 0.3s; padding: 15px; }
     .slip-modal-overlay.active { opacity: 1; visibility: visible; }
-    
-    .slip-box {
-      background: #fff;
-      width: 100%;
-      max-width: 400px;
-      border-radius: 8px;
-      position: relative;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-      transform: scale(0.8) translateY(20px);
-      transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      max-height: 90vh;
-      overflow-y: auto;
-      font-family: 'Courier New', Courier, monospace; /* Receipt jaisa font */
-    }
-    .slip-modal-overlay.active .slip-box { transform: scale(1) translateY(0); }
-    
+    .slip-box { background: #fff; width: 100%; max-width: 400px; border-radius: 8px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.3); transform: scale(0.8); transition: 0.3s; max-height: 90vh; overflow-y: auto; font-family: 'Courier New', Courier, monospace; }
+    .slip-modal-overlay.active .slip-box { transform: scale(1); }
     .slip-header { text-align: center; padding: 25px 20px 15px; border-bottom: 1px dashed #ccc; }
     .slip-header h2 { margin: 0; font-family: Georgia, serif; color: var(--navy); font-size: 24px; }
     .slip-header p { margin: 5px 0 0; font-size: 12px; color: var(--muted); }
-    
     .slip-body { padding: 20px; font-size: 13px; color: #333; }
     .slip-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
     .slip-divider { border-top: 1px dashed #ccc; margin: 15px 0; }
-    
     .slip-items-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
     .slip-items-table th { text-align: left; border-bottom: 1px solid #ddd; padding-bottom: 5px; font-size: 11px; text-transform: uppercase; }
     .slip-items-table td { padding: 8px 0; border-bottom: 1px dashed #eee; }
-    
     .slip-total-row { display: flex; justify-content: space-between; font-weight: bold; font-size: 16px; margin-top: 10px; color: var(--navy); }
-    
     .slip-footer { text-align: center; padding: 15px 20px 25px; background: #f9f9f9; border-top: 1px dashed #ccc; border-radius: 0 0 8px 8px; }
     .slip-footer p { margin: 0 0 15px; font-size: 11px; color: var(--muted); }
-    
     .slip-actions { display: flex; gap: 10px; }
     .slip-btn { flex: 1; padding: 12px; border-radius: 6px; font-weight: bold; font-size: 12px; cursor: pointer; border: none; text-align: center; text-decoration: none; display: inline-block;}
     .slip-btn-print { background: var(--navy); color: #fff; }
     .slip-btn-close { background: #eee; color: #333; }
-    
-    @media print {
-      body * { visibility: hidden; }
-      .slip-modal-overlay { position: absolute; left: 0; top: 0; background: transparent; backdrop-filter: none; visibility: visible; padding: 0; }
-      .slip-box { box-shadow: none; transform: none; max-height: none; overflow: visible; visibility: visible; margin: 0 auto; border: 1px solid #ccc; }
-      .slip-box * { visibility: visible; }
-      .slip-actions { display: none; }
-      .slip-footer { background: #fff; }
-    }
+    @media print { body * { visibility: hidden; } .slip-modal-overlay { position: absolute; left: 0; top: 0; background: transparent; backdrop-filter: none; visibility: visible; padding: 0; } .slip-box { box-shadow: none; transform: none; max-height: none; overflow: visible; visibility: visible; margin: 0 auto; border: 1px solid #ccc; } .slip-box * { visibility: visible; } .slip-actions { display: none; } .slip-footer { background: #fff; } }
   </style>
 </head>
 <body>
@@ -110,6 +88,11 @@
     <div class="checkout-container">
       <h2>Complete Your Order</h2>
       <div class="product-summary" id="productSummary">Loading...</div>
+
+      <!-- NAYA: ADVANCE NOTICE -->
+      <div class="advance-notice">
+        ⚠️ Note: Order Confirm karne ke liye <strong>20% Advance</strong> dena hoga.
+      </div>
 
       <form id="checkoutForm">
         <div class="form-group"><label>Full Name *</label><input type="text" id="custName" required></div>
@@ -154,46 +137,38 @@
   <!-- ORDER SLIP POPUP -->
   <div class="slip-modal-overlay" id="orderSlipModal">
     <div class="slip-box" id="printableSlip">
-      
       <div class="slip-header">
         <h2>AARADHYA MART</h2>
         <p>Bongariya Bazar, Azamgarh</p>
         <p>Ph: +91 8931911428</p>
       </div>
-      
       <div class="slip-body">
         <div class="slip-row"><span>Order ID:</span> <strong id="slipOrderId"></strong></div>
         <div class="slip-row"><span>Date:</span> <span id="slipDate"></span></div>
         <div class="slip-row"><span>Name:</span> <span id="slipName"></span></div>
         <div class="slip-row"><span>Phone:</span> <span id="slipPhone"></span></div>
         <div class="slip-row"><span>Address:</span> <span id="slipAddress" style="text-align:right; max-width:200px;"></span></div>
-        
         <div class="slip-divider"></div>
-        
         <table class="slip-items-table">
           <thead><tr><th>Item</th><th style="text-align:center;">Qty</th><th style="text-align:right;">Price</th></tr></thead>
           <tbody id="slipItemsBody"></tbody>
         </table>
-        
         <div class="slip-divider"></div>
-        
         <div class="slip-row"><span>Subtotal:</span> <span>₹<span id="slipSubtotal"></span></span></div>
         <div class="slip-row" id="slipDiscountRow" style="display:none; color:#10b981;"><span>Discount:</span> <span>-₹<span id="slipDiscount"></span></span></div>
         <div class="slip-total-row"><span>TOTAL:</span> <span>₹<span id="slipTotal"></span></span></div>
-        
         <div style="margin-top:10px; font-size:11px; text-align:center;">
-          Payment Mode: <strong id="slipPayment"></strong>
+          Payment Mode: <strong id="slipPayment"></strong><br>
+          <span style="color:#d97706; font-weight:bold;">20% Advance Required</span>
         </div>
       </div>
-      
       <div class="slip-footer">
         <p>Thank you for shopping with us!<br>Please keep this receipt for tracking.</p>
         <div class="slip-actions">
-          <button class="slip-btn slip-btn-print" onclick="window.print()">🖨️ Print Receipt</button>
+          <button class="slip-btn slip-btn-print" onclick="window.print()">🖨️ Print</button>
           <button class="slip-btn slip-btn-close" onclick="closeSlipAndRedirect()">Close</button>
         </div>
       </div>
-      
     </div>
   </div>
 
@@ -295,31 +270,22 @@
       
       let itemsHtml = "";
       orderProducts.forEach(item => {
-        itemsHtml += `<tr>
-          <td>${item.name} <br><small style="color:#777;">Size: ${item.selectedSize}</small></td>
-          <td style="text-align:center;">${item.selectedQty}</td>
-          <td style="text-align:right;">₹${item.price * item.selectedQty}</td>
-        </tr>`;
+        itemsHtml += `<tr><td>${item.name} <br><small style="color:#777;">Size: ${item.selectedSize}</small></td><td style="text-align:center;">${item.selectedQty}</td><td style="text-align:right;">₹${item.price * item.selectedQty}</td></tr>`;
       });
       document.getElementById("slipItemsBody").innerHTML = itemsHtml;
       
       document.getElementById("slipSubtotal").textContent = currentSubtotal;
       document.getElementById("slipTotal").textContent = finalTotal;
-      if(currentDiscount > 0) { 
-        document.getElementById("slipDiscountRow").style.display = "flex"; 
-        document.getElementById("slipDiscount").textContent = currentDiscount; 
-      }
+      if(currentDiscount > 0) { document.getElementById("slipDiscountRow").style.display = "flex"; document.getElementById("slipDiscount").textContent = currentDiscount; }
 
       // SHOW SLIP POPUP
       document.getElementById("orderSlipModal").classList.add("active");
 
       // OPEN WHATSAPP IN BACKGROUND
-      const msg = `*NEW ORDER*\n*ID: ${newOrderId}*\nTotal: ₹${finalTotal} ${currentDiscount ? `(Coupon: ${appliedCoupon})` : ''}\nName: ${name}\nPhone: ${phone}\nAddress: ${addr}`;
+      const msg = `*NEW ORDER*\n*ID: ${newOrderId}*\nTotal: ₹${finalTotal} ${currentDiscount ? `(Coupon: ${appliedCoupon})` : ''}\nName: ${name}\nPhone: ${phone}\nAddress: ${addr}\n\n*Note:* I understand 20% advance is required for confirmation.`;
       if(isCartOrder) localStorage.removeItem("aaradhyaMartCart");
       
-      setTimeout(() => {
-        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
-      }, 1000); // 1 second delay taaki slip pehle dikh jaye
+      setTimeout(() => { window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank"); }, 1000);
     });
 
     window.closeSlipAndRedirect = function() {
