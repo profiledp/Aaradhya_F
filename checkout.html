@@ -1,196 +1,164 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Checkout | Aaradhya Mart</title>
   <link rel="stylesheet" href="style.css">
   <style>
     .checkout-container { max-width: 600px; margin: 40px auto; padding: 30px; background: #fff; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 10px 30px rgba(16,36,59,0.05); }
-    .checkout-container h2 { font: normal 28px Georgia, serif; color: var(--navy); margin-top: 0; margin-bottom: 20px; text-align: center; }
-    .product-summary { background: var(--cream); padding: 15px; border-radius: 8px; margin-bottom: 25px; border: 1px solid var(--line); }
-    .form-group { margin-bottom: 15px; }
-    .form-group label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 6px; color: var(--ink); }
-    .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 6px; font-family: inherit; font-size: 14px; outline: none; box-sizing: border-box; }
-    .form-group input:focus, .form-group textarea:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(16,36,59,0.1); }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-    .payment-options { display: flex; gap: 15px; margin-top: 5px; }
-    .payment-option { flex: 1; border: 1px solid var(--line); padding: 15px; border-radius: 8px; cursor: pointer; text-align: center; font-size: 13px; font-weight: bold; display: block; }
+    .form-group { margin-bottom: 15px; } .form-group label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 6px; }
+    .form-group input, textarea { width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 6px; outline: none; }
+    .payment-options { display: flex; gap: 15px; }
+    .payment-option { flex: 1; border: 1px solid var(--line); padding: 15px; border-radius: 8px; text-align: center; font-size: 13px; font-weight: bold; cursor: pointer; }
     .payment-option input { display: none; }
-    .payment-option input:checked + span { color: var(--navy); }
     .payment-option:has(input:checked) { border-color: var(--navy); background: var(--cream); }
-    .place-order-btn { width: 100%; padding: 16px; background: var(--navy); color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.3s; }
-    .share-loc-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 12px; background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-    .success-modal-overlay { position: fixed; inset: 0; background: rgba(16,36,59,0.7); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; visibility: hidden; transition: 0.3s; }
-    .success-modal-overlay.active { opacity: 1; visibility: visible; }
-    .success-modal { background: #fff; padding: 40px; border-radius: 16px; text-align: center; max-width: 400px; transform: scale(0.8); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-    .success-modal-overlay.active .success-modal { transform: scale(1); }
-    .success-modal h3 { color: var(--navy); font-family: Georgia, serif; font-size: 24px; margin: 0 0 10px; }
-    @media(max-width:650px){.form-row{grid-template-columns:1fr}.payment-options{flex-direction:column}}
+    
+    /* Coupon Box Design */
+    .coupon-box { display: flex; gap: 10px; margin-bottom: 15px; }
+    .coupon-box input { flex: 1; padding: 10px; border: 1px solid var(--line); border-radius: 6px; text-transform: uppercase; }
+    .coupon-box button { padding: 10px 20px; background: var(--navy); color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+    .coupon-msg { font-size: 12px; font-weight: bold; margin-top: 5px; display: none; }
+    
+    .place-order-btn { width: 100%; padding: 16px; background: var(--navy); color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 20px; }
   </style>
 </head>
 <body>
-  <header class="site-header">
-    <a class="brand" href="index.html"><span class="brand-mark">AM</span><span><strong>AARADHYA MART</strong><small>SECURE CHECKOUT</small></span></a>
-    <a href="cart.html" class="header-wa" style="background:#fff; color:var(--navy); border:1px solid var(--navy);">← Back to Cart</a>
-  </header>
+  <header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">AM</span><span><strong>AARADHYA MART</strong><small>CHECKOUT</small></span></a></header>
 
   <main>
     <div class="checkout-container">
-      <h2>Complete Your Order</h2>
-      <div class="product-summary" id="productSummary">Loading...</div>
+      <h2 style="text-align:center; font-family:Georgia;">Complete Your Order</h2>
+      <div id="productSummary" style="background:var(--cream); padding:15px; border-radius:8px; margin-bottom:20px;">Loading...</div>
 
       <form id="checkoutForm">
-        <div class="form-group"><label>Full Name *</label><input type="text" id="custName" required placeholder="Enter your full name"></div>
-        <div class="form-group"><label>Mobile Number *</label><input type="tel" id="custPhone" required placeholder="10-digit mobile number" pattern="[0-9]{10}"></div>
-        <div class="form-group">
-          <label>Full Address *</label>
-          <textarea id="custAddress" required placeholder="Enter your delivery address" rows="3"></textarea>
-          <button type="button" class="share-loc-btn" onclick="shareLocationOnWhatsApp()">📍 Share Your Live Location</button>
+        <div class="form-group"><label>Full Name *</label><input type="text" id="custName" required></div>
+        <div class="form-group"><label>Mobile Number *</label><input type="tel" id="custPhone" required pattern="[0-9]{10}"></div>
+        <div class="form-group"><label>Full Address *</label><textarea id="custAddress" required rows="2"></textarea></div>
+        <div style="display:flex; gap:10px;">
+          <div class="form-group" style="flex:1;"><label>City *</label><input type="text" id="custCity" required></div>
+          <div class="form-group" style="flex:1;"><label>Pincode *</label><input type="text" id="custPincode" required pattern="[0-9]{6}"></div>
         </div>
-        <div class="form-group"><label>Google Maps Link (Optional)</label><input type="url" id="custMapLink" placeholder="Paste Google Maps location link here"></div>
-        <div class="form-row">
-          <div class="form-group"><label>City / Village *</label><input type="text" id="custCity" required placeholder="e.g. Azamgarh"></div>
-          <div class="form-group"><label>Pincode *</label><input type="text" id="custPincode" required placeholder="6-digit pincode" pattern="[0-9]{6}"></div>
-        </div>
-        <div class="form-group">
-          <label>Payment Mode *</label>
+        
+        <div class="form-group"><label>Payment Mode *</label>
           <div class="payment-options">
-            <label class="payment-option"><input type="radio" name="payment" value="COD" checked><span>💵 Cash on Delivery</span></label>
-            <label class="payment-option"><input type="radio" name="payment" value="Online"><span>💳 Online Payment</span></label>
+            <label class="payment-option"><input type="radio" name="payment" value="COD" checked><span>💵 COD</span></label>
+            <label class="payment-option"><input type="radio" name="payment" value="Online"><span>💳 Online</span></label>
           </div>
         </div>
-        <button type="submit" class="place-order-btn" id="submitBtn">CONFIRM & SEND ON WHATSAPP ↗</button>
+
+        <!-- NAYA: Coupon Code Section -->
+        <div style="background:#f4f6f8; padding:15px; border-radius:8px; border:1px dashed #ccc; margin-bottom:15px;">
+          <label style="font-size:12px; font-weight:bold;">Have a Coupon Code?</label>
+          <div class="coupon-box">
+            <input type="text" id="couponCodeInput" placeholder="e.g. FIRST10">
+            <button type="button" id="applyCouponBtn">APPLY</button>
+          </div>
+          <div id="couponMsg" class="coupon-msg"></div>
+        </div>
+
+        <!-- Total Amount Box -->
+        <div style="background:var(--cream); padding:15px; border-radius:8px; text-align:right;">
+          <p style="margin:0; font-size:14px;">Subtotal: ₹<span id="subTotalTxt">0</span></p>
+          <p style="margin:5px 0 0; font-size:14px; color:#10b981; display:none;" id="discountTxtRow">Discount: -₹<span id="discountTxt">0</span></p>
+          <h3 style="margin:10px 0 0; color:var(--navy);">Total Payable: ₹<span id="finalTotalTxt">0</span></h3>
+        </div>
+
+        <button type="submit" class="place-order-btn">CONFIRM ON WHATSAPP ↗</button>
       </form>
     </div>
   </main>
-
-  <!-- SUCCESS MODAL WITH ORDER ID -->
-  <div class="success-modal-overlay" id="successModal">
-    <div class="success-modal">
-      <div style="font-size: 50px; margin-bottom: 15px;">✅</div>
-      <h3>Order Placed!</h3>
-      <div style="background:#f4f6f8; padding:15px; border-radius:8px; margin-bottom:20px; border:1px dashed #ccc;">
-        <p style="color:var(--muted); font-size:12px; margin:0 0 5px;">Your Order ID</p>
-        <h4 style="color:var(--navy); font-size:20px; margin:0; font-family:monospace;" id="displayOrderId">ORD-000000</h4>
-        <p style="color:#ef4444; font-size:11px; margin:5px 0 0;">Please save this ID for tracking.</p>
-      </div>
-      <a href="track.html" style="display:block; width:100%; background:var(--gold); color:var(--navy); padding:12px; border-radius:8px; font-weight:bold; text-decoration:none; margin-bottom:10px; box-sizing:border-box;">📦 Track My Order</a>
-      <button onclick="closeSuccessAndRedirect()" style="background:var(--navy); color:#fff; border:none; padding:12px 25px; border-radius:8px; font-weight:bold; cursor:pointer; width:100%;">Go to Home</button>
-    </div>
-  </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, getDocs, addDoc, doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y",
-      authDomain: "aaradhya-mart.firebaseapp.com",
-      projectId: "aaradhya-mart",
-      storageBucket: "aaradhya-mart.firebasestorage.app",
-      messagingSenderId: "146782544824",
-      appId: "1:146782544824:web:d605e1971d3480fab1654d",
-      measurementId: "G-L6VJBL7ESY"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
+    const firebaseConfig = { apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y", authDomain: "aaradhya-mart.firebaseapp.com", projectId: "aaradhya-mart", storageBucket: "aaradhya-mart.firebasestorage.app", messagingSenderId: "146782544824", appId: "1:146782544824:web:d605e1971d3480fab1654d" };
+    const app = initializeApp(firebaseConfig); const db = getFirestore(app);
     const WHATSAPP_NUMBER = "918931911428";
+    
     let orderProducts = [], selectedStore = "Aaradhya Mart", isCartOrder = false;
-
-    function saveAddressToLocal() {
-      const data = { name: custName.value, phone: custPhone.value, address: custAddress.value, mapLink: custMapLink.value, city: custCity.value, pincode: custPincode.value };
-      localStorage.setItem("aaradhyaCustomerDetails", JSON.stringify(data));
-    }
-
-    function loadAddressFromLocal() {
-      try {
-        const saved = localStorage.getItem("aaradhyaCustomerDetails");
-        if(saved) {
-          const data = JSON.parse(saved);
-          custName.value = data.name || ""; custPhone.value = data.phone || ""; custAddress.value = data.address || "";
-          custMapLink.value = data.mapLink || ""; custCity.value = data.city || ""; custPincode.value = data.pincode || "";
-        }
-      } catch(e) {}
-    }
-
-    window.shareLocationOnWhatsApp = function() { window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=Hello%20Aaradhya%20Mart,%20Here%20is%20my%20live%20location:`, "_blank"); }
+    let currentSubtotal = 0, currentDiscount = 0, finalTotal = 0, appliedCoupon = "";
 
     document.addEventListener("DOMContentLoaded", async () => {
-      loadAddressFromLocal();
+      // Load Cart or Single Product
       const urlParams = new URLSearchParams(window.location.search);
       const productId = urlParams.get('id'); const size = urlParams.get('size') || "N/A";
       selectedStore = urlParams.get('store') || "Aaradhya Mart";
 
-      const querySnapshot = await getDocs(collection(db, "products"));
-      const allProducts = []; querySnapshot.forEach((doc) => allProducts.push({ id: doc.id, ...doc.data() }));
+      const snap = await getDocs(collection(db, "products"));
+      const allProducts = []; snap.forEach(d => allProducts.push({ id: d.id, ...d.data() }));
 
       if (!productId) {
-        isCartOrder = true;
-        const cart = JSON.parse(localStorage.getItem("aaradhyaMartCart") || "[]");
+        isCartOrder = true; const cart = JSON.parse(localStorage.getItem("aaradhyaMartCart") || "[]");
         if (cart.length === 0) { alert("Cart empty!"); window.location.href = "index.html"; return; }
+        
         document.getElementById("productSummary").innerHTML = cart.map(item => {
           const p = allProducts.find(x => x.id === item.id); if(!p) return "";
-          orderProducts.push({ ...p, selectedSize: item.size, selectedQty: item.qty });
-          return `<div style="display:flex; gap:10px; align-items:center; margin-bottom:10px; border-bottom:1px solid #ddd; padding-bottom:10px;"><img src="${p.image}" style="width:50px; height:50px; object-fit:contain;"><div><h4 style="margin:0;">${p.name} (x${item.qty})</h4><p style="margin:0; font-size:12px;">Size: ${item.size} | ₹${p.price}</p></div></div>`;
+          orderProducts.push({ ...p, selectedSize: item.size, selectedQty: item.qty }); currentSubtotal += (p.price * item.qty);
+          return `<div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:5px;"><span>${p.name} (x${item.qty})</span> <span>₹${p.price * item.qty}</span></div>`;
         }).join("");
-        selectedStore = "Multiple Stores (Cart)";
       } else {
         const p = allProducts.find(x => x.id === productId);
-        if (!p) { alert("Product not found!"); window.location.href = "index.html"; return; }
-        orderProducts.push({ ...p, selectedSize: size, selectedQty: 1 });
-        document.getElementById("productSummary").innerHTML = `<div style="display:flex; gap:15px; align-items:center;"><img src="${p.image}" style="width:70px; height:70px; object-fit:contain;"><div class="product-summary-info"><h4>${p.name}</h4><p>Size: ${size} | ₹${p.price}</p></div></div>`;
+        orderProducts.push({ ...p, selectedSize: size, selectedQty: 1 }); currentSubtotal = p.price;
+        document.getElementById("productSummary").innerHTML = `<div style="display:flex; justify-content:space-between; font-size:13px;"><span>${p.name} (${size})</span> <span>₹${p.price}</span></div>`;
       }
-
-      document.getElementById("checkoutForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const submitBtn = document.getElementById("submitBtn");
-        submitBtn.textContent = "Processing..."; submitBtn.disabled = true;
-        saveAddressToLocal();
-
-        const name = custName.value, phone = custPhone.value, address = custAddress.value, mapLink = custMapLink.value, city = custCity.value, pincode = custPincode.value;
-        const payment = document.querySelector('input[name="payment"]:checked').value;
-        let productDetailsText = "", totalAmount = 0, itemsArray = [];
-        
-        // ORDER ID GENERATE KAREIN
-        const newOrderId = "ORD-" + Date.now().toString().slice(-6); 
-
-        orderProducts.forEach(item => {
-          productDetailsText += `- ${item.name} (Qty: ${item.selectedQty}, Size: ${item.selectedSize}) = ₹${item.price * item.selectedQty}\n`;
-          totalAmount += (item.price * item.selectedQty);
-          itemsArray.push({ name: item.name, qty: item.selectedQty, size: item.selectedSize, price: item.price, id: item.id });
-        });
-
-        try {
-          await addDoc(collection(db, "orders"), {
-            orderId: newOrderId, // Save Order ID
-            customerName: name, customerPhone: phone, address: address + ", " + city + " - " + pincode, mapLink: mapLink || "Not Provided", paymentMode: payment, store: selectedStore, items: itemsArray, totalAmount: totalAmount, orderDate: new Date().toLocaleString("en-IN"), status: "Pending"
-          });
-
-          for (const item of orderProducts) {
-             await updateDoc(doc(db, "products", item.id), { stock: increment(-item.selectedQty) });
-          }
-          
-          // Show Order ID on Popup
-          document.getElementById("displayOrderId").textContent = newOrderId;
-
-        } catch (error) {
-          console.error("Error:", error); alert("Order failed. Try again."); submitBtn.textContent = "CONFIRM & SEND ON WHATSAPP ↗"; submitBtn.disabled = false; return;
-        }
-
-        // WhatsApp Message
-        const locationText = mapLink ? `\n*Map Link:* ${mapLink}\n` : "";
-        const msg = `*NEW ORDER - ${selectedStore}*\n\n*Order ID: ${newOrderId}*\n\n*Products:*\n${productDetailsText}\n*Total: ₹${totalAmount}*\n\n*Customer:* ${name}\n*Phone:* ${phone}\n*Address:* ${address}, ${city} - ${pincode}\n${locationText}\n*Payment:* ${payment}`;
-        if(isCartOrder) localStorage.removeItem("aaradhyaMartCart");
-        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
-        
-        document.getElementById("successModal").classList.add("active");
-        submitBtn.textContent = "CONFIRM & SEND ON WHATSAPP ↗"; submitBtn.disabled = false;
-      });
+      
+      updateTotals();
     });
-    window.closeSuccessAndRedirect = function() { document.getElementById("successModal").classList.remove("active"); setTimeout(() => window.location.href = "index.html", 300); }
+
+    function updateTotals() {
+      finalTotal = currentSubtotal - currentDiscount;
+      document.getElementById("subTotalTxt").textContent = currentSubtotal;
+      document.getElementById("finalTotalTxt").textContent = finalTotal;
+      if(currentDiscount > 0) {
+        document.getElementById("discountTxtRow").style.display = "block";
+        document.getElementById("discountTxt").textContent = currentDiscount;
+      }
+    }
+
+    // NAYA: Coupon Apply Logic
+    document.getElementById("applyCouponBtn").onclick = async () => {
+      const code = document.getElementById("couponCodeInput").value.trim().toUpperCase();
+      const msg = document.getElementById("couponMsg");
+      if(!code) return;
+
+      const snap = await getDocs(collection(db, "coupons"));
+      let found = false;
+      snap.forEach(d => {
+        if(d.data().code === code) {
+          found = true;
+          const pct = d.data().discount;
+          currentDiscount = Math.round((currentSubtotal * pct) / 100);
+          appliedCoupon = code;
+          msg.style.display = "block"; msg.style.color = "#10b981"; msg.textContent = `✅ Coupon Applied! You saved ₹${currentDiscount}`;
+          updateTotals();
+        }
+      });
+      if(!found) { msg.style.display = "block"; msg.style.color = "#ef4444"; msg.textContent = "❌ Invalid or Expired Coupon."; currentDiscount = 0; updateTotals(); }
+    }
+
+    // Submit Order
+    document.getElementById("checkoutForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type="submit"]'); btn.textContent = "Processing..."; btn.disabled = true;
+
+      const newOrderId = "ORD-" + Date.now().toString().slice(-6);
+      const name = custName.value, phone = custPhone.value, addr = custAddress.value + ", " + custCity.value + " - " + custPincode.value;
+      
+      try {
+        await addDoc(collection(db, "orders"), {
+          orderId: newOrderId, customerName: name, customerPhone: phone, address: addr, paymentMode: document.querySelector('input[name="payment"]:checked').value,
+          store: selectedStore, items: orderProducts, totalAmount: finalTotal, discountApplied: currentDiscount, couponUsed: appliedCoupon, orderDate: new Date().toLocaleString("en-IN"), status: "Pending"
+        });
+        for (const item of orderProducts) { await updateDoc(doc(db, "products", item.id), { stock: increment(-item.selectedQty) }); }
+      } catch(err) { alert("Order failed!"); btn.textContent = "CONFIRM"; btn.disabled = false; return; }
+
+      const msg = `*NEW ORDER*\n*ID: ${newOrderId}*\nTotal: ₹${finalTotal} ${currentDiscount ? `(Coupon: ${appliedCoupon})` : ''}\nName: ${name}\nPhone: ${phone}\nAddress: ${addr}`;
+      if(isCartOrder) localStorage.removeItem("aaradhyaMartCart");
+      
+      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
+      setTimeout(() => window.location.href = "index.html", 2000);
+    });
   </script>
 </body>
 </html>
