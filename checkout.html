@@ -1,19 +1,31 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Checkout | Aaradhya Mart</title>
   <link rel="stylesheet" href="style.css">
   <style>
     .checkout-container { max-width: 600px; margin: 40px auto; padding: 30px; background: #fff; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 10px 30px rgba(16,36,59,0.05); }
+    .checkout-container h2 { font: normal 28px Georgia, serif; color: var(--navy); margin-top: 0; margin-bottom: 20px; text-align: center; }
+    
+    /* NAYA: Product Summary with Image */
+    .product-summary { background: var(--cream); padding: 15px; border-radius: 8px; margin-bottom: 25px; border: 1px solid var(--line); }
+    .product-item-row { display: flex; align-items: center; gap: 15px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #e5e5e5; }
+    .product-item-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .product-item-row img { width: 60px; height: 60px; object-fit: contain; border-radius: 6px; background: #fff; border: 1px solid #ddd; padding: 3px; }
+    .product-item-info { flex: 1; }
+    .product-item-info h4 { margin: 0 0 3px; font-size: 14px; color: var(--navy); }
+    .product-item-info p { margin: 0; font-size: 12px; color: var(--muted); }
+    .product-item-price { font-weight: bold; font-size: 14px; color: var(--navy); }
+
     .form-group { margin-bottom: 15px; } .form-group label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 6px; }
-    .form-group input, textarea { width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 6px; outline: none; }
+    .form-group input, textarea { width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 6px; outline: none; box-sizing: border-box; }
     .payment-options { display: flex; gap: 15px; }
     .payment-option { flex: 1; border: 1px solid var(--line); padding: 15px; border-radius: 8px; text-align: center; font-size: 13px; font-weight: bold; cursor: pointer; }
     .payment-option input { display: none; }
     .payment-option:has(input:checked) { border-color: var(--navy); background: var(--cream); }
     
-    /* Coupon Box Design */
     .coupon-box { display: flex; gap: 10px; margin-bottom: 15px; }
     .coupon-box input { flex: 1; padding: 10px; border: 1px solid var(--line); border-radius: 6px; text-transform: uppercase; }
     .coupon-box button { padding: 10px 20px; background: var(--navy); color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
@@ -27,8 +39,10 @@
 
   <main>
     <div class="checkout-container">
-      <h2 style="text-align:center; font-family:Georgia;">Complete Your Order</h2>
-      <div id="productSummary" style="background:var(--cream); padding:15px; border-radius:8px; margin-bottom:20px;">Loading...</div>
+      <h2>Complete Your Order</h2>
+      
+      <!-- Product Summary Area -->
+      <div class="product-summary" id="productSummary">Loading...</div>
 
       <form id="checkoutForm">
         <div class="form-group"><label>Full Name *</label><input type="text" id="custName" required></div>
@@ -46,17 +60,15 @@
           </div>
         </div>
 
-        <!-- NAYA: Coupon Code Section -->
         <div style="background:#f4f6f8; padding:15px; border-radius:8px; border:1px dashed #ccc; margin-bottom:15px;">
           <label style="font-size:12px; font-weight:bold;">Have a Coupon Code?</label>
           <div class="coupon-box">
-            <input type="text" id="couponCodeInput" placeholder="e.g. FIRST10">
+            <input type="text" id="couponCodeInput" placeholder="e.g. DEEPAK_10">
             <button type="button" id="applyCouponBtn">APPLY</button>
           </div>
           <div id="couponMsg" class="coupon-msg"></div>
         </div>
 
-        <!-- Total Amount Box -->
         <div style="background:var(--cream); padding:15px; border-radius:8px; text-align:right;">
           <p style="margin:0; font-size:14px;">Subtotal: ₹<span id="subTotalTxt">0</span></p>
           <p style="margin:5px 0 0; font-size:14px; color:#10b981; display:none;" id="discountTxtRow">Discount: -₹<span id="discountTxt">0</span></p>
@@ -80,7 +92,6 @@
     let currentSubtotal = 0, currentDiscount = 0, finalTotal = 0, appliedCoupon = "";
 
     document.addEventListener("DOMContentLoaded", async () => {
-      // Load Cart or Single Product
       const urlParams = new URLSearchParams(window.location.search);
       const productId = urlParams.get('id'); const size = urlParams.get('size') || "N/A";
       selectedStore = urlParams.get('store') || "Aaradhya Mart";
@@ -94,13 +105,35 @@
         
         document.getElementById("productSummary").innerHTML = cart.map(item => {
           const p = allProducts.find(x => x.id === item.id); if(!p) return "";
-          orderProducts.push({ ...p, selectedSize: item.size, selectedQty: item.qty }); currentSubtotal += (p.price * item.qty);
-          return `<div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:5px;"><span>${p.name} (x${item.qty})</span> <span>₹${p.price * item.qty}</span></div>`;
+          orderProducts.push({ ...p, selectedSize: item.size, selectedQty: item.qty }); 
+          currentSubtotal += (p.price * item.qty);
+          
+          return `
+            <div class="product-item-row">
+              <img src="${p.image}" alt="${p.name}">
+              <div class="product-item-info">
+                <h4>${p.name}</h4>
+                <p>Size: ${item.size} | Qty: ${item.qty}</p>
+              </div>
+              <div class="product-item-price">₹${p.price * item.qty}</div>
+            </div>
+          `;
         }).join("");
       } else {
         const p = allProducts.find(x => x.id === productId);
-        orderProducts.push({ ...p, selectedSize: size, selectedQty: 1 }); currentSubtotal = p.price;
-        document.getElementById("productSummary").innerHTML = `<div style="display:flex; justify-content:space-between; font-size:13px;"><span>${p.name} (${size})</span> <span>₹${p.price}</span></div>`;
+        orderProducts.push({ ...p, selectedSize: size, selectedQty: 1 }); 
+        currentSubtotal = p.price;
+        
+        document.getElementById("productSummary").innerHTML = `
+          <div class="product-item-row">
+            <img src="${p.image}" alt="${p.name}">
+            <div class="product-item-info">
+              <h4>${p.name}</h4>
+              <p>Size: ${size} | Qty: 1</p>
+            </div>
+            <div class="product-item-price">₹${p.price}</div>
+          </div>
+        `;
       }
       
       updateTotals();
@@ -116,7 +149,6 @@
       }
     }
 
-    // NAYA: Coupon Apply Logic
     document.getElementById("applyCouponBtn").onclick = async () => {
       const code = document.getElementById("couponCodeInput").value.trim().toUpperCase();
       const msg = document.getElementById("couponMsg");
@@ -137,7 +169,6 @@
       if(!found) { msg.style.display = "block"; msg.style.color = "#ef4444"; msg.textContent = "❌ Invalid or Expired Coupon."; currentDiscount = 0; updateTotals(); }
     }
 
-    // Submit Order
     document.getElementById("checkoutForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const btn = e.target.querySelector('button[type="submit"]'); btn.textContent = "Processing..."; btn.disabled = true;
