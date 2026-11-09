@@ -26,18 +26,102 @@
     .payment-option:has(input:checked) { border-color: var(--navy); background: var(--cream); }
     
     /* Coupon Area */
-    .coupon-section { background:#f4f6f8; padding:15px; border-radius:8px; border:1px dashed #ccc; margin-bottom:15px; }
-    .coupon-box { display: flex; gap: 10px; margin-bottom: 10px; }
+    .coupon-section { margin-bottom:15px; }
+    .coupon-box { display: flex; gap: 10px; margin-bottom: 15px; }
     .coupon-box input { flex: 1; padding: 10px; border: 1px solid var(--line); border-radius: 6px; text-transform: uppercase; }
     .coupon-box button { padding: 10px 20px; background: var(--navy); color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
     .coupon-msg { font-size: 12px; font-weight: bold; margin-top: 5px; display: none; }
     
-    /* NAYA: Available Coupons List */
-    .available-coupons { margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 10px; }
-    .available-coupons h5 { font-size: 11px; color: #856404; margin: 0 0 8px; text-transform: uppercase; }
-    .coupon-pill { display: inline-block; background: #fff; border: 1px solid #ccc; padding: 5px 10px; border-radius: 4px; font-size: 12px; font-weight: bold; font-family: monospace; margin: 0 5px 5px 0; cursor: pointer; color: var(--navy); transition: 0.2s; }
-    .coupon-pill:hover { background: var(--navy); color: #fff; }
+    /* =========================================
+       NAYA: CLASSIC COUPON CARD DESIGN
+       ========================================= */
+    .available-coupons { margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 15px; }
+    .available-coupons h5 { font-size: 11px; color: #856404; margin: 0 0 10px; text-transform: uppercase; letter-spacing: 0.5px; }
     
+    .coupon-cards-wrapper { display: flex; flex-direction: column; gap: 10px; }
+    
+    .coupon-card {
+      display: flex;
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    }
+    .coupon-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-color: var(--navy);
+    }
+    
+    /* Left side (Discount) */
+    .coupon-left {
+      background: var(--navy);
+      color: var(--gold);
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 90px;
+      border-right: 2px dashed #fff; /* Ticket cut effect */
+    }
+    .coupon-left h3 { margin: 0; font-size: 24px; font-family: Georgia, serif; font-weight: bold; }
+    .coupon-left p { margin: 0; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+    
+    /* Right side (Details) */
+    .coupon-right {
+      padding: 12px 15px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .coupon-right h4 { margin: 0 0 5px; font-size: 14px; color: var(--navy); }
+    .coupon-right p { margin: 0 0 8px; font-size: 11px; color: var(--muted); }
+    
+    .coupon-code-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .coupon-code-box span {
+      background: #f8f9fa;
+      border: 1px dashed #999;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-weight: bold;
+      color: var(--navy);
+      font-size: 13px;
+    }
+    .copy-btn {
+      background: none;
+      border: none;
+      color: #10b981;
+      font-size: 11px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+    
+    /* Ticket cut circles */
+    .coupon-card::before, .coupon-card::after {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      background-color: #f4f6f8; /* Background color of the container to create cutout effect */
+      border-radius: 50%;
+      left: 82px; /* Align with dashed line */
+      border: 1px solid #e0e0e0;
+    }
+    .coupon-card::before { top: -8px; border-bottom-color: transparent; border-right-color: transparent; transform: rotate(-45deg); }
+    .coupon-card::after { bottom: -8px; border-top-color: transparent; border-right-color: transparent; transform: rotate(45deg); }
+
     .place-order-btn { width: 100%; padding: 16px; background: var(--navy); color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 20px; }
   </style>
 </head>
@@ -67,17 +151,16 @@
 
         <!-- COUPON SECTION -->
         <div class="coupon-section">
-          <label style="font-size:12px; font-weight:bold;">Have a Coupon Code?</label>
           <div class="coupon-box">
-            <input type="text" id="couponCodeInput" placeholder="Type or select below">
+            <input type="text" id="couponCodeInput" placeholder="Enter Coupon Code">
             <button type="button" id="applyCouponBtn">APPLY</button>
           </div>
           <div id="couponMsg" class="coupon-msg"></div>
           
-          <!-- NAYA: Dynamic Coupons List -->
+          <!-- NAYA: Classic Coupon Cards -->
           <div class="available-coupons" id="couponsListBox" style="display:none;">
-            <h5>Available Offers (Click to copy)</h5>
-            <div id="couponsList"></div>
+            <h5>Available Offers</h5>
+            <div class="coupon-cards-wrapper" id="couponsList"></div>
           </div>
         </div>
 
@@ -112,7 +195,7 @@
       const snap = await getDocs(collection(db, "products"));
       const allProducts = []; snap.forEach(d => allProducts.push({ id: d.id, ...d.data() }));
 
-      // Fetch Coupons for List
+      // Fetch Coupons for Cards
       const cSnap = await getDocs(collection(db, "coupons"));
       if(!cSnap.empty) {
         availableCouponsList = [];
@@ -121,7 +204,24 @@
         cSnap.forEach(d => {
           const c = d.data();
           availableCouponsList.push(c);
-          couponsHtml += `<span class="coupon-pill" onclick="document.getElementById('couponCodeInput').value='${c.code}';">${c.code} (${c.discount}% OFF)</span>`;
+          
+          // CLASSIC COUPON CARD HTML
+          couponsHtml += `
+            <div class="coupon-card" onclick="selectCoupon('${c.code}')">
+              <div class="coupon-left">
+                <h3>${c.discount}%</h3>
+                <p>OFF</p>
+              </div>
+              <div class="coupon-right">
+                <h4>Get ${c.discount}% Discount</h4>
+                <p>Applicable on all products.</p>
+                <div class="coupon-code-box">
+                  <span>${c.code}</span>
+                  <button type="button" class="copy-btn">TAP TO APPLY</button>
+                </div>
+              </div>
+            </div>
+          `;
         });
         document.getElementById("couponsList").innerHTML = couponsHtml;
       }
@@ -162,6 +262,12 @@
       }
       updateTotals();
     });
+
+    // NAYA: Jab card par click kare toh code auto-fill ho jaye
+    window.selectCoupon = function(code) {
+      document.getElementById("couponCodeInput").value = code;
+      document.getElementById("applyCouponBtn").click(); // Automatically apply karega
+    }
 
     function updateTotals() {
       finalTotal = currentSubtotal - currentDiscount;
