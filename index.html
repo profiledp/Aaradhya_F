@@ -4,7 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
+  <!-- GOOGLE SEARCH CONSOLE VERIFICATION -->
   <meta name="google-site-verification" content="hiQAkLa44zyk1N-KNLhALM6FzgBbLJ4TtERoyBT3tvU" />
+
+  <!-- SEO TAGS -->
   <title>Aaradhya Mart | Fashion, A-Print & Kirana Store in Azamgarh</title>
   <meta name="description" content="Shop the latest fashion clothes, custom printing (A-Print), and daily grocery essentials (Kirana) online at Aaradhya Mart. Fast delivery in Bongariya Bazar, Azamgarh.">
   <meta property="og:title" content="Aaradhya Mart | Fashion, Print & Kirana">
@@ -15,6 +18,9 @@
   <link rel="stylesheet" href="style.css">
   
   <style>
+    /* =========================================
+       INDEX.HTML SPECIFIC CSS
+       ========================================= */
     /* Floating Buttons Positioning */
     .global-cart-btn { position: fixed; bottom: 30px; right: 30px; background: var(--navy); color: #fff; padding: 12px 20px; border-radius: 50px; display: flex; align-items: center; gap: 8px; text-decoration: none; box-shadow: 0 8px 25px rgba(16,36,59,0.3); z-index: 9999; transition: transform 0.3s; border: 1px solid var(--gold); }
     .cart-icon-svg { font-size: 20px; } .cart-text { font-size: 14px; font-weight: bold; }
@@ -31,6 +37,7 @@
 
     @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(37,211,102,0.7); } 70% { box-shadow: 0 0 0 15px rgba(37,211,102,0); } 100% { box-shadow: 0 0 0 0 rgba(37,211,102,0); } }
 
+    /* Mobile Fix for Buttons */
     @media (max-width: 768px) {
       .track-float-btn { bottom: 85px !important; left: 15px !important; padding: 8px 12px !important; border-width: 1px !important; }
       .track-float-btn span { display: none !important; }
@@ -43,13 +50,16 @@
     }
 
     /* 1. TRUST BADGES STYLE */
-    .trust-badges-bar { display: flex; justify-content: center; gap: 20px; padding: 15px; background: #f8f9fa; border-bottom: 1px solid #eee; flex-wrap: wrap; }
+    .trust-badges-bar { display: flex; justify-content: center; gap: 20px; padding: 12px; background: #f8f9fa; border-bottom: 1px solid #eee; flex-wrap: wrap; }
     .trust-badge { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: bold; color: var(--navy); }
     .trust-badge span { font-size: 16px; }
 
-    /* 3. QUICK ADD STYLE */
-    .quick-add-btn { background: var(--gold); color: var(--navy); border: 1px solid var(--gold); padding: 10px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 5px; transition: 0.2s; }
-    .quick-add-btn:hover { background: var(--navy); color: #fff; }
+    /* 2. SCROLLING OFFER BANNER STYLE */
+    .offer-banner-container { background: #ef4444; color: #fff; padding: 10px 0; overflow: hidden; white-space: nowrap; display: flex; align-items: center; }
+    .offer-banner-track { display: inline-flex; animation: scrollText 15s linear infinite; }
+    .offer-banner-item { display: inline-block; margin-right: 50px; font-size: 14px; font-weight: bold; }
+    .offer-banner-item span { background:#fff; color:#ef4444; padding:2px 8px; border-radius:4px; font-family:monospace; margin-left: 5px;}
+    @keyframes scrollText { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
   </style>
 </head>
 <body>
@@ -58,7 +68,7 @@
     <a class="header-wa" href="admin.html">Admin Login ⚙️</a>
   </header>
 
-  <!-- NAYA: TRUST BADGES (Bharosa badhane ke liye) -->
+  <!-- 1. TRUST BADGES -->
   <div class="trust-badges-bar">
     <div class="trust-badge"><span>🔒</span> 100% Secure</div>
     <div class="trust-badge"><span>🚚</span> Fast Delivery</div>
@@ -76,35 +86,38 @@
       </div>
     </section>
 
-    <!-- SCROLLING OFFER BANNER -->
+    <!-- 2. SCROLLING OFFER BANNER -->
     <div id="offerBanner" class="offer-banner-container" style="display:none;">
       <div class="offer-banner-track" id="bannerTrack"></div>
     </div>
 
-    <!-- NAYA: RECENTLY VIEWED SECTION -->
-    <section class="section-wrap" id="recentlyViewedSection" style="display:none; padding-top: 40px; padding-bottom: 20px;">
-      <div class="section-heading" style="text-align: left; margin-bottom: 20px;">
-        <h2 style="font-size: 24px;">👀 Recently Viewed</h2>
+    <!-- 3. RECENTLY VIEWED SECTION -->
+    <section class="section-wrap" id="recentlyViewedSection" style="display:none; padding-top: 30px; padding-bottom: 10px;">
+      <div class="section-heading" style="text-align: left; margin-bottom: 15px;">
+        <h2 style="font-size: 22px; margin:0; color:var(--navy);">👀 Recently Viewed</h2>
       </div>
-      <div class="product-grid" id="recentGrid" style="grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));"></div>
+      <div class="product-grid" id="recentGrid" style="grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap:10px;"></div>
     </section>
 
     <!-- STORE DIRECTORY -->
-    <section class="section-wrap" style="padding-top: 40px; padding-bottom: 80px;">
+    <section class="section-wrap" style="padding-top: 30px; padding-bottom: 80px;">
       <div class="section-heading" style="text-align: center; display: block; margin-bottom: 40px;">
         <span class="eyebrow">EXPLORE OUR VERTICALS</span>
         <h2>Our Stores</h2>
       </div>
 
       <div class="store-directory-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 40px;">
+        <!-- Fashion -->
         <a href="fashion.html" class="store-dir-card" style="background: linear-gradient(135deg, #10243b, #1e3a5f); padding: 40px 30px; border-radius: 12px; display: flex; flex-direction: column; justify-content: space-between; min-height: 250px; text-decoration: none; box-shadow: 0 10px 30px rgba(16,36,59,0.2); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
           <div><span style="font-size: 30px;">👗</span><h3 style="color: #fff; font-family: Georgia, serif; font-size: 24px; margin: 15px 0 5px;">Aaradhya Fashion</h3><p style="color: #e2e6e9; font-size: 13px; line-height: 1.6;">Men's Wear, Women's Wear, Kids, Sports & more.</p></div>
           <span style="color: var(--gold); font-weight: bold; font-size: 13px;">Explore Collection →</span>
         </a>
+        <!-- Print -->
         <a href="print.html" class="store-dir-card" style="background: linear-gradient(135deg, #c5a36b, #a88756); padding: 40px 30px; border-radius: 12px; display: flex; flex-direction: column; justify-content: space-between; min-height: 250px; text-decoration: none; box-shadow: 0 10px 30px rgba(197,163,107,0.3); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
           <div><span style="font-size: 30px;">🖨️</span><h3 style="color: #10243b; font-family: Georgia, serif; font-size: 24px; margin: 15px 0 5px;">A-Print (By Aaradhya Fashion)</h3><p style="color: #10243b; font-size: 13px; line-height: 1.6;">Custom Printing, T-Shirts, Visiting Cards & Banners.</p></div>
           <span style="color: #10243b; font-weight: bold; font-size: 13px;">Get Custom Quote →</span>
         </a>
+        <!-- Kirana -->
         <a href="kirana.html" class="store-dir-card" style="background: linear-gradient(135deg, #0b3d2e, #165a45); padding: 40px 30px; border-radius: 12px; display: flex; flex-direction: column; justify-content: space-between; min-height: 250px; text-decoration: none; box-shadow: 0 10px 30px rgba(11,61,46,0.2); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
           <div><span style="font-size: 30px;">🛒</span><h3 style="color: #fff; font-family: Georgia, serif; font-size: 24px; margin: 15px 0 5px;">Aaradhya Kirana Store</h3><p style="color: #d1d5db; font-size: 13px; line-height: 1.6;">Daily Grocery, Essentials & Household items.</p></div>
           <span style="color: #a7f3d0; font-weight: bold; font-size: 13px;">Order Groceries →</span>
@@ -120,17 +133,10 @@
     <p>© 2026 Aaradhya Mart. All rights reserved.</p>
   </footer>
 
+  <!-- FLOATING BUTTONS -->
   <a href="cart.html" id="globalCartBtn" class="global-cart-btn"><span class="cart-icon-svg">🛒</span><span class="cart-text">Cart</span><span class="cart-badge" id="globalCartCount">0</span></a>
   <a href="https://wa.me/918931911428?text=Hello%20Aaradhya%20Mart,%20I%20need%20some%20help." target="_blank" class="whatsapp-float-btn" aria-label="Chat on WhatsApp"><svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M16.004 2C8.28 2 2 8.28 2 16c0 2.47.64 4.79 1.76 6.81L2 30l7.39-1.71A13.93 13.93 0 0 0 16.004 30C23.72 30 30 23.72 30 16S23.72 2 16.004 2zm0 2.31c6.76 0 12.23 5.47 12.23 12.23 0 6.76-5.47 12.23-12.23 12.23-2.13 0-4.13-.55-5.86-1.51l-.42-.23-4.32 1 1-4.21-.24-.4A12.17 12.17 0 0 1 3.77 16c0-6.76 5.47-12.23 12.23-12.23z" fill="#fff"/><path d="M21.66 18.14c-.23-.12-1.38-.68-1.6-.76-.21-.08-.37-.12-.53.12-.16.24-.61.76-.75.92-.14.16-.28.18-.51.06-.23-.12-1-.37-1.91-1.18-.71-.63-1.18-1.41-1.32-1.65-.14-.24-.02-.37.1-.49.11-.11.23-.28.35-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.53-1.27-.72-1.74-.19-.46-.38-.4-.53-.4h-.45c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.69 2.58 4.1 3.62.57.25 1.02.4 1.37.51.57.18 1.09.15 1.5.09.46-.07 1.38-.56 1.58-1.11.2-.55.2-1.02.14-1.11-.06-.09-.22-.15-.45-.27z" fill="#fff"/></svg></a>
   <a href="track.html" class="track-float-btn" aria-label="Track Order"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg><span>Track Order</span></a>
-
-  <style>
-    .offer-banner-container { background: #ef4444; color: #fff; padding: 10px 0; overflow: hidden; white-space: nowrap; display: flex; align-items: center; }
-    .offer-banner-track { display: inline-flex; animation: scrollText 15s linear infinite; }
-    .offer-banner-item { display: inline-block; margin-right: 50px; font-size: 14px; font-weight: bold; }
-    .offer-banner-item span { background:#fff; color:#ef4444; padding:2px 8px; border-radius:4px; font-family:monospace; margin-left: 5px;}
-    @keyframes scrollText { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-  </style>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -170,7 +176,6 @@
       } catch(e) {}
     }
 
-    // NAYA: RECENTLY VIEWED LOGIC
     async function loadRecentlyViewed() {
       try {
         const recentIds = JSON.parse(localStorage.getItem("aaradhyaRecent") || "[]");
@@ -181,14 +186,19 @@
         snap.forEach(d => allProducts.push({ id: d.id, ...d.data() }));
 
         const recentProducts = recentIds.map(id => allProducts.find(p => p.id === id)).filter(Boolean);
+        
+        if(recentProducts.length !== recentIds.length) {
+          localStorage.setItem("aaradhyaRecent", JSON.stringify(recentProducts.map(p=>p.id)));
+        }
+
         if(recentProducts.length > 0) {
           document.getElementById("recentlyViewedSection").style.display = "block";
           document.getElementById("recentGrid").innerHTML = recentProducts.map(p => `
-            <article class="product-card" style="padding:10px;">
-              <a href="${p.store.toLowerCase()}.html" style="text-decoration:none;">
+            <article class="product-card" style="padding:8px; border:1px solid var(--line); border-radius:8px;">
+              <a href="${p.store.toLowerCase()}.html" style="text-decoration:none; display:block;">
                 <div class="product-image-wrap" style="aspect-ratio:1/1; margin-bottom:5px;"><img src="${p.image}" alt="${p.name}" style="width:100%; height:100%; object-fit:contain;"></div>
-                <h3 style="font-size:12px; height:auto; margin:0;">${p.name}</h3>
-                <div class="product-price" style="font-size:13px; margin-top:5px;">₹${p.price}</div>
+                <h3 style="font-size:12px; height:auto; margin:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:var(--navy); font-weight:bold;">${p.name}</h3>
+                <div class="product-price" style="font-size:13px; margin-top:5px; font-weight:bold;">₹${p.price}</div>
               </a>
             </article>
           `).join("");
