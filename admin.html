@@ -338,8 +338,26 @@
         }).join("");
       } catch(e) { ordersList.innerHTML = "Error loading orders."; }
     }
-    window.updateOrder = async (id, val, sel) => { await updateDoc(doc(db, "orders", id), { status: val }); sel.className = `status-select status-${val.replace(/\s+/g, '')}`; };
+    window.updateOrder = async (id, val, sel) => { 
+      const orderRef = doc(db, "orders", id);
+      const orderSnap = await getDoc(orderRef); // Get order data
+      
+      if(orderSnap.exists()) {
+        const orderData = orderSnap.data();
+        
+        // Agar naya status 'Cancelled' hai, toh stock wapas badhayein
+        if(val === "Cancelled" && orderData.status !== "Cancelled") {
+          for (const item of orderData.items) {
+            await updateDoc(doc(db, "products", item.id), { stock: increment(item.qty) });
+          }
+        }
+      }
 
+      // Update status
+      await updateDoc(orderRef, { status: val }); 
+      sel.className = `status-select status-${val.replace(/\s+/g, '')}`; 
+    };
+    
     // ==========================================
     // COUPONS
     // ==========================================
