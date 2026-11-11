@@ -23,47 +23,29 @@
     .result-box h3 { font: normal 20px Georgia, serif; color: var(--navy); margin-top: 0; border-bottom: 1px solid #ddd; padding-bottom: 10px; }
     .result-box p { text-align: left; margin-bottom: 8px; color: var(--ink); font-size: 14px; }
 
-    /* =========================================
-       AMAZON STYLE ANIMATED TRACKER
-       ========================================= */
+    /* Tracker Styles */
     .tracker-wrap { margin-top: 30px; padding: 0 10px; }
-    
-    .tracker-steps { display: flex; justify-content: space-between; position: relative; margin-bottom: 30px; }
-    
-    /* The Grey Line Background */
-    .tracker-steps::before {
-      content: ''; position: absolute; top: 15px; left: 0; right: 0; height: 4px; background: #e0e0e0; z-index: 1; border-radius: 2px;
-    }
-    
-    /* The Green/Blue Filled Line */
-    .tracker-progress-line {
-      position: absolute; top: 15px; left: 0; height: 4px; background: #10b981; z-index: 1; border-radius: 2px; transition: width 0.8s ease-in-out;
-    }
-
+    .tracker-steps { display: flex; justify-content: space-between; position: relative; margin-bottom: 20px; }
+    .tracker-steps::before { content: ''; position: absolute; top: 15px; left: 0; right: 0; height: 4px; background: #e0e0e0; z-index: 1; border-radius: 2px; }
+    .tracker-progress-line { position: absolute; top: 15px; left: 0; height: 4px; background: #10b981; z-index: 1; border-radius: 2px; transition: width 0.8s ease-in-out; }
     .step { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; width: 60px; text-align: center; }
-    
-    /* The Dots (Circles) */
-    .step-icon {
-      width: 34px; height: 34px; border-radius: 50%; background: #fff; border: 3px solid #e0e0e0;
-      display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; color: #ccc;
-      transition: all 0.4s ease;
-    }
-    
-    .step.active .step-icon { border-color: #10b981; background: #10b981; color: #fff; transform: scale(1.1); box-shadow: 0 0 10px rgba(16,185,129,0.4); }
+    .step-icon { width: 34px; height: 34px; border-radius: 50%; background: #fff; border: 3px solid #e0e0e0; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; color: #ccc; transition: all 0.4s ease; }
+    .step.active .step-icon { border-color: #10b981; background: #10b981; color: #fff; transform: scale(1.1); }
     .step.current .step-icon { border-color: #10b981; background: #fff; color: #10b981; animation: pulseGreen 1.5s infinite; }
     .step.cancelled .step-icon { border-color: #ef4444; background: #ef4444; color: #fff; }
-
-    .step-label { font-size: 10px; font-weight: bold; color: #999; margin-top: 8px; line-height: 1.2; transition: 0.4s; }
+    .step-label { font-size: 10px; font-weight: bold; color: #999; margin-top: 8px; line-height: 1.2; }
     .step.active .step-label { color: #10b981; }
     .step.cancelled .step-label { color: #ef4444; }
+    @keyframes pulseGreen { 0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); } 70% { box-shadow: 0 0 0 10px rgba(16,185,129,0); } 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); } }
 
-    @keyframes pulseGreen {
-      0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); }
-      70% { box-shadow: 0 0 0 10px rgba(16,185,129,0); }
-      100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
-    }
+    /* Action Buttons */
+    .action-buttons { display: flex; gap: 10px; margin-top: 25px; }
+    .action-btn { flex: 1; padding: 12px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; text-align: center; text-decoration: none; display: inline-block; transition: 0.3s; }
+    .btn-cancel-order { background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; }
+    .btn-cancel-order:hover { background: #fecaca; }
+    .btn-update-order { background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc; }
+    .btn-update-order:hover { background: #bae6fd; }
 
-    /* Policy Box */
     .policy-box { background: #fff3cd; border: 1px solid #ffe69c; border-radius: 8px; padding: 15px; margin-top: 25px; }
     .policy-box h4 { margin: 0 0 10px; color: #856404; font-size: 14px; display: flex; align-items: center; gap: 5px; }
     .policy-box ul { margin: 0; padding-left: 20px; color: #856404; font-size: 12px; line-height: 1.6; }
@@ -101,14 +83,13 @@
       
       <button class="btn-track" id="trackBtn">Check Status</button>
       <p id="errorMsg" class="error-msg">Order not found. Please check your details.</p>
-      
-      <!-- RESULT BOX -->
       <div id="orderResults"></div>
 
       <div class="policy-box">
         <h4>⚠️ Order Policies</h4>
         <ul>
-          <li><strong>Cancellation:</strong> "Out for Delivery" ya "Delivered" hone ke baad order cancel nahi hoga.</li>
+          <li><strong>Cancellation:</strong> Order tab tak cancel ho sakta hai jab tak woh "Packed" na ho jaye.</li>
+          <li><strong>Update:</strong> Order "Out for Delivery" hone se pehle aap naye items add kar sakte hain.</li>
           <li><strong>Advance:</strong> Order confirm karne ke liye 20% advance dena hoga.</li>
         </ul>
       </div>
@@ -121,6 +102,7 @@
 
     const firebaseConfig = { apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y", authDomain: "aaradhya-mart.firebaseapp.com", projectId: "aaradhya-mart", storageBucket: "aaradhya-mart.firebasestorage.app", messagingSenderId: "146782544824", appId: "1:146782544824:web:d605e1971d3480fab1654d" };
     const app = initializeApp(firebaseConfig); const db = getFirestore(app);
+    const WHATSAPP_NUMBER = "918931911428";
 
     document.getElementById("trackBtn").addEventListener("click", async () => {
       const orderId = document.getElementById("trackOrderId").value.trim().toUpperCase();
@@ -143,52 +125,36 @@
             const o = doc.data(); 
             const itemsStr = o.items.map(i => `${i.name} (x${i.qty || 1})`).join(", ");
             
-            // Determine step position based on status
-            let stepIndex = 0; // Default: Pending
+            let stepIndex = 0; 
             if(o.status === "Confirmed") stepIndex = 1;
             if(o.status === "Packed") stepIndex = 2;
             if(o.status === "Out for Delivery") stepIndex = 3;
             if(o.status === "Delivered") stepIndex = 4;
-            
             const isCancelled = o.status === "Cancelled";
 
-            // Build the tracker HTML
             let trackerHtml = `
               <div class="tracker-wrap">
                 <div class="tracker-steps">
-                  <!-- The Green Line -->
                   <div class="tracker-progress-line" style="width: ${isCancelled ? '0%' : (stepIndex * 25) + '%'}"></div>
-                  
-                  <!-- Step 1: Pending -->
                   <div class="step ${stepIndex >= 0 ? 'active' : ''} ${stepIndex === 0 ? 'current' : ''} ${isCancelled ? 'cancelled' : ''}">
-                    <div class="step-icon">${stepIndex > 0 || isCancelled ? '✔️' : (isCancelled ? '✖️' : '1')}</div>
-                    <div class="step-label">Pending</div>
+                    <div class="step-icon">${stepIndex > 0 || isCancelled ? '✔️' : (isCancelled ? '✖️' : '1')}</div><div class="step-label">Pending</div>
                   </div>
-                  <!-- Step 2: Confirmed -->
                   <div class="step ${stepIndex >= 1 ? 'active' : ''} ${stepIndex === 1 ? 'current' : ''}">
-                    <div class="step-icon">${stepIndex > 1 ? '✔️' : '2'}</div>
-                    <div class="step-label">Confirmed</div>
+                    <div class="step-icon">${stepIndex > 1 ? '✔️' : '2'}</div><div class="step-label">Confirmed</div>
                   </div>
-                  <!-- Step 3: Packed -->
                   <div class="step ${stepIndex >= 2 ? 'active' : ''} ${stepIndex === 2 ? 'current' : ''}">
-                    <div class="step-icon">${stepIndex > 2 ? '✔️' : '3'}</div>
-                    <div class="step-label">Packed</div>
+                    <div class="step-icon">${stepIndex > 2 ? '✔️' : '3'}</div><div class="step-label">Packed</div>
                   </div>
-                  <!-- Step 4: Out for Delivery -->
                   <div class="step ${stepIndex >= 3 ? 'active' : ''} ${stepIndex === 3 ? 'current' : ''}">
-                    <div class="step-icon">${stepIndex > 3 ? '✔️' : '4'}</div>
-                    <div class="step-label">Out for Delivery</div>
+                    <div class="step-icon">${stepIndex > 3 ? '✔️' : '4'}</div><div class="step-label">Out for Delivery</div>
                   </div>
-                  <!-- Step 5: Delivered -->
                   <div class="step ${stepIndex >= 4 ? 'active' : ''} ${stepIndex === 4 ? 'current' : ''}">
-                    <div class="step-icon">${stepIndex === 4 ? '✔️' : '5'}</div>
-                    <div class="step-label">Delivered</div>
+                    <div class="step-icon">${stepIndex === 4 ? '✔️' : '5'}</div><div class="step-label">Delivered</div>
                   </div>
                 </div>
               </div>
             `;
 
-            // If cancelled, show a red message instead of normal tracker
             if(isCancelled) {
               trackerHtml = `
                 <div style="background:#fee2e2; border:1px solid #fca5a5; padding:15px; border-radius:8px; text-align:center; margin-bottom:20px;">
@@ -196,6 +162,32 @@
                   <p style="color:#991b1b; font-size:12px; margin:0;">This order has been cancelled.</p>
                 </div>
               `;
+            }
+
+            // --- NAYA: ACTION BUTTONS LOGIC ---
+            let actionButtonsHtml = "";
+            if(!isCancelled && stepIndex < 4) {
+              actionButtonsHtml += `<div class="action-buttons">`;
+              
+              // Cancel Button (Only if Pending or Confirmed)
+              if(stepIndex < 2) {
+                actionButtonsHtml += `
+                  <button class="action-btn btn-cancel-order" onclick="cancelOrder('${o.orderId}')">
+                    ❌ Cancel Order
+                  </button>
+                `;
+              }
+              
+              // Update Button (Only if Out for Delivery nahi hua)
+              if(stepIndex < 3) {
+                actionButtonsHtml += `
+                  <a href="https://wa.me/${WHATSAPP_NUMBER}?text=Hello%20Aaradhya%20Mart,%20I%20want%20to%20ADD%20items%20to%20my%20Order%20${o.orderId}" target="_blank" class="action-btn btn-update-order">
+                    ➕ Update Order
+                  </a>
+                `;
+              }
+              
+              actionButtonsHtml += `</div>`;
             }
 
             html += `
@@ -211,12 +203,21 @@
                 <div style="text-align:center; margin-top:15px;">
                   <span style="font-size:12px; font-weight:bold; color:var(--navy); background:#e0e7ff; padding:5px 15px; border-radius:20px;">Current Status: ${o.status}</span>
                 </div>
+
+                ${actionButtonsHtml}
               </div>`;
           });
           resultsDiv.innerHTML = html;
         }
       } catch (e) { errorMsg.textContent = "Error fetching order. Please try again."; errorMsg.style.display = "block"; } finally { btn.textContent = "Check Status"; btn.disabled = false; }
     });
+
+    // Custom Cancel Function
+    window.cancelOrder = function(orderId) {
+      // Redirect to WhatsApp with a cancellation request message
+      const msg = `Hello Aaradhya Mart,\nI want to CANCEL my order.\nOrder ID: ${orderId}\nPlease confirm cancellation.`;
+      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
+    }
   </script>
 </body>
 </html>
