@@ -110,6 +110,7 @@
       <button class="main-tab-btn" onclick="switchMainTab('orders', this)">📦 Orders</button>
       <button class="main-tab-btn" onclick="switchMainTab('coupons', this)">🎟️ Coupons</button>
       <button class="main-tab-btn" onclick="switchMainTab('reviews', this)">⭐ Reviews</button>
+      <button class="main-tab-btn" onclick="switchMainTab('settings', this)">⚙️ Settings</button>
     </div>
 
     <!-- 1. PRODUCTS -->
@@ -128,7 +129,6 @@
             <div class="form-field"><label>Stock</label><input id="pStock" type="number" required value="10"></div>
             <div class="form-field full"><label>Image URL (Comma separated for multiple photos)</label><input id="pImage" required placeholder="url1, url2"></div>
             
-            <!-- NAYA: SIZES & COLORS -->
             <div class="form-field"><label>Sizes (Comma Separated)</label><input id="pSizes" placeholder="M, L, XL (OR 250G, 500G)"></div>
             <div class="form-field"><label>Colours (Comma Separated)</label><input id="pColors" placeholder="Black, Blue, Red"></div>
             
@@ -192,6 +192,27 @@
       </div>
     </div>
 
+    <!-- 5. NAYA: SETTINGS -->
+    <div id="tab-settings" class="tab-content">
+      <div class="admin-panel">
+        <h2>Festive Offer Banner Settings</h2>
+        <p style="font-size:13px; color:#666; margin-bottom:20px;">Yahan se aap homepage ke banner ko control kar sakte hain. Agar aap banner nahi chahte, toh "Banner Text" ko khali chhod dein.</p>
+        <form id="settingsForm" class="grid-form">
+          <div class="form-field full">
+            <label>Banner Text (e.g. 🎉 Diwali Special: Flat 20% OFF!)</label>
+            <input id="sBannerText" placeholder="Enter festive text here">
+          </div>
+          <div class="form-field full">
+            <label>Banner Link (Optional - e.g. fashion.html)</label>
+            <input id="sBannerLink" placeholder="URL where customer should go">
+          </div>
+          <div class="form-field full">
+            <button type="submit" class="btn btn-primary">SAVE SETTINGS</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
   </div>
 
   <div class="custom-modal-overlay" id="deleteModal">
@@ -235,6 +256,7 @@
       else if(tabName === 'orders') loadOrders(); 
       else if(tabName === 'coupons') loadCoupons();
       else if(tabName === 'reviews') loadReviews();
+      else if(tabName === 'settings') loadSettings();
     }
 
     async function loadProducts() {
@@ -269,7 +291,7 @@
       await setDoc(doc(db, "products", id), {
         store: pStore.value, name: pName.value, category: pCategory.value, price: Number(pPrice.value), originalPrice: Number(pOriginal.value)||0, unit: pUnit.value, stock: Number(pStock.value), image: pImage.value, 
         sizes: pSizes.value.split(",").map(s=>s.trim()).filter(Boolean), 
-        colors: pColors.value.split(",").map(c=>c.trim()).filter(Boolean), // Colours Added
+        colors: pColors.value.split(",").map(c=>c.trim()).filter(Boolean),
         tag: pTag.value, isDeal: document.getElementById("pIsDeal").checked, isPerKg: document.getElementById("pIsPerKg").checked, description: pDescription.value
       });
       productForm.reset(); editId.value = ""; document.getElementById("pIsDeal").checked = false; document.getElementById("pIsPerKg").checked = false; loadProducts(); showToast("Product Saved!");
@@ -350,6 +372,25 @@
       }).join("");
     }
     window.deleteReview = async (id) => { await deleteDoc(doc(db, "reviews", id)); loadReviews(); showToast("Review Deleted!"); }
+
+    // NAYA: SETTINGS LOGIC
+    async function loadSettings() {
+      try {
+        const snap = await getDoc(doc(db, "settings", "banner"));
+        if (snap.exists()) {
+          const s = snap.data();
+          document.getElementById("sBannerText").value = s.text || "";
+          document.getElementById("sBannerLink").value = s.link || "";
+        }
+      } catch(e) {}
+    }
+    document.getElementById("settingsForm").onsubmit = async (e) => {
+      e.preventDefault();
+      const text = document.getElementById("sBannerText").value;
+      const link = document.getElementById("sBannerLink").value;
+      await setDoc(doc(db, "settings", "banner"), { text: text, link: link });
+      showToast("Banner Settings Saved!");
+    }
 
     let deleteItemType = ""; let deleteItemId = "";
     window.openDeleteModal = function(type, id) {
