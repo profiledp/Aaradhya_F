@@ -72,7 +72,7 @@
     .deal-header p { color: var(--muted); font-size: 14px; margin-top: 5px; }
     .deal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
 
-    /* NAYA: MAP SECTION STYLE */
+    /* 3. MAP SECTION STYLE */
     .map-section { padding: 60px 7%; background: #fff; }
     .map-container { display: flex; flex-wrap: wrap; gap: 30px; max-width: 1200px; margin: 0 auto; align-items: center; }
     .map-info { flex: 1; min-width: 300px; }
@@ -83,6 +83,26 @@
     .map-btn:hover { background: #1e3a5f; }
     .map-iframe { flex: 1; min-width: 300px; height: 350px; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
     .map-iframe iframe { width: 100%; height: 100%; border: 0; }
+
+    /* 4. NAYA: WHY CHOOSE US SECTION */
+    .features-section { padding: 60px 7%; background: #f8f9fa; text-align: center; }
+    .features-section h2 { font: normal 38px Georgia, serif; color: var(--navy); margin-bottom: 40px; }
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; }
+    .feature-card { background: #fff; padding: 30px 20px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.03); border: 1px solid #eee; transition: transform 0.3s; }
+    .feature-card:hover { transform: translateY(-5px); }
+    .feature-icon { font-size: 35px; margin-bottom: 15px; display: block; }
+    .feature-card h3 { font: normal 18px Georgia, serif; color: var(--navy); margin: 0 0 10px; }
+    .feature-card p { font-size: 13px; color: #68717a; line-height: 1.6; margin: 0; }
+
+    /* 5. NAYA: TESTIMONIALS SECTION */
+    .testimonials-section { padding: 60px 7%; background: #fff; }
+    .testimonials-section h2 { font: normal 38px Georgia, serif; color: var(--navy); text-align: center; margin-bottom: 40px; }
+    .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 1000px; margin: 0 auto; }
+    .testimonial-card { background: var(--cream); padding: 25px; border-radius: 12px; border: 1px solid var(--line); position: relative; }
+    .testimonial-card::before { content: "“"; position: absolute; top: 10px; right: 20px; font-size: 80px; font-family: Georgia; color: rgba(197, 163, 107, 0.2); line-height: 1; }
+    .testimonial-stars { color: #f59e0b; font-size: 14px; margin-bottom: 10px; }
+    .testimonial-text { font-size: 14px; color: #4b5563; line-height: 1.7; font-style: italic; margin-bottom: 15px; }
+    .testimonial-author { font-size: 12px; font-weight: bold; color: var(--navy); text-transform: uppercase; letter-spacing: 0.5px; }
   </style>
 </head>
 <body>
@@ -110,12 +130,10 @@
       </div>
     </section>
 
-    <!-- SCROLLING OFFER BANNER -->
     <div id="offerBanner" class="offer-banner-container" style="display:none;">
       <div class="offer-banner-track" id="bannerTrack"></div>
     </div>
 
-    <!-- RECENTLY VIEWED SECTION -->
     <section class="section-wrap" id="recentlyViewedSection" style="display:none; padding-top: 30px; padding-bottom: 10px;">
       <div class="section-heading" style="text-align: left; margin-bottom: 15px;">
         <h2 style="font-size: 22px; margin:0; color:var(--navy);">👀 Recently Viewed</h2>
@@ -146,14 +164,49 @@
       </div>
     </section>
 
-    <!-- NAYA: MAP & ADDRESS SECTION -->
+    <!-- NAYA: WHY CHOOSE US SECTION -->
+    <section class="features-section">
+      <span class="eyebrow">WHY CHOOSE US</span>
+      <h2>We Provide Best Service</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <span class="feature-icon">🚚</span>
+          <h3>Fast Delivery</h3>
+          <p>Get your order delivered at your doorstep within 24 hours in Azamgarh.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">💯</span>
+          <h3>Best Quality</h3>
+          <p>We source the best quality products for our customers at affordable prices.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">💵</span>
+          <h3>Cash on Delivery</h3>
+          <p>Pay only when you receive your order. 100% safe and secure shopping.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">🔄</span>
+          <h3>Easy Returns</h3>
+          <p>Not satisfied with the product? Get easy returns and exchanges.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- NAYA: TESTIMONIALS SECTION -->
+    <section class="testimonials-section" id="testimonialsSection" style="display:none;">
+      <span class="eyebrow" style="text-align:center; display:block;">WHAT OUR CUSTOMERS SAY</span>
+      <h2>Customer Reviews</h2>
+      <div class="testimonials-grid" id="testimonialsGrid"></div>
+    </section>
+
+    <!-- MAP SECTION -->
     <section class="map-section">
       <div class="map-container">
         <div class="map-info">
           <span class="eyebrow">VISIT OUR STORE</span>
           <h2>Find Us on Map</h2>
-          <p>Our shop is located in Bongariya Bazaar, Azamgarh. Come visit us and enjoy our new collection!</p>
-          <p class="store-address">📍 Bongariya Bazar, Azamgarh, Uttar Pradesh - 276126</p>
+          <p>Humari dukaan Azamgarh ke Bongariya Bazar mein sthit hai. Aap humse milne aayein aur naye collection ka anand lein!</p>
+          <p class="store-address">📍 Bongariya Bazar, Azamgarh, Uttar Pradesh - 276001</p>
           <a href="https://maps.app.goo.gl/E65rP7zbzzpgeStg9" target="_blank" class="map-btn">🗺️ Get Directions on Google Maps ↗</a>
         </div>
         <div class="map-iframe">
@@ -174,7 +227,6 @@
   <a href="https://wa.me/918931911428?text=Hello%20Aaradhya%20Mart" target="_blank" class="whatsapp-float-btn" aria-label="Chat on WhatsApp"><svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M16.004 2C8.28 2 2 8.28 2 16c0 2.47.64 4.79 1.76 6.81L2 30l7.39-1.71A13.93 13.93 0 0 0 16.004 30C23.72 30 30 23.72 30 16S23.72 2 16.004 2zm0 2.31c6.76 0 12.23 5.47 12.23 12.23 0 6.76-5.47 12.23-12.23 12.23-2.13 0-4.13-.55-5.86-1.51l-.42-.23-4.32 1 1-4.21-.24-.4A12.17 12.17 0 0 1 3.77 16c0-6.76 5.47-12.23 12.23-12.23z" fill="#fff"/><path d="M21.66 18.14c-.23-.12-1.38-.68-1.6-.76-.21-.08-.37-.12-.53.12-.16.24-.61.76-.75.92-.14.16-.28.18-.51.06-.23-.12-1-.37-1.91-1.18-.71-.63-1.18-1.41-1.32-1.65-.14-.24-.02-.37.1-.49.11-.11.23-.28.35-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.53-1.27-.72-1.74-.19-.46-.38-.4-.53-.4h-.45c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.69 2.58 4.1 3.62.57.25 1.02.4 1.37.51.57.18 1.09.15 1.5.09.46-.07 1.38-.56 1.58-1.11.2-.55.2-1.02.14-1.11-.06-.09-.22-.15-.45-.27z" fill="#fff"/></svg></a>
   <a href="track.html" class="track-float-btn" aria-label="Track Order"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg><span>Track Order</span></a>
 
-  <!-- DEALS MODAL POPUP -->
   <div class="deal-modal-overlay" id="dealsModal">
     <div class="deal-modal-box">
       <button class="deal-close-btn" onclick="closeDealsModal()">×</button>
@@ -254,6 +306,32 @@
       } catch(e) { console.log(e); }
     }
 
+    // NAYA: LOAD TESTIMONIALS FROM FIREBASE
+    async function loadTestimonials() {
+      try {
+        const q = query(collection(db, "reviews"));
+        const snap = await getDocs(q);
+        if(snap.empty) return;
+        
+        document.getElementById("testimonialsSection").style.display = "block";
+        let html = "";
+        let count = 0;
+        snap.forEach(doc => {
+          if(count >= 4) return; // Show only top 4
+          const r = doc.data();
+          html += `
+            <div class="testimonial-card">
+              <div class="testimonial-stars">${'⭐'.repeat(r.rating)}</div>
+              <p class="testimonial-text">"${r.comment}"</p>
+              <div class="testimonial-author">- ${r.customerName}</div>
+            </div>
+          `;
+          count++;
+        });
+        document.getElementById("testimonialsGrid").innerHTML = html;
+      } catch(e) { console.log("Reviews error:", e); }
+    }
+
     window.openDealsModal = async function() {
       const modal = document.getElementById("dealsModal");
       const grid = document.getElementById("dealGrid");
@@ -305,6 +383,7 @@
       updateGlobalCart();
       loadBannerCoupons();
       loadRecentlyViewed();
+      loadTestimonials();
     });
   </script>
 </body>
