@@ -112,7 +112,7 @@
       <button class="main-tab-btn" onclick="switchMainTab('reviews', this)">⭐ Reviews</button>
     </div>
 
-    <!-- PRODUCTS -->
+    <!-- 1. PRODUCTS -->
     <div id="tab-products" class="tab-content active">
       <div class="admin-panel">
         <h2 id="formTitle">Add New Product</h2>
@@ -127,10 +127,13 @@
             <div class="form-field"><label>Unit (e.g. 1kg, 500g)</label><input id="pUnit" placeholder="Mention Base Unit"></div>
             <div class="form-field"><label>Stock</label><input id="pStock" type="number" required value="10"></div>
             <div class="form-field full"><label>Image URL (Comma separated for multiple photos)</label><input id="pImage" required placeholder="url1, url2"></div>
-            <div class="form-field"><label>Sizes</label><input id="pSizes" placeholder="M, L, XL (OR 250G, 500G)"></div>
+            
+            <!-- NAYA: SIZES & COLORS -->
+            <div class="form-field"><label>Sizes (Comma Separated)</label><input id="pSizes" placeholder="M, L, XL (OR 250G, 500G)"></div>
+            <div class="form-field"><label>Colours (Comma Separated)</label><input id="pColors" placeholder="Black, Blue, Red"></div>
+            
             <div class="form-field"><label>Tag</label><input id="pTag" placeholder="NEW"></div>
             
-            <!-- NAYA: PER KG PRICE CHECKBOX -->
             <div class="form-field full">
               <label style="display:flex; align-items:center; gap:10px; cursor:pointer; background:#e0f2fe; padding:10px; border-radius:6px; color:#0369a1;">
                 <input type="checkbox" id="pIsPerKg" style="width:18px; height:18px; margin:0;">
@@ -157,12 +160,12 @@
       </div>
     </div>
 
-    <!-- ORDERS -->
+    <!-- 2. ORDERS -->
     <div id="tab-orders" class="tab-content">
       <div class="admin-panel"><h2>All Orders (Live)</h2><div id="ordersList"></div></div>
     </div>
 
-    <!-- COUPONS -->
+    <!-- 3. COUPONS -->
     <div id="tab-coupons" class="tab-content">
       <div class="admin-panel">
         <h2>Create New Coupon</h2>
@@ -181,7 +184,7 @@
       </div>
     </div>
 
-    <!-- REVIEWS -->
+    <!-- 4. REVIEWS -->
     <div id="tab-reviews" class="tab-content">
       <div class="admin-panel">
         <h2>Customer Reviews</h2>
@@ -255,7 +258,7 @@
       document.querySelectorAll("[data-edit]").forEach(btn => {
         btn.addEventListener("click", () => {
           const p = allProducts.find(x => x.id === btn.dataset.edit);
-          editId.value = p.id; pStore.value = p.store; pName.value = p.name; pCategory.value = p.category; pPrice.value = p.price; pOriginal.value = p.originalPrice; pUnit.value = p.unit || ""; pStock.value = p.stock; pImage.value = p.image; pSizes.value = (p.sizes||[]).join(", "); pTag.value = p.tag || ""; document.getElementById("pIsDeal").checked = p.isDeal || false; document.getElementById("pIsPerKg").checked = p.isPerKg || false; pDescription.value = p.description || "";
+          editId.value = p.id; pStore.value = p.store; pName.value = p.name; pCategory.value = p.category; pPrice.value = p.price; pOriginal.value = p.originalPrice; pUnit.value = p.unit || ""; pStock.value = p.stock; pImage.value = p.image; pSizes.value = (p.sizes||[]).join(", "); pColors.value = (p.colors||[]).join(", "); pTag.value = p.tag || ""; document.getElementById("pIsDeal").checked = p.isDeal || false; document.getElementById("pIsPerKg").checked = p.isPerKg || false; pDescription.value = p.description || "";
           formTitle.textContent = "Edit Product"; window.scrollTo(0,0);
         });
       });
@@ -264,7 +267,10 @@
     document.getElementById("productForm").onsubmit = async (e) => {
       e.preventDefault(); const id = editId.value || "P" + Date.now();
       await setDoc(doc(db, "products", id), {
-        store: pStore.value, name: pName.value, category: pCategory.value, price: Number(pPrice.value), originalPrice: Number(pOriginal.value)||0, unit: pUnit.value, stock: Number(pStock.value), image: pImage.value, sizes: pSizes.value.split(",").map(s=>s.trim()).filter(Boolean), tag: pTag.value, isDeal: document.getElementById("pIsDeal").checked, isPerKg: document.getElementById("pIsPerKg").checked, description: pDescription.value
+        store: pStore.value, name: pName.value, category: pCategory.value, price: Number(pPrice.value), originalPrice: Number(pOriginal.value)||0, unit: pUnit.value, stock: Number(pStock.value), image: pImage.value, 
+        sizes: pSizes.value.split(",").map(s=>s.trim()).filter(Boolean), 
+        colors: pColors.value.split(",").map(c=>c.trim()).filter(Boolean), // Colours Added
+        tag: pTag.value, isDeal: document.getElementById("pIsDeal").checked, isPerKg: document.getElementById("pIsPerKg").checked, description: pDescription.value
       });
       productForm.reset(); editId.value = ""; document.getElementById("pIsDeal").checked = false; document.getElementById("pIsPerKg").checked = false; loadProducts(); showToast("Product Saved!");
     };
