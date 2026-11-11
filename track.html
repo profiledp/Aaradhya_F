@@ -23,9 +23,6 @@
     .result-box h3 { font: normal 20px Georgia, serif; color: var(--navy); margin-top: 0; border-bottom: 1px solid #ddd; padding-bottom: 10px; }
     .result-box p { text-align: left; margin-bottom: 8px; color: var(--ink); font-size: 14px; }
 
-    /* =========================================
-       AMAZON STYLE ANIMATED TRACKER
-       ========================================= */
     .tracker-wrap { margin-top: 30px; padding: 0 10px; }
     .tracker-steps { display: flex; justify-content: space-between; position: relative; margin-bottom: 20px; }
     .tracker-steps::before { content: ''; position: absolute; top: 15px; left: 0; right: 0; height: 4px; background: #e0e0e0; z-index: 1; border-radius: 2px; }
@@ -40,9 +37,6 @@
     .step.cancelled .step-label { color: #ef4444; }
     @keyframes pulseGreen { 0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); } 70% { box-shadow: 0 0 0 10px rgba(16,185,129,0); } 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); } }
 
-    /* =========================================
-       ACTION BUTTONS (Cancel/Update)
-       ========================================= */
     .action-buttons { display: flex; gap: 10px; margin-top: 25px; }
     .action-btn { flex: 1; padding: 12px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; text-align: center; text-decoration: none; display: inline-block; transition: 0.3s; }
     .btn-cancel-order { background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; }
@@ -50,9 +44,6 @@
     .btn-update-order { background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc; }
     .btn-update-order:hover { background: #bae6fd; }
 
-    /* =========================================
-       NAYA: PROFESSIONAL POLICY CARD (English)
-       ========================================= */
     .policy-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-top: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
     .policy-card h4 { margin: 0 0 15px 0; color: #1e293b; font-size: 15px; font-family: Arial, sans-serif; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; display: flex; align-items: center; gap: 8px; }
     .policy-item { display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-start; }
@@ -95,38 +86,48 @@
       <p id="errorMsg" class="error-msg">Order not found. Please check your details.</p>
       <div id="orderResults"></div>
 
-      <!-- NAYA: PROFESSIONAL POLICY CARD -->
       <div class="policy-card">
         <h4>📋 Order Policies & Guidelines</h4>
-        
-        <div class="policy-item">
-          <div class="policy-icon">❌</div>
-          <div class="policy-text">
-            <strong>Cancellation:</strong> Orders can only be cancelled before they are packed.
-          </div>
-        </div>
-        
-        <div class="policy-item">
-          <div class="policy-icon">➕</div>
-          <div class="policy-text">
-            <strong>Modification:</strong> You can add more items to your order until it is "Out for Delivery".
-          </div>
-        </div>
-        
-        <div class="policy-item">
-          <div class="policy-icon">💳</div>
-          <div class="policy-text">
-            <strong>Payment:</strong> A 20% advance payment is required to confirm your order.
-          </div>
-        </div>
+        <div class="policy-item"><div class="policy-icon">❌</div><div class="policy-text"><strong>Cancellation:</strong> Orders can only be cancelled before they are packed.</div></div>
+        <div class="policy-item"><div class="policy-icon">➕</div><div class="policy-text"><strong>Modification:</strong> You can add more items to your order until it is "Out for Delivery".</div></div>
+        <div class="policy-item"><div class="policy-icon">💳</div><div class="policy-text"><strong>Payment:</strong> A 20% advance payment is required to confirm your order.</div></div>
       </div>
-
     </div>
   </main>
 
+  <!-- REVIEW MODAL POPUP -->
+  <div id="reviewModal" style="position:fixed; inset:0; background:rgba(16,36,59,0.8); display:none; align-items:center; justify-content:center; z-index:9999; padding:20px;">
+    <div style="background:#fff; padding:30px; border-radius:12px; width:100%; max-width:400px; text-align:center;">
+      <h3 style="font-family:Georgia; color:var(--navy); margin-bottom:15px;">Write a Review</h3>
+      <input type="hidden" id="reviewProductId">
+      <div class="form-group" style="text-align:left;">
+        <label>Your Name *</label>
+        <input type="text" id="reviewName" placeholder="Enter your name">
+      </div>
+      <div class="form-group" style="text-align:left;">
+        <label>Rating (1 to 5) *</label>
+        <select id="reviewRating" style="width:100%; padding:12px; border:1px solid #ccc; border-radius:6px;">
+          <option value="5">⭐⭐⭐⭐⭐ (Excellent)</option>
+          <option value="4">⭐⭐⭐⭐ (Good)</option>
+          <option value="3">⭐⭐⭐ (Average)</option>
+          <option value="2">⭐⭐ (Poor)</option>
+          <option value="1">⭐ (Very Bad)</option>
+        </select>
+      </div>
+      <div class="form-group" style="text-align:left;">
+        <label>Your Comment *</label>
+        <textarea id="reviewComment" rows="3" style="width:100%; padding:12px; border:1px solid #ccc; border-radius:6px;"></textarea>
+      </div>
+      <div style="display:flex; gap:10px; margin-top:15px;">
+        <button onclick="document.getElementById('reviewModal').style.display='none'" style="flex:1; padding:12px; background:#eee; border:none; border-radius:6px; cursor:pointer;">Cancel</button>
+        <button onclick="submitReview()" style="flex:1; padding:12px; background:var(--navy); color:#fff; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">Submit</button>
+      </div>
+    </div>
+  </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = { apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y", authDomain: "aaradhya-mart.firebaseapp.com", projectId: "aaradhya-mart", storageBucket: "aaradhya-mart.firebasestorage.app", messagingSenderId: "146782544824", appId: "1:146782544824:web:d605e1971d3480fab1654d" };
     const app = initializeApp(firebaseConfig); const db = getFirestore(app);
@@ -192,13 +193,22 @@
               `;
             }
 
-            // Action Buttons Logic
             let actionButtonsHtml = "";
             if(!isCancelled && stepIndex < 4) {
               actionButtonsHtml += `<div class="action-buttons">`;
               if(stepIndex < 2) { actionButtonsHtml += `<button class="action-btn btn-cancel-order" onclick="cancelOrder('${o.orderId}')">❌ Cancel Order</button>`; }
               if(stepIndex < 3) { actionButtonsHtml += `<a href="https://wa.me/${WHATSAPP_NUMBER}?text=Hello%20Aaradhya%20Mart,%20I%20want%20to%20ADD%20items%20to%20my%20Order%20${o.orderId}" target="_blank" class="action-btn btn-update-order">➕ Update Order</a>`; }
               actionButtonsHtml += `</div>`;
+            }
+
+            // NAYA: REVIEW BUTTON
+            let reviewButtonHtml = "";
+            if(o.status === "Delivered") {
+               reviewButtonHtml = `
+                 <div style="margin-top: 15px; text-align: center;">
+                   <button onclick="openReviewForm('${o.items[0].id}', '${o.items[0].name}')" style="background: var(--gold); color: var(--navy); border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; font-size: 13px;">⭐ Write a Review</button>
+                 </div>
+               `;
             }
 
             html += `
@@ -216,6 +226,7 @@
                 </div>
 
                 ${actionButtonsHtml}
+                ${reviewButtonHtml}
               </div>`;
           });
           resultsDiv.innerHTML = html;
@@ -226,6 +237,40 @@
     window.cancelOrder = function(orderId) {
       const msg = `Hello Aaradhya Mart,\nI want to CANCEL my order.\nOrder ID: ${orderId}\nPlease confirm cancellation.`;
       window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
+    }
+
+    // NAYA: REVIEW MODAL LOGIC
+    window.openReviewForm = function(productId, productName) {
+      document.getElementById("reviewProductId").value = productId + "|" + productName;
+      document.getElementById("reviewModal").style.display = "flex";
+    }
+
+    window.submitReview = async function() {
+      const productData = document.getElementById("reviewProductId").value.split("|");
+      const prodId = productData[0];
+      const prodName = productData[1];
+      const name = document.getElementById("reviewName").value;
+      const rating = document.getElementById("reviewRating").value;
+      const comment = document.getElementById("reviewComment").value;
+
+      if(!name || !comment) { alert("Please fill Name and Comment"); return; }
+
+      try {
+        await addDoc(collection(db, "reviews"), {
+          productId: prodId,
+          productName: prodName,
+          customerName: name,
+          rating: Number(rating),
+          comment: comment,
+          date: new Date().toLocaleString("en-IN")
+        });
+        alert("Thank you! Your review has been submitted.");
+        document.getElementById("reviewModal").style.display = "none";
+        document.getElementById("reviewName").value = "";
+        document.getElementById("reviewComment").value = "";
+      } catch(e) {
+        alert("Failed to submit review. Try again.");
+      }
     }
   </script>
 </body>
