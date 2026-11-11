@@ -23,6 +23,7 @@
     .result-box h3 { font: normal 20px Georgia, serif; color: var(--navy); margin-top: 0; border-bottom: 1px solid #ddd; padding-bottom: 10px; }
     .result-box p { text-align: left; margin-bottom: 8px; color: var(--ink); font-size: 14px; }
 
+    /* AMAZON STYLE ANIMATED TRACKER */
     .tracker-wrap { margin-top: 30px; padding: 0 10px; }
     .tracker-steps { display: flex; justify-content: space-between; position: relative; margin-bottom: 20px; }
     .tracker-steps::before { content: ''; position: absolute; top: 15px; left: 0; right: 0; height: 4px; background: #e0e0e0; z-index: 1; border-radius: 2px; }
@@ -44,6 +45,7 @@
     .btn-update-order { background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc; }
     .btn-update-order:hover { background: #bae6fd; }
 
+    /* PROFESSIONAL POLICY CARD */
     .policy-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-top: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
     .policy-card h4 { margin: 0 0 15px 0; color: #1e293b; font-size: 15px; font-family: Arial, sans-serif; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; display: flex; align-items: center; gap: 8px; }
     .policy-item { display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-start; }
@@ -86,48 +88,38 @@
       <p id="errorMsg" class="error-msg">Order not found. Please check your details.</p>
       <div id="orderResults"></div>
 
+      <!-- NAYA: UPDATED POLICIES (20% Advance & Delivery Charge on Return) -->
       <div class="policy-card">
         <h4>📋 Order Policies & Guidelines</h4>
-        <div class="policy-item"><div class="policy-icon">❌</div><div class="policy-text"><strong>Cancellation:</strong> Orders can only be cancelled before they are packed.</div></div>
-        <div class="policy-item"><div class="policy-icon">➕</div><div class="policy-text"><strong>Modification:</strong> You can add more items to your order until it is "Out for Delivery".</div></div>
-        <div class="policy-item"><div class="policy-icon">💳</div><div class="policy-text"><strong>Payment:</strong> A 20% advance payment is required to confirm your order.</div></div>
+        
+        <div class="policy-item">
+          <div class="policy-icon">💳</div>
+          <div class="policy-text">
+            <strong>Advance Payment:</strong> A 20% advance payment is mandatory to confirm your order.
+          </div>
+        </div>
+        
+        <div class="policy-item">
+          <div class="policy-icon">❌</div>
+          <div class="policy-text">
+            <strong>Cancellation (Before Delivery):</strong> Orders can be cancelled free of cost before they are packed.
+          </div>
+        </div>
+        
+        <div class="policy-item">
+          <div class="policy-icon">🚚</div>
+          <div class="policy-text">
+            <strong>Return/Cancel (After Delivery):</strong> If you cancel or return the order after delivery, delivery charges will be deducted. We do NOT have a 7-day return policy.
+          </div>
+        </div>
       </div>
+
     </div>
   </main>
 
-  <!-- REVIEW MODAL POPUP -->
-  <div id="reviewModal" style="position:fixed; inset:0; background:rgba(16,36,59,0.8); display:none; align-items:center; justify-content:center; z-index:9999; padding:20px;">
-    <div style="background:#fff; padding:30px; border-radius:12px; width:100%; max-width:400px; text-align:center;">
-      <h3 style="font-family:Georgia; color:var(--navy); margin-bottom:15px;">Write a Review</h3>
-      <input type="hidden" id="reviewProductId">
-      <div class="form-group" style="text-align:left;">
-        <label>Your Name *</label>
-        <input type="text" id="reviewName" placeholder="Enter your name">
-      </div>
-      <div class="form-group" style="text-align:left;">
-        <label>Rating (1 to 5) *</label>
-        <select id="reviewRating" style="width:100%; padding:12px; border:1px solid #ccc; border-radius:6px;">
-          <option value="5">⭐⭐⭐⭐⭐ (Excellent)</option>
-          <option value="4">⭐⭐⭐⭐ (Good)</option>
-          <option value="3">⭐⭐⭐ (Average)</option>
-          <option value="2">⭐⭐ (Poor)</option>
-          <option value="1">⭐ (Very Bad)</option>
-        </select>
-      </div>
-      <div class="form-group" style="text-align:left;">
-        <label>Your Comment *</label>
-        <textarea id="reviewComment" rows="3" style="width:100%; padding:12px; border:1px solid #ccc; border-radius:6px;"></textarea>
-      </div>
-      <div style="display:flex; gap:10px; margin-top:15px;">
-        <button onclick="document.getElementById('reviewModal').style.display='none'" style="flex:1; padding:12px; background:#eee; border:none; border-radius:6px; cursor:pointer;">Cancel</button>
-        <button onclick="submitReview()" style="flex:1; padding:12px; background:var(--navy); color:#fff; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">Submit</button>
-      </div>
-    </div>
-  </div>
-
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = { apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y", authDomain: "aaradhya-mart.firebaseapp.com", projectId: "aaradhya-mart", storageBucket: "aaradhya-mart.firebasestorage.app", messagingSenderId: "146782544824", appId: "1:146782544824:web:d605e1971d3480fab1654d" };
     const app = initializeApp(firebaseConfig); const db = getFirestore(app);
@@ -201,7 +193,6 @@
               actionButtonsHtml += `</div>`;
             }
 
-            // NAYA: REVIEW BUTTON
             let reviewButtonHtml = "";
             if(o.status === "Delivered") {
                reviewButtonHtml = `
@@ -239,7 +230,6 @@
       window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
     }
 
-    // NAYA: REVIEW MODAL LOGIC
     window.openReviewForm = function(productId, productName) {
       document.getElementById("reviewProductId").value = productId + "|" + productName;
       document.getElementById("reviewModal").style.display = "flex";
