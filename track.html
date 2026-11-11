@@ -23,7 +23,9 @@
     .result-box h3 { font: normal 20px Georgia, serif; color: var(--navy); margin-top: 0; border-bottom: 1px solid #ddd; padding-bottom: 10px; }
     .result-box p { text-align: left; margin-bottom: 8px; color: var(--ink); font-size: 14px; }
 
-    /* Tracker Styles */
+    /* =========================================
+       AMAZON STYLE ANIMATED TRACKER
+       ========================================= */
     .tracker-wrap { margin-top: 30px; padding: 0 10px; }
     .tracker-steps { display: flex; justify-content: space-between; position: relative; margin-bottom: 20px; }
     .tracker-steps::before { content: ''; position: absolute; top: 15px; left: 0; right: 0; height: 4px; background: #e0e0e0; z-index: 1; border-radius: 2px; }
@@ -38,7 +40,9 @@
     .step.cancelled .step-label { color: #ef4444; }
     @keyframes pulseGreen { 0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); } 70% { box-shadow: 0 0 0 10px rgba(16,185,129,0); } 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); } }
 
-    /* Action Buttons */
+    /* =========================================
+       ACTION BUTTONS (Cancel/Update)
+       ========================================= */
     .action-buttons { display: flex; gap: 10px; margin-top: 25px; }
     .action-btn { flex: 1; padding: 12px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; text-align: center; text-decoration: none; display: inline-block; transition: 0.3s; }
     .btn-cancel-order { background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; }
@@ -46,10 +50,16 @@
     .btn-update-order { background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc; }
     .btn-update-order:hover { background: #bae6fd; }
 
-    .policy-box { background: #fff3cd; border: 1px solid #ffe69c; border-radius: 8px; padding: 15px; margin-top: 25px; }
-    .policy-box h4 { margin: 0 0 10px; color: #856404; font-size: 14px; display: flex; align-items: center; gap: 5px; }
-    .policy-box ul { margin: 0; padding-left: 20px; color: #856404; font-size: 12px; line-height: 1.6; }
-    .policy-box li { margin-bottom: 5px; }
+    /* =========================================
+       NAYA: PROFESSIONAL POLICY CARD (English)
+       ========================================= */
+    .policy-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-top: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+    .policy-card h4 { margin: 0 0 15px 0; color: #1e293b; font-size: 15px; font-family: Arial, sans-serif; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+    .policy-item { display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-start; }
+    .policy-item:last-child { margin-bottom: 0; }
+    .policy-icon { font-size: 14px; background: #fff; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.05); flex-shrink: 0; }
+    .policy-text { font-size: 13px; color: #475569; line-height: 1.5; }
+    .policy-text strong { color: #0f172a; font-weight: 600; }
 
     .error-msg { color: #ef4444; font-size: 14px; text-align: center; margin-top: 15px; font-weight: bold; display: none; }
   </style>
@@ -85,14 +95,32 @@
       <p id="errorMsg" class="error-msg">Order not found. Please check your details.</p>
       <div id="orderResults"></div>
 
-      <div class="policy-box">
-        <h4>⚠️ Order Policies</h4>
-        <ul>
-          <li><strong>Cancellation:</strong> Order tab tak cancel ho sakta hai jab tak woh "Packed" na ho jaye.</li>
-          <li><strong>Update:</strong> Order "Out for Delivery" hone se pehle aap naye items add kar sakte hain.</li>
-          <li><strong>Advance:</strong> Order confirm karne ke liye 20% advance dena hoga.</li>
-        </ul>
+      <!-- NAYA: PROFESSIONAL POLICY CARD -->
+      <div class="policy-card">
+        <h4>📋 Order Policies & Guidelines</h4>
+        
+        <div class="policy-item">
+          <div class="policy-icon">❌</div>
+          <div class="policy-text">
+            <strong>Cancellation:</strong> Orders can only be cancelled before they are packed.
+          </div>
+        </div>
+        
+        <div class="policy-item">
+          <div class="policy-icon">➕</div>
+          <div class="policy-text">
+            <strong>Modification:</strong> You can add more items to your order until it is "Out for Delivery".
+          </div>
+        </div>
+        
+        <div class="policy-item">
+          <div class="policy-icon">💳</div>
+          <div class="policy-text">
+            <strong>Payment:</strong> A 20% advance payment is required to confirm your order.
+          </div>
+        </div>
       </div>
+
     </div>
   </main>
 
@@ -164,29 +192,12 @@
               `;
             }
 
-            // --- NAYA: ACTION BUTTONS LOGIC ---
+            // Action Buttons Logic
             let actionButtonsHtml = "";
             if(!isCancelled && stepIndex < 4) {
               actionButtonsHtml += `<div class="action-buttons">`;
-              
-              // Cancel Button (Only if Pending or Confirmed)
-              if(stepIndex < 2) {
-                actionButtonsHtml += `
-                  <button class="action-btn btn-cancel-order" onclick="cancelOrder('${o.orderId}')">
-                    ❌ Cancel Order
-                  </button>
-                `;
-              }
-              
-              // Update Button (Only if Out for Delivery nahi hua)
-              if(stepIndex < 3) {
-                actionButtonsHtml += `
-                  <a href="https://wa.me/${WHATSAPP_NUMBER}?text=Hello%20Aaradhya%20Mart,%20I%20want%20to%20ADD%20items%20to%20my%20Order%20${o.orderId}" target="_blank" class="action-btn btn-update-order">
-                    ➕ Update Order
-                  </a>
-                `;
-              }
-              
+              if(stepIndex < 2) { actionButtonsHtml += `<button class="action-btn btn-cancel-order" onclick="cancelOrder('${o.orderId}')">❌ Cancel Order</button>`; }
+              if(stepIndex < 3) { actionButtonsHtml += `<a href="https://wa.me/${WHATSAPP_NUMBER}?text=Hello%20Aaradhya%20Mart,%20I%20want%20to%20ADD%20items%20to%20my%20Order%20${o.orderId}" target="_blank" class="action-btn btn-update-order">➕ Update Order</a>`; }
               actionButtonsHtml += `</div>`;
             }
 
@@ -212,9 +223,7 @@
       } catch (e) { errorMsg.textContent = "Error fetching order. Please try again."; errorMsg.style.display = "block"; } finally { btn.textContent = "Check Status"; btn.disabled = false; }
     });
 
-    // Custom Cancel Function
     window.cancelOrder = function(orderId) {
-      // Redirect to WhatsApp with a cancellation request message
       const msg = `Hello Aaradhya Mart,\nI want to CANCEL my order.\nOrder ID: ${orderId}\nPlease confirm cancellation.`;
       window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
     }
