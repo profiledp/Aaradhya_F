@@ -7,7 +7,6 @@
   <style>
     .checkout-container { max-width: 600px; margin: 40px auto; padding: 30px; background: #fff; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 10px 30px rgba(16,36,59,0.05); }
     .checkout-container h2 { font: normal 28px Georgia, serif; color: var(--navy); margin-top: 0; margin-bottom: 20px; text-align: center; }
-    
     .product-summary { background: var(--cream); padding: 15px; border-radius: 8px; margin-bottom: 25px; border: 1px solid var(--line); }
     .product-item-row { display: flex; align-items: center; gap: 15px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #e5e5e5; }
     .product-item-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
@@ -16,20 +15,17 @@
     .product-item-info h4 { margin: 0 0 3px; font-size: 14px; color: var(--navy); }
     .product-item-info p { margin: 0; font-size: 12px; color: var(--muted); }
     .product-item-price { font-weight: bold; font-size: 14px; color: var(--navy); }
-
     .form-group { margin-bottom: 15px; } .form-group label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 6px; }
     .form-group input, textarea { width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 6px; outline: none; box-sizing: border-box; }
     .payment-options { display: flex; gap: 15px; }
     .payment-option { flex: 1; border: 1px solid var(--line); padding: 15px; border-radius: 8px; text-align: center; font-size: 13px; font-weight: bold; cursor: pointer; }
     .payment-option input { display: none; }
     .payment-option:has(input:checked) { border-color: var(--navy); background: var(--cream); }
-    
     .coupon-section { margin-bottom:15px; }
     .coupon-box { display: flex; gap: 10px; margin-bottom: 15px; }
     .coupon-box input { flex: 1; padding: 10px; border: 1px solid var(--line); border-radius: 6px; text-transform: uppercase; }
     .coupon-box button { padding: 10px 20px; background: var(--navy); color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
     .coupon-msg { font-size: 12px; font-weight: bold; margin-top: 5px; display: none; }
-    
     .available-coupons { margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 15px; }
     .available-coupons h5 { font-size: 11px; color: #856404; margin: 0 0 10px; text-transform: uppercase; letter-spacing: 0.5px; }
     .coupon-cards-wrapper { display: flex; flex-direction: column; gap: 10px; }
@@ -47,17 +43,8 @@
     .coupon-card::before, .coupon-card::after { content: ''; position: absolute; width: 16px; height: 16px; background-color: #f4f6f8; border-radius: 50%; left: 82px; border: 1px solid #e0e0e0; }
     .coupon-card::before { top: -8px; border-bottom-color: transparent; border-right-color: transparent; transform: rotate(-45deg); }
     .coupon-card::after { bottom: -8px; border-top-color: transparent; border-right-color: transparent; transform: rotate(45deg); }
-
     .place-order-btn { width: 100%; padding: 16px; background: var(--navy); color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 20px; }
-    
-    /* NAYA: ADVANCE PAYMENT NOTICE */
-    .advance-notice {
-      background: #e0f2fe; border: 1px dashed #7dd3fc; color: #0369a1;
-      padding: 12px; border-radius: 6px; font-size: 12px; font-weight: bold;
-      margin-bottom: 15px; display: flex; align-items: center; gap: 8px;
-    }
-
-    /* ORDER SLIP POPUP */
+    .advance-notice { background: #e0f2fe; border: 1px dashed #7dd3fc; color: #0369a1; padding: 12px; border-radius: 6px; font-size: 12px; font-weight: bold; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
     .slip-modal-overlay { position: fixed; inset: 0; background: rgba(16,36,59,0.7); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; visibility: hidden; transition: 0.3s; padding: 15px; }
     .slip-modal-overlay.active { opacity: 1; visibility: visible; }
     .slip-box { background: #fff; width: 100%; max-width: 400px; border-radius: 8px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.3); transform: scale(0.8); transition: 0.3s; max-height: 90vh; overflow-y: auto; font-family: 'Courier New', Courier, monospace; }
@@ -89,10 +76,7 @@
       <h2>Complete Your Order</h2>
       <div class="product-summary" id="productSummary">Loading...</div>
 
-      <!-- NAYA: ADVANCE NOTICE -->
-      <div class="advance-notice">
-        ⚠️ Note: Order Confirm karne ke liye <strong>20% Advance</strong> dena hoga.
-      </div>
+      <div class="advance-notice">⚠️ Note: Order Confirm karne ke liye <strong>20% Advance</strong> dena hoga.</div>
 
       <form id="checkoutForm">
         <div class="form-group"><label>Full Name *</label><input type="text" id="custName" required></div>
@@ -134,7 +118,6 @@
     </div>
   </main>
 
-  <!-- ORDER SLIP POPUP -->
   <div class="slip-modal-overlay" id="orderSlipModal">
     <div class="slip-box" id="printableSlip">
       <div class="slip-header">
@@ -185,7 +168,10 @@
 
     document.addEventListener("DOMContentLoaded", async () => {
       const urlParams = new URLSearchParams(window.location.search);
-      const productId = urlParams.get('id'); const size = urlParams.get('size') || "N/A";
+      const productId = urlParams.get('id'); 
+      const size = urlParams.get('size') || "N/A";
+      const color = urlParams.get('color') || "Standard";
+      const customPrice = urlParams.get('price');
       selectedStore = urlParams.get('store') || "Aaradhya Mart";
 
       const snap = await getDocs(collection(db, "products"));
@@ -198,11 +184,7 @@
         let couponsHtml = "";
         cSnap.forEach(d => {
           const c = d.data(); availableCouponsList.push(c);
-          couponsHtml += `
-            <div class="coupon-card" onclick="selectCoupon('${c.code}')">
-              <div class="coupon-left"><h3>${c.discount}%</h3><p>OFF</p></div>
-              <div class="coupon-right"><h4>Get ${c.discount}% Discount</h4><p>Applicable on all products.</p><div class="coupon-code-box"><span>${c.code}</span><button type="button" class="copy-btn">TAP TO APPLY</button></div></div>
-            </div>`;
+          couponsHtml += `<div class="coupon-card" onclick="selectCoupon('${c.code}')"><div class="coupon-left"><h3>${c.discount}%</h3><p>OFF</p></div><div class="coupon-right"><h4>Get ${c.discount}% Discount</h4><p>Applicable on all products.</p><div class="coupon-code-box"><span>${c.code}</span><button type="button" class="copy-btn">TAP TO APPLY</button></div></div></div>`;
         });
         document.getElementById("couponsList").innerHTML = couponsHtml;
       }
@@ -212,13 +194,17 @@
         if (cart.length === 0) { alert("Cart empty!"); window.location.href = "index.html"; return; }
         document.getElementById("productSummary").innerHTML = cart.map(item => {
           const p = allProducts.find(x => x.id === item.id); if(!p) return "";
-          orderProducts.push({ ...p, selectedSize: item.size, selectedQty: item.qty }); currentSubtotal += (p.price * item.qty);
-          return `<div class="product-item-row"><img src="${p.image.split(',')[0]}" alt="${p.name}"><div class="product-item-info"><h4>${p.name}</h4><p>Size: ${item.size} | Qty: ${item.qty}</p></div><div class="product-item-price">₹${p.price * item.qty}</div></div>`;
+          const itemPrice = item.price || p.price;
+          orderProducts.push({ ...p, selectedSize: item.size, selectedColor: item.color || 'Standard', selectedQty: item.qty, finalItemPrice: itemPrice }); 
+          currentSubtotal += (itemPrice * item.qty);
+          return `<div class="product-item-row"><img src="${p.image.split(',')[0]}" alt="${p.name}"><div class="product-item-info"><h4>${p.name}</h4><p>Size: ${item.size} | Colour: ${item.color || 'Standard'} | Qty: ${item.qty}</p></div><div class="product-item-price">₹${itemPrice * item.qty}</div></div>`;
         }).join("");
       } else {
         const p = allProducts.find(x => x.id === productId);
-        orderProducts.push({ ...p, selectedSize: size, selectedQty: 1 }); currentSubtotal = p.price;
-        document.getElementById("productSummary").innerHTML = `<div class="product-item-row"><img src="${p.image.split(',')[0]}" alt="${p.name}"><div class="product-item-info"><h4>${p.name}</h4><p>Size: ${size} | Qty: 1</p></div><div class="product-item-price">₹${p.price}</div></div>`;
+        const finalPrice = customPrice ? Number(customPrice) : p.price;
+        orderProducts.push({ ...p, selectedSize: size, selectedColor: color, selectedQty: 1, finalItemPrice: finalPrice }); 
+        currentSubtotal = finalPrice;
+        document.getElementById("productSummary").innerHTML = `<div class="product-item-row"><img src="${p.image.split(',')[0]}" alt="${p.name}"><div class="product-item-info"><h4>${p.name}</h4><p>Size: ${size} | Colour: ${color} | Qty: 1</p></div><div class="product-item-price">₹${finalPrice}</div></div>`;
       }
       updateTotals();
     });
@@ -260,7 +246,6 @@
         for (const item of orderProducts) { await updateDoc(doc(db, "products", item.id), { stock: increment(-item.selectedQty) }); }
       } catch(err) { alert("Order failed!"); btn.textContent = "CONFIRM"; btn.disabled = false; return; }
 
-      // SETUP RECEIPT SLIP DATA
       document.getElementById("slipOrderId").textContent = newOrderId;
       document.getElementById("slipDate").textContent = dateStr;
       document.getElementById("slipName").textContent = name;
@@ -270,7 +255,7 @@
       
       let itemsHtml = "";
       orderProducts.forEach(item => {
-        itemsHtml += `<tr><td>${item.name} <br><small style="color:#777;">Size: ${item.selectedSize}</small></td><td style="text-align:center;">${item.selectedQty}</td><td style="text-align:right;">₹${item.price * item.selectedQty}</td></tr>`;
+        itemsHtml += `<tr><td>${item.name} <br><small style="color:#777;">Size: ${item.selectedSize} | Colour: ${item.selectedColor}</small></td><td style="text-align:center;">${item.selectedQty}</td><td style="text-align:right;">₹${item.finalItemPrice * item.selectedQty}</td></tr>`;
       });
       document.getElementById("slipItemsBody").innerHTML = itemsHtml;
       
@@ -278,10 +263,8 @@
       document.getElementById("slipTotal").textContent = finalTotal;
       if(currentDiscount > 0) { document.getElementById("slipDiscountRow").style.display = "flex"; document.getElementById("slipDiscount").textContent = currentDiscount; }
 
-      // SHOW SLIP POPUP
       document.getElementById("orderSlipModal").classList.add("active");
 
-      // OPEN WHATSAPP IN BACKGROUND
       const msg = `*NEW ORDER*\n*ID: ${newOrderId}*\nTotal: ₹${finalTotal} ${currentDiscount ? `(Coupon: ${appliedCoupon})` : ''}\nName: ${name}\nPhone: ${phone}\nAddress: ${addr}\n\n*Note:* I understand 20% advance is required for confirmation.`;
       if(isCartOrder) localStorage.removeItem("aaradhyaMartCart");
       
