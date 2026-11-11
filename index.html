@@ -4,7 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
+  <!-- GOOGLE SEARCH CONSOLE VERIFICATION -->
   <meta name="google-site-verification" content="hiQAkLa44zyk1N-KNLhALM6FzgBbLJ4TtERoyBT3tvU" />
+
+  <!-- SEO TAGS -->
   <title>Aaradhya Mart | Fashion, A-Print & Kirana Store in Azamgarh</title>
   <meta name="description" content="Shop the latest fashion clothes, custom printing (A-Print), and daily grocery essentials (Kirana) online at Aaradhya Mart. Fast delivery in Bongariya Bazar, Azamgarh.">
   <meta property="og:title" content="Aaradhya Mart | Fashion, Print & Kirana">
@@ -58,21 +61,28 @@
     .hero-deals-btn { display: inline-block; margin-top: 15px; background: rgba(255,255,255,0.1); border: 1px solid var(--gold); color: var(--gold); padding: 8px 15px; border-radius: 4px; font-size: 12px; font-weight: bold; text-decoration: none; transition: 0.3s; cursor: pointer; }
     .hero-deals-btn:hover { background: var(--gold); color: var(--navy); }
 
-    /* DEALS POPUP DESIGN */
+    /* Deals Modal */
     .deal-modal-overlay { position: fixed; inset: 0; background: rgba(16,36,59,0.8); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; visibility: hidden; transition: 0.3s; padding: 20px; }
     .deal-modal-overlay.active { opacity: 1; visibility: visible; }
-    
     .deal-modal-box { background: #f8f9fa; width: 100%; max-width: 900px; border-radius: 12px; position: relative; max-height: 90vh; overflow-y: auto; padding: 25px; transform: scale(0.9); transition: 0.3s; }
     .deal-modal-overlay.active .deal-modal-box { transform: scale(1); }
-    
     .deal-close-btn { position: absolute; top: 15px; right: 15px; background: #fff; border: 1px solid #ccc; width: 35px; height: 35px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    
     .deal-header { text-align: center; margin-bottom: 25px; }
     .deal-header h2 { font: normal 32px Georgia, serif; color: #ef4444; margin: 0; }
     .deal-header p { color: var(--muted); font-size: 14px; margin-top: 5px; }
-    
-    /* Grid for deals inside modal */
     .deal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
+
+    /* NAYA: MAP SECTION STYLE */
+    .map-section { padding: 60px 7%; background: #fff; }
+    .map-container { display: flex; flex-wrap: wrap; gap: 30px; max-width: 1200px; margin: 0 auto; align-items: center; }
+    .map-info { flex: 1; min-width: 300px; }
+    .map-info h2 { font: normal 38px Georgia, serif; color: var(--navy); margin-top: 0; margin-bottom: 20px; }
+    .map-info p { font-size: 15px; line-height: 1.8; color: #4b5563; margin-bottom: 15px; }
+    .map-info .store-address { font-size: 16px; font-weight: bold; color: var(--navy); border-left: 4px solid var(--gold); padding-left: 15px; margin-bottom: 25px; }
+    .map-btn { display: inline-block; background: var(--navy); color: #fff; padding: 14px 25px; border-radius: 6px; font-weight: bold; text-decoration: none; transition: 0.3s; }
+    .map-btn:hover { background: #1e3a5f; }
+    .map-iframe { flex: 1; min-width: 300px; height: 350px; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+    .map-iframe iframe { width: 100%; height: 100%; border: 0; }
   </style>
 </head>
 <body>
@@ -81,6 +91,7 @@
     <a class="header-wa" href="admin.html">Admin Login ⚙️</a>
   </header>
 
+  <!-- 1. TRUST BADGES -->
   <div class="trust-badges-bar">
     <div class="trust-badge"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>100% Secure</div>
     <div class="trust-badge"><svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>Fast Delivery</div>
@@ -95,15 +106,16 @@
         <span class="eyebrow">WELCOME TO AARADHYA MART</span>
         <h1>Choose your<br><em>Store.</em></h1>
         <p>Clothing, Custom Printing, and Daily Grocery essentials.</p>
-        <!-- UPDATED BUTTON (Calls Function) -->
         <button class="hero-deals-btn" onclick="openDealsModal()">🔥 Check Today's Deals</button>
       </div>
     </section>
 
+    <!-- SCROLLING OFFER BANNER -->
     <div id="offerBanner" class="offer-banner-container" style="display:none;">
       <div class="offer-banner-track" id="bannerTrack"></div>
     </div>
 
+    <!-- RECENTLY VIEWED SECTION -->
     <section class="section-wrap" id="recentlyViewedSection" style="display:none; padding-top: 30px; padding-bottom: 10px;">
       <div class="section-heading" style="text-align: left; margin-bottom: 15px;">
         <h2 style="font-size: 22px; margin:0; color:var(--navy);">👀 Recently Viewed</h2>
@@ -111,6 +123,7 @@
       <div class="product-grid" id="recentGrid" style="grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap:10px;"></div>
     </section>
 
+    <!-- STORE DIRECTORY -->
     <section class="section-wrap" style="padding-top: 40px; padding-bottom: 80px;">
       <div class="section-heading" style="text-align: center; display: block; margin-bottom: 40px;">
         <span class="eyebrow">EXPLORE OUR VERTICALS</span>
@@ -132,21 +145,23 @@
         </a>
       </div>
     </section>
-  </main>
 
-  <!-- NAYA: DEALS MODAL POPUP -->
-  <div class="deal-modal-overlay" id="dealsModal">
-    <div class="deal-modal-box">
-      <button class="deal-close-btn" onclick="closeDealsModal()">×</button>
-      <div class="deal-header">
-        <h2>🔥 Deal of the Day</h2>
-        <p>Grab these offers before they're gone!</p>
+    <!-- NAYA: MAP & ADDRESS SECTION -->
+    <section class="map-section">
+      <div class="map-container">
+        <div class="map-info">
+          <span class="eyebrow">VISIT OUR STORE</span>
+          <h2>Find Us on Map</h2>
+          <p>Humari dukaan Azamgarh ke Bongariya Bazar mein sthit hai. Aap humse milne aayein aur naye collection ka anand lein!</p>
+          <p class="store-address">📍 Bongariya Bazar, Azamgarh, Uttar Pradesh - 276001</p>
+          <a href="https://maps.app.goo.gl/E65rP7zbzzpgeStg9" target="_blank" class="map-btn">🗺️ Get Directions on Google Maps ↗</a>
+        </div>
+        <div class="map-iframe">
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3582.697053600163!2d83.1837263!3d26.0704312!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3991e7b3f0c6c6c7%3A0x8e4e4e4e4e4e4e4e!2sAaradhya%20Fashion!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" allowfullscreen="" loading="lazy"></iframe>
+        </div>
       </div>
-      <div class="deal-grid" id="dealGrid">
-        <!-- Products will load here -->
-      </div>
-    </div>
-  </div>
+    </section>
+  </main>
 
   <footer class="site-footer">
     <div class="footer-links" style="display:flex; justify-content:center; gap:20px; margin-bottom:15px; flex-wrap:wrap;">
@@ -156,8 +171,20 @@
   </footer>
 
   <a href="cart.html" id="globalCartBtn" class="global-cart-btn"><span class="cart-icon-svg">🛒</span><span class="cart-text">Cart</span><span class="cart-badge" id="globalCartCount">0</span></a>
-  <a href="https://wa.me/918931911428?text=Hello%20Aaradhya%20Mart,%20I%20need%20some%20help." target="_blank" class="whatsapp-float-btn" aria-label="Chat on WhatsApp"><svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M16.004 2C8.28 2 2 8.28 2 16c0 2.47.64 4.79 1.76 6.81L2 30l7.39-1.71A13.93 13.93 0 0 0 16.004 30C23.72 30 30 23.72 30 16S23.72 2 16.004 2zm0 2.31c6.76 0 12.23 5.47 12.23 12.23 0 6.76-5.47 12.23-12.23 12.23-2.13 0-4.13-.55-5.86-1.51l-.42-.23-4.32 1 1-4.21-.24-.4A12.17 12.17 0 0 1 3.77 16c0-6.76 5.47-12.23 12.23-12.23z" fill="#fff"/><path d="M21.66 18.14c-.23-.12-1.38-.68-1.6-.76-.21-.08-.37-.12-.53.12-.16.24-.61.76-.75.92-.14.16-.28.18-.51.06-.23-.12-1-.37-1.91-1.18-.71-.63-1.18-1.41-1.32-1.65-.14-.24-.02-.37.1-.49.11-.11.23-.28.35-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.53-1.27-.72-1.74-.19-.46-.38-.4-.53-.4h-.45c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.69 2.58 4.1 3.62.57.25 1.02.4 1.37.51.57.18 1.09.15 1.5.09.46-.07 1.38-.56 1.58-1.11.2-.55.2-1.02.14-1.11-.06-.09-.22-.15-.45-.27z" fill="#fff"/></svg></a>
+  <a href="https://wa.me/918931911428?text=Hello%20Aaradhya%20Mart" target="_blank" class="whatsapp-float-btn" aria-label="Chat on WhatsApp"><svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M16.004 2C8.28 2 2 8.28 2 16c0 2.47.64 4.79 1.76 6.81L2 30l7.39-1.71A13.93 13.93 0 0 0 16.004 30C23.72 30 30 23.72 30 16S23.72 2 16.004 2zm0 2.31c6.76 0 12.23 5.47 12.23 12.23 0 6.76-5.47 12.23-12.23 12.23-2.13 0-4.13-.55-5.86-1.51l-.42-.23-4.32 1 1-4.21-.24-.4A12.17 12.17 0 0 1 3.77 16c0-6.76 5.47-12.23 12.23-12.23z" fill="#fff"/><path d="M21.66 18.14c-.23-.12-1.38-.68-1.6-.76-.21-.08-.37-.12-.53.12-.16.24-.61.76-.75.92-.14.16-.28.18-.51.06-.23-.12-1-.37-1.91-1.18-.71-.63-1.18-1.41-1.32-1.65-.14-.24-.02-.37.1-.49.11-.11.23-.28.35-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.53-1.27-.72-1.74-.19-.46-.38-.4-.53-.4h-.45c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.69 2.58 4.1 3.62.57.25 1.02.4 1.37.51.57.18 1.09.15 1.5.09.46-.07 1.38-.56 1.58-1.11.2-.55.2-1.02.14-1.11-.06-.09-.22-.15-.45-.27z" fill="#fff"/></svg></a>
   <a href="track.html" class="track-float-btn" aria-label="Track Order"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg><span>Track Order</span></a>
+
+  <!-- DEALS MODAL POPUP -->
+  <div class="deal-modal-overlay" id="dealsModal">
+    <div class="deal-modal-box">
+      <button class="deal-close-btn" onclick="closeDealsModal()">×</button>
+      <div class="deal-header">
+        <h2>🔥 Deal of the Day</h2>
+        <p>Grab these offers before they're gone!</p>
+      </div>
+      <div class="deal-grid" id="dealGrid"></div>
+    </div>
+  </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -166,7 +193,6 @@
     const firebaseConfig = { apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y", authDomain: "aaradhya-mart.firebaseapp.com", projectId: "aaradhya-mart", storageBucket: "aaradhya-mart.firebasestorage.app", messagingSenderId: "146782544824", appId: "1:146782544824:web:d605e1971d3480fab1654d" };
     const app = initializeApp(firebaseConfig); const db = getFirestore(app);
 
-    // 1. CART UPDATE
     function updateGlobalCart() {
       try {
         const cart = JSON.parse(localStorage.getItem("aaradhyaMartCart") || "[]");
@@ -180,7 +206,6 @@
       } catch(e) {}
     }
 
-    // 2. OFFER BANNER
     async function loadBannerCoupons() {
       try {
         const snap = await getDocs(collection(db, "coupons"));
@@ -199,7 +224,6 @@
       } catch(e) {}
     }
 
-    // 3. RECENTLY VIEWED
     async function loadRecentlyViewed() {
       try {
         const recentIds = JSON.parse(localStorage.getItem("aaradhyaRecent") || "[]");
@@ -230,7 +254,6 @@
       } catch(e) { console.log(e); }
     }
 
-    // 4. DEALS MODAL LOGIC
     window.openDealsModal = async function() {
       const modal = document.getElementById("dealsModal");
       const grid = document.getElementById("dealGrid");
@@ -274,7 +297,6 @@
       document.getElementById("dealsModal").classList.remove("active");
     }
 
-    // Close modal on background click
     document.getElementById("dealsModal").addEventListener("click", function(e) {
       if(e.target === this) closeDealsModal();
     });
