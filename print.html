@@ -38,7 +38,6 @@
     .deal-mini-card .price span { font-size: 10px; color: #aaa; text-decoration: line-through; margin-left: 3px; font-weight: normal; }
     .deal-mini-card .offer-tag { font-size: 9px; color: #10b981; font-weight: bold; display: block; margin-top: 2px; }
 
-    /* REVIEWS STYLE INSIDE POPUP */
     .review-list { margin-top: 15px; border-top: 1px solid #ddd; padding-top: 15px; max-height: 150px; overflow-y: auto; }
     .review-item { background: #f8f9fa; padding: 10px; border-radius: 6px; margin-bottom: 8px; }
     .review-item .stars { color: #f59e0b; font-size: 12px; }
@@ -108,7 +107,9 @@
 
       document.getElementById("productGrid").innerHTML = list.map(p => {
         const isOut = p.stock <= 0;
-        let optionsHtml = p.sizes?.length > 0 ? p.sizes.map(s => `<option value="${s}">${s}</option>`).join("") : `<option value="Standard">Standard</option>`;
+        let sizeOptions = p.sizes?.length > 0 ? p.sizes.map(s => `<option value="${s}">${s}</option>`).join("") : `<option value="Standard">Standard</option>`;
+        let colorOptions = p.colors?.length > 0 ? p.colors.map(c => `<option value="${c}">${c}</option>`).join("") : `<option value="Standard">Standard</option>`;
+        
         const waMsg = `Hi Aaradhya Mart, I want to order:\nProduct: ${p.name}\nPrice: ${money(p.price)}\nPlease confirm availability.`;
         const waLink = `https://wa.me/918931911428?text=${encodeURIComponent(waMsg)}`;
         const firstImg = p.image ? p.image.split(',')[0].trim() : 'https://placehold.co/400';
@@ -119,7 +120,11 @@
           <div class="product-info">
             <span class="product-category" data-open="${p.id}">${p.category}</span><h3 data-open="${p.id}" style="cursor:pointer;">${p.name}</h3>
             <div class="product-price">${p.price === 0 ? 'Custom Quote' : money(p.price)}</div>
-            ${!isOut ? `<select id="unit-${p.id}" class="unit-selector">${optionsHtml}</select>` : '<div style="color:red; font-size:10px; font-weight:bold; margin-bottom:5px;">OUT OF STOCK</div>'}
+            
+            ${!isOut ? `
+              <select id="unit-${p.id}" class="unit-selector">${sizeOptions}</select>
+              <select id="color-${p.id}" class="unit-selector" style="margin-top:5px; background:#fff;">${colorOptions}</select>
+            ` : '<div style="color:red; font-size:10px; font-weight:bold; margin-bottom:5px;">OUT OF STOCK</div>'}
             
             <div class="product-actions">
               <button class="small-button" data-open="${p.id}">VIEW</button>
@@ -171,6 +176,11 @@
         });
       }
 
+      let colorHtml = p.colors?.length > 0 ? `
+        <label>Colour:</label>
+        <select id="colorChoice">${p.colors.map(c=>`<option>${c}</option>`).join("")}</select>
+      ` : '';
+
       document.getElementById("dialogContent").innerHTML = `
         <div class="dialog-layout">
           ${sliderHtml}
@@ -180,6 +190,7 @@
             <p>${p.description}</p>
             <label>Size:</label>
             <select id="sizeChoice">${(p.sizes||['Standard']).map(s=>`<option>${s}</option>`).join("")}</select>
+            ${colorHtml}
             <button class="button-navy" id="dialogCart" style="margin-top:10px;">ADD TO CART 🛒</button>
             <button class="button-navy" id="dialogOrder" style="background:#c5a36b; color:#10243b; margin-top:5px;">BUY NOW ↗</button>
             
@@ -191,8 +202,18 @@
         </div>`;
       
       d.showModal();
-      document.getElementById("dialogOrder").onclick = () => { const size = document.getElementById("sizeChoice").value; window.location.href = `checkout.html?id=${p.id}&size=${encodeURIComponent(size)}&store=A-Print`; };
-      document.getElementById("dialogCart").onclick = () => { const size = document.getElementById("sizeChoice").value; addToCart(p.id, size); d.close(); };
+      
+      document.getElementById("dialogOrder").onclick = () => { 
+        const size = document.getElementById("sizeChoice").value; 
+        const color = document.getElementById("colorChoice")?.value || "Standard";
+        window.location.href = `checkout.html?id=${p.id}&size=${encodeURIComponent(size)}&color=${encodeURIComponent(color)}&store=A-Print`; 
+      };
+      document.getElementById("dialogCart").onclick = () => { 
+        const size = document.getElementById("sizeChoice").value; 
+        const color = document.getElementById("colorChoice")?.value || "Standard";
+        addToCart(p.id, size, color); 
+        d.close(); 
+      };
     }
 
     window.changeImage = function(step) {
@@ -208,8 +229,9 @@
       dots.forEach((dot, i) => { if(i === currentImgIndex) dot.classList.add("active"); else dot.classList.remove("active"); });
     }
 
-    function addToCart(id, unit) {
-      let cart = JSON.parse(localStorage.getItem("aaradhyaMartCart") || "[]"); cart.push({ id: id, size: unit, qty: 1 });
+    function addToCart(id, unit, color) {
+      let cart = JSON.parse(localStorage.getItem("aaradhyaMartCart") || "[]"); 
+      cart.push({ id: id, size: unit, color: color, qty: 1 });
       localStorage.setItem("aaradhyaMartCart", JSON.stringify(cart)); showToast(); updateGlobalCart();
     }
 
@@ -264,8 +286,18 @@
       document.addEventListener("click", e => {
         const open = e.target.closest("[data-open]"); const order = e.target.closest("[data-order]"); const cartBtn = e.target.closest("[data-cart]");
         if(open) openProduct(open.dataset.open);
-        if(order && !order.disabled) { const p = products.find(x=>x.id===order.dataset.order); const selectedOption = document.getElementById(`unit-${p.id}`)?.value || "Standard"; window.location.href = `checkout.html?id=${p.id}&size=${encodeURIComponent(selectedOption)}&store=A-Print`; }
-        if(cartBtn && !cartBtn.disabled) { const pId = cartBtn.dataset.cart; const selectedOption = document.getElementById(`unit-${pId}`)?.value || "Standard"; addToCart(pId, selectedOption); }
+        if(order && !order.disabled) { 
+          const p = products.find(x=>x.id===order.dataset.order); 
+          const selectedSize = document.getElementById(`unit-${p.id}`)?.value || "Standard"; 
+          const selectedColor = document.getElementById(`color-${p.id}`)?.value || "Standard";
+          window.location.href = `checkout.html?id=${p.id}&size=${encodeURIComponent(selectedSize)}&color=${encodeURIComponent(selectedColor)}&store=A-Print`; 
+        }
+        if(cartBtn && !cartBtn.disabled) { 
+          const pId = cartBtn.dataset.cart; 
+          const selectedSize = document.getElementById(`unit-${pId}`)?.value || "Standard"; 
+          const selectedColor = document.getElementById(`color-${pId}`)?.value || "Standard";
+          addToCart(pId, selectedSize, selectedColor); 
+        }
       });
       document.getElementById("dialogClose").onclick = () => document.getElementById("productDialog").close();
     });
