@@ -99,6 +99,18 @@
 
     function money(v) { return "₹" + Number(v||0).toLocaleString("en-IN"); }
     
+    // NAYA: PRICE CALCULATION LOGIC
+    function calculateDisplayPrice(basePrice, unitStr, isPerKg) {
+      if(!isPerKg) return basePrice;
+      let multiplier = 1;
+      const u = unitStr.toLowerCase();
+      if(u.includes("250g") || u.includes("250 g") || u.includes("0.25")) multiplier = 0.25;
+      else if(u.includes("500g") || u.includes("500 g") || u.includes("0.5")) multiplier = 0.5;
+      else if(u.includes("100g") || u.includes("100 g") || u.includes("0.1")) multiplier = 0.1;
+      else if(u.includes("2kg") || u.includes("2 kg")) multiplier = 2;
+      return Math.round(basePrice * multiplier);
+    }
+
     function render() {
       const queryStr = document.getElementById("searchInput").value.toLowerCase();
       const sort = document.getElementById("sortFilter").value;
@@ -113,14 +125,18 @@
         const waMsg = `Hi Aaradhya Mart, I want to order:\nProduct: ${p.name}\nPrice: ${money(p.price)}\nPlease confirm availability.`;
         const waLink = `https://wa.me/918931911428?text=${encodeURIComponent(waMsg)}`;
         const firstImg = p.image ? p.image.split(',')[0].trim() : 'https://placehold.co/400';
+        
+        // Calculate initial display price based on first option
+        const firstSize = p.sizes?.length > 0 ? p.sizes[0] : (p.unit || '1 Unit');
+        const displayPrice = calculateDisplayPrice(p.price, firstSize, p.isPerKg);
 
         return `
         <article class="product-card">
           <div class="product-image-wrap" data-open="${p.id}"><img src="${firstImg}" alt="${p.name}"></div>
           <div class="product-info">
             <span class="product-category" data-open="${p.id}">${p.category}</span><h3 data-open="${p.id}" style="cursor:pointer;">${p.name}</h3>
-            <div class="product-price">${money(p.price)}</div>
-            ${!isOut ? `<select id="unit-${p.id}" class="unit-selector">${optionsHtml}</select>` : '<div style="color:red; font-size:10px; font-weight:bold; margin-bottom:5px;">OUT OF STOCK</div>'}
+            <div class="product-price" id="price-display-${p.id}">${money(displayPrice)}</div>
+            ${!isOut ? `<select id="unit-${p.id}" class="unit-selector" onchange="updatePriceDisplay('${p.id}', ${p.price}, ${p.isPerKg})">${optionsHtml}</select>` : '<div style="color:red; font-size:10px; font-weight:bold; margin-bottom:5px;">OUT OF STOCK</div>'}
             
             <div class="product-actions">
               <button class="small-button" data-open="${p.id}">VIEW</button>
@@ -132,6 +148,13 @@
           </div>
         </article>`;
       }).join("");
+    }
+
+    // NAYA: PRICE UPDATE ON DROPDOWN CHANGE
+    window.updatePriceDisplay = function(productId, basePrice, isPerKg) {
+      const selectedUnit = document.getElementById(`unit-${productId}`).value;
+      const newPrice = calculateDisplayPrice(basePrice, selectedUnit, isPerKg);
+      document.getElementById(`price-display-${productId}`).textContent = money(newPrice);
     }
 
     async function openProduct(id) {
@@ -172,15 +195,19 @@
         });
       }
 
+      // Calculate initial dialog price
+      const firstSize = p.sizes?.length > 0 ? p.sizes[0] : (p.unit || 'Standard');
+      const initialPrice = calculateDisplayPrice(p.price, firstSize, p.isPerKg);
+
       document.getElementById("dialogContent").innerHTML = `
         <div class="dialog-layout">
           ${sliderHtml}
           <div class="dialog-details">
             <h2>${p.name}</h2>
-            <div class="product-price">${money(p.price)}</div>
+            <div class="product-price" id="dialog-price-display">${money(initialPrice)}</div>
             <p>${p.description}</p>
             <label>Size:</label>
-            <select id="sizeChoice">${(p.sizes||[p.unit||'Standard']).map(s=>`<option>${s}</option>`).join("")}</select>
+            <select id="sizeChoice" onchange="updateDialogPriceDisplay(${p.price}, ${p.isPerKg})">${(p.sizes||[p.unit||'Standard']).map(s=>`<option value="${s}">${s}</option>`).join("")}</select>
             <button class="button-navy" id="dialogCart" style="margin-top:10px;">ADD TO CART 🛒</button>
             <button class="button-navy" id="dialogOrder" style="background:#c5a36b; color:#10243b; margin-top:5px;">BUY NOW ↗</button>
             
@@ -192,8 +219,28 @@
         </div>`;
       
       d.showModal();
-      document.getElementById("dialogOrder").onclick = () => { const size = document.getElementById("sizeChoice").value; window.location.href = `checkout.html?id=${p.id}&size=${encodeURIComponent(size)}&store=Aaradhya Kirana`; };
-      document.getElementById("dialogCart").onclick = () => { const size = document.getElementById("sizeChoice").value; addToCart(p.id, size); d.close(); };
+      
+      window.updateDialogPriceDisplay = function(basePrice, isPerKg) {
+        const selectedUnit = document.getElementById("sizeChoice").value;
+        const newPrice = calculateDisplayPrice(basePrice, selectedUnit, isPerKg);
+        document.getElementById("dialog-price-display").textContent = money(newPrice);
+      }
+      window.currentDialogPrice = function() {
+        const selectedUnit = document.getElementById("sizeChoice").value;
+        return calculateDisplayPrice(p.price, selectedUnit, p.isPerKg);
+      }
+
+      document.getElementById("dialogOrder").onclick = () => { 
+        const size = document.getElementById("sizeChoice").value; 
+        const finalPrice = window.currentDialogPrice();
+        window.location.href = `checkout.html?id=${p.id}&size=${encodeURIComponent(size)}&price=${finalPrice}&store=Aaradhya Kirana`; 
+      };
+      document.getElementById("dialogCart").onclick = () => { 
+        const size = document.getElementById("sizeChoice").value; 
+        const finalPrice = window.currentDialogPrice();
+        addToCart(p.id, size, finalPrice); 
+        d.close(); 
+      };
     }
 
     window.changeImage = function(step) {
@@ -209,8 +256,10 @@
       dots.forEach((dot, i) => { if(i === currentImgIndex) dot.classList.add("active"); else dot.classList.remove("active"); });
     }
 
-    function addToCart(id, unit) {
-      let cart = JSON.parse(localStorage.getItem("aaradhyaMartCart") || "[]"); cart.push({ id: id, size: unit, qty: 1 });
+    // ADD TO CART WITH CUSTOM PRICE
+    function addToCart(id, unit, customPrice) {
+      let cart = JSON.parse(localStorage.getItem("aaradhyaMartCart") || "[]"); 
+      cart.push({ id: id, size: unit, qty: 1, price: customPrice }); // Save calculated price
       localStorage.setItem("aaradhyaMartCart", JSON.stringify(cart)); showToast(); updateGlobalCart();
     }
 
@@ -262,8 +311,20 @@
       document.addEventListener("click", e => {
         const open = e.target.closest("[data-open]"); const order = e.target.closest("[data-order]"); const cartBtn = e.target.closest("[data-cart]");
         if(open) openProduct(open.dataset.open);
-        if(order && !order.disabled) { const p = products.find(x=>x.id===order.dataset.order); const selectedUnit = document.getElementById(`unit-${p.id}`)?.value || p.unit || "Standard"; window.location.href = `checkout.html?id=${p.id}&size=${encodeURIComponent(selectedUnit)}&store=Aaradhya Kirana`; }
-        if(cartBtn && !cartBtn.disabled) { const pId = cartBtn.dataset.cart; const selectedUnit = document.getElementById(`unit-${pId}`)?.value || "Standard"; addToCart(pId, selectedUnit); }
+        
+        if(order && !order.disabled) { 
+          const p = products.find(x=>x.id===order.dataset.order); 
+          const selectedUnit = document.getElementById(`unit-${p.id}`)?.value || p.unit || "Standard"; 
+          const finalPrice = calculateDisplayPrice(p.price, selectedUnit, p.isPerKg);
+          window.location.href = `checkout.html?id=${p.id}&size=${encodeURIComponent(selectedUnit)}&price=${finalPrice}&store=Aaradhya Kirana`; 
+        }
+        if(cartBtn && !cartBtn.disabled) { 
+          const pId = cartBtn.dataset.cart; 
+          const p = products.find(x=>x.id===pId);
+          const selectedUnit = document.getElementById(`unit-${pId}`)?.value || "Standard"; 
+          const finalPrice = calculateDisplayPrice(p.price, selectedUnit, p.isPerKg);
+          addToCart(pId, selectedUnit, finalPrice); 
+        }
       });
       document.getElementById("dialogClose").onclick = () => document.getElementById("productDialog").close();
     });
