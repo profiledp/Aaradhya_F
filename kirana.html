@@ -37,6 +37,13 @@
     .deal-mini-card .price { font-size: 13px; font-weight: bold; color: #ef4444; }
     .deal-mini-card .price span { font-size: 10px; color: #aaa; text-decoration: line-through; margin-left: 3px; font-weight: normal; }
     .deal-mini-card .offer-tag { font-size: 9px; color: #10b981; font-weight: bold; display: block; margin-top: 2px; }
+
+    /* REVIEWS STYLE INSIDE POPUP */
+    .review-list { margin-top: 15px; border-top: 1px solid #ddd; padding-top: 15px; max-height: 150px; overflow-y: auto; }
+    .review-item { background: #f8f9fa; padding: 10px; border-radius: 6px; margin-bottom: 8px; }
+    .review-item .stars { color: #f59e0b; font-size: 12px; }
+    .review-item .name { font-weight: bold; font-size: 12px; color: var(--navy); }
+    .review-item .comment { font-size: 12px; color: #555; margin-top: 3px; }
   </style>
 </head>
 <body>
@@ -127,7 +134,7 @@
       }).join("");
     }
 
-    function openProduct(id) {
+    async function openProduct(id) {
       const p = products.find(x => x.id === id); 
       if(!p) return;
       let imgArray = p.image ? p.image.split(",").map(img => img.trim()) : ["https://placehold.co/400"];
@@ -147,6 +154,24 @@
         </div>
       `;
 
+      const rq = query(collection(db, "reviews"), where("productId", "==", p.id));
+      const rSnap = await getDocs(rq);
+      let reviewsHtml = "";
+      if(rSnap.empty) {
+        reviewsHtml = `<p style="font-size:11px; color:#777; font-style:italic;">No reviews yet. Be the first to review!</p>`;
+      } else {
+        rSnap.forEach(rd => {
+          const r = rd.data();
+          reviewsHtml += `
+            <div class="review-item">
+              <div class="stars">${'⭐'.repeat(r.rating)}</div>
+              <div class="name">${r.customerName}</div>
+              <div class="comment">${r.comment}</div>
+            </div>
+          `;
+        });
+      }
+
       document.getElementById("dialogContent").innerHTML = `
         <div class="dialog-layout">
           ${sliderHtml}
@@ -155,9 +180,14 @@
             <div class="product-price">${money(p.price)}</div>
             <p>${p.description}</p>
             <label>Size:</label>
-            <select id="sizeChoice">${(p.sizes||['Standard']).map(s=>`<option>${s}</option>`).join("")}</select>
+            <select id="sizeChoice">${(p.sizes||[p.unit||'Standard']).map(s=>`<option>${s}</option>`).join("")}</select>
             <button class="button-navy" id="dialogCart" style="margin-top:10px;">ADD TO CART 🛒</button>
             <button class="button-navy" id="dialogOrder" style="background:#c5a36b; color:#10243b; margin-top:5px;">BUY NOW ↗</button>
+            
+            <div class="review-list">
+              <h4 style="font-size:13px; margin:0 0 5px; color:var(--navy);">Customer Reviews</h4>
+              ${reviewsHtml}
+            </div>
           </div>
         </div>`;
       
