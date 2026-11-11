@@ -193,6 +193,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    // getDoc aur increment import kiye gaye hain
     import { getFirestore, collection, getDocs, doc, getDoc, setDoc, deleteDoc, updateDoc, increment, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
@@ -305,32 +306,40 @@
       } catch(e) { ordersList.innerHTML = "Error loading orders."; }
     }
 
-    // NAYA: AUTO STOCK RETURN ON CANCEL
+    // UPDATE ORDER (FIXED)
     window.updateOrder = async (id, newStatus, sel) => { 
-      const orderRef = doc(db, "orders", id);
-      const orderSnap = await getDoc(orderRef);
-      
-      if(orderSnap.exists()) {
-        const orderData = orderSnap.data();
+      try {
+        sel.disabled = true; // Disable dropdown while saving
         
-        // Agar status cancel ho raha hai aur pehle cancel nahi tha
-        if(newStatus === "Cancelled" && orderData.status !== "Cancelled") {
-          // Products ka stock wapas badhayein
-          for (const item of orderData.items) {
-            await updateDoc(doc(db, "products", item.id), { stock: increment(item.qty) });
-          }
-          showToast("Order Cancelled & Stock Returned!");
-        } 
-        // Agar cancel se wapas kisi aur status par le jaa rahe hain (toh stock minus karna hoga)
-        else if(orderData.status === "Cancelled" && newStatus !== "Cancelled") {
-          for (const item of orderData.items) {
-            await updateDoc(doc(db, "products", item.id), { stock: increment(-item.qty) });
-          }
-        }
+        const orderRef = doc(db, "orders", id);
+        const orderSnap = await getDoc(orderRef);
+        
+        if (orderSnap.exists()) {
+          const orderData = orderSnap.data();
+          const oldStatus = orderData.status;
 
-        // Order status update karein
-        await updateDoc(orderRef, { status: newStatus }); 
-        sel.className = `status-select status-${newStatus.replace(/\s+/g, '')}`; 
+          // Auto Stock Refund on Cancel
+          if (newStatus === "Cancelled" && oldStatus !== "Cancelled") {
+            for (const item of orderData.items) {
+              await updateDoc(doc(db, "products", item.id), { stock: increment(item.qty) });
+            }
+          }
+          // Auto Stock Deduct on Un-cancel
+          else if (oldStatus === "Cancelled" && newStatus !== "Cancelled") {
+            for (const item of orderData.items) {
+              await updateDoc(doc(db, "products", item.id), { stock: increment(-item.qty) });
+            }
+          }
+
+          // Update Status
+          await updateDoc(orderRef, { status: newStatus }); 
+          sel.className = `status-select status-${newStatus.replace(/\s+/g, '')}`; 
+        }
+      } catch (error) {
+        console.error(error);
+        alert("Status update failed! Please check internet.");
+      } finally {
+        sel.disabled = false;
       }
     };
 
