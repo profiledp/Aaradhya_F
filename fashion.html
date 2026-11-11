@@ -19,47 +19,31 @@
     .slider-dot { width: 10px; height: 10px; background: #ccc; border-radius: 50%; cursor: pointer; }
     .slider-dot.active { background: var(--navy); width: 12px; height: 12px; }
 
-    /* =========================================
-       NAYA: BLINKIT STYLE DEAL BANNER (GOLDEN)
-       ========================================= */
-    .blinkit-deal-banner {
-      background: linear-gradient(135deg, #fff3cd, #ffe69c);
-      border: 2px solid #ffc107;
-      border-radius: 12px;
-      padding: 15px;
-      margin-bottom: 25px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 8px 25px rgba(255, 193, 7, 0.3);
-      animation: pulseDeal 2s infinite alternate;
-    }
-    @keyframes pulseDeal {
-      0% { box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3); transform: scale(1); }
-      100% { box-shadow: 0 10px 30px rgba(255, 193, 7, 0.6); transform: scale(1.01); }
-    }
-    .blinkit-deal-banner::before {
-      content: "🔥"; position: absolute; right: -10px; top: -10px; font-size: 80px; opacity: 0.1; transform: rotate(15deg);
-    }
+    .blinkit-deal-banner { background: linear-gradient(135deg, #fff3cd, #ffe69c); border: 2px solid #ffc107; border-radius: 12px; padding: 15px; margin-bottom: 25px; position: relative; overflow: hidden; box-shadow: 0 8px 25px rgba(255, 193, 7, 0.3); animation: pulseDeal 2s infinite alternate; }
+    @keyframes pulseDeal { 0% { box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3); transform: scale(1); } 100% { box-shadow: 0 10px 30px rgba(255, 193, 7, 0.6); transform: scale(1.01); } }
+    .blinkit-deal-banner::before { content: "🔥"; position: absolute; right: -10px; top: -10px; font-size: 80px; opacity: 0.1; transform: rotate(15deg); }
     .deal-banner-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .deal-banner-header h3 { margin: 0; font: normal 20px Georgia, serif; color: #d97706; display: flex; align-items: center; gap: 8px; }
     .deal-banner-header span { font-size: 10px; background: #ef4444; color: #fff; padding: 2px 8px; border-radius: 10px; animation: blinkText 1s infinite alternate; }
     @keyframes blinkText { 0% { opacity: 1; } 100% { opacity: 0.5; } }
     
-    .deal-products-scroll {
-      display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none;
-    }
+    .deal-products-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
     .deal-products-scroll::-webkit-scrollbar { display: none; }
     
-    .deal-mini-card {
-      background: #fff; border-radius: 8px; padding: 8px; min-width: 130px; max-width: 130px;
-      border: 1px solid #ffeeba; cursor: pointer; transition: 0.2s;
-    }
+    .deal-mini-card { background: #fff; border-radius: 8px; padding: 8px; min-width: 130px; max-width: 130px; border: 1px solid #ffeeba; cursor: pointer; transition: 0.2s; }
     .deal-mini-card:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
     .deal-mini-card img { width: 100%; height: 100px; object-fit: contain; border-radius: 6px; }
     .deal-mini-card h4 { margin: 5px 0 2px; font-size: 11px; color: var(--navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .deal-mini-card .price { font-size: 13px; font-weight: bold; color: #ef4444; }
     .deal-mini-card .price span { font-size: 10px; color: #aaa; text-decoration: line-through; margin-left: 3px; font-weight: normal; }
     .deal-mini-card .offer-tag { font-size: 9px; color: #10b981; font-weight: bold; display: block; margin-top: 2px; }
+
+    /* REVIEWS STYLE INSIDE POPUP */
+    .review-list { margin-top: 15px; border-top: 1px solid #ddd; padding-top: 15px; max-height: 150px; overflow-y: auto; }
+    .review-item { background: #f8f9fa; padding: 10px; border-radius: 6px; margin-bottom: 8px; }
+    .review-item .stars { color: #f59e0b; font-size: 12px; }
+    .review-item .name { font-weight: bold; font-size: 12px; color: var(--navy); }
+    .review-item .comment { font-size: 12px; color: #555; margin-top: 3px; }
   </style>
 </head>
 <body>
@@ -70,7 +54,6 @@
 
   <main class="section-wrap shop-section" style="padding-top: 40px;">
     
-    <!-- NAYA: BLINKIT STYLE DEAL BANNER -->
     <section id="blinkitDealSection" class="blinkit-deal-banner" style="display:none;">
       <div class="deal-banner-header">
         <h3>⚡ Deal of the Day <span>ENDS SOON</span></h3>
@@ -163,7 +146,7 @@
       }
     }
 
-    function openProduct(id) {
+    async function openProduct(id) {
       const p = products.find(x => x.id === id); 
       if(!p) return;
       let imgArray = p.image ? p.image.split(",").map(img => img.trim()) : ["https://placehold.co/400"];
@@ -183,6 +166,25 @@
         </div>
       `;
 
+      // Fetch Reviews for this product
+      const rq = query(collection(db, "reviews"), where("productId", "==", p.id));
+      const rSnap = await getDocs(rq);
+      let reviewsHtml = "";
+      if(rSnap.empty) {
+        reviewsHtml = `<p style="font-size:11px; color:#777; font-style:italic;">No reviews yet. Be the first to review!</p>`;
+      } else {
+        rSnap.forEach(rd => {
+          const r = rd.data();
+          reviewsHtml += `
+            <div class="review-item">
+              <div class="stars">${'⭐'.repeat(r.rating)}</div>
+              <div class="name">${r.customerName}</div>
+              <div class="comment">${r.comment}</div>
+            </div>
+          `;
+        });
+      }
+
       document.getElementById("dialogContent").innerHTML = `
         <div class="dialog-layout">
           ${sliderHtml}
@@ -194,6 +196,11 @@
             <select id="sizeChoice">${(p.sizes||['Standard']).map(s=>`<option>${s}</option>`).join("")}</select>
             <button class="button-navy" id="dialogCart" style="margin-top:10px;">ADD TO CART 🛒</button>
             <button class="button-navy" id="dialogOrder" style="background:#c5a36b; color:#10243b; margin-top:5px;">BUY NOW ↗</button>
+            
+            <div class="review-list">
+              <h4 style="font-size:13px; margin:0 0 5px; color:var(--navy);">Customer Reviews</h4>
+              ${reviewsHtml}
+            </div>
           </div>
         </div>`;
       
@@ -234,12 +241,10 @@
       } catch(e) {}
     }
 
-    // NAYA: LOAD DEALS LOGIC FOR THIS PAGE ONLY
     async function loadDeals() {
       try {
         const q = query(collection(db, "products"), where("isDeal", "==", true), where("store", "==", "Fashion")); 
         const querySnapshot = await getDocs(q);
-        
         const scrollBox = document.getElementById("dealProductsScroll"); 
         const dealSection = document.getElementById("blinkitDealSection");
         
@@ -251,7 +256,6 @@
           const p = doc.data();
           const firstImg = p.image ? p.image.split(',')[0].trim() : 'https://placehold.co/400';
           const discount = p.originalPrice > p.price ? Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100) : 0;
-          
           html += `
             <div class="deal-mini-card" onclick="openProduct('${doc.id}')">
               <img src="${firstImg}" alt="${p.name}">
