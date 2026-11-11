@@ -7,8 +7,6 @@
   <link rel="stylesheet" href="style.css">
   <style>
     body { background: #f4f6f8; margin: 0; font-family: Arial, sans-serif; }
-    
-    /* SPLIT-SCREEN LOGIN CSS */
     .login-split-wrapper { display: flex; min-height: 100vh; width: 100%; }
     .login-left { flex: 1; background: linear-gradient(135deg, #10243b, #1e3a5f); color: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px; position: relative; overflow: hidden; }
     .login-left::before { content: "AM"; position: absolute; font-size: 300px; font-family: Georgia, serif; opacity: 0.03; font-weight: bold; }
@@ -34,7 +32,6 @@
       .login-right { padding: 20px; flex: none; }
     }
 
-    /* ADMIN DASHBOARD STYLES */
     .admin-shell { max-width: 1200px; margin: 40px auto; padding: 20px; display: none; }
     .admin-panel { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
     .grid-form { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
@@ -52,7 +49,7 @@
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
-    .main-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #ccc; padding-bottom: 10px;}
+    .main-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #ccc; padding-bottom: 10px; flex-wrap: wrap;}
     .main-tab-btn { background: none; border: none; font-size: 16px; font-weight: bold; color: #777; cursor: pointer; padding: 10px;}
     .main-tab-btn.active { color: #10243b; border-bottom: 3px solid #10243b;}
     
@@ -60,7 +57,6 @@
     .order-card h4 { margin: 0 0 10px; color: #10243b; display:flex; justify-content:space-between; align-items:center;}
     .order-card p { margin: 5px 0; font-size: 13px; }
     
-    /* Order Status Colors */
     .status-select { padding: 6px 10px; border-radius: 20px; font-weight: bold; border: 1px solid #ccc; cursor: pointer; outline: none; font-size: 12px; }
     .status-Pending { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
     .status-Confirmed { background: #e0f2fe; color: #0369a1; border-color: #7dd3fc; }
@@ -69,7 +65,6 @@
     .status-Delivered { background: #dcfce7; color: #166534; border-color: #86efac; }
     .status-Cancelled { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
 
-    /* Custom Modal */
     .custom-modal-overlay { position: fixed; inset: 0; background: rgba(16, 36, 59, 0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; visibility: hidden; transition: 0.3s; }
     .custom-modal-overlay.active { opacity: 1; visibility: visible; }
     .custom-modal { background: #fff; padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2); transform: scale(0.8); transition: 0.3s; }
@@ -115,9 +110,10 @@
       <button class="main-tab-btn active" onclick="switchMainTab('products', this)">🛍️ Products</button>
       <button class="main-tab-btn" onclick="switchMainTab('orders', this)">📦 Orders</button>
       <button class="main-tab-btn" onclick="switchMainTab('coupons', this)">🎟️ Coupons</button>
+      <button class="main-tab-btn" onclick="switchMainTab('reviews', this)">⭐ Reviews</button> <!-- NAYA TAB -->
     </div>
 
-    <!-- 1. PRODUCTS SECTION -->
+    <!-- 1. PRODUCTS -->
     <div id="tab-products" class="tab-content active">
       <div class="admin-panel">
         <h2 id="formTitle">Add New Product</h2>
@@ -153,12 +149,12 @@
       </div>
     </div>
 
-    <!-- 2. ORDERS SECTION -->
+    <!-- 2. ORDERS -->
     <div id="tab-orders" class="tab-content">
       <div class="admin-panel"><h2>All Orders (Live)</h2><div id="ordersList"></div></div>
     </div>
 
-    <!-- 3. COUPONS SECTION -->
+    <!-- 3. COUPONS -->
     <div id="tab-coupons" class="tab-content">
       <div class="admin-panel">
         <h2>Create New Coupon</h2>
@@ -176,9 +172,18 @@
         </table>
       </div>
     </div>
+
+    <!-- 4. REVIEWS (NAYAA) -->
+    <div id="tab-reviews" class="tab-content">
+      <div class="admin-panel">
+        <h2>Customer Reviews</h2>
+        <div id="reviewsList"></div>
+      </div>
+    </div>
+
   </div>
 
-  <!-- DELETE CONFIRMATION POPUP -->
+  <!-- DELETE MODAL -->
   <div class="custom-modal-overlay" id="deleteModal">
     <div class="custom-modal">
       <div style="font-size: 40px; margin-bottom: 15px; color: #ef4444;">⚠️</div>
@@ -193,7 +198,6 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    // getDoc aur increment import kiye gaye hain
     import { getFirestore, collection, getDocs, doc, getDoc, setDoc, deleteDoc, updateDoc, increment, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
@@ -201,42 +205,28 @@
     const app = initializeApp(firebaseConfig); const db = getFirestore(app); const auth = getAuth(app);
     let allProducts = [];
 
-    // Auth Logic
     onAuthStateChanged(auth, (user) => { 
-      if(user) { 
-        document.getElementById("loginScreenView").style.display = "none"; 
-        document.getElementById("adminView").style.display = "block"; 
-        loadProducts(); 
-      } else { 
-        document.getElementById("loginScreenView").style.display = "flex"; 
-        document.getElementById("adminView").style.display = "none"; 
-      } 
+      if(user) { document.getElementById("loginScreenView").style.display = "none"; document.getElementById("adminView").style.display = "block"; loadProducts(); } 
+      else { document.getElementById("loginScreenView").style.display = "flex"; document.getElementById("adminView").style.display = "none"; } 
     });
 
     document.getElementById("loginButton").onclick = async () => { 
-      const email = document.getElementById("adminEmail").value;
-      const pass = document.getElementById("adminPass").value;
-      const err = document.getElementById("loginError");
+      const email = document.getElementById("adminEmail").value; const pass = document.getElementById("adminPass").value; const err = document.getElementById("loginError");
       err.style.display = "none";
-      try { 
-        await signInWithEmailAndPassword(auth, email, pass);
-      } catch (e) { 
-        err.textContent = "Login failed: " + e.message; 
-        err.style.display = "block";
-      } 
+      try { await signInWithEmailAndPassword(auth, email, pass); } catch (e) { err.textContent = "Login failed: " + e.message; err.style.display = "block"; } 
     };
-
     document.getElementById("logoutButton").onclick = () => { signOut(auth); };
 
-    // Tabs
     window.switchMainTab = function(tabName, btnElement) {
       document.querySelectorAll('.main-tab-btn').forEach(btn => btn.classList.remove('active')); btnElement.classList.add('active');
       document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
       document.getElementById(`tab-${tabName}`).classList.add('active');
-      if(tabName === 'products') loadProducts(); else if(tabName === 'orders') loadOrders(); else if(tabName === 'coupons') loadCoupons();
+      if(tabName === 'products') loadProducts(); 
+      else if(tabName === 'orders') loadOrders(); 
+      else if(tabName === 'coupons') loadCoupons();
+      else if(tabName === 'reviews') loadReviews();
     }
 
-    // Products
     async function loadProducts() {
       const snap = await getDocs(collection(db, "products")); allProducts = [];
       snap.forEach(d => allProducts.push({ id: d.id, ...d.data() }));
@@ -244,10 +234,7 @@
         <tr>
           <td>${p.store}</td><td>${p.name}</td><td>₹${p.price}</td>
           <td><input type="number" class="stock-input ${p.stock <= 5 ? 'stock-low' : ''}" value="${p.stock}" data-stock-id="${p.id}"></td>
-          <td>
-            <button class="btn btn-primary" style="padding:5px 10px; font-size:11px;" data-edit="${p.id}">Edit</button>
-            <button class="btn btn-danger" style="padding:5px 10px; font-size:11px;" onclick="openDeleteModal('product', '${p.id}')">Delete</button>
-          </td>
+          <td><button class="btn btn-primary" style="padding:5px 10px; font-size:11px;" data-edit="${p.id}">Edit</button> <button class="btn btn-danger" style="padding:5px 10px; font-size:11px;" onclick="openDeleteModal('product', '${p.id}')">Delete</button></td>
         </tr>
       `).join("");
       
@@ -276,7 +263,6 @@
     };
     document.getElementById("clearBtn").onclick = () => { productForm.reset(); editId.value=""; formTitle.textContent="Add New Product"; };
 
-    // Orders
     async function loadOrders() {
       const ordersList = document.getElementById("ordersList"); ordersList.innerHTML = "<p>Loading...</p>";
       try {
@@ -306,44 +292,23 @@
       } catch(e) { ordersList.innerHTML = "Error loading orders."; }
     }
 
-    // UPDATE ORDER (FIXED)
     window.updateOrder = async (id, newStatus, sel) => { 
       try {
-        sel.disabled = true; // Disable dropdown while saving
-        
-        const orderRef = doc(db, "orders", id);
-        const orderSnap = await getDoc(orderRef);
-        
+        sel.disabled = true;
+        const orderRef = doc(db, "orders", id); const orderSnap = await getDoc(orderRef);
         if (orderSnap.exists()) {
-          const orderData = orderSnap.data();
-          const oldStatus = orderData.status;
-
-          // Auto Stock Refund on Cancel
+          const orderData = orderSnap.data(); const oldStatus = orderData.status;
           if (newStatus === "Cancelled" && oldStatus !== "Cancelled") {
-            for (const item of orderData.items) {
-              await updateDoc(doc(db, "products", item.id), { stock: increment(item.qty) });
-            }
+            for (const item of orderData.items) { await updateDoc(doc(db, "products", item.id), { stock: increment(item.qty) }); }
+          } else if (oldStatus === "Cancelled" && newStatus !== "Cancelled") {
+            for (const item of orderData.items) { await updateDoc(doc(db, "products", item.id), { stock: increment(-item.qty) }); }
           }
-          // Auto Stock Deduct on Un-cancel
-          else if (oldStatus === "Cancelled" && newStatus !== "Cancelled") {
-            for (const item of orderData.items) {
-              await updateDoc(doc(db, "products", item.id), { stock: increment(-item.qty) });
-            }
-          }
-
-          // Update Status
           await updateDoc(orderRef, { status: newStatus }); 
           sel.className = `status-select status-${newStatus.replace(/\s+/g, '')}`; 
         }
-      } catch (error) {
-        console.error(error);
-        alert("Status update failed! Please check internet.");
-      } finally {
-        sel.disabled = false;
-      }
+      } catch (error) { alert("Status update failed!"); } finally { sel.disabled = false; }
     };
 
-    // Coupons
     async function loadCoupons() {
       const snap = await getDocs(collection(db, "coupons"));
       document.getElementById("couponRows").innerHTML = snap.docs.map(d => {
@@ -357,7 +322,23 @@
       showToast("Coupon Created!"); document.getElementById("couponForm").reset(); loadCoupons();
     }
 
-    // Delete Modal
+    // NAYA: LOAD REVIEWS
+    async function loadReviews() {
+      const snap = await getDocs(collection(db, "reviews"));
+      document.getElementById("reviewsList").innerHTML = snap.docs.map(d => {
+        const r = d.data();
+        return `
+          <div class="order-card" style="border-left: 4px solid #f59e0b;">
+            <h4><span>${r.productName}</span> <span style="color:#f59e0b;">${'⭐'.repeat(r.rating)}</span></h4>
+            <p><strong>Customer:</strong> ${r.customerName} | <strong>Date:</strong> ${r.date}</p>
+            <p><strong>Comment:</strong> ${r.comment}</p>
+            <p style="margin-top:10px;"><button class="btn btn-danger" onclick="deleteReview('${d.id}')" style="padding:5px 10px; font-size:11px;">Delete</button></p>
+          </div>
+        `;
+      }).join("");
+    }
+    window.deleteReview = async (id) => { await deleteDoc(doc(db, "reviews", id)); loadReviews(); showToast("Review Deleted!"); }
+
     let deleteItemType = ""; let deleteItemId = "";
     window.openDeleteModal = function(type, id) {
       deleteItemType = type; deleteItemId = id;
@@ -371,7 +352,6 @@
       closeDeleteModal(); showToast("Deleted Successfully!");
     }
 
-    // Toast
     function showToast(msg) {
       let t = document.querySelector('.toast-notification'); if(t) t.remove();
       const toast = document.createElement('div'); toast.className='toast-notification'; 
