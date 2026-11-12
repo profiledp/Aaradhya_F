@@ -110,7 +110,7 @@
     .festive-banner::after { content: "✨"; position: absolute; right: 10%; top: 50%; transform: translateY(-50%); font-size: 20px; opacity: 0.5; }
     .festive-banner:hover { background: linear-gradient(90deg, #b45309, #d97706); color: #fff; }
 
-    /* 7. NAYA: WELCOME POPUP STYLE */
+    /* 7. WELCOME POPUP STYLE */
     .welcome-overlay { position: fixed; inset: 0; background: rgba(16,36,59,0.8); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 99999; opacity: 0; visibility: hidden; transition: opacity 0.4s ease; }
     .welcome-overlay.active { opacity: 1; visibility: visible; }
     .welcome-box { background: #fff; width: 90%; max-width: 450px; border-radius: 16px; text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.3); transform: scale(0.8); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); overflow: hidden; position: relative; }
@@ -157,7 +157,6 @@
       </div>
     </section>
 
-    <!-- DYNAMIC FESTIVE BANNER -->
     <a href="#" id="festiveBanner" class="festive-banner"></a>
 
     <div id="offerBanner" class="offer-banner-container" style="display:none;">
@@ -171,7 +170,6 @@
       <div class="product-grid" id="recentGrid" style="grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap:10px;"></div>
     </section>
 
-    <!-- STORE DIRECTORY -->
     <section class="section-wrap" style="padding-top: 40px; padding-bottom: 80px;">
       <div class="section-heading" style="text-align: center; display: block; margin-bottom: 40px;">
         <span class="eyebrow">EXPLORE OUR VERTICALS</span>
@@ -194,7 +192,6 @@
       </div>
     </section>
 
-    <!-- WHY CHOOSE US -->
     <section class="features-section">
       <span class="eyebrow">WHY CHOOSE US</span>
       <h2>We Provide Best Service</h2>
@@ -206,32 +203,23 @@
       </div>
     </section>
 
-    <!-- TESTIMONIALS -->
     <section class="testimonials-section" id="testimonialsSection" style="display:none;">
       <span class="eyebrow" style="text-align:center; display:block;">WHAT OUR CUSTOMERS SAY</span>
       <h2>Customer Reviews</h2>
       <div class="testimonials-grid" id="testimonialsGrid"></div>
     </section>
 
-    <!-- MAP SECTION -->
     <section class="map-section">
       <div class="map-container">
         <div class="map-info">
           <span class="eyebrow">VISIT OUR STORE</span>
           <h2>Find Us on Map</h2>
-          <p>Our shop is located in Bongariya Bazaar, Azamgarh. Come visit us and enjoy our new collection!</p>
-          <p class="store-address">📍 Bongariya Bazar, Azamgarh, Uttar Pradesh - 276126</p>
+          <p>Humari dukaan Azamgarh ke Bongariya Bazar mein sthit hai. Aap humse milne aayein aur naye collection ka anand lein!</p>
+          <p class="store-address">📍 Bongariya Bazar, Azamgarh, Uttar Pradesh - 276001</p>
           <a href="https://www.google.com/maps/@25.8356927,83.2665054,21z?hl=en&entry=ttu&g_ep=EgoyMDI2MTEwOS4wIKXMDSoASAFQAw%3D%3D" target="_blank" class="map-btn">🗺️ Get Directions on Google Maps ↗</a>
         </div>
         <div class="map-iframe">
-          <iframe 
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d500!2d83.2665054!3d25.8356927!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjXCsDUwJzA4LjUiTiA4M8KwMTUnNTkuNCJF!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" 
-            width="100%" 
-            height="100%" 
-            style="border:0;" 
-            allowfullscreen="" 
-            loading="lazy">
-          </iframe>
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d500!2d83.2665054!3d25.8356927!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjXCsDUwJzA4LjUiTiA4M8KwMTUnNTkuNCJF!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" allowfullscreen="" loading="lazy"></iframe>
         </div>
       </div>
     </section>
@@ -259,18 +247,18 @@
     </div>
   </div>
 
-  <!-- NAYA: WELCOME POPUP HTML -->
+  <!-- WELCOME POPUP HTML -->
   <div class="welcome-overlay" id="welcomeModal">
     <div class="welcome-box">
       <button class="welcome-close" onclick="closeWelcome()">×</button>
       <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=800&q=80" alt="Welcome" class="welcome-image">
       <div class="welcome-content">
         <h2>Welcome to Aaradhya Mart!</h2>
-        <p>Aapke liye laye hain kuch khaas offers. Ab shopping karein aur payein <strong>10% Instant Discount</strong>!</p>
+        <p>Aapke liye laye hain kuch khaas offers. Ab shopping karein aur payein <strong>Special Discount</strong>!</p>
         
-        <div class="welcome-coupon">
+        <div class="welcome-coupon" id="welcomeCouponBox">
           <span>Use Code</span>
-          <strong>FIRST10</strong>
+          <strong id="welcomeCouponCode">LOADING...</strong>
         </div>
 
         <a href="#shop" class="welcome-btn" onclick="closeWelcome()">START SHOPPING 🛍️</a>
@@ -312,6 +300,35 @@
           }
         }
       } catch(e) { console.log("Banner error:", e); }
+    }
+
+    // NAYA: WELCOME POPUP DYNAMIC COUPON LOGIC
+    async function loadWelcomePopup() {
+      if(sessionStorage.getItem("welcomeShown")) return;
+
+      try {
+        const snap = await getDocs(collection(db, "coupons"));
+        if(!snap.empty) {
+          // Fetch first coupon
+          const coupon = snap.docs[0].data();
+          document.getElementById("welcomeCouponCode").textContent = coupon.code;
+          
+          setTimeout(() => {
+            document.getElementById("welcomeModal").classList.add("active");
+          }, 1000);
+        } else {
+          // If no coupons, don't show the welcome popup coupon box
+          document.getElementById("welcomeCouponBox").style.display = "none";
+          setTimeout(() => {
+            document.getElementById("welcomeModal").classList.add("active");
+          }, 1000);
+        }
+      } catch(e) { console.log("Welcome popup error:", e); }
+    }
+
+    window.closeWelcome = function() {
+      document.getElementById("welcomeModal").classList.remove("active");
+      sessionStorage.setItem("welcomeShown", "true");
     }
 
     async function loadBannerCoupons() {
@@ -434,26 +451,13 @@
       if(e.target === this) closeDealsModal();
     });
 
-    // NAYA: WELCOME POPUP LOGIC
-    window.closeWelcome = function() {
-      document.getElementById("welcomeModal").classList.remove("active");
-      // Ek baar band karne ke baad session mein save karein taaki har baar na aaye
-      sessionStorage.setItem("welcomeShown", "true");
-    }
-
     document.addEventListener("DOMContentLoaded", () => {
       updateGlobalCart();
       loadFestiveBanner();
       loadBannerCoupons();
       loadRecentlyViewed();
       loadTestimonials();
-
-      // Check if welcome popup has been shown this session
-      if(!sessionStorage.getItem("welcomeShown")) {
-        setTimeout(() => {
-          document.getElementById("welcomeModal").classList.add("active");
-        }, 1000); // 1 second delay for smooth loading
-      }
+      loadWelcomePopup(); // NAYA: Load Dynamic Popup
     });
   </script>
 </body>
