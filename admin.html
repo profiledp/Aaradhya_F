@@ -24,13 +24,7 @@
     .btn-login { width: 100%; padding: 15px; background: var(--navy); color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.3s; }
     .btn-login:hover { background: #1e3a5f; }
     .error-msg { color: #ef4444; font-size: 12px; text-align: center; margin-top: 15px; font-weight: bold; display: none; }
-    
-    @media (max-width: 768px) {
-      .login-split-wrapper { flex-direction: column; }
-      .login-left { padding: 30px 20px; flex: none; }
-      .login-left h1 { font-size: 28px; }
-      .login-right { padding: 20px; flex: none; }
-    }
+    @media (max-width: 768px) { .login-split-wrapper { flex-direction: column; } .login-left { padding: 30px 20px; flex: none; } .login-left h1 { font-size: 28px; } .login-right { padding: 20px; flex: none; } }
 
     .admin-shell { max-width: 1200px; margin: 40px auto; padding: 20px; display: none; }
     .admin-panel { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
@@ -47,22 +41,18 @@
     .btn-danger { background: #ef4444; color: #fff; }
     .btn-outline { background: #fff; border: 1px solid #ccc; color: #333; padding: 6px 12px; font-size: 11px; cursor: pointer; border-radius: 4px; }
     .btn-outline:hover { background: #f4f6f8; }
-    
     .tab-content { display: none; }
     .tab-content.active { display: block; }
     .main-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #ccc; padding-bottom: 10px; flex-wrap: wrap;}
     .main-tab-btn { background: none; border: none; font-size: 16px; font-weight: bold; color: #777; cursor: pointer; padding: 10px;}
     .main-tab-btn.active { color: #10243b; border-bottom: 3px solid #10243b;}
-    
     .filter-bar { display: flex; gap: 15px; margin-bottom: 20px; background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #eee; align-items: center; flex-wrap: wrap; }
     .filter-bar label { font-size: 13px; font-weight: bold; color: var(--navy); }
     .filter-bar input, .filter-bar select { padding: 8px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; outline: none; }
     .filter-bar button { padding: 8px 15px; border: none; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; }
-
     .order-card { border: 1px solid #eee; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #fafafa; }
     .order-card h4 { margin: 0 0 10px; color: #10243b; display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 10px;}
     .order-card p { margin: 5px 0; font-size: 13px; }
-    
     .status-select { padding: 6px 10px; border-radius: 20px; font-weight: bold; border: 1px solid #ccc; cursor: pointer; outline: none; font-size: 12px; }
     .status-Pending { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
     .status-Confirmed { background: #e0f2fe; color: #0369a1; border-color: #7dd3fc; }
@@ -70,7 +60,6 @@
     .status-OutforDelivery { background: #f3e8ff; color: #6b21a8; border-color: #d8b4fe; }
     .status-Delivered { background: #dcfce7; color: #166534; border-color: #86efac; }
     .status-Cancelled { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
-
     .custom-modal-overlay { position: fixed; inset: 0; background: rgba(16, 36, 59, 0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; visibility: hidden; transition: 0.3s; padding: 15px;}
     .custom-modal-overlay.active { opacity: 1; visibility: visible; }
     .custom-modal { background: #fff; padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2); transform: scale(0.8); transition: 0.3s; max-height: 90vh; overflow-y:auto;}
@@ -78,7 +67,6 @@
     .custom-modal h3 { font-family: Georgia, serif; color: #10243b; margin-top: 0; font-size: 22px; }
     .modal-actions { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
     .modal-btn { padding: 12px 25px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; border: none; transition: 0.2s; flex: 1; }
-
     .receipt-box { font-family: 'Courier New', Courier, monospace; background: #fff; width: 100%; max-width: 400px; border-radius: 8px; position: relative; max-height: 90vh; overflow-y: auto; text-align: left; padding: 20px;}
     .receipt-header { text-align: center; padding-bottom: 15px; border-bottom: 1px dashed #ccc; margin-bottom: 15px;}
     .receipt-header h2 { margin: 0; font-family: Georgia, serif; color: var(--navy); font-size: 24px; }
@@ -91,6 +79,14 @@
     .receipt-total-row { display: flex; justify-content: space-between; font-weight: bold; font-size: 16px; margin-top: 10px; color: var(--navy); }
     .receipt-footer { text-align: center; padding: 15px 0 0; border-top: 1px dashed #ccc; margin-top: 15px; font-size: 11px; color: var(--muted); }
     @media print { body * { visibility: hidden; } .custom-modal-overlay { position: absolute; left: 0; top: 0; background: transparent; backdrop-filter: none; visibility: visible; padding: 0; } .receipt-box { box-shadow: none; transform: none; max-height: none; overflow: visible; visibility: visible; margin: 0 auto; border: 1px solid #ccc; } .receipt-box * { visibility: visible; } .modal-actions { display: none; } }
+
+    /* NEW: Image preview grid */
+    .image-preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 10px; margin-top: 10px; }
+    .image-preview-item { position: relative; aspect-ratio: 1; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; background: #f4f6f8; }
+    .image-preview-item img { width: 100%; height: 100%; object-fit: cover; }
+    .image-preview-item .remove-img { position: absolute; top: 4px; right: 4px; background: rgba(239,68,68,0.9); color: #fff; border: none; width: 22px; height: 22px; border-radius: 50%; cursor: pointer; font-size: 12px; line-height: 1; display: grid; place-items: center; }
+    .image-preview-item .cover-badge { position: absolute; bottom: 4px; left: 4px; background: rgba(16,36,59,0.85); color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 3px; }
+    .upload-progress { font-size: 12px; color: #0369a1; margin-top: 8px; }
   </style>
 </head>
 <body>
@@ -147,35 +143,36 @@
             <div class="form-field"><label>Original Price (₹)</label><input id="pOriginal" type="number"></div>
             <div class="form-field"><label>Unit (e.g. 1kg, 500g)</label><input id="pUnit" placeholder="Mention Base Unit"></div>
             <div class="form-field"><label>Stock</label><input id="pStock" type="number" required value="10"></div>
-            
-            <!-- NAYA: FILE UPLOAD INSTEAD OF URL -->
+
+            <!-- MULTIPLE IMAGE UPLOAD -->
             <div class="form-field full">
-              <label>Product Image (Upload File) *</label>
-              <input type="file" id="pImageFile" accept="image/*" required>
-              <small style="color:#777; font-size:11px; display:block; margin-top:5px;">Max size: 500KB (Auto-converted to fit database)</small>
+              <label>Product Images (Upload Multiple) *</label>
+              <input type="file" id="pImageFile" accept="image/*" multiple>
+              <small style="color:#777; font-size:11px; display:block; margin-top:5px;">Max 5 images. First image will be used as cover. (Uploaded to Firebase Storage)</small>
+              <div id="imagePreviewGrid" class="image-preview-grid"></div>
+              <div id="uploadProgress" class="upload-progress"></div>
             </div>
+
             <div class="form-field full">
-              <label>OR Enter Image URL</label>
+              <label>OR Add Image by URL (optional)</label>
               <input id="pImageUrl" placeholder="https://...">
             </div>
-            
+
             <div class="form-field"><label>Sizes (Comma Separated)</label><input id="pSizes" placeholder="M, L, XL (OR 250G, 500G)"></div>
             <div class="form-field"><label>Colours (Comma Separated)</label><input id="pColors" placeholder="Black, Blue, Red"></div>
-            
             <div class="form-field"><label>Tag</label><input id="pTag" placeholder="NEW"></div>
-            
+
             <div class="form-field full">
               <label style="display:flex; align-items:center; gap:10px; cursor:pointer; background:#e0f2fe; padding:10px; border-radius:6px; color:#0369a1;">
                 <input type="checkbox" id="pIsPerKg" style="width:18px; height:18px; margin:0;">
                 <span>Price is per KG (Auto-calculate price for 250G, 500G)</span>
               </label>
             </div>
-
             <div class="form-field full"><label style="display:flex; align-items:center; gap:10px; cursor:pointer; background:#fff3cd; padding:10px; border-radius:6px;"><input type="checkbox" id="pIsDeal" style="width:18px; height:18px; margin:0;"><span style="color:#856404;">🔥 Deal of the Day</span></label></div>
             <div class="form-field full"><label>Description</label><textarea id="pDescription"></textarea></div>
           </div>
           <div style="margin-top: 15px;">
-            <button type="submit" class="btn btn-primary">SAVE PRODUCT</button>
+            <button type="submit" class="btn btn-primary" id="saveBtn">SAVE PRODUCT</button>
             <button type="button" class="btn" id="clearBtn" style="background:#eee;">CLEAR FORM</button>
           </div>
         </form>
@@ -184,7 +181,7 @@
       <div class="admin-panel">
         <h2>All Products</h2>
         <table class="admin-table">
-          <thead><tr><th>Store</th><th>Name</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
+          <thead><tr><th>Image</th><th>Store</th><th>Name</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
           <tbody id="productRows"></tbody>
         </table>
       </div>
@@ -192,11 +189,9 @@
 
     <!-- 2. ORDERS -->
     <div id="tab-orders" class="tab-content">
-      
       <div class="filter-bar">
         <label>Date:</label>
         <input type="date" id="orderDateFilter">
-        
         <label>Status:</label>
         <select id="orderStatusFilter">
           <option value="All">All Status</option>
@@ -207,11 +202,9 @@
           <option value="Delivered">Delivered</option>
           <option value="Cancelled">Cancelled</option>
         </select>
-
         <button class="btn btn-primary" onclick="filterOrders()">Search</button>
         <button class="btn" style="background:#eee;" onclick="resetOrderFilter()">Show All</button>
       </div>
-
       <div class="admin-panel"><h2>All Orders (Live)</h2><div id="ordersList"></div></div>
     </div>
 
@@ -236,10 +229,7 @@
 
     <!-- 4. REVIEWS -->
     <div id="tab-reviews" class="tab-content">
-      <div class="admin-panel">
-        <h2>Customer Reviews</h2>
-        <div id="reviewsList"></div>
-      </div>
+      <div class="admin-panel"><h2>Customer Reviews</h2><div id="reviewsList"></div></div>
     </div>
 
     <!-- 5. SETTINGS -->
@@ -256,13 +246,10 @@
             <label>Banner Link (Optional - e.g. fashion.html)</label>
             <input id="sBannerLink" placeholder="URL where customer should go">
           </div>
-          <div class="form-field full">
-            <button type="submit" class="btn btn-primary">SAVE SETTINGS</button>
-          </div>
+          <div class="form-field full"><button type="submit" class="btn btn-primary">SAVE SETTINGS</button></div>
         </form>
       </div>
     </div>
-
   </div>
 
   <div class="custom-modal-overlay" id="deleteModal">
@@ -318,55 +305,167 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, getDocs, doc, getDoc, setDoc, deleteDoc, updateDoc, increment, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
     const firebaseConfig = { apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y", authDomain: "aaradhya-mart.firebaseapp.com", projectId: "aaradhya-mart", storageBucket: "aaradhya-mart.firebasestorage.app", messagingSenderId: "146782544824", appId: "1:146782544824:web:d605e1971d3480fab1654d" };
-    const app = initializeApp(firebaseConfig); const db = getFirestore(app); const auth = getAuth(app);
-    let allProducts = [];
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    const storage = getStorage(app);
 
-    onAuthStateChanged(auth, (user) => { 
-      if(user) { document.getElementById("loginScreenView").style.display = "none"; document.getElementById("adminView").style.display = "block"; loadProducts(); } 
-      else { document.getElementById("loginScreenView").style.display = "flex"; document.getElementById("adminView").style.display = "none"; } 
+    let allProducts = [];
+    let pendingImageFiles = [];   // store selected files (not yet uploaded)
+    let existingImageUrls = [];   // for edit mode
+
+    onAuthStateChanged(auth, (user) => {
+      if(user) {
+        document.getElementById("loginScreenView").style.display = "none";
+        document.getElementById("adminView").style.display = "block";
+        loadProducts();
+      } else {
+        document.getElementById("loginScreenView").style.display = "flex";
+        document.getElementById("adminView").style.display = "none";
+      }
     });
 
-    document.getElementById("loginButton").onclick = async () => { 
-      const email = document.getElementById("adminEmail").value; const pass = document.getElementById("adminPass").value; const err = document.getElementById("loginError");
+    document.getElementById("loginButton").onclick = async () => {
+      const email = document.getElementById("adminEmail").value;
+      const pass = document.getElementById("adminPass").value;
+      const err = document.getElementById("loginError");
       err.style.display = "none";
-      try { await signInWithEmailAndPassword(auth, email, pass); } catch (e) { err.textContent = "Login failed: " + e.message; err.style.display = "block"; } 
+      try { await signInWithEmailAndPassword(auth, email, pass); }
+      catch (e) { err.textContent = "Login failed: " + e.message; err.style.display = "block"; }
     };
     document.getElementById("logoutButton").onclick = () => { signOut(auth); };
 
     window.switchMainTab = function(tabName, btnElement) {
-      document.querySelectorAll('.main-tab-btn').forEach(btn => btn.classList.remove('active')); btnElement.classList.add('active');
+      document.querySelectorAll('.main-tab-btn').forEach(btn => btn.classList.remove('active'));
+      btnElement.classList.add('active');
       document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
       document.getElementById(`tab-${tabName}`).classList.add('active');
-      if(tabName === 'products') loadProducts(); 
-      else if(tabName === 'orders') loadOrders(); 
+      if(tabName === 'products') loadProducts();
+      else if(tabName === 'orders') loadOrders();
       else if(tabName === 'coupons') loadCoupons();
       else if(tabName === 'reviews') loadReviews();
       else if(tabName === 'settings') loadSettings();
-    }
+    };
 
-    // IMAGE CONVERTER TO BASE64
-    function convertImageToBase64(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
+    /* ==========================================================
+       MULTI-IMAGE HANDLING (Firebase Storage)
+       ========================================================== */
+
+    // File input change — build preview grid
+    document.getElementById("pImageFile").addEventListener("change", (e) => {
+      const files = Array.from(e.target.files);
+      if (files.length === 0) return;
+      const totalCount = existingImageUrls.length + pendingImageFiles.length + files.length;
+      if (totalCount > 5) { alert("Maximum 5 images allowed per product."); e.target.value = ""; return; }
+
+      files.forEach(file => {
+        if (!file.type.startsWith("image/")) { alert(`Skipped non-image: ${file.name}`); return; }
+        if (file.size > 2 * 1024 * 1024) { alert(`${file.name} > 2MB — skipped. Please use smaller images.`); return; }
+        pendingImageFiles.push(file);
+      });
+      e.target.value = ""; // reset so same file can be re-selected if removed
+      renderImagePreview();
+    });
+
+    function renderImagePreview() {
+      const grid = document.getElementById("imagePreviewGrid");
+      let html = "";
+
+      // Existing (already uploaded) images
+      existingImageUrls.forEach((url, i) => {
+        html += `
+          <div class="image-preview-item">
+            <img src="${url}" alt="Image ${i+1}">
+            ${i === 0 ? '<span class="cover-badge">COVER</span>' : ''}
+            <button type="button" class="remove-img" data-remove-existing="${i}">✕</button>
+          </div>`;
+      });
+
+      // New pending files (not yet uploaded)
+      pendingImageFiles.forEach((file, i) => {
+        const objectUrl = URL.createObjectURL(file);
+        const isCover = existingImageUrls.length === 0 && i === 0;
+        html += `
+          <div class="image-preview-item" style="border:2px dashed #f59e0b;">
+            <img src="${objectUrl}" alt="Pending ${i+1}">
+            ${isCover ? '<span class="cover-badge">COVER</span>' : ''}
+            <span style="position:absolute;top:4px;left:4px;background:#f59e0b;color:#fff;font-size:9px;padding:2px 5px;border-radius:3px;">NEW</span>
+            <button type="button" class="remove-img" data-remove-pending="${i}">✕</button>
+          </div>`;
+      });
+
+      grid.innerHTML = html || '<p style="color:#999;font-size:12px;grid-column:1/-1;">No images selected yet.</p>';
+
+      // Remove existing
+      grid.querySelectorAll("[data-remove-existing]").forEach(btn => {
+        btn.onclick = async () => {
+          const idx = Number(btn.dataset.removeExisting);
+          const url = existingImageUrls[idx];
+          if (!confirm("Remove this image? It will be deleted from Firebase Storage.")) return;
+          // Delete from storage (best-effort)
+          try { await deleteObject(storageRef(storage, url)); } catch (e) { console.warn("Could not delete from storage:", e); }
+          existingImageUrls.splice(idx, 1);
+          renderImagePreview();
+        };
+      });
+
+      // Remove pending
+      grid.querySelectorAll("[data-remove-pending]").forEach(btn => {
+        btn.onclick = () => {
+          const idx = Number(btn.dataset.removePending);
+          pendingImageFiles.splice(idx, 1);
+          renderImagePreview();
+        };
       });
     }
 
+    // Upload all pending files to Firebase Storage, return array of URLs
+    async function uploadAllImages() {
+      if (pendingImageFiles.length === 0) return [];
+      const urls = [];
+      const progressEl = document.getElementById("uploadProgress");
+
+      for (let i = 0; i < pendingImageFiles.length; i++) {
+        const file = pendingImageFiles[i];
+        progressEl.textContent = `Uploading ${i+1}/${pendingImageFiles.length}: ${file.name}...`;
+        const ext = file.name.split(".").pop() || "jpg";
+        const path = `products/${Date.now()}_${i}_${Math.random().toString(36).slice(2,7)}.${ext}`;
+        const refObj = storageRef(storage, path);
+        await uploadBytes(refObj, file);
+        const url = await getDownloadURL(refObj);
+        urls.push(url);
+      }
+      progressEl.textContent = "";
+      return urls;
+    }
+
+    /* ==========================================================
+       LOAD PRODUCTS
+       ========================================================== */
+
     async function loadProducts() {
-      const snap = await getDocs(collection(db, "products")); allProducts = [];
+      const snap = await getDocs(collection(db, "products"));
+      allProducts = [];
       snap.forEach(d => allProducts.push({ id: d.id, ...d.data() }));
-      document.getElementById("productRows").innerHTML = allProducts.map(p => `
-        <tr>
-          <td>${p.store}</td><td>${p.name}</td><td>₹${p.price}</td>
-          <td><input type="number" class="stock-input ${p.stock <= 5 ? 'stock-low' : ''}" value="${p.stock}" data-stock-id="${p.id}"></td>
-          <td><button class="btn btn-primary" style="padding:5px 10px; font-size:11px;" data-edit="${p.id}">Edit</button> <button class="btn btn-danger" style="padding:5px 10px; font-size:11px;" onclick="openDeleteModal('product', '${p.id}')">Delete</button></td>
-        </tr>
-      `).join("");
-      
+
+      document.getElementById("productRows").innerHTML = allProducts.map(p => {
+        const imgs = p.images && p.images.length ? p.images : (p.image ? [p.image] : []);
+        const thumb = imgs[0] || "https://placehold.co/60x60?text=?";
+        return `
+          <tr>
+            <td><img src="${thumb}" style="width:44px;height:44px;object-fit:cover;border-radius:6px;" onerror="this.src='https://placehold.co/60x60?text=?'"></td>
+            <td>${p.store}</td><td>${p.name}</td><td>₹${p.price}</td>
+            <td><input type="number" class="stock-input ${p.stock <= 5 ? 'stock-low' : ''}" value="${p.stock}" data-stock-id="${p.id}"></td>
+            <td>
+              <button class="btn btn-primary" style="padding:5px 10px; font-size:11px;" data-edit="${p.id}">Edit</button>
+              <button class="btn btn-danger" style="padding:5px 10px; font-size:11px;" onclick="openDeleteModal('product', '${p.id}')">Delete</button>
+            </td>
+          </tr>`;
+      }).join("");
+
       document.querySelectorAll("[data-stock-id]").forEach(input => {
         input.addEventListener("change", async (e) => {
           await updateDoc(doc(db, "products", e.target.dataset.stockId), { stock: Number(e.target.value) });
@@ -377,44 +476,116 @@
       document.querySelectorAll("[data-edit]").forEach(btn => {
         btn.addEventListener("click", () => {
           const p = allProducts.find(x => x.id === btn.dataset.edit);
-          editId.value = p.id; pStore.value = p.store; pName.value = p.name; pCategory.value = p.category; pPrice.value = p.price; pOriginal.value = p.originalPrice; pUnit.value = p.unit || ""; pStock.value = p.stock; pImageUrl.value = p.image; pSizes.value = (p.sizes||[]).join(", "); pColors.value = (p.colors||[]).join(", "); pTag.value = p.tag || ""; document.getElementById("pIsDeal").checked = p.isDeal || false; document.getElementById("pIsPerKg").checked = p.isPerKg || false; pDescription.value = p.description || "";
-          document.getElementById("pImageFile").required = false; // Image optional in edit mode
-          formTitle.textContent = "Edit Product"; window.scrollTo(0,0);
+          document.getElementById("editId").value = p.id;
+          document.getElementById("pStore").value = p.store;
+          document.getElementById("pName").value = p.name;
+          document.getElementById("pCategory").value = p.category;
+          document.getElementById("pPrice").value = p.price;
+          document.getElementById("pOriginal").value = p.originalPrice;
+          document.getElementById("pUnit").value = p.unit || "";
+          document.getElementById("pStock").value = p.stock;
+          document.getElementById("pImageUrl").value = ""; // clear URL field on edit
+          document.getElementById("pSizes").value = (p.sizes||[]).join(", ");
+          document.getElementById("pColors").value = (p.colors||[]).join(", ");
+          document.getElementById("pTag").value = p.tag || "";
+          document.getElementById("pIsDeal").checked = p.isDeal || false;
+          document.getElementById("pIsPerKg").checked = p.isPerKg || false;
+          document.getElementById("pDescription").value = p.description || "";
+
+          // Load existing images into preview
+          existingImageUrls = (p.images && p.images.length) ? [...p.images] : (p.image ? [p.image] : []);
+          pendingImageFiles = [];
+          renderImagePreview();
+
+          document.getElementById("formTitle").textContent = "Edit Product";
+          document.getElementById("saveBtn").textContent = "UPDATE PRODUCT";
+          window.scrollTo(0, 0);
         });
       });
     }
 
+    /* ==========================================================
+       SAVE PRODUCT (with multi-image upload)
+       ========================================================== */
+
     document.getElementById("productForm").onsubmit = async (e) => {
-      e.preventDefault(); 
-      const id = editId.value || "P" + Date.now();
-      let finalImageUrl = document.getElementById("pImageUrl").value.trim();
-      const fileInput = document.getElementById("pImageFile");
-      
-      // If a file is uploaded, convert to Base64
-      if (fileInput.files.length > 0) {
-        const file = fileInput.files[0];
-        if (file.size > 500000) { alert("Image is too large. Please select an image under 500KB."); return; }
-        finalImageUrl = await convertImageToBase64(file);
+      e.preventDefault();
+      const saveBtn = document.getElementById("saveBtn");
+      const id = document.getElementById("editId").value || "P" + Date.now();
+      saveBtn.disabled = true; saveBtn.textContent = "SAVING...";
+
+      try {
+        // 1. Upload pending files
+        const newUploadedUrls = await uploadAllImages();
+
+        // 2. Combine with existing + optional URL
+        let finalImages = [...existingImageUrls, ...newUploadedUrls];
+        const urlInput = document.getElementById("pImageUrl").value.trim();
+        if (urlInput) finalImages.push(urlInput);
+
+        if (finalImages.length === 0) {
+          alert("Please add at least one image (upload or URL).");
+          saveBtn.disabled = false; saveBtn.textContent = "SAVE PRODUCT";
+          return;
+        }
+
+        // 3. Save product doc
+        await setDoc(doc(db, "products", id), {
+          store: document.getElementById("pStore").value,
+          name: document.getElementById("pName").value,
+          category: document.getElementById("pCategory").value,
+          price: Number(document.getElementById("pPrice").value),
+          originalPrice: Number(document.getElementById("pOriginal").value) || 0,
+          unit: document.getElementById("pUnit").value,
+          stock: Number(document.getElementById("pStock").value),
+          images: finalImages,          // array of URLs
+          image: finalImages[0],        // backward-compat: cover image
+          sizes: document.getElementById("pSizes").value.split(",").map(s=>s.trim()).filter(Boolean),
+          colors: document.getElementById("pColors").value.split(",").map(c=>c.trim()).filter(Boolean),
+          tag: document.getElementById("pTag").value,
+          isDeal: document.getElementById("pIsDeal").checked,
+          isPerKg: document.getElementById("pIsPerKg").checked,
+          description: document.getElementById("pDescription").value
+        });
+
+        // 4. Reset
+        document.getElementById("productForm").reset();
+        document.getElementById("editId").value = "";
+        existingImageUrls = [];
+        pendingImageFiles = [];
+        renderImagePreview();
+        document.getElementById("formTitle").textContent = "Add New Product";
+        saveBtn.textContent = "SAVE PRODUCT";
+        saveBtn.disabled = false;
+        loadProducts();
+        showToast("Product Saved!");
+      } catch (err) {
+        console.error(err);
+        alert("Save failed: " + err.message);
+        saveBtn.disabled = false; saveBtn.textContent = "SAVE PRODUCT";
       }
-
-      if(!finalImageUrl) { alert("Please provide an image file or URL."); return; }
-
-      await setDoc(doc(db, "products", id), {
-        store: pStore.value, name: pName.value, category: pCategory.value, price: Number(pPrice.value), originalPrice: Number(pOriginal.value)||0, unit: pUnit.value, stock: Number(pStock.value), image: finalImageUrl, 
-        sizes: pSizes.value.split(",").map(s=>s.trim()).filter(Boolean), 
-        colors: pColors.value.split(",").map(c=>c.trim()).filter(Boolean),
-        tag: pTag.value, isDeal: document.getElementById("pIsDeal").checked, isPerKg: document.getElementById("pIsPerKg").checked, description: pDescription.value
-      });
-      
-      productForm.reset(); editId.value = ""; document.getElementById("pIsDeal").checked = false; document.getElementById("pIsPerKg").checked = false; document.getElementById("pImageFile").required = true;
-      loadProducts(); showToast("Product Saved!");
     };
-    document.getElementById("clearBtn").onclick = () => { productForm.reset(); editId.value=""; formTitle.textContent="Add New Product"; document.getElementById("pImageFile").required = true; };
+
+    document.getElementById("clearBtn").onclick = () => {
+      document.getElementById("productForm").reset();
+      document.getElementById("editId").value = "";
+      existingImageUrls = [];
+      pendingImageFiles = [];
+      renderImagePreview();
+      document.getElementById("formTitle").textContent = "Add New Product";
+      document.getElementById("saveBtn").textContent = "SAVE PRODUCT";
+    };
+
+    /* ==========================================================
+       ORDERS / COUPONS / REVIEWS / SETTINGS (unchanged)
+       ========================================================== */
 
     async function loadOrders() {
-      const ordersList = document.getElementById("ordersList"); ordersList.innerHTML = "<p>Loading...</p>";
+      const ordersList = document.getElementById("ordersList");
+      ordersList.innerHTML = "<p>Loading...</p>";
       try {
-        const q = query(collection(db, "orders"), orderBy("orderDate", "desc")); const snap = await getDocs(q);
+        const q = query(collection(db, "orders"), orderBy("orderDate", "desc"));
+        const snap = await getDocs(q);
         if(snap.empty) { ordersList.innerHTML = "<p>No orders found.</p>"; return; }
         renderOrderCards(snap.docs);
       } catch(e) { ordersList.innerHTML = "Error loading orders."; }
@@ -423,7 +594,8 @@
     function renderOrderCards(docs) {
       const ordersList = document.getElementById("ordersList");
       ordersList.innerHTML = docs.map(d => {
-        const o = d.data(); const itemsStr = o.items.map(i => `${i.name} (x${i.qty})`).join("<br>");
+        const o = d.data();
+        const itemsStr = o.items.map(i => `${i.name} (x${i.qty})`).join("<br>");
         const statusClass = `status-${o.status.replace(/\s+/g, '')}`;
         return `
           <div class="order-card">
@@ -454,74 +626,63 @@
     window.filterOrders = async function() {
       const selectedDate = document.getElementById("orderDateFilter").value;
       const selectedStatus = document.getElementById("orderStatusFilter").value;
-      
-      const ordersList = document.getElementById("ordersList"); ordersList.innerHTML = "<p>Searching...</p>";
-      
+      const ordersList = document.getElementById("ordersList");
+      ordersList.innerHTML = "<p>Searching...</p>";
       try {
-        const q = query(collection(db, "orders")); 
-        const snap = await getDocs(q);
-        
+        const snap = await getDocs(query(collection(db, "orders")));
         let filteredDocs = snap.docs;
-
         if(selectedDate) {
           const formattedDate = selectedDate.split('-').reverse().join('/');
           filteredDocs = filteredDocs.filter(d => d.data().orderDate.startsWith(formattedDate));
         }
-
         if(selectedStatus !== "All") {
           filteredDocs = filteredDocs.filter(d => d.data().status === selectedStatus);
         }
-
         if(filteredDocs.length === 0) {
           ordersList.innerHTML = "<p style='color:#777; text-align:center; padding:20px;'>No orders found matching your filters.</p>";
           return;
         }
-
         renderOrderCards(filteredDocs);
-
       } catch(e) { ordersList.innerHTML = "Error loading orders."; }
-    }
+    };
 
-    window.resetOrderFilter = function() { 
-      document.getElementById("orderDateFilter").value = ""; 
+    window.resetOrderFilter = function() {
+      document.getElementById("orderDateFilter").value = "";
       document.getElementById("orderStatusFilter").value = "All";
-      loadOrders(); 
-    }
+      loadOrders();
+    };
 
-    window.updateOrder = async (id, newStatus, sel) => { 
+    window.updateOrder = async (id, newStatus, sel) => {
       try {
         sel.disabled = true;
-        const orderRef = doc(db, "orders", id); const orderSnap = await getDoc(orderRef);
+        const orderRef = doc(db, "orders", id);
+        const orderSnap = await getDoc(orderRef);
         if (orderSnap.exists()) {
-          const orderData = orderSnap.data(); const oldStatus = orderData.status;
+          const orderData = orderSnap.data();
+          const oldStatus = orderData.status;
           if (newStatus === "Cancelled" && oldStatus !== "Cancelled") {
             for (const item of orderData.items) { await updateDoc(doc(db, "products", item.id), { stock: increment(item.qty) }); }
           } else if (oldStatus === "Cancelled" && newStatus !== "Cancelled") {
             for (const item of orderData.items) { await updateDoc(doc(db, "products", item.id), { stock: increment(-item.qty) }); }
           }
-          await updateDoc(orderRef, { status: newStatus }); 
-          sel.className = `status-select status-${newStatus.replace(/\s+/g, '')}`; 
+          await updateDoc(orderRef, { status: newStatus });
+          sel.className = `status-select status-${newStatus.replace(/\s+/g, '')}`;
         }
       } catch (error) { alert("Status update failed!"); } finally { sel.disabled = false; }
     };
 
     window.openReceipt = async function(orderDocId) {
       try {
-        const docRef = doc(db, "orders", orderDocId);
-        const docSnap = await getDoc(docRef);
+        const docSnap = await getDoc(doc(db, "orders", orderDocId));
         if (!docSnap.exists()) return;
-        
         const o = docSnap.data();
-        
         document.getElementById("rOrderId").textContent = o.orderId;
         document.getElementById("rDate").textContent = o.orderDate;
         document.getElementById("rName").textContent = o.customerName;
         document.getElementById("rPhone").textContent = o.customerPhone;
         document.getElementById("rAddress").textContent = o.address;
         document.getElementById("rPayment").textContent = o.paymentMode;
-        
-        let itemsHtml = "";
-        let subtotal = 0;
+        let itemsHtml = ""; let subtotal = 0;
         o.items.forEach(item => {
           const itemTotal = Number(item.price) * Number(item.qty);
           subtotal += itemTotal;
@@ -532,22 +693,19 @@
           </tr>`;
         });
         document.getElementById("rItemsBody").innerHTML = itemsHtml;
-        
         document.getElementById("rSubtotal").textContent = subtotal;
         document.getElementById("rTotal").textContent = o.totalAmount;
-        
         if (o.discountApplied > 0) {
           document.getElementById("rDiscountRow").style.display = "flex";
           document.getElementById("rDiscount").textContent = o.discountApplied;
         } else {
           document.getElementById("rDiscountRow").style.display = "none";
         }
-
         document.getElementById("receiptModal").classList.add("active");
       } catch(e) { alert("Error loading receipt"); }
-    }
+    };
 
-    window.closeReceiptModal = function() { document.getElementById("receiptModal").classList.remove("active"); }
+    window.closeReceiptModal = function() { document.getElementById("receiptModal").classList.remove("active"); };
 
     async function loadCoupons() {
       const snap = await getDocs(collection(db, "coupons"));
@@ -557,10 +715,13 @@
       }).join("");
     }
     document.getElementById("couponForm").onsubmit = async (e) => {
-      e.preventDefault(); const code = document.getElementById("cCode").value.toUpperCase();
+      e.preventDefault();
+      const code = document.getElementById("cCode").value.toUpperCase();
       await setDoc(doc(db, "coupons", code), { code: code, discount: Number(document.getElementById("cDiscount").value) });
-      showToast("Coupon Created!"); document.getElementById("couponForm").reset(); loadCoupons();
-    }
+      showToast("Coupon Created!");
+      document.getElementById("couponForm").reset();
+      loadCoupons();
+    };
 
     async function loadReviews() {
       const snap = await getDocs(collection(db, "reviews"));
@@ -572,11 +733,10 @@
             <p><strong>Customer:</strong> ${r.customerName} | <strong>Date:</strong> ${r.date}</p>
             <p><strong>Comment:</strong> ${r.comment}</p>
             <p style="margin-top:10px;"><button class="btn btn-danger" onclick="deleteReview('${d.id}')" style="padding:5px 10px; font-size:11px;">Delete</button></p>
-          </div>
-        `;
+          </div>`;
       }).join("");
     }
-    window.deleteReview = async (id) => { await deleteDoc(doc(db, "reviews", id)); loadReviews(); showToast("Review Deleted!"); }
+    window.deleteReview = async (id) => { await deleteDoc(doc(db, "reviews", id)); loadReviews(); showToast("Review Deleted!"); };
 
     async function loadSettings() {
       try {
@@ -590,31 +750,34 @@
     }
     document.getElementById("settingsForm").onsubmit = async (e) => {
       e.preventDefault();
-      const text = document.getElementById("sBannerText").value;
-      const link = document.getElementById("sBannerLink").value;
-      await setDoc(doc(db, "settings", "banner"), { text: text, link: link });
+      await setDoc(doc(db, "settings", "banner"), {
+        text: document.getElementById("sBannerText").value,
+        link: document.getElementById("sBannerLink").value
+      });
       showToast("Banner Settings Saved!");
-    }
+    };
 
     let deleteItemType = ""; let deleteItemId = "";
     window.openDeleteModal = function(type, id) {
       deleteItemType = type; deleteItemId = id;
       document.getElementById("deleteTitle").textContent = type === 'product' ? "Delete Product?" : (type === 'coupon' ? "Delete Coupon?" : "Delete Order?");
       document.getElementById("deleteModal").classList.add("active");
-    }
-    window.closeDeleteModal = function() { document.getElementById("deleteModal").classList.remove("active"); }
+    };
+    window.closeDeleteModal = function() { document.getElementById("deleteModal").classList.remove("active"); };
     document.getElementById("confirmDeleteBtn").onclick = async () => {
       if(deleteItemType === 'product') { await deleteDoc(doc(db, "products", deleteItemId)); loadProducts(); }
       else if(deleteItemType === 'coupon') { await deleteDoc(doc(db, "coupons", deleteItemId)); loadCoupons(); }
       else if(deleteItemType === 'order') { await deleteDoc(doc(db, "orders", deleteItemId)); loadOrders(); }
       closeDeleteModal(); showToast("Deleted Successfully!");
-    }
+    };
 
     function showToast(msg) {
       let t = document.querySelector('.toast-notification'); if(t) t.remove();
-      const toast = document.createElement('div'); toast.className='toast-notification'; 
+      const toast = document.createElement('div');
+      toast.className='toast-notification';
       toast.innerHTML = `<span class="toast-icon">✅</span> ${msg}`;
-      document.body.appendChild(toast); setTimeout(()=>toast.classList.add('show'),10);
+      document.body.appendChild(toast);
+      setTimeout(()=>toast.classList.add('show'),10);
       setTimeout(()=>{toast.classList.remove('show'); setTimeout(()=>toast.remove(),400);},3000);
     }
   </script>
