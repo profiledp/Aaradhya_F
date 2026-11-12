@@ -54,11 +54,11 @@
     .main-tab-btn { background: none; border: none; font-size: 16px; font-weight: bold; color: #777; cursor: pointer; padding: 10px;}
     .main-tab-btn.active { color: #10243b; border-bottom: 3px solid #10243b;}
     
-    /* DATE FILTER STYLE */
-    .date-filter-bar { display: flex; gap: 10px; margin-bottom: 20px; background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #eee; align-items: center; flex-wrap: wrap; }
-    .date-filter-bar label { font-size: 13px; font-weight: bold; color: var(--navy); }
-    .date-filter-bar input { padding: 8px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; outline: none; }
-    .date-filter-bar button { padding: 8px 15px; border: none; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; }
+    /* DATE & STATUS FILTER STYLE */
+    .filter-bar { display: flex; gap: 15px; margin-bottom: 20px; background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #eee; align-items: center; flex-wrap: wrap; }
+    .filter-bar label { font-size: 13px; font-weight: bold; color: var(--navy); }
+    .filter-bar input, .filter-bar select { padding: 8px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; outline: none; }
+    .filter-bar button { padding: 8px 15px; border: none; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; }
 
     .order-card { border: 1px solid #eee; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #fafafa; }
     .order-card h4 { margin: 0 0 10px; color: #10243b; display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 10px;}
@@ -185,11 +185,24 @@
     <!-- 2. ORDERS -->
     <div id="tab-orders" class="tab-content">
       
-      <div class="date-filter-bar">
-        <label>Filter Orders by Date:</label>
+      <!-- NAYA: DATE & STATUS FILTER -->
+      <div class="filter-bar">
+        <label>Date:</label>
         <input type="date" id="orderDateFilter">
-        <button class="btn btn-primary" onclick="filterOrdersByDate()">Search</button>
-        <button class="btn" style="background:#eee;" onclick="resetOrderFilter()">Show All Orders</button>
+        
+        <label>Status:</label>
+        <select id="orderStatusFilter">
+          <option value="All">All Status</option>
+          <option value="Pending">Pending</option>
+          <option value="Confirmed">Confirmed</option>
+          <option value="Packed">Packed</option>
+          <option value="Out for Delivery">Out for Delivery</option>
+          <option value="Delivered">Delivered</option>
+          <option value="Cancelled">Cancelled</option>
+        </select>
+
+        <button class="btn btn-primary" onclick="filterOrders()">Search</button>
+        <button class="btn" style="background:#eee;" onclick="resetOrderFilter()">Show All</button>
       </div>
 
       <div class="admin-panel"><h2>All Orders (Live)</h2><div id="ordersList"></div></div>
@@ -245,7 +258,6 @@
 
   </div>
 
-  <!-- DELETE CONFIRMATION POPUP -->
   <div class="custom-modal-overlay" id="deleteModal">
     <div class="custom-modal">
       <div style="font-size: 40px; margin-bottom: 15px; color: #ef4444;">⚠️</div>
@@ -258,7 +270,6 @@
     </div>
   </div>
 
-  <!-- RECEIPT POPUP -->
   <div class="custom-modal-overlay" id="receiptModal">
     <div class="receipt-box" id="receiptContent">
       <div class="receipt-header">
@@ -367,94 +378,84 @@
     };
     document.getElementById("clearBtn").onclick = () => { productForm.reset(); editId.value=""; formTitle.textContent="Add New Product"; };
 
+    // LOAD ORDERS LOGIC
     async function loadOrders() {
       const ordersList = document.getElementById("ordersList"); ordersList.innerHTML = "<p>Loading...</p>";
       try {
         const q = query(collection(db, "orders"), orderBy("orderDate", "desc")); const snap = await getDocs(q);
         if(snap.empty) { ordersList.innerHTML = "<p>No orders found.</p>"; return; }
-        ordersList.innerHTML = snap.docs.map(d => {
-          const o = d.data(); const itemsStr = o.items.map(i => `${i.name} (x${i.qty})`).join("<br>");
-          const statusClass = `status-${o.status.replace(/\s+/g, '')}`;
-          return `
-            <div class="order-card">
-              <h4>
-                <span>${o.orderId} - ${o.customerName}</span>
-                <div style="display:flex; gap:5px;">
-                  <button class="btn-outline" onclick="openReceipt('${d.id}')">🧾 Receipt</button>
-                  <select class="status-select ${statusClass}" onchange="updateOrder('${d.id}', this.value, this)">
-                    <option value="Pending" ${o.status==='Pending'?'selected':''}>🟡 Pending</option>
-                    <option value="Confirmed" ${o.status==='Confirmed'?'selected':''}>🔵 Confirmed</option>
-                    <option value="Packed" ${o.status==='Packed'?'selected':''}>📦 Packed</option>
-                    <option value="Out for Delivery" ${o.status==='Out for Delivery'?'selected':''}>🚚 Out for Delivery</option>
-                    <option value="Delivered" ${o.status==='Delivered'?'selected':''}>🟢 Delivered</option>
-                    <option value="Cancelled" ${o.status==='Cancelled'?'selected':''}>🔴 Cancelled</option>
-                  </select>
-                  <button class="btn btn-danger" style="padding:5px 10px; font-size:11px;" onclick="openDeleteModal('order', '${d.id}')">Delete</button>
-                </div>
-              </h4>
-              <p><strong>Date:</strong> ${o.orderDate}</p>
-              <p><strong>Phone:</strong> <a href="https://wa.me/91${o.customerPhone}" target="_blank" style="color:#10b981;">${o.customerPhone}</a></p>
-              <p><strong>Address:</strong> ${o.address}</p>
-              <p><strong>Products:</strong><br> ${itemsStr}</p>
-              <p><strong>Total:</strong> ₹${o.totalAmount} | <strong>Payment:</strong> ${o.paymentMode}</p>
-            </div>`;
-        }).join("");
+        renderOrderCards(snap.docs);
       } catch(e) { ordersList.innerHTML = "Error loading orders."; }
     }
 
-    // FILTER BY DATE
-    window.filterOrdersByDate = async function() {
+    function renderOrderCards(docs) {
+      const ordersList = document.getElementById("ordersList");
+      ordersList.innerHTML = docs.map(d => {
+        const o = d.data(); const itemsStr = o.items.map(i => `${i.name} (x${i.qty})`).join("<br>");
+        const statusClass = `status-${o.status.replace(/\s+/g, '')}`;
+        return `
+          <div class="order-card">
+            <h4>
+              <span>${o.orderId} - ${o.customerName}</span>
+              <div style="display:flex; gap:5px;">
+                <button class="btn-outline" onclick="openReceipt('${d.id}')">🧾 Receipt</button>
+                <select class="status-select ${statusClass}" onchange="updateOrder('${d.id}', this.value, this)">
+                  <option value="Pending" ${o.status==='Pending'?'selected':''}>🟡 Pending</option>
+                  <option value="Confirmed" ${o.status==='Confirmed'?'selected':''}>🔵 Confirmed</option>
+                  <option value="Packed" ${o.status==='Packed'?'selected':''}>📦 Packed</option>
+                  <option value="Out for Delivery" ${o.status==='Out for Delivery'?'selected':''}>🚚 Out for Delivery</option>
+                  <option value="Delivered" ${o.status==='Delivered'?'selected':''}>🟢 Delivered</option>
+                  <option value="Cancelled" ${o.status==='Cancelled'?'selected':''}>🔴 Cancelled</option>
+                </select>
+                <button class="btn btn-danger" style="padding:5px 10px; font-size:11px;" onclick="openDeleteModal('order', '${d.id}')">Delete</button>
+              </div>
+            </h4>
+            <p><strong>Date:</strong> ${o.orderDate}</p>
+            <p><strong>Phone:</strong> <a href="https://wa.me/91${o.customerPhone}" target="_blank" style="color:#10b981;">${o.customerPhone}</a></p>
+            <p><strong>Address:</strong> ${o.address}</p>
+            <p><strong>Products:</strong><br> ${itemsStr}</p>
+            <p><strong>Total:</strong> ₹${o.totalAmount} | <strong>Payment:</strong> ${o.paymentMode}</p>
+          </div>`;
+      }).join("");
+    }
+
+    // NAYA: FILTER LOGIC (Date + Status)
+    window.filterOrders = async function() {
       const selectedDate = document.getElementById("orderDateFilter").value;
-      if(!selectedDate) { alert("Please select a date first"); return; }
+      const selectedStatus = document.getElementById("orderStatusFilter").value;
       
-      const ordersList = document.getElementById("ordersList"); ordersList.innerHTML = "<p>Searching orders...</p>";
+      const ordersList = document.getElementById("ordersList"); ordersList.innerHTML = "<p>Searching...</p>";
       
       try {
         const q = query(collection(db, "orders")); 
         const snap = await getDocs(q);
         
-        const filteredOrders = snap.docs.filter(d => {
-          const o = d.data();
-          return o.orderDate.startsWith(selectedDate.split('-').reverse().join('/'));
-        });
+        let filteredDocs = snap.docs;
 
-        if(filteredOrders.length === 0) {
-          ordersList.innerHTML = "<p style='color:#777; text-align:center; padding:20px;'>No orders found on this date.</p>";
+        // Filter by Date
+        if(selectedDate) {
+          const formattedDate = selectedDate.split('-').reverse().join('/'); // Convert YYYY-MM-DD to DD/MM/YYYY
+          filteredDocs = filteredDocs.filter(d => d.data().orderDate.startsWith(formattedDate));
+        }
+
+        // Filter by Status
+        if(selectedStatus !== "All") {
+          filteredDocs = filteredDocs.filter(d => d.data().status === selectedStatus);
+        }
+
+        if(filteredDocs.length === 0) {
+          ordersList.innerHTML = "<p style='color:#777; text-align:center; padding:20px;'>No orders found matching your filters.</p>";
           return;
         }
 
-        ordersList.innerHTML = filteredOrders.map(d => {
-          const o = d.data(); const itemsStr = o.items.map(i => `${i.name} (x${i.qty})`).join("<br>");
-          const statusClass = `status-${o.status.replace(/\s+/g, '')}`;
-          return `
-            <div class="order-card">
-              <h4>
-                <span>${o.orderId} - ${o.customerName}</span>
-                <div style="display:flex; gap:5px;">
-                  <button class="btn-outline" onclick="openReceipt('${d.id}')">🧾 Receipt</button>
-                  <select class="status-select ${statusClass}" onchange="updateOrder('${d.id}', this.value, this)">
-                    <option value="Pending" ${o.status==='Pending'?'selected':''}>🟡 Pending</option>
-                    <option value="Confirmed" ${o.status==='Confirmed'?'selected':''}>🔵 Confirmed</option>
-                    <option value="Packed" ${o.status==='Packed'?'selected':''}>📦 Packed</option>
-                    <option value="Out for Delivery" ${o.status==='Out for Delivery'?'selected':''}>🚚 Out for Delivery</option>
-                    <option value="Delivered" ${o.status==='Delivered'?'selected':''}>🟢 Delivered</option>
-                    <option value="Cancelled" ${o.status==='Cancelled'?'selected':''}>🔴 Cancelled</option>
-                  </select>
-                  <button class="btn btn-danger" style="padding:5px 10px; font-size:11px;" onclick="openDeleteModal('order', '${d.id}')">Delete</button>
-                </div>
-              </h4>
-              <p><strong>Date:</strong> ${o.orderDate}</p>
-              <p><strong>Phone:</strong> <a href="https://wa.me/91${o.customerPhone}" target="_blank" style="color:#10b981;">${o.customerPhone}</a></p>
-              <p><strong>Address:</strong> ${o.address}</p>
-              <p><strong>Products:</strong><br> ${itemsStr}</p>
-              <p><strong>Total:</strong> ₹${o.totalAmount} | <strong>Payment:</strong> ${o.paymentMode}</p>
-            </div>`;
-        }).join("");
+        renderOrderCards(filteredDocs);
+
       } catch(e) { ordersList.innerHTML = "Error loading orders."; }
     }
 
     window.resetOrderFilter = function() { 
       document.getElementById("orderDateFilter").value = ""; 
+      document.getElementById("orderStatusFilter").value = "All";
       loadOrders(); 
     }
 
