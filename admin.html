@@ -86,7 +86,6 @@
     .image-preview-item img { width: 100%; height: 100%; object-fit: cover; }
     .image-preview-item .remove-img { position: absolute; top: 4px; right: 4px; background: rgba(239,68,68,0.9); color: #fff; border: none; width: 22px; height: 22px; border-radius: 50%; cursor: pointer; font-size: 12px; line-height: 1; display: grid; place-items: center; }
     .image-preview-item .cover-badge { position: absolute; bottom: 4px; left: 4px; background: rgba(16,36,59,0.85); color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 3px; }
-    .upload-progress { font-size: 12px; color: #0369a1; margin-top: 8px; }
   </style>
 </head>
 <body>
@@ -144,18 +143,12 @@
             <div class="form-field"><label>Unit (e.g. 1kg, 500g)</label><input id="pUnit" placeholder="Mention Base Unit"></div>
             <div class="form-field"><label>Stock</label><input id="pStock" type="number" required value="10"></div>
 
-            <!-- MULTIPLE IMAGE UPLOAD -->
+            <!-- MULTIPLE IMAGE URL UPLOAD -->
             <div class="form-field full">
-              <label>Product Images (Upload Multiple) *</label>
-              <input type="file" id="pImageFile" accept="image/*" multiple>
-              <small style="color:#777; font-size:11px; display:block; margin-top:5px;">Max 5 images. First image will be used as cover. (Uploaded to Firebase Storage)</small>
+              <label>Product Image URLs (Paste link and press Enter) *</label>
+              <input id="pImageUrlInput" placeholder="https://example.com/image1.jpg" onkeydown="handleImageUrlEnter(event)">
+              <small style="color:#777; font-size:11px; display:block; margin-top:5px;">Add multiple images one by one. First image will be the cover.</small>
               <div id="imagePreviewGrid" class="image-preview-grid"></div>
-              <div id="uploadProgress" class="upload-progress"></div>
-            </div>
-
-            <div class="form-field full">
-              <label>OR Add Image by URL (optional)</label>
-              <input id="pImageUrl" placeholder="https://...">
             </div>
 
             <div class="form-field"><label>Sizes (Comma Separated)</label><input id="pSizes" placeholder="M, L, XL (OR 250G, 500G)"></div>
@@ -236,14 +229,14 @@
     <div id="tab-settings" class="tab-content">
       <div class="admin-panel">
         <h2>Festive Offer Banner Settings</h2>
-        <p style="font-size:13px; color:#666; margin-bottom:20px;">Yahan se aap homepage ke banner ko control kar sakte hain. Agar aap banner nahi chahte, toh "Banner Text" ko khali chhod dein.</p>
+        <p style="font-size:13px; color:#666; margin-bottom:20px;">Yahan se aap homepage ke banner ko control kar sakte hain.</p>
         <form id="settingsForm" class="grid-form">
           <div class="form-field full">
-            <label>Banner Text (e.g. 🎉 Diwali Special: Flat 20% OFF!)</label>
+            <label>Banner Text</label>
             <input id="sBannerText" placeholder="Enter festive text here">
           </div>
           <div class="form-field full">
-            <label>Banner Link (Optional - e.g. fashion.html)</label>
+            <label>Banner Link</label>
             <input id="sBannerLink" placeholder="URL where customer should go">
           </div>
           <div class="form-field full"><button type="submit" class="btn btn-primary">SAVE SETTINGS</button></div>
@@ -305,17 +298,14 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, getDocs, doc, getDoc, setDoc, deleteDoc, updateDoc, increment, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
     const firebaseConfig = { apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y", authDomain: "aaradhya-mart.firebaseapp.com", projectId: "aaradhya-mart", storageBucket: "aaradhya-mart.firebasestorage.app", messagingSenderId: "146782544824", appId: "1:146782544824:web:d605e1971d3480fab1654d" };
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
-    const storage = getStorage(app);
 
     let allProducts = [];
-    let pendingImageFiles = [];   // store selected files (not yet uploaded)
-    let existingImageUrls = [];   // for edit mode
+    let currentImagesArray = [];   // Stores URLs added so far
 
     onAuthStateChanged(auth, (user) => {
       if(user) {
@@ -351,96 +341,51 @@
     };
 
     /* ==========================================================
-       MULTI-IMAGE HANDLING (Firebase Storage)
+       MULTI-IMAGE URL HANDLING
        ========================================================== */
-
-    // File input change — build preview grid
-    document.getElementById("pImageFile").addEventListener("change", (e) => {
-      const files = Array.from(e.target.files);
-      if (files.length === 0) return;
-      const totalCount = existingImageUrls.length + pendingImageFiles.length + files.length;
-      if (totalCount > 5) { alert("Maximum 5 images allowed per product."); e.target.value = ""; return; }
-
-      files.forEach(file => {
-        if (!file.type.startsWith("image/")) { alert(`Skipped non-image: ${file.name}`); return; }
-        if (file.size > 2 * 1024 * 1024) { alert(`${file.name} > 2MB — skipped. Please use smaller images.`); return; }
-        pendingImageFiles.push(file);
-      });
-      e.target.value = ""; // reset so same file can be re-selected if removed
-      renderImagePreview();
-    });
+    
+    window.handleImageUrlEnter = function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault(); // Prevent form submission
+        const input = document.getElementById("pImageUrlInput");
+        const url = input.value.trim();
+        
+        if (url) {
+          if (!/^https?:\/\//i.test(url)) {
+            alert("Please enter a valid URL starting with http:// or https://");
+            return;
+          }
+          if (currentImagesArray.includes(url)) {
+            alert("This image URL is already added.");
+            return;
+          }
+          currentImagesArray.push(url);
+          input.value = "";
+          renderImagePreview();
+        }
+      }
+    };
 
     function renderImagePreview() {
       const grid = document.getElementById("imagePreviewGrid");
       let html = "";
 
-      // Existing (already uploaded) images
-      existingImageUrls.forEach((url, i) => {
+      currentImagesArray.forEach((url, i) => {
         html += `
           <div class="image-preview-item">
-            <img src="${url}" alt="Image ${i+1}">
+            <img src="${url}" alt="Image ${i+1}" onerror="this.src='https://placehold.co/100x100?text=Error'">
             ${i === 0 ? '<span class="cover-badge">COVER</span>' : ''}
-            <button type="button" class="remove-img" data-remove-existing="${i}">✕</button>
+            <button type="button" class="remove-img" onclick="removeImage(${i})">✕</button>
           </div>`;
       });
 
-      // New pending files (not yet uploaded)
-      pendingImageFiles.forEach((file, i) => {
-        const objectUrl = URL.createObjectURL(file);
-        const isCover = existingImageUrls.length === 0 && i === 0;
-        html += `
-          <div class="image-preview-item" style="border:2px dashed #f59e0b;">
-            <img src="${objectUrl}" alt="Pending ${i+1}">
-            ${isCover ? '<span class="cover-badge">COVER</span>' : ''}
-            <span style="position:absolute;top:4px;left:4px;background:#f59e0b;color:#fff;font-size:9px;padding:2px 5px;border-radius:3px;">NEW</span>
-            <button type="button" class="remove-img" data-remove-pending="${i}">✕</button>
-          </div>`;
-      });
-
-      grid.innerHTML = html || '<p style="color:#999;font-size:12px;grid-column:1/-1;">No images selected yet.</p>';
-
-      // Remove existing
-      grid.querySelectorAll("[data-remove-existing]").forEach(btn => {
-        btn.onclick = async () => {
-          const idx = Number(btn.dataset.removeExisting);
-          const url = existingImageUrls[idx];
-          if (!confirm("Remove this image? It will be deleted from Firebase Storage.")) return;
-          // Delete from storage (best-effort)
-          try { await deleteObject(storageRef(storage, url)); } catch (e) { console.warn("Could not delete from storage:", e); }
-          existingImageUrls.splice(idx, 1);
-          renderImagePreview();
-        };
-      });
-
-      // Remove pending
-      grid.querySelectorAll("[data-remove-pending]").forEach(btn => {
-        btn.onclick = () => {
-          const idx = Number(btn.dataset.removePending);
-          pendingImageFiles.splice(idx, 1);
-          renderImagePreview();
-        };
-      });
+      grid.innerHTML = html || '<p style="color:#999;font-size:12px;grid-column:1/-1;">No images added yet. Paste URLs above.</p>';
     }
 
-    // Upload all pending files to Firebase Storage, return array of URLs
-    async function uploadAllImages() {
-      if (pendingImageFiles.length === 0) return [];
-      const urls = [];
-      const progressEl = document.getElementById("uploadProgress");
-
-      for (let i = 0; i < pendingImageFiles.length; i++) {
-        const file = pendingImageFiles[i];
-        progressEl.textContent = `Uploading ${i+1}/${pendingImageFiles.length}: ${file.name}...`;
-        const ext = file.name.split(".").pop() || "jpg";
-        const path = `products/${Date.now()}_${i}_${Math.random().toString(36).slice(2,7)}.${ext}`;
-        const refObj = storageRef(storage, path);
-        await uploadBytes(refObj, file);
-        const url = await getDownloadURL(refObj);
-        urls.push(url);
-      }
-      progressEl.textContent = "";
-      return urls;
-    }
+    window.removeImage = function(index) {
+      currentImagesArray.splice(index, 1);
+      renderImagePreview();
+    };
 
     /* ==========================================================
        LOAD PRODUCTS
@@ -484,7 +429,6 @@
           document.getElementById("pOriginal").value = p.originalPrice;
           document.getElementById("pUnit").value = p.unit || "";
           document.getElementById("pStock").value = p.stock;
-          document.getElementById("pImageUrl").value = ""; // clear URL field on edit
           document.getElementById("pSizes").value = (p.sizes||[]).join(", ");
           document.getElementById("pColors").value = (p.colors||[]).join(", ");
           document.getElementById("pTag").value = p.tag || "";
@@ -492,9 +436,8 @@
           document.getElementById("pIsPerKg").checked = p.isPerKg || false;
           document.getElementById("pDescription").value = p.description || "";
 
-          // Load existing images into preview
-          existingImageUrls = (p.images && p.images.length) ? [...p.images] : (p.image ? [p.image] : []);
-          pendingImageFiles = [];
+          // Load existing images into array
+          currentImagesArray = (p.images && p.images.length) ? [...p.images] : (p.image ? [p.image] : []);
           renderImagePreview();
 
           document.getElementById("formTitle").textContent = "Edit Product";
@@ -505,31 +448,22 @@
     }
 
     /* ==========================================================
-       SAVE PRODUCT (with multi-image upload)
+       SAVE PRODUCT (with Multi-URL)
        ========================================================== */
 
     document.getElementById("productForm").onsubmit = async (e) => {
       e.preventDefault();
       const saveBtn = document.getElementById("saveBtn");
       const id = document.getElementById("editId").value || "P" + Date.now();
+
+      if (currentImagesArray.length === 0) {
+        alert("Please add at least one image URL.");
+        return;
+      }
+
       saveBtn.disabled = true; saveBtn.textContent = "SAVING...";
 
       try {
-        // 1. Upload pending files
-        const newUploadedUrls = await uploadAllImages();
-
-        // 2. Combine with existing + optional URL
-        let finalImages = [...existingImageUrls, ...newUploadedUrls];
-        const urlInput = document.getElementById("pImageUrl").value.trim();
-        if (urlInput) finalImages.push(urlInput);
-
-        if (finalImages.length === 0) {
-          alert("Please add at least one image (upload or URL).");
-          saveBtn.disabled = false; saveBtn.textContent = "SAVE PRODUCT";
-          return;
-        }
-
-        // 3. Save product doc
         await setDoc(doc(db, "products", id), {
           store: document.getElementById("pStore").value,
           name: document.getElementById("pName").value,
@@ -538,8 +472,8 @@
           originalPrice: Number(document.getElementById("pOriginal").value) || 0,
           unit: document.getElementById("pUnit").value,
           stock: Number(document.getElementById("pStock").value),
-          images: finalImages,          // array of URLs
-          image: finalImages[0],        // backward-compat: cover image
+          images: currentImagesArray,   // Array of URLs
+          image: currentImagesArray[0], // Cover image URL
           sizes: document.getElementById("pSizes").value.split(",").map(s=>s.trim()).filter(Boolean),
           colors: document.getElementById("pColors").value.split(",").map(c=>c.trim()).filter(Boolean),
           tag: document.getElementById("pTag").value,
@@ -548,11 +482,9 @@
           description: document.getElementById("pDescription").value
         });
 
-        // 4. Reset
         document.getElementById("productForm").reset();
         document.getElementById("editId").value = "";
-        existingImageUrls = [];
-        pendingImageFiles = [];
+        currentImagesArray = [];
         renderImagePreview();
         document.getElementById("formTitle").textContent = "Add New Product";
         saveBtn.textContent = "SAVE PRODUCT";
@@ -569,15 +501,14 @@
     document.getElementById("clearBtn").onclick = () => {
       document.getElementById("productForm").reset();
       document.getElementById("editId").value = "";
-      existingImageUrls = [];
-      pendingImageFiles = [];
+      currentImagesArray = [];
       renderImagePreview();
       document.getElementById("formTitle").textContent = "Add New Product";
       document.getElementById("saveBtn").textContent = "SAVE PRODUCT";
     };
 
     /* ==========================================================
-       ORDERS / COUPONS / REVIEWS / SETTINGS (unchanged)
+       ORDERS / COUPONS / REVIEWS / SETTINGS
        ========================================================== */
 
     async function loadOrders() {
