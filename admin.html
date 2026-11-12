@@ -45,6 +45,8 @@
     .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
     .btn-primary { background: #10243b; color: #fff; }
     .btn-danger { background: #ef4444; color: #fff; }
+    .btn-outline { background: #fff; border: 1px solid #ccc; color: #333; padding: 6px 12px; font-size: 11px; cursor: pointer; border-radius: 4px; }
+    .btn-outline:hover { background: #f4f6f8; }
     
     .tab-content { display: none; }
     .tab-content.active { display: block; }
@@ -64,13 +66,27 @@
     .status-Delivered { background: #dcfce7; color: #166534; border-color: #86efac; }
     .status-Cancelled { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
 
-    .custom-modal-overlay { position: fixed; inset: 0; background: rgba(16, 36, 59, 0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; visibility: hidden; transition: 0.3s; }
+    .custom-modal-overlay { position: fixed; inset: 0; background: rgba(16, 36, 59, 0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; visibility: hidden; transition: 0.3s; padding: 15px;}
     .custom-modal-overlay.active { opacity: 1; visibility: visible; }
-    .custom-modal { background: #fff; padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2); transform: scale(0.8); transition: 0.3s; }
+    .custom-modal { background: #fff; padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2); transform: scale(0.8); transition: 0.3s; max-height: 90vh; overflow-y:auto;}
     .custom-modal-overlay.active .custom-modal { transform: scale(1); }
     .custom-modal h3 { font-family: Georgia, serif; color: #10243b; margin-top: 0; font-size: 22px; }
     .modal-actions { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
     .modal-btn { padding: 12px 25px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; border: none; transition: 0.2s; flex: 1; }
+
+    /* RECEIPT MODAL DESIGN */
+    .receipt-box { font-family: 'Courier New', Courier, monospace; background: #fff; width: 100%; max-width: 400px; border-radius: 8px; position: relative; max-height: 90vh; overflow-y: auto; text-align: left; padding: 20px;}
+    .receipt-header { text-align: center; padding-bottom: 15px; border-bottom: 1px dashed #ccc; margin-bottom: 15px;}
+    .receipt-header h2 { margin: 0; font-family: Georgia, serif; color: var(--navy); font-size: 24px; }
+    .receipt-header p { margin: 5px 0 0; font-size: 12px; color: var(--muted); }
+    .receipt-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px;}
+    .receipt-divider { border-top: 1px dashed #ccc; margin: 15px 0; }
+    .receipt-items-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 13px;}
+    .receipt-items-table th { text-align: left; border-bottom: 1px solid #ddd; padding-bottom: 5px; font-size: 11px; text-transform: uppercase; }
+    .receipt-items-table td { padding: 8px 0; border-bottom: 1px dashed #eee; }
+    .receipt-total-row { display: flex; justify-content: space-between; font-weight: bold; font-size: 16px; margin-top: 10px; color: var(--navy); }
+    .receipt-footer { text-align: center; padding: 15px 0 0; border-top: 1px dashed #ccc; margin-top: 15px; font-size: 11px; color: var(--muted); }
+    @media print { body * { visibility: hidden; } .custom-modal-overlay { position: absolute; left: 0; top: 0; background: transparent; backdrop-filter: none; visibility: visible; padding: 0; } .receipt-box { box-shadow: none; transform: none; max-height: none; overflow: visible; visibility: visible; margin: 0 auto; border: 1px solid #ccc; } .receipt-box * { visibility: visible; } .modal-actions { display: none; } }
   </style>
 </head>
 <body>
@@ -192,7 +208,7 @@
       </div>
     </div>
 
-    <!-- 5. NAYA: SETTINGS -->
+    <!-- 5. SETTINGS -->
     <div id="tab-settings" class="tab-content">
       <div class="admin-panel">
         <h2>Festive Offer Banner Settings</h2>
@@ -215,6 +231,7 @@
 
   </div>
 
+  <!-- DELETE CONFIRMATION POPUP -->
   <div class="custom-modal-overlay" id="deleteModal">
     <div class="custom-modal">
       <div style="font-size: 40px; margin-bottom: 15px; color: #ef4444;">⚠️</div>
@@ -223,6 +240,44 @@
       <div class="modal-actions">
         <button class="modal-btn btn-cancel" onclick="closeDeleteModal()" style="background:#fff; border:1px solid #ccc;">Cancel</button>
         <button class="modal-btn btn-danger" id="confirmDeleteBtn">Yes, Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAYA: RECEIPT MODAL POPUP -->
+  <div class="custom-modal-overlay" id="receiptModal">
+    <div class="receipt-box" id="receiptContent">
+      <div class="receipt-header">
+        <h2>AARADHYA MART</h2>
+        <p>Bongariya Bazar, Azamgarh</p>
+        <p>Ph: +91 8931911428</p>
+      </div>
+      <div class="receipt-body" style="padding: 15px 0;">
+        <div class="receipt-row"><span>Order ID:</span> <strong id="rOrderId"></strong></div>
+        <div class="receipt-row"><span>Date:</span> <span id="rDate"></span></div>
+        <div class="receipt-row"><span>Name:</span> <span id="rName"></span></div>
+        <div class="receipt-row"><span>Phone:</span> <span id="rPhone"></span></div>
+        <div class="receipt-row"><span>Address:</span> <span id="rAddress" style="text-align:right; max-width:200px;"></span></div>
+        <div class="receipt-divider"></div>
+        <table class="receipt-items-table">
+          <thead><tr><th>Item</th><th style="text-align:center;">Qty</th><th style="text-align:right;">Price</th></tr></thead>
+          <tbody id="rItemsBody"></tbody>
+        </table>
+        <div class="receipt-divider"></div>
+        <div class="receipt-row"><span>Subtotal:</span> <span>₹<span id="rSubtotal"></span></span></div>
+        <div class="receipt-row" id="rDiscountRow" style="display:none; color:#10b981;"><span>Discount:</span> <span>-₹<span id="rDiscount"></span></span></div>
+        <div class="receipt-total-row"><span>TOTAL:</span> <span>₹<span id="rTotal"></span></span></div>
+        <div style="margin-top:10px; font-size:11px; text-align:center;">
+          Payment Mode: <strong id="rPayment"></strong><br>
+          <span style="color:#d97706; font-weight:bold;">20% Advance Required</span>
+        </div>
+      </div>
+      <div class="receipt-footer">
+        <p>Thank you for shopping with us!<br>Please keep this receipt for tracking.</p>
+        <div class="modal-actions">
+          <button class="modal-btn btn-cancel" onclick="window.print()" style="background:#10243b; color:#fff;">🖨️ Print</button>
+          <button class="modal-btn btn-cancel" onclick="closeReceiptModal()" style="background:#eee; color:#333;">Close</button>
+        </div>
       </div>
     </div>
   </div>
@@ -308,15 +363,20 @@
           const statusClass = `status-${o.status.replace(/\s+/g, '')}`;
           return `
             <div class="order-card">
-              <h4><span>${o.orderId} - ${o.customerName}</span>
-              <select class="status-select ${statusClass}" onchange="updateOrder('${d.id}', this.value, this)">
-                <option value="Pending" ${o.status==='Pending'?'selected':''}>🟡 Pending</option>
-                <option value="Confirmed" ${o.status==='Confirmed'?'selected':''}>🔵 Confirmed</option>
-                <option value="Packed" ${o.status==='Packed'?'selected':''}>📦 Packed</option>
-                <option value="Out for Delivery" ${o.status==='Out for Delivery'?'selected':''}>🚚 Out for Delivery</option>
-                <option value="Delivered" ${o.status==='Delivered'?'selected':''}>🟢 Delivered</option>
-                <option value="Cancelled" ${o.status==='Cancelled'?'selected':''}>🔴 Cancelled</option>
-              </select></h4>
+              <h4>
+                <span>${o.orderId} - ${o.customerName}</span>
+                <div style="display:flex; gap:10px;">
+                  <button class="btn-outline" onclick="openReceipt('${d.id}')">🧾 Receipt</button>
+                  <select class="status-select ${statusClass}" onchange="updateOrder('${d.id}', this.value, this)">
+                    <option value="Pending" ${o.status==='Pending'?'selected':''}>🟡 Pending</option>
+                    <option value="Confirmed" ${o.status==='Confirmed'?'selected':''}>🔵 Confirmed</option>
+                    <option value="Packed" ${o.status==='Packed'?'selected':''}>📦 Packed</option>
+                    <option value="Out for Delivery" ${o.status==='Out for Delivery'?'selected':''}>🚚 Out for Delivery</option>
+                    <option value="Delivered" ${o.status==='Delivered'?'selected':''}>🟢 Delivered</option>
+                    <option value="Cancelled" ${o.status==='Cancelled'?'selected':''}>🔴 Cancelled</option>
+                  </select>
+                </div>
+              </h4>
               <p><strong>Date:</strong> ${o.orderDate}</p>
               <p><strong>Phone:</strong> <a href="https://wa.me/91${o.customerPhone}" target="_blank" style="color:#10b981;">${o.customerPhone}</a></p>
               <p><strong>Address:</strong> ${o.address}</p>
@@ -343,6 +403,51 @@
         }
       } catch (error) { alert("Status update failed!"); } finally { sel.disabled = false; }
     };
+
+    // NAYA: OPEN RECEIPT LOGIC
+    window.openReceipt = async function(orderDocId) {
+      try {
+        const docRef = doc(db, "orders", orderDocId);
+        const docSnap = await getDoc(docRef);
+        if (!docSnap.exists()) return;
+        
+        const o = docSnap.data();
+        
+        document.getElementById("rOrderId").textContent = o.orderId;
+        document.getElementById("rDate").textContent = o.orderDate;
+        document.getElementById("rName").textContent = o.customerName;
+        document.getElementById("rPhone").textContent = o.customerPhone;
+        document.getElementById("rAddress").textContent = o.address;
+        document.getElementById("rPayment").textContent = o.paymentMode;
+        
+        let itemsHtml = "";
+        let subtotal = 0;
+        o.items.forEach(item => {
+          const itemTotal = Number(item.price) * Number(item.qty);
+          subtotal += itemTotal;
+          itemsHtml += `<tr>
+            <td>${item.name} <br><small style="color:#777;">Size: ${item.size} | Colour: ${item.color || 'Standard'}</small></td>
+            <td style="text-align:center;">${item.qty}</td>
+            <td style="text-align:right;">₹${itemTotal}</td>
+          </tr>`;
+        });
+        document.getElementById("rItemsBody").innerHTML = itemsHtml;
+        
+        document.getElementById("rSubtotal").textContent = subtotal;
+        document.getElementById("rTotal").textContent = o.totalAmount;
+        
+        if (o.discountApplied > 0) {
+          document.getElementById("rDiscountRow").style.display = "flex";
+          document.getElementById("rDiscount").textContent = o.discountApplied;
+        } else {
+          document.getElementById("rDiscountRow").style.display = "none";
+        }
+
+        document.getElementById("receiptModal").classList.add("active");
+      } catch(e) { alert("Error loading receipt"); }
+    }
+
+    window.closeReceiptModal = function() { document.getElementById("receiptModal").classList.remove("active"); }
 
     async function loadCoupons() {
       const snap = await getDocs(collection(db, "coupons"));
@@ -373,7 +478,6 @@
     }
     window.deleteReview = async (id) => { await deleteDoc(doc(db, "reviews", id)); loadReviews(); showToast("Review Deleted!"); }
 
-    // NAYA: SETTINGS LOGIC
     async function loadSettings() {
       try {
         const snap = await getDoc(doc(db, "settings", "banner"));
