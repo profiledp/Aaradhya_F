@@ -54,14 +54,14 @@
     .main-tab-btn { background: none; border: none; font-size: 16px; font-weight: bold; color: #777; cursor: pointer; padding: 10px;}
     .main-tab-btn.active { color: #10243b; border-bottom: 3px solid #10243b;}
     
-    /* NAYA: DATE FILTER STYLE */
+    /* DATE FILTER STYLE */
     .date-filter-bar { display: flex; gap: 10px; margin-bottom: 20px; background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #eee; align-items: center; flex-wrap: wrap; }
     .date-filter-bar label { font-size: 13px; font-weight: bold; color: var(--navy); }
     .date-filter-bar input { padding: 8px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; outline: none; }
     .date-filter-bar button { padding: 8px 15px; border: none; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; }
 
     .order-card { border: 1px solid #eee; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #fafafa; }
-    .order-card h4 { margin: 0 0 10px; color: #10243b; display:flex; justify-content:space-between; align-items:center;}
+    .order-card h4 { margin: 0 0 10px; color: #10243b; display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 10px;}
     .order-card p { margin: 5px 0; font-size: 13px; }
     
     .status-select { padding: 6px 10px; border-radius: 20px; font-weight: bold; border: 1px solid #ccc; cursor: pointer; outline: none; font-size: 12px; }
@@ -185,7 +185,6 @@
     <!-- 2. ORDERS -->
     <div id="tab-orders" class="tab-content">
       
-      <!-- NAYA: DATE FILTER -->
       <div class="date-filter-bar">
         <label>Filter Orders by Date:</label>
         <input type="date" id="orderDateFilter">
@@ -246,6 +245,7 @@
 
   </div>
 
+  <!-- DELETE CONFIRMATION POPUP -->
   <div class="custom-modal-overlay" id="deleteModal">
     <div class="custom-modal">
       <div style="font-size: 40px; margin-bottom: 15px; color: #ef4444;">⚠️</div>
@@ -258,6 +258,7 @@
     </div>
   </div>
 
+  <!-- RECEIPT POPUP -->
   <div class="custom-modal-overlay" id="receiptModal">
     <div class="receipt-box" id="receiptContent">
       <div class="receipt-header">
@@ -378,7 +379,7 @@
             <div class="order-card">
               <h4>
                 <span>${o.orderId} - ${o.customerName}</span>
-                <div style="display:flex; gap:10px;">
+                <div style="display:flex; gap:5px;">
                   <button class="btn-outline" onclick="openReceipt('${d.id}')">🧾 Receipt</button>
                   <select class="status-select ${statusClass}" onchange="updateOrder('${d.id}', this.value, this)">
                     <option value="Pending" ${o.status==='Pending'?'selected':''}>🟡 Pending</option>
@@ -388,6 +389,7 @@
                     <option value="Delivered" ${o.status==='Delivered'?'selected':''}>🟢 Delivered</option>
                     <option value="Cancelled" ${o.status==='Cancelled'?'selected':''}>🔴 Cancelled</option>
                   </select>
+                  <button class="btn btn-danger" style="padding:5px 10px; font-size:11px;" onclick="openDeleteModal('order', '${d.id}')">Delete</button>
                 </div>
               </h4>
               <p><strong>Date:</strong> ${o.orderDate}</p>
@@ -400,7 +402,7 @@
       } catch(e) { ordersList.innerHTML = "Error loading orders."; }
     }
 
-    // NAYA: FILTER BY DATE LOGIC
+    // FILTER BY DATE
     window.filterOrdersByDate = async function() {
       const selectedDate = document.getElementById("orderDateFilter").value;
       if(!selectedDate) { alert("Please select a date first"); return; }
@@ -411,11 +413,8 @@
         const q = query(collection(db, "orders")); 
         const snap = await getDocs(q);
         
-        // Filter array based on selected date (DD/MM/YYYY format)
         const filteredOrders = snap.docs.filter(d => {
           const o = d.data();
-          // Convert Firestore date string to compare
-          // o.orderDate is like "11/11/2026, 4:30:00 PM"
           return o.orderDate.startsWith(selectedDate.split('-').reverse().join('/'));
         });
 
@@ -431,7 +430,7 @@
             <div class="order-card">
               <h4>
                 <span>${o.orderId} - ${o.customerName}</span>
-                <div style="display:flex; gap:10px;">
+                <div style="display:flex; gap:5px;">
                   <button class="btn-outline" onclick="openReceipt('${d.id}')">🧾 Receipt</button>
                   <select class="status-select ${statusClass}" onchange="updateOrder('${d.id}', this.value, this)">
                     <option value="Pending" ${o.status==='Pending'?'selected':''}>🟡 Pending</option>
@@ -441,6 +440,7 @@
                     <option value="Delivered" ${o.status==='Delivered'?'selected':''}>🟢 Delivered</option>
                     <option value="Cancelled" ${o.status==='Cancelled'?'selected':''}>🔴 Cancelled</option>
                   </select>
+                  <button class="btn btn-danger" style="padding:5px 10px; font-size:11px;" onclick="openDeleteModal('order', '${d.id}')">Delete</button>
                 </div>
               </h4>
               <p><strong>Date:</strong> ${o.orderDate}</p>
@@ -569,13 +569,14 @@
     let deleteItemType = ""; let deleteItemId = "";
     window.openDeleteModal = function(type, id) {
       deleteItemType = type; deleteItemId = id;
-      document.getElementById("deleteTitle").textContent = type === 'product' ? "Delete Product?" : "Delete Coupon?";
+      document.getElementById("deleteTitle").textContent = type === 'product' ? "Delete Product?" : (type === 'coupon' ? "Delete Coupon?" : "Delete Order?");
       document.getElementById("deleteModal").classList.add("active");
     }
     window.closeDeleteModal = function() { document.getElementById("deleteModal").classList.remove("active"); }
     document.getElementById("confirmDeleteBtn").onclick = async () => {
       if(deleteItemType === 'product') { await deleteDoc(doc(db, "products", deleteItemId)); loadProducts(); }
       else if(deleteItemType === 'coupon') { await deleteDoc(doc(db, "coupons", deleteItemId)); loadCoupons(); }
+      else if(deleteItemType === 'order') { await deleteDoc(doc(db, "orders", deleteItemId)); loadOrders(); }
       closeDeleteModal(); showToast("Deleted Successfully!");
     }
 
