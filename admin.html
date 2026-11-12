@@ -147,7 +147,17 @@
             <div class="form-field"><label>Original Price (₹)</label><input id="pOriginal" type="number"></div>
             <div class="form-field"><label>Unit (e.g. 1kg, 500g)</label><input id="pUnit" placeholder="Mention Base Unit"></div>
             <div class="form-field"><label>Stock</label><input id="pStock" type="number" required value="10"></div>
-            <div class="form-field full"><label>Image URL (Comma separated for multiple photos)</label><input id="pImage" required placeholder="url1, url2"></div>
+            
+            <!-- NAYA: FILE UPLOAD INSTEAD OF URL -->
+            <div class="form-field full">
+              <label>Product Image (Upload File) *</label>
+              <input type="file" id="pImageFile" accept="image/*" required>
+              <small style="color:#777; font-size:11px; display:block; margin-top:5px;">Max size: 500KB (Auto-converted to fit database)</small>
+            </div>
+            <div class="form-field full">
+              <label>OR Enter Image URL</label>
+              <input id="pImageUrl" placeholder="https://...">
+            </div>
             
             <div class="form-field"><label>Sizes (Comma Separated)</label><input id="pSizes" placeholder="M, L, XL (OR 250G, 500G)"></div>
             <div class="form-field"><label>Colours (Comma Separated)</label><input id="pColors" placeholder="Black, Blue, Red"></div>
@@ -336,6 +346,16 @@
       else if(tabName === 'settings') loadSettings();
     }
 
+    // IMAGE CONVERTER TO BASE64
+    function convertImageToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
+    }
+
     async function loadProducts() {
       const snap = await getDocs(collection(db, "products")); allProducts = [];
       snap.forEach(d => allProducts.push({ id: d.id, ...d.data() }));
@@ -357,23 +377,39 @@
       document.querySelectorAll("[data-edit]").forEach(btn => {
         btn.addEventListener("click", () => {
           const p = allProducts.find(x => x.id === btn.dataset.edit);
-          editId.value = p.id; pStore.value = p.store; pName.value = p.name; pCategory.value = p.category; pPrice.value = p.price; pOriginal.value = p.originalPrice; pUnit.value = p.unit || ""; pStock.value = p.stock; pImage.value = p.image; pSizes.value = (p.sizes||[]).join(", "); pColors.value = (p.colors||[]).join(", "); pTag.value = p.tag || ""; document.getElementById("pIsDeal").checked = p.isDeal || false; document.getElementById("pIsPerKg").checked = p.isPerKg || false; pDescription.value = p.description || "";
+          editId.value = p.id; pStore.value = p.store; pName.value = p.name; pCategory.value = p.category; pPrice.value = p.price; pOriginal.value = p.originalPrice; pUnit.value = p.unit || ""; pStock.value = p.stock; pImageUrl.value = p.image; pSizes.value = (p.sizes||[]).join(", "); pColors.value = (p.colors||[]).join(", "); pTag.value = p.tag || ""; document.getElementById("pIsDeal").checked = p.isDeal || false; document.getElementById("pIsPerKg").checked = p.isPerKg || false; pDescription.value = p.description || "";
+          document.getElementById("pImageFile").required = false; // Image optional in edit mode
           formTitle.textContent = "Edit Product"; window.scrollTo(0,0);
         });
       });
     }
 
     document.getElementById("productForm").onsubmit = async (e) => {
-      e.preventDefault(); const id = editId.value || "P" + Date.now();
+      e.preventDefault(); 
+      const id = editId.value || "P" + Date.now();
+      let finalImageUrl = document.getElementById("pImageUrl").value.trim();
+      const fileInput = document.getElementById("pImageFile");
+      
+      // If a file is uploaded, convert to Base64
+      if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        if (file.size > 500000) { alert("Image is too large. Please select an image under 500KB."); return; }
+        finalImageUrl = await convertImageToBase64(file);
+      }
+
+      if(!finalImageUrl) { alert("Please provide an image file or URL."); return; }
+
       await setDoc(doc(db, "products", id), {
-        store: pStore.value, name: pName.value, category: pCategory.value, price: Number(pPrice.value), originalPrice: Number(pOriginal.value)||0, unit: pUnit.value, stock: Number(pStock.value), image: pImage.value, 
+        store: pStore.value, name: pName.value, category: pCategory.value, price: Number(pPrice.value), originalPrice: Number(pOriginal.value)||0, unit: pUnit.value, stock: Number(pStock.value), image: finalImageUrl, 
         sizes: pSizes.value.split(",").map(s=>s.trim()).filter(Boolean), 
         colors: pColors.value.split(",").map(c=>c.trim()).filter(Boolean),
         tag: pTag.value, isDeal: document.getElementById("pIsDeal").checked, isPerKg: document.getElementById("pIsPerKg").checked, description: pDescription.value
       });
-      productForm.reset(); editId.value = ""; document.getElementById("pIsDeal").checked = false; document.getElementById("pIsPerKg").checked = false; loadProducts(); showToast("Product Saved!");
+      
+      productForm.reset(); editId.value = ""; document.getElementById("pIsDeal").checked = false; document.getElementById("pIsPerKg").checked = false; document.getElementById("pImageFile").required = true;
+      loadProducts(); showToast("Product Saved!");
     };
-    document.getElementById("clearBtn").onclick = () => { productForm.reset(); editId.value=""; formTitle.textContent="Add New Product"; };
+    document.getElementById("clearBtn").onclick = () => { productForm.reset(); editId.value=""; formTitle.textContent="Add New Product"; document.getElementById("pImageFile").required = true; };
 
     async function loadOrders() {
       const ordersList = document.getElementById("ordersList"); ordersList.innerHTML = "<p>Loading...</p>";
