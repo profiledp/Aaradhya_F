@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Customer Support | Aaradhya Mart</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .support-hero { background: var(--navy); color: #fff; padding: 60px 7%; text-align: center; }
+    .support-hero h1 { font: normal 42px Georgia, serif; color: var(--gold); margin: 0 0 10px; }
+    .support-hero p { font-size: 15px; color: #cbd5e1; max-width: 550px; margin: 0 auto; }
+
+    .support-grid {
+      max-width: 900px; margin: 50px auto; padding: 0 20px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;
+    }
+    .support-card {
+      background: #fff; border: 1px solid var(--line); border-radius: 14px;
+      padding: 30px 25px; text-align: center; text-decoration: none; color: inherit;
+      transition: 0.3s; cursor: pointer;
+    }
+    .support-card:hover {
+      transform: translateY(-5px); box-shadow: 0 15px 35px rgba(16,36,59,0.1);
+      border-color: var(--gold);
+    }
+    .support-icon {
+      width: 60px; height: 60px; margin: 0 auto 18px;
+      background: rgba(37,211,102,0.1); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+    }
+    .support-card h3 { font: normal 19px Georgia, serif; color: var(--navy); margin: 0 0 8px; }
+    .support-card p { font-size: 13px; color: #68717a; line-height: 1.6; margin: 0 0 15px; }
+    .support-card .wa-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #25D366; color: #fff; padding: 9px 18px;
+      border-radius: 6px; font-size: 12px; font-weight: bold;
+    }
+
+    .contact-direct {
+      max-width: 900px; margin: 0 auto 60px; padding: 30px;
+      background: linear-gradient(135deg, #10243b, #1e3a5f); color: #fff;
+      border-radius: 14px; text-align: center;
+    }
+    .contact-direct h2 { font: normal 26px Georgia; color: var(--gold); margin: 0 0 10px; }
+    .contact-direct p { font-size: 14px; color: #cbd5e1; margin-bottom: 20px; }
+    .contact-direct .big-wa {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: #25D366; color: #fff; padding: 15px 32px;
+      border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 15px;
+      transition: 0.3s;
+    }
+    .contact-direct .big-wa:hover { transform: scale(1.05); }
+
+    .faq-mini { max-width: 900px; margin: 0 auto 60px; padding: 0 20px; }
+    .faq-mini h2 { font: normal 30px Georgia; color: var(--navy); text-align: center; margin-bottom: 25px; }
+    .faq-mini details { background: #f8f9fa; border-radius: 10px; padding: 16px 20px; margin-bottom: 10px; border: 1px solid #eee; }
+    .faq-mini details summary { font-weight: bold; font-size: 14px; color: var(--navy); cursor: pointer; }
+    .faq-mini details p { margin: 12px 0 0; font-size: 13px; color: #555; line-height: 1.7; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html"><span class="brand-mark">AM</span><span><strong>AARADHYA MART</strong><small>CUSTOMER SUPPORT</small></span></a>
+    <a href="index.html" class="header-wa" style="background:#fff; color:var(--navy); border:1px solid var(--navy);">← Back to Home</a>
+  </header>
+
+  <div class="support-hero">
+    <h1>How Can We Help?</h1>
+    <p>Choose a topic below to connect with us instantly on WhatsApp. We reply within minutes.</p>
+  </div>
+
+  <div class="support-grid">
+    <a class="support-card" target="_blank" href="https://wa.me/918931911428?text=Hello%20Aaradhya%20Mart,%20I%20have%20a%20question%20about%20an%20order.">
+      <div class="support-icon">📦</div>
+      <h3>Order Inquiry</h3>
+      <p>Track status or ask about your order</p>
+      <span class="wa-btn">💬 Chat Now</span>
+    </a>
+
+    <a class="support-card" target="_blank" href="https://wa.me/918931911428?text=Hi,%20I%20want%20to%20request%20a%20return/refund.%20My%20Order%20ID%20is:%20">
+      <div class="support-icon">🔄</div>
+      <h3>Return / Refund</h3>
+      <p>Request a return or refund</p>
+      <span class="wa-btn">💬 Chat Now</span>
+    </a>
+
+    <a class="support-card" target="_blank" href="https://wa.me/918931911428?text=Hi,%20I%20have%20a%20payment%20related%20issue.%20My%20Order%20ID%20is:%20">
+      <div class="support-icon">💳</div>
+      <h3>Payment Issue</h3>
+      <p>Advance, UPI or COD problems</p>
+      <span class="wa-btn">💬 Chat Now</span>
+    </a>
+
+    <a class="support-card" target="_blank" href="https://wa.me/918931911428?text=Hi,%20I%20want%20to%20place%20a%20custom%20print%20order%20(A-Print).">
+      <div class="support-icon">🖨️</div>
+      <h3>Custom Print</h3>
+      <p>Get a quote for A-Print services</p>
+      <span class="wa-btn">💬 Chat Now</span>
+    </a>
+
+    <a class="support-card" target="_blank" href="https://wa.me/918931911428?text=Hi,%20I%20want%20to%20order%20groceries%20from%20Kirana.%20Can%20you%20help?">
+      <div class="support-icon">🛒</div>
+      <h3>Kirana / Grocery</h3>
+      <p>Ask about grocery availability</p>
+      <span class="wa-btn">💬 Chat Now</span>
+    </a>
+
+    <a class="support-card" target="_blank" href="https://wa.me/918931911428?text=Hello%20Aaradhya%20Mart,%20I%20need%20general%20assistance.">
+      <div class="support-icon">💬</div>
+      <h3>Other / General</h3>
+      <p>Any other question or feedback</p>
+      <span class="wa-btn">💬 Chat Now</span>
+    </a>
+  </div>
+
+  <div class="contact-direct">
+    <h2>Prefer to Talk Directly?</h2>
+    <p>Our team is available 9 AM – 9 PM, 7 days a week</p>
+    <a href="https://wa.me/918931911428?text=Hello%20Aaradhya%20Mart" target="_blank" class="big-wa">
+      <svg viewBox="0 0 32 32" style="width:20px;height:20px;fill:#fff;"><path d="M16 2C8.3 2 2 8.3 2 16c0 2.5.6 4.8 1.8 6.8L2 30l7.4-1.7c1.9 1 4.1 1.6 6.6 1.6 7.7 0 14-6.3 14-14S23.7 2 16 2z"/></svg>
+      WhatsApp Us: +91 89319 11428
+    </a>
+  </div>
+
+  <div class="faq-mini">
+    <h2>Quick Answers</h2>
+    <details><summary>💰 How do I pay the 20% advance?</summary><p>After placing your order, our team will send you a UPI ID or QR code on WhatsApp. Scan, pay, and send the screenshot. Order confirms within minutes.</p></details>
+    <details><summary>🚚 How long does delivery take?</summary><p>Azamgarh city: 24–48 hours. Outside Azamgarh: 3–5 business days via courier.</p></details>
+    <details><summary>📦 Can I cancel my order?</summary><p>Yes, before packing is done — FREE of cost. Once packed or out for delivery, cancellation is not allowed. Contact us on WhatsApp immediately if you need to cancel.</p></details>
+    <details><summary>🔄 What is your return policy?</summary><p>We don't have a 7-day return policy. Returns are accepted only for damaged, expired, or wrong items — reported within 12 hours with photos/video. Delivery charges are non-refundable.</p></details>
+  </div>
+</body>
+</html>
