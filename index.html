@@ -91,7 +91,6 @@
     .hero-stat strong { display: block; font: normal 26px Georgia, serif; color: var(--gold); margin-bottom: 4px; }
     .hero-stat span { font-size: 11px; letter-spacing: 1px; color: #94a3b8; text-transform: uppercase; }
 
-    /* Floating product collage */
     .hero-collage { position: relative; height: 400px; display: none; }
     .hero-collage-img {
       position: absolute; border-radius: 12px;
@@ -103,9 +102,7 @@
     .hero-collage-img.img-2 { width: 190px; height: 230px; top: 90px; right: 5%; transform: rotate(5deg); z-index: 2; }
     .hero-collage-img.img-3 { width: 170px; height: 200px; bottom: 0; left: 35%; transform: rotate(-2deg); z-index: 3; }
 
-    @media (min-width: 900px) {
-      .hero-collage { display: block; }
-    }
+    @media (min-width: 900px) { .hero-collage { display: block; } }
     @media (max-width: 650px) {
       .hero-new { min-height: auto; padding: 50px 5%; }
       .hero-grid { grid-template-columns: 1fr; }
@@ -347,7 +344,7 @@
           <span class="eyebrow">BONGARIYA BAZAR · AZAMGARH</span>
           <h1>Everything you need,<br><em>delivered.</em></h1>
           <p>Fashion · Custom Printing · Groceries — all under one roof. Trusted by hundreds of families in Azamgarh.</p>
-          
+
           <div class="hero-cta-row">
             <a href="#shops" class="hero-btn-primary">Shop Now <span>→</span></a>
             <button class="hero-btn-secondary" onclick="openDealsModal()">🔥 Today's Deals</button>
@@ -505,6 +502,21 @@
       </div>
     </section>
 
+    <!-- SUPPORT CTA (NEW) -->
+    <section style="padding: 50px 7%; background: linear-gradient(135deg, #10243b, #1e3a5f); text-align: center;">
+      <span class="eyebrow" style="color: var(--gold);">NEED HELP?</span>
+      <h2 style="font: normal 32px Georgia, serif; color: #fff; margin: 10px 0 12px;">We're Here to Help</h2>
+      <p style="font-size: 14px; color: #cbd5e1; max-width: 520px; margin: 0 auto 25px;">Order inquiry, returns, payments, or custom print quotes — get instant help from our team on WhatsApp.</p>
+      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+        <a href="support.html" style="display: inline-flex; align-items: center; gap: 8px; background: #25D366; color: #fff; padding: 14px 28px; border-radius: 8px; font-weight: bold; font-size: 13px; text-decoration: none; transition: 0.3s;">
+          💬 Visit Support Center
+        </a>
+        <a href="https://wa.me/918931911428?text=Hello%20Aaradhya%20Mart%2C%20I%20need%20help." target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 8px; background: transparent; color: #fff; padding: 14px 28px; border-radius: 8px; font-weight: bold; font-size: 13px; text-decoration: none; border: 1px solid rgba(255,255,255,0.3); transition: 0.3s;">
+          📞 WhatsApp: +91 89319 11428
+        </a>
+      </div>
+    </section>
+
     <!-- TESTIMONIALS -->
     <section class="testimonials-section" id="testimonialsSection" style="display:none;">
       <span class="eyebrow" style="text-align: center; display: block;">WHAT OUR CUSTOMERS SAY</span>
@@ -554,13 +566,13 @@
         <a href="fashion.html">Aaradhya Fashion</a>
         <a href="print.html">A-Print</a>
         <a href="kirana.html">Aaradhya Kirana</a>
-        <a href="admin.html">Admin Portal</a>
+        <a href="support.html">Customer Support</a>
       </div>
       <div class="footer-col">
         <h4>Contact</h4>
         <p>📍 Bongariya Bazar,<br>Azamgarh, UP - 276126</p>
         <a href="https://wa.me/918931911428" style="color: #25D366;">📞 +91 89319 11428</a>
-        <a href="https://wa.me/918931911428" style="color: #25D366;">💬 WhatsApp Us</a>
+        <a href="support.html" style="color: #25D366;">💬 Customer Support</a>
       </div>
     </div>
     <div class="footer-bottom">
@@ -574,7 +586,7 @@
     <span class="cart-text">Cart</span>
     <span class="cart-badge" id="globalCartCount">0</span>
   </a>
-  <a href="https://wa.me/918931911428?text=Hello%20Aaradhya%20Mart" target="_blank" class="whatsapp-float-btn" aria-label="Chat on WhatsApp">
+  <a href="support.html" class="whatsapp-float-btn" aria-label="Customer Support">
     <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
       <path d="M16.004 2C8.28 2 2 8.28 2 16c0 2.47.64 4.79 1.76 6.81L2 30l7.39-1.71A13.93 13.93 0 0 0 16.004 30C23.72 30 30 23.72 30 16S23.72 2 16.004 2zm0 2.31c6.76 0 12.23 5.47 12.23 12.23 0 6.76-5.47 12.23-12.23 12.23-2.13 0-4.13-.55-5.86-1.51l-.42-.23-4.32 1 1-4.21-.24-.4A12.17 12.17 0 0 1 3.77 16c0-6.76 5.47-12.23 12.23-12.23z" fill="#fff"/>
       <path d="M21.66 18.14c-.23-.12-1.38-.68-1.6-.76-.21-.08-.37-.12-.53.12-.16.24-.61.76-.75.92-.14.16-.28.18-.51.06-.23-.12-1-.37-1.91-1.18-.71-.63-1.18-1.41-1.32-1.65-.14-.24-.02-.37.1-.49.11-.11.23-.28.35-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.53-1.27-.72-1.74-.19-.46-.38-.4-.53-.4h-.45c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.69 2.58 4.1 3.62.57.25 1.02.4 1.37.51.57.18 1.09.15 1.5.09.46-.07 1.38-.56 1.58-1.11.2-.55.2-1.02.14-1.11-.06-.09-.22-.15-.45-.27z" fill="#fff"/>
@@ -608,7 +620,7 @@
       <div class="welcome-content">
         <h2>Welcome to Aaradhya Mart!</h2>
         <p>Aapke liye laye hain kuch khaas offers. Ab shopping karein aur payein <strong>Special Discount</strong>!</p>
-        
+
         <div class="welcome-coupon" id="welcomeCouponBox" onclick="copyCouponCode()">
           <span>🎉 FIRST ORDER OFFER</span>
           <strong id="welcomeCouponCode">LOADING...</strong>
@@ -628,7 +640,6 @@
     const firebaseConfig = { apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y", authDomain: "aaradhya-mart.firebaseapp.com", projectId: "aaradhya-mart", storageBucket: "aaradhya-mart.firebasestorage.app", messagingSenderId: "146782544824", appId: "1:146782544824:web:d605e1971d3480fab1654d" };
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    let cachedProducts = [];
 
     /* ============ CART ============ */
     function updateGlobalCart() {
@@ -685,9 +696,7 @@
         const snap = await getDocs(collection(db, "products"));
         const all = [];
         snap.forEach(d => all.push({ id: d.id, ...d.data() }));
-        cachedProducts = all;
 
-        // Take up to 8 in-stock products for featured
         const featured = all.filter(p => Number(p.stock) > 0).slice(0, 8);
 
         const grid = document.getElementById("featuredGrid");
