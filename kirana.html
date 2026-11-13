@@ -6,10 +6,6 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%2310243b'/><text x='50' y='68' font-size='55' font-family='Georgia' fill='%23c5a36b' text-anchor='middle'>A</text></svg>">
   <link rel="stylesheet" href="style.css">
   <style>
-    .wa-direct-btn { display: flex; align-items: center; justify-content: center; gap: 5px; background: #25D366; color: #fff; padding: 8px; border-radius: 4px; font-size: 11px; font-weight: bold; text-decoration: none; margin-top: 5px; cursor: pointer; }
-    .wa-direct-btn svg { width: 14px; height: 14px; fill: #fff; }
-    .wa-direct-btn:hover { background: #128C7E; }
-
     .dialog-image-slider { position: relative; width: 100%; height: 100%; min-height: 400px; background: #f8f9fa; display: flex; align-items: center; justify-content: center; }
     .dialog-image-slider img { width: 100%; height: 100%; object-fit: contain; padding: 20px; transition: opacity 0.3s; }
     .slider-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.9); border: 1px solid #ccc; width: 35px; height: 35px; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
@@ -45,12 +41,10 @@
     .review-item .name { font-weight: bold; font-size: 12px; color: var(--navy); }
     .review-item .comment { font-size: 12px; color: #555; margin-top: 3px; }
 
-    /* Header actions */
     .header-actions { display: flex; align-items: center; gap: 8px; }
     .header-support-btn { font-size: 11px; background: #25D366; color: #fff; padding: 13px 16px; border-radius: 4px; text-decoration: none; font-weight: bold; letter-spacing: 0.5px; transition: 0.3s; display: inline-flex; align-items: center; gap: 5px; }
     .header-support-btn:hover { background: #128C7E; }
 
-    /* Section heading flex */
     .shop-heading-row { display: flex; justify-content: space-between; align-items: end; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
 
     @media (max-width: 650px) {
@@ -94,11 +88,9 @@
       <select id="sortFilter"><option value="featured">Sort: Featured</option><option value="low">Price: Low to High</option><option value="high">Price: High to Low</option></select>
     </div>
 
-    <!-- CATEGORY PILLS -->
     <div class="category-nav" id="categoryNav"></div>
     <select id="categoryFilter" style="display:none;"><option value="All">All Categories</option></select>
 
-    <!-- TRUST ROW -->
     <div class="shop-trust-row">
       <span>🚚 Free Delivery above ₹500</span>
       <span>💯 Fresh & Authentic</span>
@@ -128,14 +120,12 @@
     const PAGE_STORE = "Kirana"; let products = [];
     let currentImages = []; let currentImgIndex = 0;
 
-    // Branded placeholder
     const PLACEHOLDER = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'><rect width='400' height='400' fill='%23f8f9fa'/><text x='200' y='200' font-size='52' font-family='Georgia' fill='%23c5a36b' text-anchor='middle' dominant-baseline='middle' opacity='0.5'>AM</text></svg>";
 
     async function loadFirebaseProducts() {
       const querySnapshot = await getDocs(collection(db, "products"));
       products = []; querySnapshot.forEach((doc) => products.push({ id: doc.id, ...doc.data() }));
       
-      // Build category pills
       const catSelect = document.getElementById("categoryFilter");
       catSelect.innerHTML = `<option value="All">All Categories</option>`;
       const uniqueCats = [...new Set(products.filter(p => p.store === PAGE_STORE).map(p => p.category).filter(Boolean))];
@@ -224,7 +214,6 @@
         </article>`;
       }).join("");
 
-      // Add "Coming Soon" card if less than 4 products
       if (list.length < 4) {
         html += `
         <div class="coming-soon-card">
