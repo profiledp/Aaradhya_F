@@ -47,6 +47,27 @@
 
     .shop-heading-row { display: flex; justify-content: space-between; align-items: end; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
 
+    /* ✅ FLY TO CART ANIMATION CSS */
+    .fly-image-anim {
+      position: fixed;
+      z-index: 99999;
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      object-fit: cover;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+      pointer-events: none;
+    }
+    @keyframes cartBounce {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.5); background-color: #10b981; color: #fff; }
+      100% { transform: scale(1); }
+    }
+    .bounce-anim {
+      animation: cartBounce 0.5s ease;
+    }
+
     @media (max-width: 650px) {
       .header-actions { gap: 6px; }
       .header-wa, .header-support-btn { padding: 9px 12px !important; font-size: 10px !important; }
@@ -306,6 +327,40 @@
       dots.forEach((dot, i) => { if(i === currentImgIndex) dot.classList.add("active"); else dot.classList.remove("active"); });
     }
 
+    // ✅ FLY TO CART ANIMATION
+    function flyToCart(imgSrc, btnElement) {
+      const cartBtn = document.getElementById("globalCartBtn");
+      const cartBadge = document.getElementById("globalCartCount");
+      if(!cartBtn) return;
+
+      const img = document.createElement('img');
+      img.src = imgSrc;
+      img.className = 'fly-image-anim';
+
+      const startRect = btnElement.getBoundingClientRect();
+      const endRect = cartBtn.getBoundingClientRect();
+
+      img.style.left = startRect.left + 'px';
+      img.style.top = startRect.top + 'px';
+      img.style.width = startRect.width + 'px';
+      img.style.height = startRect.height + 'px';
+      document.body.appendChild(img);
+
+      requestAnimationFrame(() => {
+        img.style.left = (endRect.left + endRect.width/2 - 15) + 'px';
+        img.style.top = (endRect.top + endRect.height/2 - 15) + 'px';
+        img.style.width = '30px';
+        img.style.height = '30px';
+        img.style.opacity = '0.5';
+      });
+
+      setTimeout(() => {
+        img.remove();
+        cartBadge.classList.add('bounce-anim');
+        setTimeout(() => cartBadge.classList.remove('bounce-anim'), 500);
+      }, 800);
+    }
+
     function addToCart(id, unit, color) {
       let cart = JSON.parse(localStorage.getItem("aaradhyaMartCart") || "[]"); 
       cart.push({ id: id, size: unit, color: color, qty: 1 });
@@ -373,6 +428,11 @@
           const pId = cartBtn.dataset.cart; 
           const selectedSize = document.getElementById(`unit-${pId}`)?.value || "Standard"; 
           const selectedColor = document.getElementById(`color-${pId}`)?.value || "Standard";
+          
+          // ✅ TRIGGER FLY ANIMATION
+          const cardImg = cartBtn.closest('.product-card').querySelector('.product-image-wrap img');
+          if(cardImg) flyToCart(cardImg.src, cartBtn);
+
           addToCart(pId, selectedSize, selectedColor); 
         }
       });
