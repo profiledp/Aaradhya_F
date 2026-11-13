@@ -244,7 +244,7 @@
     /* ✅ NAYA: Flipkart Style Header */
     .header-search-container {
       flex: 1;
-      max-width: 700px; /* Search bar ko lamba kiya */
+      max-width: 700px;
       margin: 0 30px;
       position: relative;
     }
@@ -252,7 +252,7 @@
       width: 100%;
       padding: 12px 18px 12px 45px;
       border: 1px solid #ddd;
-      border-radius: 6px; /* Flipkart jaisa halka square */
+      border-radius: 6px;
       font-size: 14px;
       outline: none;
       background: #f8f9fa url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23777" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>') no-repeat 15px center;
@@ -320,7 +320,7 @@
 
     @media (max-width: 768px) {
       .header-search-container {
-        display: none; /* Mobile pe hide */
+        display: none;
       }
     }
   </style>
@@ -330,13 +330,16 @@
   <header class="site-header">
     <a class="brand" href="index.html"><span class="brand-mark">AM</span><span><strong>AARADHYA MART</strong><small>YOUR EVERYDAY STORE</small></span></a>
     
-    <!-- ✅ NAYA: Flipkart Style Search Bar -->
+    <!-- Flipkart Style Search Bar -->
     <div class="header-search-container">
       <input type="text" id="headerSearchInput" class="header-search-input" placeholder="Search for Products, Brands and More..." autocomplete="off">
       <div id="headerSearchResults" class="header-search-results"></div>
     </div>
 
     <div class="header-actions" style="display: flex; gap: 8px; align-items: center;">
+      <!-- ✅ NAYA: Offers Button -->
+      <a href="offers.html" class="header-wa" style="background: #ef4444; color: #fff; border: 1px solid #ef4444; padding: 11px 15px; animation: pulse 2s infinite;">🔥 Offers</a>
+      
       <a href="my-orders.html" class="header-wa" style="background:#fff; color:var(--navy); border:1px solid var(--navy); padding: 11px 15px;">📦 My Orders</a>
       <a href="admin.html" class="header-wa" style="padding: 11px 15px;">Admin ⚙️</a>
     </div>
@@ -351,7 +354,7 @@
   </div>
 
   <main>
-    <!-- NEW HERO -->
+    <!-- HERO -->
     <section class="hero-new">
       <div class="hero-shade"></div>
       <div class="hero-grid">
@@ -367,7 +370,7 @@
 
           <div class="hero-stats">
             <div class="hero-stat"><strong>500+</strong><span>Happy Customers</span></div>
-            <div class="hero-stat"><strong>1-2hr</strong><span>Fast Delivery</span></div>
+            <div class="hero-stat"><strong>24hr</strong><span>Fast Delivery</span></div>
             <div class="hero-stat"><strong>3</strong><span>Store Verticals</span></div>
           </div>
         </div>
@@ -476,7 +479,7 @@
         <div class="hiw-step">
           <div class="hiw-step-num">3</div>
           <h3>Receive</h3>
-          <p>Track live status & receive at your doorstep in 1-2 hours.</p>
+          <p>Track live status & receive at your doorstep in 24 hours.</p>
         </div>
       </div>
     </section>
@@ -491,7 +494,7 @@
             <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
           </div>
           <h3>Fast Delivery</h3>
-          <p>Get your order delivered to your doorstep within 1–2 hours — available within a 5 km radius of Bongariya Bazar.</p>
+          <p>Get your order delivered to your doorstep within 24 hours in Azamgarh.</p>
         </div>
         <div class="feature-card-new">
           <div class="feature-icon-circle">
@@ -545,8 +548,8 @@
         <div class="map-info">
           <span class="eyebrow">VISIT OUR STORE</span>
           <h2>Find Us on Map</h2>
-          <p>Our shop is located in Bongariya Bazaar, Azamgarh. Come visit us and enjoy our new collection!</p>
-          <p class="store-address">📍 Bongariya Bazar, Azamgarh,<br>Uttar Pradesh - 276126</p>
+          <p>Humari dukaan Azamgarh ke Bongariya Bazar mein sthit hai. Aap humse milne aayein aur naye collection ka anand lein!</p>
+          <p class="store-address">📍 Bongariya Bazar, Azamgarh,<br>Uttar Pradesh - 276001</p>
           <a href="https://www.google.com/maps/@25.8356927,83.2665054,21z?hl=en" target="_blank" class="map-btn">🗺️ Get Directions →</a>
         </div>
         <div class="map-iframe">
@@ -572,9 +575,11 @@
       <div class="footer-col">
         <h4>Quick Links</h4>
         <a href="index.html">Home</a>
+        <a href="offers.html">🔥 Offers & Deals</a> <!-- ✅ NAYA -->
         <a href="my-orders.html">My Orders</a>
         <a href="about.html">About & Policies</a>
         <a href="track.html">Track Order</a>
+        <a href="delivery-policy.html">🚚 Delivery Policy</a> <!-- ✅ NAYA -->
       </div>
       <div class="footer-col">
         <h4>Our Stores</h4>
@@ -743,7 +748,7 @@
           let html = "";
           for(let i=0; i<2; i++) {
             allCoupons.forEach(c => {
-              html += `<div class="offer-banner-item">🎉 Get ${c.discount}% OFF! Use Code <span>${c.code}</span> at Checkout.</div>`;
+              html += `<a href="offers.html" style="text-decoration:none; color:inherit;"><div class="offer-banner-item">🎉 Get ${c.discount}% OFF! Use Code <span>${c.code}</span> at Checkout.</div></a>`;
             });
           }
           document.getElementById("bannerTrack").innerHTML = html;
