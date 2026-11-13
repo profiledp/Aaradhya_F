@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Orders | Aaradhya Mart</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%2310243b'/><text x='50' y='68' font-size='55' font-family='Georgia' fill='%23c5a36b' text-anchor='middle'>A</text></svg>">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .my-orders-wrap { max-width: 800px; margin: 50px auto; padding: 20px; }
+    .page-title { font: normal 32px Georgia, serif; color: var(--navy); margin-bottom: 25px; text-align: center; }
+    
+    .order-card { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: 0.2s; }
+    .order-card:hover { box-shadow: 0 8px 25px rgba(16,36,59,0.08); border-color: var(--gold); }
+    
+    .order-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+    .order-id { font-size: 16px; font-weight: bold; color: var(--navy); margin: 0; }
+    .order-date { font-size: 12px; color: #777; margin-top: 4px; }
+    
+    .status-badge { font-size: 11px; font-weight: bold; padding: 6px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .status-pending { background: #fef3c7; color: #92400e; }
+    .status-confirmed { background: #e0f2fe; color: #0369a1; }
+    .status-packed { background: #ffedd5; color: #9a3412; }
+    .status-out-for-delivery { background: #f3e8ff; color: #6b21a8; }
+    .status-delivered { background: #dcfce7; color: #166534; }
+    .status-cancelled { background: #fee2e2; color: #991b1b; }
+    
+    .order-items-list { font-size: 13px; color: #4b5563; margin-bottom: 15px; line-height: 1.6; }
+    .order-items-list strong { color: var(--navy); }
+    
+    .order-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed #eee; padding-top: 15px; flex-wrap: wrap; gap: 10px; }
+    .order-total { font-size: 18px; font-weight: bold; color: var(--navy); }
+    .order-total span { font-size: 12px; font-weight: normal; color: #777; }
+    
+    .btn-track-now { background: var(--navy); color: #fff; padding: 10px 20px; border-radius: 6px; font-size: 12px; font-weight: bold; text-decoration: none; transition: 0.2s; border: none; cursor: pointer; }
+    .btn-track-now:hover { background: #1e3a5f; transform: translateY(-2px); }
+    
+    .empty-orders { text-align: center; padding: 60px 20px; background: #f8f9fa; border: 2px dashed #ccc; border-radius: 12px; margin-top: 30px; }
+    .empty-orders h3 { font: normal 22px Georgia, serif; color: var(--navy); margin-bottom: 10px; }
+    .empty-orders p { font-size: 14px; color: #777; margin-bottom: 20px; }
+    .btn-shop { background: var(--gold); color: var(--navy); padding: 12px 25px; border-radius: 6px; font-weight: bold; text-decoration: none; display: inline-block; transition: 0.2s; }
+    .btn-shop:hover { background: #d4b47a; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html"><span class="brand-mark">AM</span><span><strong>AARADHYA MART</strong><small>MY ORDERS</small></span></a>
+    <div style="display: flex; gap: 8px; align-items: center;">
+      <a href="support.html" style="font-size: 11px; background: #25D366; color: #fff; padding: 11px 14px; border-radius: 4px; text-decoration: none; font-weight: bold; letter-spacing: 0.5px;">💬 Support</a>
+      <a href="index.html" class="header-wa" style="background:#fff; color:var(--navy); border:1px solid var(--navy);">← Home</a>
+    </div>
+  </header>
+
+  <main class="my-orders-wrap">
+    <h1 class="page-title">📦 My Orders</h1>
+    <div id="ordersContainer">
+      <!-- Orders will be rendered here by JS -->
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      renderMyOrders();
+    });
+
+    async function renderMyOrders() {
+      const container = document.getElementById("ordersContainer");
+      
+      // 1. Get saved Order IDs from LocalStorage
+      let myOrderIds = JSON.parse(localStorage.getItem("aaradhyaMyOrders") || "[]");
+
+      if (myOrderIds.length === 0) {
+        container.innerHTML = `
+          <div class="empty-orders">
+            <h3>No orders yet!</h3>
+            <p>You haven't placed any orders with us.</p>
+            <a href="index.html" class="btn-shop">Start Shopping 🛍️</a>
+          </div>`;
+        return;
+      }
+
+      container.innerHTML = `<p style="text-align:center; color:#777; font-size:13px;">Loading your orders...</p>`;
+
+      try {
+        // 2. Fetch orders from Firebase
+        // (Using dynamic import to keep the page fast)
+        const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js");
+        const { getFirestore, collection, query, where, getDocs } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");
+
+        const firebaseConfig = { apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y", authDomain: "aaradhya-mart.firebaseapp.com", projectId: "aaradhya-mart", storageBucket: "aaradhya-mart.firebasestorage.app", messagingSenderId: "146782544824", appId: "1:146782544824:web:d605e1971d3480fab1654d" };
+        const app = initializeApp(firebaseConfig); 
+        const db = getFirestore(app);
+
+        // Firebase "in" query works max for 10 items. So we chunk it.
+        let allOrders = [];
+        for (let i = 0; i < myOrderIds.length; i += 10) {
+          const chunk = myOrderIds.slice(i, i + 10);
+          const q = query(collection(db, "orders"), where("orderId", "in", chunk));
+          const snap = await getDocs(q);
+          snap.forEach(doc => allOrders.push(doc.data()));
+        }
+
+        // Sort by newest first
+        allOrders.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
+
+        if (allOrders.length === 0) {
+          container.innerHTML = `
+            <div class="empty-orders">
+              <h3>No orders found.</h3>
+              <p>We couldn't find any recent orders on this device.</p>
+              <a href="index.html" class="btn-shop">Start Shopping 🛍️</a>
+            </div>`;
+          return;
+        }
+
+        // 3. Render Orders
+        let html = "";
+        allOrders.forEach(o => {
+          const itemsStr = o.items.map(i => `${i.name} (x${i.qty})`).join(", ");
+          
+          // Status Class mapping
+          let statusClass = "status-pending";
+          if(o.status === "Confirmed") statusClass = "status-confirmed";
+          if(o.status === "Packed") statusClass = "status-packed";
+          if(o.status === "Out for Delivery") statusClass = "status-out-for-delivery";
+          if(o.status === "Delivered") statusClass = "status-delivered";
+          if(o.status === "Cancelled") statusClass = "status-cancelled";
+
+          html += `
+            <div class="order-card">
+              <div class="order-header">
+                <div>
+                  <h3 class="order-id">Order #${o.orderId}</h3>
+                  <p class="order-date">Placed on: ${o.orderDate}</p>
+                </div>
+                <span class="status-badge ${statusClass}">${o.status}</span>
+              </div>
+              
+              <div class="order-items-list">
+                <strong>Items:</strong> ${itemsStr}
+              </div>
+              
+              <div class="order-footer">
+                <div class="order-total">₹${o.totalAmount} <span>(incl. taxes)</span></div>
+                <a href="track.html" class="btn-track-now">Track / View Details →</a>
+              </div>
+            </div>
+          `;
+        });
+        
+        container.innerHTML = html;
+
+      } catch (error) {
+        console.error("Error loading orders:", error);
+        container.innerHTML = `<p style="color:red; text-align:center;">Failed to load orders. Please check your internet connection.</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
