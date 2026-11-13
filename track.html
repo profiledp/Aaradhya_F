@@ -139,7 +139,7 @@
     </div>
   </main>
 
-  <!-- REVIEW MODAL (Naya Add Kiya Gaya Hai) -->
+  <!-- REVIEW MODAL -->
   <div id="reviewModal" style="display: none; position: fixed; inset: 0; background: rgba(16,36,59,0.75); backdrop-filter: blur(4px); z-index: 10000; align-items: center; justify-content: center; padding: 15px;">
     <div style="background: #fff; border-radius: 12px; padding: 30px; max-width: 420px; width: 100%; box-shadow: 0 20px 50px rgba(0,0,0,0.3);">
       <h3 style="font: normal 22px Georgia, serif; color: var(--navy); margin: 0 0 20px; text-align: center;">Write a Review</h3>
@@ -178,6 +178,7 @@
       <div>
         <h4 style="font-size: 11px; letter-spacing: 2px; color: var(--gold); margin: 0 0 14px; text-transform: uppercase;">Quick Links</h4>
         <a href="index.html" style="display: block; font-size: 12px; color: #cbd5e1; margin-bottom: 8px; text-decoration: none;">Home</a>
+        <a href="my-orders.html" style="display: block; font-size: 12px; color: #cbd5e1; margin-bottom: 8px; text-decoration: none;">📦 My Orders</a>
         <a href="track.html" style="display: block; font-size: 12px; color: #cbd5e1; margin-bottom: 8px; text-decoration: none;">Track Order</a>
         <a href="cart.html" style="display: block; font-size: 12px; color: #cbd5e1; margin-bottom: 8px; text-decoration: none;">Cart</a>
       </div>
@@ -206,6 +207,23 @@
     const firebaseConfig = { apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y", authDomain: "aaradhya-mart.firebaseapp.com", projectId: "aaradhya-mart", storageBucket: "aaradhya-mart.firebasestorage.app", messagingSenderId: "146782544824", appId: "1:146782544824:web:d605e1971d3480fab1654d" };
     const app = initializeApp(firebaseConfig); const db = getFirestore(app);
     const WHATSAPP_NUMBER = "918931911428";
+
+    // ✅ NAYA CODE: URL se data read karke auto-fill karna
+    window.addEventListener("DOMContentLoaded", () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const orderParam = urlParams.get('order');
+      const phoneParam = urlParams.get('phone');
+
+      if (orderParam && phoneParam) {
+        document.getElementById("trackOrderId").value = orderParam;
+        document.getElementById("trackPhone").value = phoneParam;
+        
+        // Form fill hone ke baad auto-click the search button
+        setTimeout(() => {
+          document.getElementById("trackBtn").click();
+        }, 300); 
+      }
+    });
 
     document.getElementById("trackBtn").addEventListener("click", async () => {
       const orderId = document.getElementById("trackOrderId").value.trim().toUpperCase();
