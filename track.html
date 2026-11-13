@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Track Order | Aaradhya Mart</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%2310243b'/><text x='50' y='68' font-size='55' font-family='Georgia' fill='%23c5a36b' text-anchor='middle'>A</text></svg>">
   <link rel="stylesheet" href="style.css">
   <style>
     .track-container { max-width: 600px; margin: 50px auto; padding: 30px; background: #fff; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 10px 30px rgba(16,36,59,0.05); }
@@ -23,6 +24,7 @@
     .result-box h3 { font: normal 20px Georgia, serif; color: var(--navy); margin-top: 0; border-bottom: 1px solid #ddd; padding-bottom: 10px; }
     .result-box p { text-align: left; margin-bottom: 8px; color: var(--ink); font-size: 14px; }
 
+    /* AMAZON STYLE ANIMATED TRACKER */
     .tracker-wrap { margin-top: 30px; padding: 0 10px; }
     .tracker-steps { display: flex; justify-content: space-between; position: relative; margin-bottom: 20px; }
     .tracker-steps::before { content: ''; position: absolute; top: 15px; left: 0; right: 0; height: 4px; background: #e0e0e0; z-index: 1; border-radius: 2px; }
@@ -44,6 +46,7 @@
     .btn-update-order { background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc; }
     .btn-update-order:hover { background: #bae6fd; }
 
+    /* PROFESSIONAL POLICY CARD */
     .policy-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-top: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
     .policy-card h4 { margin: 0 0 15px 0; color: #1e293b; font-size: 15px; font-family: Arial, sans-serif; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; display: flex; align-items: center; gap: 8px; }
     .policy-item { display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-start; }
@@ -54,7 +57,7 @@
 
     .error-msg { color: #ef4444; font-size: 14px; text-align: center; margin-top: 15px; font-weight: bold; display: none; }
 
-    /* Support CTA Box */
+    /* SUPPORT CTA BOX */
     .support-cta-box { max-width: 600px; margin: 0 auto 40px; background: linear-gradient(135deg, #10243b, #1e3a5f); color: #fff; padding: 25px 30px; border-radius: 12px; text-align: center; box-shadow: 0 10px 25px rgba(16,36,59,0.2); }
     .support-cta-box h3 { font: normal 22px Georgia, serif; color: var(--gold); margin: 0 0 8px; }
     .support-cta-box p { font-size: 13px; color: #cbd5e1; margin: 0 0 18px; }
@@ -126,7 +129,6 @@
       </div>
     </div>
 
-    <!-- Support CTA -->
     <div class="support-cta-box">
       <h3>Need Help With Your Order?</h3>
       <p>Our team is ready to help you with any tracking, delivery, or return questions.</p>
@@ -136,6 +138,40 @@
       </div>
     </div>
   </main>
+
+  <!-- REVIEW MODAL (Naya Add Kiya Gaya Hai) -->
+  <div id="reviewModal" style="display: none; position: fixed; inset: 0; background: rgba(16,36,59,0.75); backdrop-filter: blur(4px); z-index: 10000; align-items: center; justify-content: center; padding: 15px;">
+    <div style="background: #fff; border-radius: 12px; padding: 30px; max-width: 420px; width: 100%; box-shadow: 0 20px 50px rgba(0,0,0,0.3);">
+      <h3 style="font: normal 22px Georgia, serif; color: var(--navy); margin: 0 0 20px; text-align: center;">Write a Review</h3>
+      <input type="hidden" id="reviewProductId">
+      
+      <div style="margin-bottom: 12px;">
+        <label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 5px;">Your Name</label>
+        <input type="text" id="reviewName" placeholder="Enter your name" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; outline: none;">
+      </div>
+      
+      <div style="margin-bottom: 12px;">
+        <label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 5px;">Rating</label>
+        <select id="reviewRating" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; outline: none;">
+          <option value="5">⭐⭐⭐⭐⭐ (5 Star)</option>
+          <option value="4">⭐⭐⭐⭐ (4 Star)</option>
+          <option value="3">⭐⭐⭐ (3 Star)</option>
+          <option value="2">⭐⭐ (2 Star)</option>
+          <option value="1">⭐ (1 Star)</option>
+        </select>
+      </div>
+      
+      <div style="margin-bottom: 20px;">
+        <label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 5px;">Comment</label>
+        <textarea id="reviewComment" rows="3" placeholder="Share your experience..." style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; resize: vertical; outline: none;"></textarea>
+      </div>
+      
+      <div style="display: flex; gap: 10px;">
+        <button onclick="document.getElementById('reviewModal').style.display='none'" style="flex: 1; padding: 12px; border: 1px solid #ccc; background: #fff; border-radius: 6px; cursor: pointer; font-weight: bold;">Cancel</button>
+        <button onclick="submitReview()" style="flex: 1; padding: 12px; border: none; background: var(--navy); color: #fff; border-radius: 6px; cursor: pointer; font-weight: bold;">Submit</button>
+      </div>
+    </div>
+  </div>
 
   <footer style="background: #0b1b2d; color: #fff; padding: 35px 20px 25px; margin-top: 50px;">
     <div style="max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 30px; margin-bottom: 30px;">
