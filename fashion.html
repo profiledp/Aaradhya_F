@@ -6,6 +6,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%2310243b'/><text x='50' y='68' font-size='55' font-family='Georgia' fill='%23c5a36b' text-anchor='middle'>A</text></svg>">
   <link rel="stylesheet" href="style.css">
   <style>
+    /* Local dialog/header styles (supplement to style.css) */
     .dialog-image-slider { position: relative; width: 100%; height: 100%; min-height: 400px; background: #f8f9fa; display: flex; align-items: center; justify-content: center; }
     .dialog-image-slider img { width: 100%; height: 100%; object-fit: contain; padding: 20px; transition: opacity 0.3s; }
     .slider-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.9); border: 1px solid #ccc; width: 35px; height: 35px; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
@@ -192,7 +193,7 @@
               <span class="price-display">${money(p.price)}</span>
               ${!isOut ? `<select id="unit-${p.id}" class="unit-pill">${sizeOptions}</select>` : ''}
             </div>
-            ${!isOut && p.colors?.length > 0 ? `<select id="color-${p.id}" class="unit-pill" style="width:100%; margin-bottom:8px; max-width:none;">${colorOptions}</select>` : ''}
+            ${!isOut && p.colors?.length > 0 ? `<select id="color-${p.id}" class="unit-pill-full">${colorOptions}</select>` : ''}
             
             <div class="product-actions-modern">
               <button class="btn-add-cart" data-cart="${p.id}" ${isOut?'disabled':''}>🛒 Add</button>
@@ -202,7 +203,6 @@
         </article>`;
       }).join("");
 
-      // Coming soon card
       if (list.length < 4) {
         html += `
         <div class="coming-soon-card">
