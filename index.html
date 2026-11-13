@@ -4,10 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- GOOGLE SEARCH CONSOLE VERIFICATION -->
   <meta name="google-site-verification" content="hiQAkLa44zyk1N-KNLhALM6FzgBbLJ4TtERoyBT3tvU" />
-
-  <!-- SEO TAGS -->
   <title>Aaradhya Mart | Fashion, A-Print & Kirana Store in Azamgarh</title>
   <meta name="description" content="Shop the latest fashion clothes, custom printing (A-Print), and daily grocery essentials (Kirana) online at Aaradhya Mart. Fast delivery in Bongariya Bazar, Azamgarh.">
   <meta property="og:title" content="Aaradhya Mart | Fashion, Print & Kirana">
@@ -250,7 +247,12 @@
   <header class="site-header">
     <a class="brand" href="index.html"><span class="brand-mark">AM</span><span><strong>AARADHYA MART</strong><small>YOUR EVERYDAY STORE</small></span></a>
     
-    <!-- UPDATED HEADER ACTIONS -->
+    <!-- ✅ NAYA: HEADER SEARCH BAR -->
+    <div class="header-search-container">
+      <input type="text" id="headerSearchInput" class="header-search-input" placeholder="🔍 Search products..." autocomplete="off">
+      <div id="headerSearchResults" class="header-search-results"></div>
+    </div>
+
     <div class="header-actions" style="display: flex; gap: 8px; align-items: center;">
       <a href="my-orders.html" class="header-wa" style="background:#fff; color:var(--navy); border:1px solid var(--navy); padding: 11px 15px;">📦 My Orders</a>
       <a href="admin.html" class="header-wa" style="padding: 11px 15px;">Admin ⚙️</a>
@@ -570,6 +572,8 @@
     const firebaseConfig = { apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y", authDomain: "aaradhya-mart.firebaseapp.com", projectId: "aaradhya-mart", storageBucket: "aaradhya-mart.firebasestorage.app", messagingSenderId: "146782544824", appId: "1:146782544824:web:d605e1971d3480fab1654d" };
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    
+    let allProductsForSearch = []; // Search bar ke liye products store karenge
 
     /* ============ CART ============ */
     function updateGlobalCart() {
@@ -583,6 +587,52 @@
           badge.style.color = count === 0 ? "#fff" : "var(--navy)";
         }
       } catch(e) {}
+    }
+
+    /* ============ HEADER SEARCH BAR ============ */
+    async function initHeaderSearch() {
+      const snap = await getDocs(collection(db, "products"));
+      snap.forEach(d => allProductsForSearch.push({ id: d.id, ...d.data() }));
+
+      const input = document.getElementById("headerSearchInput");
+      const resultsBox = document.getElementById("headerSearchResults");
+
+      input.addEventListener("input", (e) => {
+        const queryStr = e.target.value.toLowerCase().trim();
+        if(queryStr.length < 2) { resultsBox.classList.remove("active"); return; }
+
+        const matched = allProductsForSearch.filter(p => 
+          (p.name && p.name.toLowerCase().includes(queryStr)) || 
+          (p.category && p.category.toLowerCase().includes(queryStr))
+        ).slice(0, 5); // Max 5 results
+
+        if(matched.length === 0) {
+          resultsBox.innerHTML = `<div style="padding:15px; text-align:center; font-size:12px; color:#777;">No products found for "${queryStr}"</div>`;
+        } else {
+          resultsBox.innerHTML = matched.map(p => {
+            const img = p.image ? p.image.split(',')[0].trim() : 'https://placehold.co/100';
+            const storeFile = p.store.toLowerCase();
+            return `
+              <a href="${storeFile}.html" class="search-result-item">
+                <img src="${img}" alt="${p.name}" onerror="this.src='https://placehold.co/100'">
+                <div style="flex:1;">
+                  <h4>${p.name}</h4>
+                  <p>${p.category || 'General'} · ${p.store}</p>
+                </div>
+                <div class="s-price">₹${p.price}</div>
+              </a>
+            `;
+          }).join("");
+        }
+        resultsBox.classList.add("active");
+      });
+
+      // Click outside to close
+      document.addEventListener("click", (e) => {
+        if(!e.target.closest(".header-search-container")) {
+          resultsBox.classList.remove("active");
+        }
+      });
     }
 
     /* ============ FESTIVE BANNER ============ */
@@ -620,7 +670,7 @@
       } catch(e) {}
     }
 
-    /* ============ FEATURED PRODUCTS ============ */
+    /* ============ FEATURED PRODUCTS (With Discount Badge) ============ */
     async function loadFeatured() {
       try {
         const snap = await getDocs(collection(db, "products"));
@@ -638,9 +688,18 @@
         grid.innerHTML = featured.map(p => {
           const img = p.image ? p.image.split(',')[0].trim() : 'https://placehold.co/400';
           const storeFile = p.store.toLowerCase();
+          
+          // ✅ NAYA: Calculate Discount Percentage
+          let discountHtml = '';
+          if (Number(p.originalPrice) > Number(p.price) && p.originalPrice > 0) {
+            const discountPercent = Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100);
+            discountHtml = `<span class="discount-badge">${discountPercent}% OFF</span>`;
+          }
+
           const oldPrice = Number(p.originalPrice) > Number(p.price) && p.originalPrice > 0
             ? `<span style="font-size: 11px; color: #999; text-decoration: line-through; margin-left: 5px; font-weight: normal;">₹${p.originalPrice}</span>`
             : '';
+
           return `
             <article class="product-card">
               <a href="${storeFile}.html" style="text-decoration: none; color: inherit; display: block;">
@@ -649,7 +708,9 @@
                   <span class="product-tag" style="background: var(--navy); color: #fff; border: 1px solid var(--gold);">${p.store}</span>
                 </div>
                 <h3 style="font-size: 13px; margin: 8px 0 4px; height: 34px; overflow: hidden; line-height: 1.3; font-weight: bold; color: var(--navy);">${p.name}</h3>
-                <div style="font-size: 14px; font-weight: bold; color: var(--navy);">₹${p.price}${oldPrice}</div>
+                <div style="font-size: 14px; font-weight: bold; color: var(--navy); display: flex; align-items: center; flex-wrap: wrap;">
+                  ₹${p.price}${oldPrice}${discountHtml}
+                </div>
               </a>
             </article>`;
         }).join("");
@@ -658,7 +719,7 @@
       }
     }
 
-    /* ============ RECENTLY VIEWED ============ */
+    /* ============ RECENTLY VIEWED (With Discount Badge) ============ */
     async function loadRecentlyViewed() {
       try {
         const recentIds = JSON.parse(localStorage.getItem("aaradhyaRecent") || "[]");
@@ -679,6 +740,14 @@
           document.getElementById("recentGrid").innerHTML = recentProducts.map(p => {
             const img = p.image ? p.image.split(',')[0].trim() : 'https://placehold.co/400';
             const storeFile = p.store.toLowerCase();
+            
+            // ✅ NAYA: Calculate Discount Percentage
+            let discountHtml = '';
+            if (Number(p.originalPrice) > Number(p.price) && p.originalPrice > 0) {
+              const discountPercent = Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100);
+              discountHtml = `<span class="discount-badge">${discountPercent}% OFF</span>`;
+            }
+
             return `
               <article class="product-card">
                 <a href="${storeFile}.html" style="text-decoration: none; color: inherit; display: block;">
@@ -686,7 +755,7 @@
                     <img src="${img}" alt="${p.name}" loading="lazy" onerror="this.src='https://placehold.co/400'">
                   </div>
                   <h3 style="font-size: 13px; margin: 8px 0 4px; height: 34px; overflow: hidden; line-height: 1.3; font-weight: bold; color: var(--navy);">${p.name}</h3>
-                  <div style="font-size: 14px; font-weight: bold; color: var(--navy);">₹${p.price}</div>
+                  <div style="font-size: 14px; font-weight: bold; color: var(--navy); display: flex; align-items: center; flex-wrap: wrap;">₹${p.price}${discountHtml}</div>
                 </a>
               </article>
             `;
@@ -778,6 +847,13 @@
         snap.forEach(doc => {
           const p = doc.data();
           const firstImg = p.image ? p.image.split(',')[0].trim() : 'https://placehold.co/400';
+          
+          let discountHtml = '';
+          if (Number(p.originalPrice) > Number(p.price) && p.originalPrice > 0) {
+            const discountPercent = Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100);
+            discountHtml = `<span class="discount-badge">${discountPercent}% OFF</span>`;
+          }
+
           html += `
             <article class="product-card" style="border: 1px solid #ef4444; box-shadow: 0 4px 15px rgba(239,68,68,0.2);">
               <div class="product-image-wrap">
@@ -786,7 +862,9 @@
               </div>
               <div class="product-info">
                 <h3 style="font-size:13px; height:32px;">${p.name}</h3>
-                <div style="font-size:12px; font-weight:bold; color:#ef4444;">₹${p.price} <span style="font-size:10px; color:#aaa; text-decoration:line-through;">₹${p.originalPrice}</span></div>
+                <div style="font-size:12px; font-weight:bold; color:#ef4444; display:flex; align-items:center; gap:5px;">
+                  ₹${p.price} <span style="font-size:10px; color:#aaa; text-decoration:line-through;">₹${p.originalPrice}</span>${discountHtml}
+                </div>
                 <a href="${p.store.toLowerCase()}.html" style="display:block; text-align:center; margin-top:8px; background:var(--navy); color:#fff; padding:8px; border-radius:4px; font-size:11px; font-weight:bold; text-decoration:none;">View Product ↗</a>
               </div>
             </article>
@@ -809,6 +887,7 @@
     /* ============ INIT ============ */
     document.addEventListener("DOMContentLoaded", () => {
       updateGlobalCart();
+      initHeaderSearch(); // ✅ Search Bar Initialize
       loadFestiveBanner();
       loadBannerCoupons();
       loadFeatured();
