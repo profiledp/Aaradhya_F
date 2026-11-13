@@ -43,12 +43,28 @@
     .review-item .stars { color: #f59e0b; font-size: 12px; }
     .review-item .name { font-weight: bold; font-size: 12px; color: var(--navy); }
     .review-item .comment { font-size: 12px; color: #555; margin-top: 3px; }
+
+    /* Header right actions */
+    .header-actions { display: flex; align-items: center; gap: 8px; }
+    .header-support-btn { font-size: 11px; background: #25D366; color: #fff; padding: 13px 16px; border-radius: 4px; text-decoration: none; font-weight: bold; letter-spacing: 0.5px; transition: 0.3s; display: inline-flex; align-items: center; gap: 5px; }
+    .header-support-btn:hover { background: #128C7E; }
+    @media (max-width: 650px) {
+      .header-actions { gap: 6px; }
+      .header-wa, .header-support-btn { padding: 9px 12px !important; font-size: 10px !important; }
+      .header-support-btn svg { display: none; }
+    }
   </style>
 </head>
 <body>
   <header class="site-header">
     <a class="brand" href="index.html"><span class="brand-mark">AM</span><span><strong>A-PRINT</strong><small>BY AARADHYA FASHION</small></span></a>
-    <a href="index.html" class="header-wa" style="background:#fff; color:var(--navy); border:1px solid var(--navy);">← Back to Home</a>
+    <div class="header-actions">
+      <a href="support.html" class="header-support-btn">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        Support
+      </a>
+      <a href="index.html" class="header-wa" style="background:#fff; color:var(--navy); border:1px solid var(--navy);">← Home</a>
+    </div>
   </header>
 
   <main class="section-wrap shop-section" style="padding-top: 40px;">
