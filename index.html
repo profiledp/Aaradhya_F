@@ -337,9 +337,6 @@
     </div>
 
     <div class="header-actions" style="display: flex; gap: 8px; align-items: center;">
-      <!-- ✅ NAYA: Offers Button -->
-      <a href="offers.html" class="header-wa" style="background: #ef4444; color: #fff; border: 1px solid #ef4444; padding: 11px 15px; animation: pulse 2s infinite;">🔥 Offers</a>
-      
       <a href="my-orders.html" class="header-wa" style="background:#fff; color:var(--navy); border:1px solid var(--navy); padding: 11px 15px;">📦 My Orders</a>
       <a href="admin.html" class="header-wa" style="padding: 11px 15px;">Admin ⚙️</a>
     </div>
@@ -575,11 +572,10 @@
       <div class="footer-col">
         <h4>Quick Links</h4>
         <a href="index.html">Home</a>
-        <a href="offers.html">🔥 Offers & Deals</a> <!-- ✅ NAYA -->
         <a href="my-orders.html">My Orders</a>
         <a href="about.html">About & Policies</a>
         <a href="track.html">Track Order</a>
-        <a href="delivery-policy.html">🚚 Delivery Policy</a> <!-- ✅ NAYA -->
+        <a href="delivery-policy.html">🚚 Delivery Policy</a>
       </div>
       <div class="footer-col">
         <h4>Our Stores</h4>
@@ -748,7 +744,7 @@
           let html = "";
           for(let i=0; i<2; i++) {
             allCoupons.forEach(c => {
-              html += `<a href="offers.html" style="text-decoration:none; color:inherit;"><div class="offer-banner-item">🎉 Get ${c.discount}% OFF! Use Code <span>${c.code}</span> at Checkout.</div></a>`;
+              html += `<div class="offer-banner-item">🎉 Get ${c.discount}% OFF! Use Code <span>${c.code}</span> at Checkout.</div>`;
             });
           }
           document.getElementById("bannerTrack").innerHTML = html;
