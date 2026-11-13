@@ -80,7 +80,7 @@
     .receipt-footer { text-align: center; padding: 15px 0 0; border-top: 1px dashed #ccc; margin-top: 15px; font-size: 11px; color: var(--muted); }
     @media print { body * { visibility: hidden; } .custom-modal-overlay { position: absolute; left: 0; top: 0; background: transparent; backdrop-filter: none; visibility: visible; padding: 0; } .receipt-box { box-shadow: none; transform: none; max-height: none; overflow: visible; visibility: visible; margin: 0 auto; border: 1px solid #ccc; } .receipt-box * { visibility: visible; } .modal-actions { display: none; } }
 
-    /* NEW: Image preview grid */
+    /* Image preview grid */
     .image-preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 10px; margin-top: 10px; }
     .image-preview-item { position: relative; aspect-ratio: 1; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; background: #f4f6f8; }
     .image-preview-item img { width: 100%; height: 100%; object-fit: cover; }
@@ -143,7 +143,6 @@
             <div class="form-field"><label>Unit (e.g. 1kg, 500g)</label><input id="pUnit" placeholder="Mention Base Unit"></div>
             <div class="form-field"><label>Stock</label><input id="pStock" type="number" required value="10"></div>
 
-            <!-- MULTIPLE IMAGE URL UPLOAD -->
             <div class="form-field full">
               <label>Product Image URLs (Paste link and press Enter) *</label>
               <input id="pImageUrlInput" placeholder="https://example.com/image1.jpg" onkeydown="handleImageUrlEnter(event)">
@@ -305,7 +304,7 @@
     const auth = getAuth(app);
 
     let allProducts = [];
-    let currentImagesArray = [];   // Stores URLs added so far
+    let currentImagesArray = [];
 
     onAuthStateChanged(auth, (user) => {
       if(user) {
@@ -340,13 +339,9 @@
       else if(tabName === 'settings') loadSettings();
     };
 
-    /* ==========================================================
-       MULTI-IMAGE URL HANDLING
-       ========================================================== */
-    
     window.handleImageUrlEnter = function(e) {
       if (e.key === 'Enter') {
-        e.preventDefault(); // Prevent form submission
+        e.preventDefault();
         const input = document.getElementById("pImageUrlInput");
         const url = input.value.trim();
         
@@ -386,10 +381,6 @@
       currentImagesArray.splice(index, 1);
       renderImagePreview();
     };
-
-    /* ==========================================================
-       LOAD PRODUCTS
-       ========================================================== */
 
     async function loadProducts() {
       const snap = await getDocs(collection(db, "products"));
@@ -436,7 +427,6 @@
           document.getElementById("pIsPerKg").checked = p.isPerKg || false;
           document.getElementById("pDescription").value = p.description || "";
 
-          // Load existing images into array
           currentImagesArray = (p.images && p.images.length) ? [...p.images] : (p.image ? [p.image] : []);
           renderImagePreview();
 
@@ -446,10 +436,6 @@
         });
       });
     }
-
-    /* ==========================================================
-       SAVE PRODUCT (with Multi-URL)
-       ========================================================== */
 
     document.getElementById("productForm").onsubmit = async (e) => {
       e.preventDefault();
@@ -472,8 +458,8 @@
           originalPrice: Number(document.getElementById("pOriginal").value) || 0,
           unit: document.getElementById("pUnit").value,
           stock: Number(document.getElementById("pStock").value),
-          images: currentImagesArray,   // Array of URLs
-          image: currentImagesArray[0], // Cover image URL
+          images: currentImagesArray,
+          image: currentImagesArray[0],
           sizes: document.getElementById("pSizes").value.split(",").map(s=>s.trim()).filter(Boolean),
           colors: document.getElementById("pColors").value.split(",").map(c=>c.trim()).filter(Boolean),
           tag: document.getElementById("pTag").value,
@@ -506,10 +492,6 @@
       document.getElementById("formTitle").textContent = "Add New Product";
       document.getElementById("saveBtn").textContent = "SAVE PRODUCT";
     };
-
-    /* ==========================================================
-       ORDERS / COUPONS / REVIEWS / SETTINGS
-       ========================================================== */
 
     async function loadOrders() {
       const ordersList = document.getElementById("ordersList");
@@ -591,12 +573,25 @@
         if (orderSnap.exists()) {
           const orderData = orderSnap.data();
           const oldStatus = orderData.status;
+          
           if (newStatus === "Cancelled" && oldStatus !== "Cancelled") {
             for (const item of orderData.items) { await updateDoc(doc(db, "products", item.id), { stock: increment(item.qty) }); }
           } else if (oldStatus === "Cancelled" && newStatus !== "Cancelled") {
             for (const item of orderData.items) { await updateDoc(doc(db, "products", item.id), { stock: increment(-item.qty) }); }
           }
-          await updateDoc(orderRef, { status: newStatus });
+
+          // ✅ NAYA CODE: Status update hone par Date aur Time save karein
+          const now = new Date();
+          const timeStr = now.toLocaleString("en-IN", { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+          
+          let history = orderData.statusHistory || {};
+          history[newStatus] = timeStr;
+
+          await updateDoc(orderRef, { 
+            status: newStatus,
+            statusHistory: history 
+          });
+          
           sel.className = `status-select status-${newStatus.replace(/\s+/g, '')}`;
         }
       } catch (error) { alert("Status update failed!"); } finally { sel.disabled = false; }
