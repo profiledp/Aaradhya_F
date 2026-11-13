@@ -24,7 +24,6 @@
     .result-box h3 { font: normal 20px Georgia, serif; color: var(--navy); margin-top: 0; border-bottom: 1px solid #ddd; padding-bottom: 10px; }
     .result-box p { text-align: left; margin-bottom: 8px; color: var(--ink); font-size: 14px; }
 
-    /* AMAZON STYLE ANIMATED TRACKER */
     .tracker-wrap { margin-top: 30px; padding: 0 10px; }
     .tracker-steps { display: flex; justify-content: space-between; position: relative; margin-bottom: 20px; }
     .tracker-steps::before { content: ''; position: absolute; top: 15px; left: 0; right: 0; height: 4px; background: #e0e0e0; z-index: 1; border-radius: 2px; }
@@ -39,69 +38,20 @@
     .step.cancelled .step-label { color: #ef4444; }
     @keyframes pulseGreen { 0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); } 70% { box-shadow: 0 0 0 10px rgba(16,185,129,0); } 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); } }
 
-    /* ✅ NAYA: Status Time Text */
-    .step-time {
-      font-size: 9px;
-      color: #888;
-      margin-top: 4px;
-      font-weight: normal;
-      line-height: 1.1;
-    }
+    .step-time { font-size: 9px; color: #888; margin-top: 4px; font-weight: normal; line-height: 1.1; }
 
-    /* ✅ NAYA: Rider Animation */
-    .rider-animation-container {
-      background: #e0f2fe;
-      border: 1px dashed #7dd3fc;
-      border-radius: 8px;
-      padding: 15px;
-      margin: 20px 0;
-      position: relative;
-      overflow: hidden;
-    }
-    .rider-track {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 8px;
-    }
-    .rider-bike {
-      font-size: 24px;
-      animation: rideBike 2s infinite linear;
-      display: inline-block;
-    }
-    .rider-text {
-      font-size: 13px;
-      font-weight: bold;
-      color: #0369a1;
-    }
-    .rider-dots {
-      display: flex;
-      justify-content: space-between;
-      width: 100%;
-      padding: 0 10px;
-    }
-    .rider-dots span {
-      width: 6px;
-      height: 6px;
-      background: #93c5fd;
-      border-radius: 50%;
-      animation: blinkDots 1.5s infinite alternate;
-    }
+    .rider-animation-container { background: #e0f2fe; border: 1px dashed #7dd3fc; border-radius: 8px; padding: 15px; margin: 20px 0; position: relative; overflow: hidden; }
+    .rider-track { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .rider-bike { font-size: 24px; animation: rideBike 2s infinite linear; display: inline-block; }
+    .rider-text { font-size: 13px; font-weight: bold; color: #0369a1; }
+    .rider-dots { display: flex; justify-content: space-between; width: 100%; padding: 0 10px; }
+    .rider-dots span { width: 6px; height: 6px; background: #93c5fd; border-radius: 50%; animation: blinkDots 1.5s infinite alternate; }
     .rider-dots span:nth-child(2) { animation-delay: 0.3s; }
     .rider-dots span:nth-child(3) { animation-delay: 0.6s; }
     .rider-dots span:nth-child(4) { animation-delay: 0.9s; }
 
-    @keyframes rideBike {
-      0% { transform: translateX(0); }
-      25% { transform: translateX(10px) rotate(-5deg); }
-      50% { transform: translateX(20px); }
-      75% { transform: translateX(10px) rotate(5deg); }
-      100% { transform: translateX(0); }
-    }
-    @keyframes blinkDots {
-      0% { opacity: 0.2; transform: scale(0.8); }
-      100% { opacity: 1; transform: scale(1.2); }
-    }
+    @keyframes rideBike { 0% { transform: translateX(0); } 25% { transform: translateX(10px) rotate(-5deg); } 50% { transform: translateX(20px); } 75% { transform: translateX(10px) rotate(5deg); } 100% { transform: translateX(0); } }
+    @keyframes blinkDots { 0% { opacity: 0.2; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1.2); } }
 
     .action-buttons { display: flex; gap: 10px; margin-top: 25px; }
     .action-btn { flex: 1; padding: 12px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; text-align: center; text-decoration: none; display: inline-block; transition: 0.3s; }
@@ -129,6 +79,17 @@
     .support-cta-box .support-btn-primary:hover { background: #128C7E; transform: translateY(-2px); }
     .support-cta-box .support-btn-secondary { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3); }
     .support-cta-box .support-btn-secondary:hover { background: rgba(255,255,255,0.1); border-color: var(--gold); color: var(--gold); }
+
+    /* ✅ NAYA: Premium Toast Notification */
+    .custom-premium-toast {
+      position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-100px);
+      background: var(--navy); color: #fff; padding: 15px 25px; border-radius: 50px;
+      font-weight: bold; font-size: 14px; box-shadow: 0 10px 30px rgba(16,36,59,0.4);
+      display: flex; align-items: center; gap: 10px; z-index: 99999;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: 2px solid var(--gold);
+    }
+    .custom-premium-toast.show { transform: translateX(-50%) translateY(0); }
   </style>
 </head>
 <body>
@@ -237,6 +198,27 @@
     const app = initializeApp(firebaseConfig); const db = getFirestore(app);
     const WHATSAPP_NUMBER = "918931911428";
 
+    // ✅ NAYA: Premium Toast Function
+    function showToast(msg, type = "success") {
+      let t = document.querySelector('.custom-premium-toast'); if(t) t.remove();
+      const toast = document.createElement('div');
+      toast.className = 'custom-premium-toast';
+      toast.innerHTML = `<span>${type === 'success' ? '✅' : '⚠️'}</span> ${msg}`;
+      
+      // Agar error hai to background red kar dein
+      if(type === 'error') {
+        toast.style.background = '#ef4444';
+        toast.style.borderColor = '#fca5a5';
+      }
+      
+      document.body.appendChild(toast);
+      setTimeout(() => toast.classList.add('show'), 10);
+      setTimeout(() => {
+        toast.classList.remove('show'); 
+        setTimeout(() => toast.remove(), 400);
+      }, 3500);
+    }
+
     window.addEventListener("DOMContentLoaded", () => {
       const urlParams = new URLSearchParams(window.location.search);
       const orderParam = urlParams.get('order');
@@ -277,7 +259,6 @@
             if(o.status === "Delivered") stepIndex = 4;
             const isCancelled = o.status === "Cancelled";
 
-            // ✅ NAYA: Date & Time fetch from history
             const history = o.statusHistory || {};
             const getTime = (statusName) => history[statusName] ? `<div class="step-time">${history[statusName]}</div>` : '';
 
@@ -318,7 +299,6 @@
                 </div>
               </div>
 
-              <!-- ✅ NAYA: Rider Animation -->
               ${o.status === "Out for Delivery" ? `
               <div class="rider-animation-container">
                 <div class="rider-track">
@@ -399,7 +379,10 @@
       const rating = document.getElementById("reviewRating").value;
       const comment = document.getElementById("reviewComment").value;
 
-      if(!name || !comment) { alert("Please fill Name and Comment"); return; }
+      if(!name || !comment) { 
+        showToast("Please fill Name and Comment", "error"); 
+        return; 
+      }
 
       try {
         await addDoc(collection(db, "reviews"), {
@@ -410,12 +393,14 @@
           comment: comment,
           date: new Date().toLocaleString("en-IN")
         });
-        alert("Thank you! Your review has been submitted.");
+        
+        // ✅ NAYA: Custom Toast instead of alert
+        showToast("Thank you! Your review has been submitted.");
         document.getElementById("reviewModal").style.display = "none";
         document.getElementById("reviewName").value = "";
         document.getElementById("reviewComment").value = "";
       } catch(e) {
-        alert("Failed to submit review. Try again.");
+        showToast("Failed to submit review. Try again.", "error");
       }
     }
   </script>
