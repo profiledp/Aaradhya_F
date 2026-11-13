@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Delivery & Shipping Policy | Aaradhya Mart</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%2310243b'/><text x='50' y='68' font-size='55' font-family='Georgia' fill='%23c5a36b' text-anchor='middle'>A</text></svg>">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .page-header { background: var(--navy); color: #fff; padding: 60px 7% 50px; text-align: center; position: relative; overflow: hidden; }
+    .page-header::before { content: "🚚"; position: absolute; font-size: 250px; opacity: 0.05; right: -20px; bottom: -50px; transform: rotate(-15deg); }
+    .page-header h1 { font: normal 42px Georgia, serif; margin: 0 0 10px; color: var(--gold); position: relative; }
+    .page-header p { font-size: 15px; color: #cbd5e1; max-width: 600px; margin: 0 auto; position: relative; }
+
+    .policy-container { max-width: 900px; margin: 50px auto; padding: 0 20px; }
+    
+    .delivery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 40px; }
+    .delivery-card { background: #fff; border: 1px solid var(--line); padding: 30px 25px; border-radius: 12px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.02); transition: 0.3s; }
+    .delivery-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(16,36,59,0.08); border-color: var(--gold); }
+    .delivery-card .dc-icon { font-size: 40px; margin-bottom: 15px; display: block; }
+    .delivery-card h3 { font: normal 20px Georgia, serif; color: var(--navy); margin: 0 0 10px; }
+    .delivery-card p { font-size: 14px; color: #4b5563; line-height: 1.6; margin: 0; }
+    .delivery-card strong { color: var(--navy); }
+
+    .section-title { font: normal 28px Georgia, serif; color: var(--navy); margin: 40px 0 20px; border-bottom: 2px solid var(--gold); padding-bottom: 10px; display: inline-block; }
+    
+    .charge-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #eee; }
+    .charge-table th { background: var(--navy); color: #fff; padding: 15px; text-align: left; font-size: 14px; }
+    .charge-table td { padding: 15px; border-bottom: 1px solid #eee; font-size: 14px; color: #4b5563; }
+    .charge-table tr:last-child td { border-bottom: none; }
+    .charge-table tr:nth-child(even) { background: #f8f9fa; }
+
+    .area-list { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 25px; margin-bottom: 30px; }
+    .area-list h3 { font: normal 20px Georgia, serif; color: #166534; margin: 0 0 15px; }
+    .area-list ul { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+    .area-list li { font-size: 14px; color: #166534; display: flex; align-items: center; gap: 8px; }
+    .area-list li::before { content: "✓"; color: #10b981; font-weight: bold; }
+
+    .note-box { background: #fef3c7; border-left: 4px solid #d97706; padding: 15px 20px; border-radius: 0 8px 8px 0; margin-bottom: 40px; }
+    .note-box p { margin: 0; font-size: 14px; color: #92400e; line-height: 1.6; }
+
+    @media (max-width: 650px) {
+      .delivery-grid { grid-template-columns: 1fr; }
+      .page-header h1 { font-size: 32px; }
+      .charge-table th, .charge-table td { padding: 12px 10px; font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html"><span class="brand-mark">AM</span><span><strong>AARADHYA MART</strong><small>DELIVERY POLICY</small></span></a>
+    <a href="index.html" class="header-wa" style="background:#fff; color:var(--navy); border:1px solid var(--navy);">← Back to Home</a>
+  </header>
+
+  <div class="page-header">
+    <h1>Delivery & Shipping</h1>
+    <p>Fast, safe, and reliable delivery right to your doorstep in Azamgarh and across India.</p>
+  </div>
+
+  <div class="policy-container">
+    
+    <div class="delivery-grid">
+      <div class="delivery-card">
+        <span class="dc-icon">⚡</span>
+        <h3>Same Day / Next Day</h3>
+        <p>For <strong>Azamgarh City</strong>, orders placed before 4 PM are delivered the next day.</p>
+      </div>
+      <div class="delivery-card">
+        <span class="dc-icon">📦</span>
+        <h3>Outside Azamgarh</h3>
+        <p>Delivery takes <strong>3-5 business days</strong> via trusted courier partners.</p>
+      </div>
+    </div>
+
+    <h2 class="section-title">Delivery Charges</h2>
+    <table class="charge-table">
+      <thead>
+        <tr>
+          <th>Order Amount</th>
+          <th>Delivery Charge</th>
+          <th>Estimated Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Above ₹500</td>
+          <td style="color: #10b981; font-weight: bold;">FREE</td>
+          <td>1-2 Days</td>
+        </tr>
+        <tr>
+          <td>Below ₹500</td>
+          <td>₹40</td>
+          <td>1-2 Days</td>
+        </tr>
+        <tr>
+          <td>Outside Azamgarh</td>
+          <td>₹100 - ₹200 (Based on weight)</td>
+          <td>3-5 Days</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note-box">
+      <p><strong>Note:</strong> Grocery (Kirana) items are only delivered within Azamgarh city limits. For custom print (A-Print) orders, shipping charges will be communicated via WhatsApp based on the quantity and weight.</p>
+    </div>
+
+    <h2 class="section-title">Areas We Serve (Azamgarh)</h2>
+    <div class="area-list">
+      <h3>✅ Free Home Delivery Available</h3>
+      <ul>
+        <li>Bongariya Bazar</li>
+        <li>Sadar Bazar</li>
+        <li>Rani Ki Sarai</li>
+        <li>Civil Lines</li>
+        <li>Mau Road</li>
+        <li>Athia Bazar</li>
+        <li>Bilariyaganj</li>
+        <li>And nearby areas...</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <footer class="site-footer" style="margin-top: 0;">
+    <div class="footer-links" style="display: flex; justify-content: center; gap: 20px; margin-bottom: 15px; flex-wrap: wrap;">
+      <a href="index.html">Home</a>
+      <a href="about.html">About Us</a>
+      <a href="delivery-policy.html">Delivery Policy</a>
+      <a href="support.html">Support</a>
+    </div>
+    <p>© 2026 Aaradhya Mart. All rights reserved.</p>
+  </footer>
+</body>
+</html>
