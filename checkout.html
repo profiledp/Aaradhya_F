@@ -74,6 +74,16 @@
     .slip-btn-print { background: var(--navy); color: #fff; }
     .slip-btn-close { background: #eee; color: #333; }
     @media print { body * { visibility: hidden; } .slip-modal-overlay { position: absolute; left: 0; top: 0; background: transparent; backdrop-filter: none; visibility: visible; padding: 0; } .slip-box { box-shadow: none; transform: none; max-height: none; overflow: visible; visibility: visible; margin: 0 auto; border: 1px solid #ccc; } .slip-box * { visibility: visible; } .slip-actions { display: none; } .slip-footer { background: #fff; } }
+
+    /* NAYA: SUCCESS TOAST */
+    .custom-toast-success {
+      position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
+      background: #10b981; color: white; padding: 15px 25px; border-radius: 50px;
+      font-weight: bold; font-size: 15px; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+      display: flex; align-items: center; gap: 10px; z-index: 99999;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .custom-toast-success.show { transform: translateX(-50%) translateY(0); }
   </style>
 </head>
 <body>
@@ -83,6 +93,12 @@
     <div class="checkout-container">
       <h2>Complete Your Order</h2>
       <div class="product-summary" id="productSummary">Loading...</div>
+
+      <!-- NAYA: DELIVERY ESTIMATE -->
+      <div style="background: #e0f2fe; color: #0369a1; padding: 12px; border-radius: 8px; font-size: 13px; font-weight: bold; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; border: 1px solid #bae6fd;">
+        <span style="font-size: 18px;">🚚</span> 
+        <span>Estimated Delivery by: <span id="estDeliveryDate" style="color: #0c4a6e;"></span></span>
+      </div>
 
       <div class="advance-notice">⚠️ Note: Order Confirm karne ke liye <strong>20% Advance</strong> dena hoga.</div>
 
@@ -174,7 +190,6 @@
     let currentSubtotal = 0, currentDiscount = 0, finalTotal = 0, appliedCoupon = "";
     let availableCouponsList = [];
 
-    // ✅ NAYA FUNCTION: Save Order to LocalStorage
     function saveOrderToLocal(orderId) {
       let myOrders = JSON.parse(localStorage.getItem("aaradhyaMyOrders") || "[]");
       if (!myOrders.includes(orderId)) {
@@ -184,6 +199,12 @@
     }
 
     document.addEventListener("DOMContentLoaded", async () => {
+      // ✅ NAYA: Calculate Estimated Delivery Date (Today + 2 days)
+      const estDate = new Date();
+      estDate.setDate(estDate.getDate() + 2);
+      const options = { weekday: 'long', day: 'numeric', month: 'short' };
+      document.getElementById("estDeliveryDate").textContent = estDate.toLocaleDateString("en-IN", options);
+
       const urlParams = new URLSearchParams(window.location.search);
       const productId = urlParams.get('id'); 
       const size = urlParams.get('size') || "N/A";
@@ -256,12 +277,7 @@
       const name = custName.value, phone = custPhone.value, addr = custAddress.value + ", " + custCity.value + " - " + custPincode.value;
       
       const finalOrderItems = orderProducts.map(item => ({
-        id: item.id,
-        name: item.name,
-        qty: item.selectedQty,
-        size: item.selectedSize,
-        color: item.selectedColor,
-        price: item.finalItemPrice
+        id: item.id, name: item.name, qty: item.selectedQty, size: item.selectedSize, color: item.selectedColor, price: item.finalItemPrice
       }));
 
       try {
@@ -271,10 +287,17 @@
         });
         for (const item of orderProducts) { await updateDoc(doc(db, "products", item.id), { stock: increment(-item.selectedQty) }); }
 
-        // ✅ NAYA CODE: Save to LocalStorage for My Orders Page
         saveOrderToLocal(newOrderId);
 
       } catch(err) { alert("Order failed!"); btn.textContent = "CONFIRM"; btn.disabled = false; return; }
+
+      // ✅ NAYA: SUCCESS TOAST ANIMATION
+      const toast = document.createElement('div');
+      toast.className = 'custom-toast-success';
+      toast.innerHTML = `<span>✅</span> Order Placed Successfully!`;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.classList.add('show'), 100);
+      setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 500); }, 4000);
 
       document.getElementById("slipOrderId").textContent = newOrderId;
       document.getElementById("slipDate").textContent = dateStr;
