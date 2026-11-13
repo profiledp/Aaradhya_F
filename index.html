@@ -240,6 +240,89 @@
       .hero-stats { gap: 18px; }
       .hero-stat strong { font-size: 20px; }
     }
+
+    /* ✅ NAYA: Flipkart Style Header */
+    .header-search-container {
+      flex: 1;
+      max-width: 700px; /* Search bar ko lamba kiya */
+      margin: 0 30px;
+      position: relative;
+    }
+    .header-search-input {
+      width: 100%;
+      padding: 12px 18px 12px 45px;
+      border: 1px solid #ddd;
+      border-radius: 6px; /* Flipkart jaisa halka square */
+      font-size: 14px;
+      outline: none;
+      background: #f8f9fa url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23777" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>') no-repeat 15px center;
+      transition: 0.3s;
+    }
+    .header-search-input:focus {
+      background-color: #fff;
+      border-color: var(--navy);
+      box-shadow: 0 4px 15px rgba(16,36,59,0.1);
+    }
+    .header-search-results {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      margin-top: 5px;
+      max-height: 400px;
+      overflow-y: auto;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      display: none;
+      z-index: 1000;
+    }
+    .header-search-results.active {
+      display: block;
+    }
+    .search-result-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 12px 18px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      transition: 0.2s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .search-result-item:hover {
+      background: #f0fdf4;
+    }
+    .search-result-item img {
+      width: 45px;
+      height: 45px;
+      object-fit: contain;
+      border-radius: 4px;
+      background: #f8f9fa;
+    }
+    .search-result-item h4 {
+      margin: 0 0 3px;
+      font-size: 14px;
+      color: var(--navy);
+    }
+    .search-result-item p {
+      margin: 0;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .search-result-item .s-price {
+      font-weight: bold;
+      font-size: 14px;
+      color: var(--navy);
+    }
+
+    @media (max-width: 768px) {
+      .header-search-container {
+        display: none; /* Mobile pe hide */
+      }
+    }
   </style>
 </head>
 <body>
@@ -247,9 +330,9 @@
   <header class="site-header">
     <a class="brand" href="index.html"><span class="brand-mark">AM</span><span><strong>AARADHYA MART</strong><small>YOUR EVERYDAY STORE</small></span></a>
     
-    <!-- ✅ NAYA: HEADER SEARCH BAR -->
+    <!-- ✅ NAYA: Flipkart Style Search Bar -->
     <div class="header-search-container">
-      <input type="text" id="headerSearchInput" class="header-search-input" placeholder="🔍 Search products..." autocomplete="off">
+      <input type="text" id="headerSearchInput" class="header-search-input" placeholder="Search for Products, Brands and More..." autocomplete="off">
       <div id="headerSearchResults" class="header-search-results"></div>
     </div>
 
@@ -573,7 +656,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     
-    let allProductsForSearch = []; // Search bar ke liye products store karenge
+    let allProductsForSearch = [];
 
     /* ============ CART ============ */
     function updateGlobalCart() {
@@ -604,7 +687,7 @@
         const matched = allProductsForSearch.filter(p => 
           (p.name && p.name.toLowerCase().includes(queryStr)) || 
           (p.category && p.category.toLowerCase().includes(queryStr))
-        ).slice(0, 5); // Max 5 results
+        ).slice(0, 5);
 
         if(matched.length === 0) {
           resultsBox.innerHTML = `<div style="padding:15px; text-align:center; font-size:12px; color:#777;">No products found for "${queryStr}"</div>`;
@@ -627,7 +710,6 @@
         resultsBox.classList.add("active");
       });
 
-      // Click outside to close
       document.addEventListener("click", (e) => {
         if(!e.target.closest(".header-search-container")) {
           resultsBox.classList.remove("active");
@@ -670,7 +752,7 @@
       } catch(e) {}
     }
 
-    /* ============ FEATURED PRODUCTS (With Discount Badge) ============ */
+    /* ============ FEATURED PRODUCTS ============ */
     async function loadFeatured() {
       try {
         const snap = await getDocs(collection(db, "products"));
@@ -689,7 +771,6 @@
           const img = p.image ? p.image.split(',')[0].trim() : 'https://placehold.co/400';
           const storeFile = p.store.toLowerCase();
           
-          // ✅ NAYA: Calculate Discount Percentage
           let discountHtml = '';
           if (Number(p.originalPrice) > Number(p.price) && p.originalPrice > 0) {
             const discountPercent = Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100);
@@ -719,7 +800,7 @@
       }
     }
 
-    /* ============ RECENTLY VIEWED (With Discount Badge) ============ */
+    /* ============ RECENTLY VIEWED ============ */
     async function loadRecentlyViewed() {
       try {
         const recentIds = JSON.parse(localStorage.getItem("aaradhyaRecent") || "[]");
@@ -741,7 +822,6 @@
             const img = p.image ? p.image.split(',')[0].trim() : 'https://placehold.co/400';
             const storeFile = p.store.toLowerCase();
             
-            // ✅ NAYA: Calculate Discount Percentage
             let discountHtml = '';
             if (Number(p.originalPrice) > Number(p.price) && p.originalPrice > 0) {
               const discountPercent = Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100);
@@ -887,7 +967,7 @@
     /* ============ INIT ============ */
     document.addEventListener("DOMContentLoaded", () => {
       updateGlobalCart();
-      initHeaderSearch(); // ✅ Search Bar Initialize
+      initHeaderSearch();
       loadFestiveBanner();
       loadBannerCoupons();
       loadFeatured();
