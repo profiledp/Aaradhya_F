@@ -87,6 +87,20 @@
     .image-preview-item .remove-img { position: absolute; top: 4px; right: 4px; background: rgba(239,68,68,0.9); color: #fff; border: none; width: 22px; height: 22px; border-radius: 50%; cursor: pointer; font-size: 12px; line-height: 1; display: grid; place-items: center; }
     .image-preview-item .cover-badge { position: absolute; bottom: 4px; left: 4px; background: rgba(16,36,59,0.85); color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 3px; }
 
+    /* ✅ NAYA: Admin Store Tabs */
+    .admin-store-tabs {
+      display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; overflow-x: auto;
+    }
+    .admin-tab {
+      background: #fff; border: 1px solid #ddd; padding: 8px 16px; border-radius: 20px;
+      font-size: 13px; font-weight: bold; color: #555; cursor: pointer; transition: 0.2s; white-space: nowrap;
+    }
+    .admin-tab:hover { background: #f0f4f8; color: var(--navy); }
+    .admin-tab.active {
+      background: var(--navy); color: #fff; border-color: var(--navy);
+      box-shadow: 0 4px 10px rgba(16,36,59,0.2);
+    }
+
     /* ✅ NAYA: Premium Toast */
     .custom-premium-toast {
       position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-100px);
@@ -182,7 +196,21 @@
       </div>
 
       <div class="admin-panel">
-        <h2>All Products</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 15px;">
+          <h2 style="margin: 0;">All Products</h2>
+          
+          <!-- ✅ NAYA: Search Bar for Admin -->
+          <input type="text" id="adminSearchInput" placeholder="Search product by name..." style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; width: 250px;">
+        </div>
+
+        <!-- ✅ NAYA: Store Filter Tabs -->
+        <div class="admin-store-tabs" id="adminStoreTabs">
+          <button class="admin-tab active" data-store="All" onclick="filterAdminTable('All', this)">All Products</button>
+          <button class="admin-tab" data-store="Fashion" onclick="filterAdminTable('Fashion', this)">👗 Fashion</button>
+          <button class="admin-tab" data-store="Print" onclick="filterAdminTable('Print', this)">🖨️ Print</button>
+          <button class="admin-tab" data-store="Kirana" onclick="filterAdminTable('Kirana', this)">🛒 Kirana</button>
+        </div>
+
         <table class="admin-table">
           <thead><tr><th>Image</th><th>Store</th><th>Name</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
           <tbody id="productRows"></tbody>
@@ -316,6 +344,8 @@
 
     let allProducts = [];
     let currentImagesArray = [];
+    let currentAdminStoreFilter = "All";
+    let currentAdminSearchQuery = "";
 
     // ✅ NAYA: Premium Toast Function
     function showToast(msg, type = "success") {
@@ -417,8 +447,29 @@
       const snap = await getDocs(collection(db, "products"));
       allProducts = [];
       snap.forEach(d => allProducts.push({ id: d.id, ...d.data() }));
+      renderAdminTable();
+    }
 
-      document.getElementById("productRows").innerHTML = allProducts.map(p => {
+    // ✅ NAYA FUNCTION: Table ko filter aur search ke hisaab se render karega
+    function renderAdminTable() {
+      let filtered = allProducts;
+
+      if (currentAdminStoreFilter !== "All") {
+        filtered = filtered.filter(p => p.store === currentAdminStoreFilter);
+      }
+
+      if (currentAdminSearchQuery) {
+        filtered = filtered.filter(p => p.name.toLowerCase().includes(currentAdminSearchQuery));
+      }
+
+      const tbody = document.getElementById("productRows");
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 20px; color: #777;">No products found matching your criteria.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(p => {
         const imgs = p.images && p.images.length ? p.images : (p.image ? [p.image] : []);
         const thumb = imgs[0] || "https://placehold.co/60x60?text=?";
         return `
@@ -467,6 +518,22 @@
         });
       });
     }
+
+    // ✅ NAYA FUNCTION: Tab click hone par filter change karega
+    window.filterAdminTable = function(storeName, btnElement) {
+      currentAdminStoreFilter = storeName;
+      document.querySelectorAll(".admin-tab").forEach(btn => btn.classList.remove("active"));
+      btnElement.classList.add("active");
+      renderAdminTable();
+    }
+
+    // Search bar ka event listener
+    document.addEventListener("input", (e) => {
+      if(e.target.id === "adminSearchInput") {
+        currentAdminSearchQuery = e.target.value.toLowerCase();
+        renderAdminTable();
+      }
+    });
 
     document.getElementById("productForm").onsubmit = async (e) => {
       e.preventDefault();
