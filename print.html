@@ -192,6 +192,7 @@
               <span class="price-display">${p.price === 0 ? 'Custom Quote' : money(p.price)}</span>
               ${!isOut && p.price > 0 ? `<select id="unit-${p.id}" class="unit-pill">${sizeOptions}</select>` : ''}
             </div>
+            ${!isOut && p.colors?.length > 0 ? `<select id="color-${p.id}" class="unit-pill-full">${colorOptions}</select>` : ''}
             
             <div class="product-actions-modern">
               <button class="btn-add-cart" data-cart="${p.id}" ${isOut?'disabled':''}>🛒 Add</button>
