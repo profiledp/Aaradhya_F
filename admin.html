@@ -86,6 +86,17 @@
     .image-preview-item img { width: 100%; height: 100%; object-fit: cover; }
     .image-preview-item .remove-img { position: absolute; top: 4px; right: 4px; background: rgba(239,68,68,0.9); color: #fff; border: none; width: 22px; height: 22px; border-radius: 50%; cursor: pointer; font-size: 12px; line-height: 1; display: grid; place-items: center; }
     .image-preview-item .cover-badge { position: absolute; bottom: 4px; left: 4px; background: rgba(16,36,59,0.85); color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 3px; }
+
+    /* ✅ NAYA: Premium Toast */
+    .custom-premium-toast {
+      position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-100px);
+      background: var(--navy); color: #fff; padding: 15px 25px; border-radius: 50px;
+      font-weight: bold; font-size: 14px; box-shadow: 0 10px 30px rgba(16,36,59,0.4);
+      display: flex; align-items: center; gap: 10px; z-index: 99999;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: 2px solid var(--gold);
+    }
+    .custom-premium-toast.show { transform: translateX(-50%) translateY(0); }
   </style>
 </head>
 <body>
@@ -306,6 +317,26 @@
     let allProducts = [];
     let currentImagesArray = [];
 
+    // ✅ NAYA: Premium Toast Function
+    function showToast(msg, type = "success") {
+      let t = document.querySelector('.custom-premium-toast'); if(t) t.remove();
+      const toast = document.createElement('div');
+      toast.className = 'custom-premium-toast';
+      toast.innerHTML = `<span>${type === 'success' ? '✅' : '⚠️'}</span> ${msg}`;
+      
+      if(type === 'error') {
+        toast.style.background = '#ef4444';
+        toast.style.borderColor = '#fca5a5';
+      }
+      
+      document.body.appendChild(toast);
+      setTimeout(() => toast.classList.add('show'), 10);
+      setTimeout(() => {
+        toast.classList.remove('show'); 
+        setTimeout(() => toast.remove(), 400);
+      }, 3500);
+    }
+
     onAuthStateChanged(auth, (user) => {
       if(user) {
         document.getElementById("loginScreenView").style.display = "none";
@@ -347,11 +378,11 @@
         
         if (url) {
           if (!/^https?:\/\//i.test(url)) {
-            alert("Please enter a valid URL starting with http:// or https://");
+            showToast("Please enter a valid URL starting with http://", "error");
             return;
           }
           if (currentImagesArray.includes(url)) {
-            alert("This image URL is already added.");
+            showToast("This image URL is already added.", "error");
             return;
           }
           currentImagesArray.push(url);
@@ -443,7 +474,7 @@
       const id = document.getElementById("editId").value || "P" + Date.now();
 
       if (currentImagesArray.length === 0) {
-        alert("Please add at least one image URL.");
+        showToast("Please add at least one image URL.", "error");
         return;
       }
 
@@ -476,10 +507,10 @@
         saveBtn.textContent = "SAVE PRODUCT";
         saveBtn.disabled = false;
         loadProducts();
-        showToast("Product Saved!");
+        showToast("Product Saved Successfully!");
       } catch (err) {
         console.error(err);
-        alert("Save failed: " + err.message);
+        showToast("Save failed: " + err.message, "error");
         saveBtn.disabled = false; saveBtn.textContent = "SAVE PRODUCT";
       }
     };
@@ -580,7 +611,6 @@
             for (const item of orderData.items) { await updateDoc(doc(db, "products", item.id), { stock: increment(-item.qty) }); }
           }
 
-          // ✅ NAYA CODE: Status update hone par Date aur Time save karein
           const now = new Date();
           const timeStr = now.toLocaleString("en-IN", { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
           
@@ -593,8 +623,9 @@
           });
           
           sel.className = `status-select status-${newStatus.replace(/\s+/g, '')}`;
+          showToast("Status Updated!");
         }
-      } catch (error) { alert("Status update failed!"); } finally { sel.disabled = false; }
+      } catch (error) { showToast("Status update failed!", "error"); } finally { sel.disabled = false; }
     };
 
     window.openReceipt = async function(orderDocId) {
@@ -628,7 +659,7 @@
           document.getElementById("rDiscountRow").style.display = "none";
         }
         document.getElementById("receiptModal").classList.add("active");
-      } catch(e) { alert("Error loading receipt"); }
+      } catch(e) { showToast("Error loading receipt", "error"); }
     };
 
     window.closeReceiptModal = function() { document.getElementById("receiptModal").classList.remove("active"); };
@@ -696,16 +727,6 @@
       else if(deleteItemType === 'order') { await deleteDoc(doc(db, "orders", deleteItemId)); loadOrders(); }
       closeDeleteModal(); showToast("Deleted Successfully!");
     };
-
-    function showToast(msg) {
-      let t = document.querySelector('.toast-notification'); if(t) t.remove();
-      const toast = document.createElement('div');
-      toast.className='toast-notification';
-      toast.innerHTML = `<span class="toast-icon">✅</span> ${msg}`;
-      document.body.appendChild(toast);
-      setTimeout(()=>toast.classList.add('show'),10);
-      setTimeout(()=>{toast.classList.remove('show'); setTimeout(()=>toast.remove(),400);},3000);
-    }
   </script>
 </body>
 </html>
