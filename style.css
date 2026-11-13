@@ -2,7 +2,7 @@
    AARADHYA MART — MASTER STYLESHEET
    Includes: Homepage, Shops (Fashion/Print/Kirana), Modals, 
    Galleries, Animations, Checkout, Support & Track Pages.
-   + Search Bar & Discount Badges
+   + Flipkart-style Search Bar & Discount Badges
    ========================================================== */
 
 :root {
@@ -72,7 +72,7 @@ img { max-width: 100%; }
 }
 .header-wa:hover { background: #1e3a5f; }
 
-/* ==================== HERO (HOMEPAGE) ==================== */
+/* ==================== HERO ==================== */
 .hero {
   height: 400px;
   position: relative;
@@ -885,7 +885,7 @@ img { max-width: 100%; }
 .custom-toast-success.show { transform: translateX(-50%) translateY(0); }
 
 /* ==========================================================
-   LATEST FEATURES: DISCOUNT BADGE & HEADER SEARCH
+   LATEST FEATURES: DISCOUNT BADGE & FLIPKART SEARCH BAR
    ========================================================== */
 
 /* Discount Badge */
@@ -903,30 +903,31 @@ img { max-width: 100%; }
   box-shadow: 0 2px 5px rgba(16, 185, 129, 0.3);
 }
 
-/* Header Search Bar */
+/* Flipkart Style Header Search Bar */
 .header-search-container {
-  display: flex;
-  align-items: center;
-  position: relative;
   flex: 1;
-  max-width: 400px;
-  margin: 0 20px;
+  max-width: 700px; /* Search bar ko lamba kiya */
+  margin: 0 30px;
+  position: relative;
 }
+
 .header-search-input {
   width: 100%;
-  padding: 10px 15px;
-  border: 1px solid var(--line);
-  border-radius: 30px;
-  font-size: 13px;
+  padding: 12px 18px 12px 45px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
   outline: none;
-  background: #f8f9fa;
+  background: #f8f9fa url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23777" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>') no-repeat 15px center;
   transition: 0.3s;
 }
+
 .header-search-input:focus {
-  background: #fff;
+  background-color: #fff;
   border-color: var(--navy);
   box-shadow: 0 4px 15px rgba(16,36,59,0.1);
 }
+
 .header-search-results {
   position: absolute;
   top: 100%;
@@ -935,53 +936,61 @@ img { max-width: 100%; }
   background: #fff;
   border: 1px solid var(--line);
   border-radius: 8px;
-  margin-top: 8px;
-  max-height: 350px;
+  margin-top: 5px;
+  max-height: 400px;
   overflow-y: auto;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
   display: none;
   z-index: 1000;
 }
+
 .header-search-results.active {
   display: block;
 }
+
 .search-result-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 15px;
+  gap: 15px;
+  padding: 12px 18px;
   border-bottom: 1px solid #eee;
   cursor: pointer;
   transition: 0.2s;
   text-decoration: none;
   color: inherit;
 }
+
 .search-result-item:hover {
   background: #f0fdf4;
 }
+
 .search-result-item img {
-  width: 40px;
-  height: 40px;
+  width: 45px;
+  height: 45px;
   object-fit: contain;
   border-radius: 4px;
   background: #f8f9fa;
 }
+
 .search-result-item h4 {
-  margin: 0 0 2px;
-  font-size: 13px;
+  margin: 0 0 3px;
+  font-size: 14px;
   color: var(--navy);
 }
+
 .search-result-item p {
   margin: 0;
   font-size: 11px;
   color: var(--muted);
 }
+
 .search-result-item .s-price {
   font-weight: bold;
-  font-size: 13px;
+  font-size: 14px;
   color: var(--navy);
 }
 
+/* Mobile Responsive for Search Bar */
 @media (max-width: 768px) {
   .header-search-container {
     display: none; /* Mobile pe hide karenge */
