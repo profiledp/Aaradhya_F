@@ -23,7 +23,6 @@
     .result-box h3 { font: normal 20px Georgia, serif; color: var(--navy); margin-top: 0; border-bottom: 1px solid #ddd; padding-bottom: 10px; }
     .result-box p { text-align: left; margin-bottom: 8px; color: var(--ink); font-size: 14px; }
 
-    /* AMAZON STYLE ANIMATED TRACKER */
     .tracker-wrap { margin-top: 30px; padding: 0 10px; }
     .tracker-steps { display: flex; justify-content: space-between; position: relative; margin-bottom: 20px; }
     .tracker-steps::before { content: ''; position: absolute; top: 15px; left: 0; right: 0; height: 4px; background: #e0e0e0; z-index: 1; border-radius: 2px; }
@@ -45,7 +44,6 @@
     .btn-update-order { background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc; }
     .btn-update-order:hover { background: #bae6fd; }
 
-    /* PROFESSIONAL POLICY CARD */
     .policy-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-top: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
     .policy-card h4 { margin: 0 0 15px 0; color: #1e293b; font-size: 15px; font-family: Arial, sans-serif; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; display: flex; align-items: center; gap: 8px; }
     .policy-item { display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-start; }
@@ -55,12 +53,26 @@
     .policy-text strong { color: #0f172a; font-weight: 600; }
 
     .error-msg { color: #ef4444; font-size: 14px; text-align: center; margin-top: 15px; font-weight: bold; display: none; }
+
+    /* Support CTA Box */
+    .support-cta-box { max-width: 600px; margin: 0 auto 40px; background: linear-gradient(135deg, #10243b, #1e3a5f); color: #fff; padding: 25px 30px; border-radius: 12px; text-align: center; box-shadow: 0 10px 25px rgba(16,36,59,0.2); }
+    .support-cta-box h3 { font: normal 22px Georgia, serif; color: var(--gold); margin: 0 0 8px; }
+    .support-cta-box p { font-size: 13px; color: #cbd5e1; margin: 0 0 18px; }
+    .support-cta-box .support-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .support-cta-box .support-btn { display: inline-flex; align-items: center; gap: 6px; padding: 11px 20px; border-radius: 6px; font-size: 12px; font-weight: bold; text-decoration: none; transition: 0.2s; }
+    .support-cta-box .support-btn-primary { background: #25D366; color: #fff; }
+    .support-cta-box .support-btn-primary:hover { background: #128C7E; transform: translateY(-2px); }
+    .support-cta-box .support-btn-secondary { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3); }
+    .support-cta-box .support-btn-secondary:hover { background: rgba(255,255,255,0.1); border-color: var(--gold); color: var(--gold); }
   </style>
 </head>
 <body>
   <header class="site-header">
     <a class="brand" href="index.html"><span class="brand-mark">AM</span><span><strong>AARADHYA MART</strong><small>ORDER TRACKING</small></span></a>
-    <a href="index.html" class="header-wa" style="background:#fff; color:var(--navy); border:1px solid var(--navy);">← Back to Home</a>
+    <div style="display: flex; gap: 8px; align-items: center;">
+      <a href="support.html" style="font-size: 11px; background: #25D366; color: #fff; padding: 11px 14px; border-radius: 4px; text-decoration: none; font-weight: bold; letter-spacing: 0.5px;">💬 Support</a>
+      <a href="index.html" class="header-wa" style="background:#fff; color:var(--navy); border:1px solid var(--navy);">← Home</a>
+    </div>
   </header>
 
   <main>
@@ -88,7 +100,6 @@
       <p id="errorMsg" class="error-msg">Order not found. Please check your details.</p>
       <div id="orderResults"></div>
 
-      <!-- NAYA: UPDATED POLICIES (20% Advance & Delivery Charge on Return) -->
       <div class="policy-card">
         <h4>📋 Order Policies & Guidelines</h4>
         
@@ -113,13 +124,48 @@
           </div>
         </div>
       </div>
+    </div>
 
+    <!-- Support CTA -->
+    <div class="support-cta-box">
+      <h3>Need Help With Your Order?</h3>
+      <p>Our team is ready to help you with any tracking, delivery, or return questions.</p>
+      <div class="support-btns">
+        <a href="support.html" class="support-btn support-btn-primary">💬 Visit Support Center</a>
+        <a href="https://wa.me/918931911428?text=Hello%20Aaradhya%20Mart%2C%20I%20need%20help%20with%20my%20order." target="_blank" rel="noopener" class="support-btn support-btn-secondary">📞 WhatsApp Direct</a>
+      </div>
     </div>
   </main>
 
+  <footer style="background: #0b1b2d; color: #fff; padding: 35px 20px 25px; margin-top: 50px;">
+    <div style="max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 30px; margin-bottom: 30px;">
+      <div>
+        <h4 style="font-size: 11px; letter-spacing: 2px; color: var(--gold); margin: 0 0 14px; text-transform: uppercase;">Quick Links</h4>
+        <a href="index.html" style="display: block; font-size: 12px; color: #cbd5e1; margin-bottom: 8px; text-decoration: none;">Home</a>
+        <a href="track.html" style="display: block; font-size: 12px; color: #cbd5e1; margin-bottom: 8px; text-decoration: none;">Track Order</a>
+        <a href="cart.html" style="display: block; font-size: 12px; color: #cbd5e1; margin-bottom: 8px; text-decoration: none;">Cart</a>
+      </div>
+      <div>
+        <h4 style="font-size: 11px; letter-spacing: 2px; color: var(--gold); margin: 0 0 14px; text-transform: uppercase;">Support</h4>
+        <a href="support.html" style="display: block; font-size: 12px; color: #cbd5e1; margin-bottom: 8px; text-decoration: none;">💬 Customer Support</a>
+        <a href="about.html" style="display: block; font-size: 12px; color: #cbd5e1; margin-bottom: 8px; text-decoration: none;">About & Policies</a>
+        <a href="https://wa.me/918931911428" target="_blank" style="display: block; font-size: 12px; color: #25D366; margin-bottom: 8px; text-decoration: none;">📞 +91 89319 11428</a>
+      </div>
+      <div>
+        <h4 style="font-size: 11px; letter-spacing: 2px; color: var(--gold); margin: 0 0 14px; text-transform: uppercase;">Stores</h4>
+        <a href="fashion.html" style="display: block; font-size: 12px; color: #cbd5e1; margin-bottom: 8px; text-decoration: none;">Fashion</a>
+        <a href="print.html" style="display: block; font-size: 12px; color: #cbd5e1; margin-bottom: 8px; text-decoration: none;">A-Print</a>
+        <a href="kirana.html" style="display: block; font-size: 12px; color: #cbd5e1; margin-bottom: 8px; text-decoration: none;">Kirana</a>
+      </div>
+    </div>
+    <div style="border-top: 1px solid #1e3a5f; padding-top: 18px; text-align: center; font-size: 11px; color: #64748b;">
+      © 2026 Aaradhya Mart. All rights reserved.
+    </div>
+  </footer>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, query, where, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = { apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y", authDomain: "aaradhya-mart.firebaseapp.com", projectId: "aaradhya-mart", storageBucket: "aaradhya-mart.firebasestorage.app", messagingSenderId: "146782544824", appId: "1:146782544824:web:d605e1971d3480fab1654d" };
     const app = initializeApp(firebaseConfig); const db = getFirestore(app);
