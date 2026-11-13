@@ -39,6 +39,70 @@
     .step.cancelled .step-label { color: #ef4444; }
     @keyframes pulseGreen { 0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); } 70% { box-shadow: 0 0 0 10px rgba(16,185,129,0); } 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); } }
 
+    /* ✅ NAYA: Status Time Text */
+    .step-time {
+      font-size: 9px;
+      color: #888;
+      margin-top: 4px;
+      font-weight: normal;
+      line-height: 1.1;
+    }
+
+    /* ✅ NAYA: Rider Animation */
+    .rider-animation-container {
+      background: #e0f2fe;
+      border: 1px dashed #7dd3fc;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 20px 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .rider-track {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .rider-bike {
+      font-size: 24px;
+      animation: rideBike 2s infinite linear;
+      display: inline-block;
+    }
+    .rider-text {
+      font-size: 13px;
+      font-weight: bold;
+      color: #0369a1;
+    }
+    .rider-dots {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      padding: 0 10px;
+    }
+    .rider-dots span {
+      width: 6px;
+      height: 6px;
+      background: #93c5fd;
+      border-radius: 50%;
+      animation: blinkDots 1.5s infinite alternate;
+    }
+    .rider-dots span:nth-child(2) { animation-delay: 0.3s; }
+    .rider-dots span:nth-child(3) { animation-delay: 0.6s; }
+    .rider-dots span:nth-child(4) { animation-delay: 0.9s; }
+
+    @keyframes rideBike {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(10px) rotate(-5deg); }
+      50% { transform: translateX(20px); }
+      75% { transform: translateX(10px) rotate(5deg); }
+      100% { transform: translateX(0); }
+    }
+    @keyframes blinkDots {
+      0% { opacity: 0.2; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1.2); }
+    }
+
     .action-buttons { display: flex; gap: 10px; margin-top: 25px; }
     .action-btn { flex: 1; padding: 12px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; text-align: center; text-decoration: none; display: inline-block; transition: 0.3s; }
     .btn-cancel-order { background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; }
@@ -46,7 +110,6 @@
     .btn-update-order { background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc; }
     .btn-update-order:hover { background: #bae6fd; }
 
-    /* PROFESSIONAL POLICY CARD */
     .policy-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-top: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
     .policy-card h4 { margin: 0 0 15px 0; color: #1e293b; font-size: 15px; font-family: Arial, sans-serif; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; display: flex; align-items: center; gap: 8px; }
     .policy-item { display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-start; }
@@ -57,7 +120,6 @@
 
     .error-msg { color: #ef4444; font-size: 14px; text-align: center; margin-top: 15px; font-weight: bold; display: none; }
 
-    /* SUPPORT CTA BOX */
     .support-cta-box { max-width: 600px; margin: 0 auto 40px; background: linear-gradient(135deg, #10243b, #1e3a5f); color: #fff; padding: 25px 30px; border-radius: 12px; text-align: center; box-shadow: 0 10px 25px rgba(16,36,59,0.2); }
     .support-cta-box h3 { font: normal 22px Georgia, serif; color: var(--gold); margin: 0 0 8px; }
     .support-cta-box p { font-size: 13px; color: #cbd5e1; margin: 0 0 18px; }
@@ -105,27 +167,9 @@
 
       <div class="policy-card">
         <h4>📋 Order Policies & Guidelines</h4>
-        
-        <div class="policy-item">
-          <div class="policy-icon">💳</div>
-          <div class="policy-text">
-            <strong>Advance Payment:</strong> A 20% advance payment is mandatory to confirm your order.
-          </div>
-        </div>
-        
-        <div class="policy-item">
-          <div class="policy-icon">❌</div>
-          <div class="policy-text">
-            <strong>Cancellation (Before Delivery):</strong> Orders can be cancelled free of cost before they are packed.
-          </div>
-        </div>
-        
-        <div class="policy-item">
-          <div class="policy-icon">🚚</div>
-          <div class="policy-text">
-            <strong>Return/Cancel (After Delivery):</strong> If you cancel or return the order after delivery, delivery charges will be deducted. We do NOT have a 7-day return policy.
-          </div>
-        </div>
+        <div class="policy-item"><div class="policy-icon">💳</div><div class="policy-text"><strong>Advance Payment:</strong> A 20% advance payment is mandatory to confirm your order.</div></div>
+        <div class="policy-item"><div class="policy-icon">❌</div><div class="policy-text"><strong>Cancellation (Before Delivery):</strong> Orders can be cancelled free of cost before they are packed.</div></div>
+        <div class="policy-item"><div class="policy-icon">🚚</div><div class="policy-text"><strong>Return/Cancel (After Delivery):</strong> If you cancel or return the order after delivery, delivery charges will be deducted. We do NOT have a 7-day return policy.</div></div>
       </div>
     </div>
 
@@ -144,28 +188,13 @@
     <div style="background: #fff; border-radius: 12px; padding: 30px; max-width: 420px; width: 100%; box-shadow: 0 20px 50px rgba(0,0,0,0.3);">
       <h3 style="font: normal 22px Georgia, serif; color: var(--navy); margin: 0 0 20px; text-align: center;">Write a Review</h3>
       <input type="hidden" id="reviewProductId">
-      
-      <div style="margin-bottom: 12px;">
-        <label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 5px;">Your Name</label>
-        <input type="text" id="reviewName" placeholder="Enter your name" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; outline: none;">
-      </div>
-      
-      <div style="margin-bottom: 12px;">
-        <label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 5px;">Rating</label>
+      <div style="margin-bottom: 12px;"><label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 5px;">Your Name</label><input type="text" id="reviewName" placeholder="Enter your name" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; outline: none;"></div>
+      <div style="margin-bottom: 12px;"><label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 5px;">Rating</label>
         <select id="reviewRating" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; outline: none;">
-          <option value="5">⭐⭐⭐⭐⭐ (5 Star)</option>
-          <option value="4">⭐⭐⭐⭐ (4 Star)</option>
-          <option value="3">⭐⭐⭐ (3 Star)</option>
-          <option value="2">⭐⭐ (2 Star)</option>
-          <option value="1">⭐ (1 Star)</option>
+          <option value="5">⭐⭐⭐⭐⭐ (5 Star)</option><option value="4">⭐⭐⭐⭐ (4 Star)</option><option value="3">⭐⭐⭐ (3 Star)</option><option value="2">⭐⭐ (2 Star)</option><option value="1">⭐ (1 Star)</option>
         </select>
       </div>
-      
-      <div style="margin-bottom: 20px;">
-        <label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 5px;">Comment</label>
-        <textarea id="reviewComment" rows="3" placeholder="Share your experience..." style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; resize: vertical; outline: none;"></textarea>
-      </div>
-      
+      <div style="margin-bottom: 20px;"><label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 5px;">Comment</label><textarea id="reviewComment" rows="3" placeholder="Share your experience..." style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; resize: vertical; outline: none;"></textarea></div>
       <div style="display: flex; gap: 10px;">
         <button onclick="document.getElementById('reviewModal').style.display='none'" style="flex: 1; padding: 12px; border: 1px solid #ccc; background: #fff; border-radius: 6px; cursor: pointer; font-weight: bold;">Cancel</button>
         <button onclick="submitReview()" style="flex: 1; padding: 12px; border: none; background: var(--navy); color: #fff; border-radius: 6px; cursor: pointer; font-weight: bold;">Submit</button>
@@ -208,7 +237,6 @@
     const app = initializeApp(firebaseConfig); const db = getFirestore(app);
     const WHATSAPP_NUMBER = "918931911428";
 
-    // ✅ NAYA CODE: URL se data read karke auto-fill karna
     window.addEventListener("DOMContentLoaded", () => {
       const urlParams = new URLSearchParams(window.location.search);
       const orderParam = urlParams.get('order');
@@ -217,11 +245,7 @@
       if (orderParam && phoneParam) {
         document.getElementById("trackOrderId").value = orderParam;
         document.getElementById("trackPhone").value = phoneParam;
-        
-        // Form fill hone ke baad auto-click the search button
-        setTimeout(() => {
-          document.getElementById("trackBtn").click();
-        }, 300); 
+        setTimeout(() => { document.getElementById("trackBtn").click(); }, 300);
       }
     });
 
@@ -253,27 +277,59 @@
             if(o.status === "Delivered") stepIndex = 4;
             const isCancelled = o.status === "Cancelled";
 
+            // ✅ NAYA: Date & Time fetch from history
+            const history = o.statusHistory || {};
+            const getTime = (statusName) => history[statusName] ? `<div class="step-time">${history[statusName]}</div>` : '';
+
             let trackerHtml = `
               <div class="tracker-wrap">
                 <div class="tracker-steps">
                   <div class="tracker-progress-line" style="width: ${isCancelled ? '0%' : (stepIndex * 25) + '%'}"></div>
+                  
                   <div class="step ${stepIndex >= 0 ? 'active' : ''} ${stepIndex === 0 ? 'current' : ''} ${isCancelled ? 'cancelled' : ''}">
-                    <div class="step-icon">${stepIndex > 0 || isCancelled ? '✔️' : (isCancelled ? '✖️' : '1')}</div><div class="step-label">Pending</div>
+                    <div class="step-icon">${stepIndex > 0 || isCancelled ? '✔️' : (isCancelled ? '✖️' : '1')}</div>
+                    <div class="step-label">Pending</div>
+                    ${getTime("Pending")}
                   </div>
+                  
                   <div class="step ${stepIndex >= 1 ? 'active' : ''} ${stepIndex === 1 ? 'current' : ''}">
-                    <div class="step-icon">${stepIndex > 1 ? '✔️' : '2'}</div><div class="step-label">Confirmed</div>
+                    <div class="step-icon">${stepIndex > 1 ? '✔️' : '2'}</div>
+                    <div class="step-label">Confirmed</div>
+                    ${getTime("Confirmed")}
                   </div>
+                  
                   <div class="step ${stepIndex >= 2 ? 'active' : ''} ${stepIndex === 2 ? 'current' : ''}">
-                    <div class="step-icon">${stepIndex > 2 ? '✔️' : '3'}</div><div class="step-label">Packed</div>
+                    <div class="step-icon">${stepIndex > 2 ? '✔️' : '3'}</div>
+                    <div class="step-label">Packed</div>
+                    ${getTime("Packed")}
                   </div>
+                  
                   <div class="step ${stepIndex >= 3 ? 'active' : ''} ${stepIndex === 3 ? 'current' : ''}">
-                    <div class="step-icon">${stepIndex > 3 ? '✔️' : '4'}</div><div class="step-label">Out for Delivery</div>
+                    <div class="step-icon">${stepIndex > 3 ? '✔️' : '4'}</div>
+                    <div class="step-label">Out for Delivery</div>
+                    ${getTime("Out for Delivery")}
                   </div>
+                  
                   <div class="step ${stepIndex >= 4 ? 'active' : ''} ${stepIndex === 4 ? 'current' : ''}">
-                    <div class="step-icon">${stepIndex === 4 ? '✔️' : '5'}</div><div class="step-label">Delivered</div>
+                    <div class="step-icon">${stepIndex === 4 ? '✔️' : '5'}</div>
+                    <div class="step-label">Delivered</div>
+                    ${getTime("Delivered")}
                   </div>
                 </div>
               </div>
+
+              <!-- ✅ NAYA: Rider Animation -->
+              ${o.status === "Out for Delivery" ? `
+              <div class="rider-animation-container">
+                <div class="rider-track">
+                  <span class="rider-bike">🛵</span>
+                  <span class="rider-text">Your order is on the way!</span>
+                </div>
+                <div class="rider-dots">
+                  <span></span><span></span><span></span><span></span>
+                </div>
+              </div>
+              ` : ''}
             `;
 
             if(isCancelled) {
