@@ -235,39 +235,31 @@
     .btn-quote { background: var(--gold); color: var(--navy); padding: 14px 30px; border-radius: 8px; font-weight: bold; font-size: 15px; border: none; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
     .btn-quote:hover { background: #d4b47a; }
 
-    /* 6. Floating Buttons */
+    /* ==========================================
+       FLOATING BUTTONS (Strict Alignment)
+       ========================================== */
     .floating-track {
-      position: fixed; bottom: 90px; left: 25px; 
+      position: fixed; bottom: 100px; left: 25px; 
       background: #fff; color: var(--navy); border: 2px solid var(--navy); 
-      padding: 10px 20px; border-radius: 50px; font-size: 12px; font-weight: 900; 
+      padding: 10px 18px; border-radius: 50px; font-size: 12px; font-weight: 900; 
       letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; 
-      box-shadow: 0 8px 25px rgba(0,0,0,0.1); z-index: 999; cursor: pointer; 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15); z-index: 999; cursor: pointer; 
       text-transform: uppercase; transition: 0.3s; text-decoration: none;
     }
     .floating-track:hover { background: var(--navy); color: #fff; }
-    .floating-track svg { width: 18px; height: 18px; stroke: var(--navy); transition: 0.3s; }
+    .floating-track svg { width: 18px; height: 18px; stroke: var(--navy); transition: 0.3s; stroke-width: 2.5;}
     .floating-track:hover svg { stroke: #fff; }
 
-    .floating-wa {
-      position: fixed; bottom: 25px; left: 25px; 
-      background: #25D366; width: 55px; height: 55px; border-radius: 50%; 
-      display: flex; align-items: center; justify-content: center; 
-      box-shadow: 0 8px 25px rgba(37,211,102,0.4); z-index: 999; cursor: pointer; 
-      transition: 0.3s; text-decoration: none;
-    }
-    .floating-wa:hover { transform: scale(1.08); }
-    .floating-wa svg { width: 32px; height: 32px; fill: #fff; }
-
     .floating-cart {
-      position: fixed; bottom: 25px; right: 25px; 
+      position: fixed; bottom: 30px; right: 30px; 
       background: var(--navy); color: #fff; border: 1px solid var(--gold); 
-      padding: 10px 20px; border-radius: 50px; display: flex; align-items: center; gap: 10px; 
+      padding: 12px 20px; border-radius: 50px; display: flex; align-items: center; gap: 8px; 
       box-shadow: 0 8px 25px rgba(16,36,59,0.3); z-index: 999; cursor: pointer; 
       transition: 0.3s; text-decoration: none;
     }
-    .floating-cart:hover { transform: translateY(-3px); }
-    .floating-cart span { font-size: 15px; font-weight: bold; }
-    .cart-badge { background: var(--gold); color: var(--navy); font-size: 13px; font-weight: bold; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+    .floating-cart:hover { transform: translateY(-2px); }
+    .floating-cart span { font-size: 14px; font-weight: bold; }
+    .cart-badge { background: var(--gold); color: var(--navy); font-size: 12px; font-weight: bold; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
 
     /* Responsive */
     @media (max-width: 768px) {
@@ -283,8 +275,6 @@
       .floating-track { bottom: 85px; left: 15px; padding: 8px 12px; font-size: 10px; }
       .floating-track span { display: none; }
       .floating-track svg { width: 20px; height: 20px; }
-      .floating-wa { bottom: 20px; left: 15px; width: 48px; height: 48px; }
-      .floating-wa svg { width: 26px; height: 26px; }
       .floating-cart { bottom: 20px; right: 15px; padding: 10px 14px; }
       .floating-cart span { display: none; }
     }
@@ -326,7 +316,7 @@
     <p>High-quality printed products, delivered to your doorstep. From business cards to personal gifts, we've got you covered.</p>
   </section>
 
-  <!-- DIRECT CATEGORY SHOWCASE (UPDATED FILTER LOGIC) -->
+  <!-- DIRECT CATEGORY SHOWCASE -->
   <div class="category-showcase">
     <div class="cat-card" onclick="filterByCategory('T-Shirt Printing', 'T-Shirts')">
       <div class="cat-icon">👕</div>
@@ -412,17 +402,17 @@
     </div>
   </section>
 
-  <!-- FLOATING BUTTONS -->
+  <!-- ==========================================
+       FLOATING BUTTONS (Global WhatsApp used)
+       ========================================== -->
   <a href="track.html" class="floating-track">
     <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
     <span>Track Order</span>
   </a>
 
-  <a href="https://wa.me/918931911428?text=Hello%20Aaradhya%20Mart" target="_blank" class="floating-wa">
-    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-      <path d="M16.004 2C8.28 2 2 8.28 2 16c0 2.47.64 4.79 1.76 6.81L2 30l7.39-1.71A13.93 13.93 0 0 0 16.004 30C23.72 30 30 23.72 30 16S23.72 2 16.004 2zm0 2.31c6.76 0 12.23 5.47 12.23 12.23 0 6.76-5.47 12.23-12.23 12.23-2.13 0-4.13-.55-5.86-1.51l-.42-.23-4.32 1 1-4.21-.24-.4A12.17 12.17 0 0 1 3.77 16c0-6.76 5.47-12.23 12.23-12.23z" fill="currentColor"/>
-      <path d="M21.66 18.14c-.23-.12-1.38-.68-1.6-.76-.21-.08-.37-.12-.53.12-.16.24-.61.76-.75.92-.14.16-.28.18-.51.06-.23-.12-1-.37-1.91-1.18-.71-.63-1.18-1.41-1.32-1.65-.14-.24-.02-.37.1-.49.11-.11.23-.28.35-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.53-1.27-.72-1.74-.19-.46-.38-.4-.53-.4h-.45c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.69 2.58 4.1 3.62.57.25 1.02.4 1.37.51.57.18 1.09.15 1.5.09.46-.07 1.38-.56 1.58-1.11.2-.55.2-1.02.14-1.11-.06-.09-.22-.15-.45-.27z" fill="currentColor"/>
-    </svg>
+  <!-- Yahan humne global whatsapp-float-btn class use ki hai jo style.css se aa rahi hai -->
+  <a href="https://wa.me/918931911428?text=Hello%20Aaradhya%20Mart" target="_blank" class="whatsapp-float-btn" aria-label="Chat on WhatsApp">
+    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M16.004 2C8.28 2 2 8.28 2 16c0 2.47.64 4.79 1.76 6.81L2 30l7.39-1.71A13.93 13.93 0 0 0 16.004 30C23.72 30 30 23.72 30 16S23.72 2 16.004 2zm0 2.31c6.76 0 12.23 5.47 12.23 12.23 0 6.76-5.47 12.23-12.23 12.23-2.13 0-4.13-.55-5.86-1.51l-.42-.23-4.32 1 1-4.21-.24-.4A12.17 12.17 0 0 1 3.77 16c0-6.76 5.47-12.23 12.23-12.23z" fill="#fff"/><path d="M21.66 18.14c-.23-.12-1.38-.68-1.6-.76-.21-.08-.37-.12-.53.12-.16.24-.61.76-.75.92-.14.16-.28.18-.51.06-.23-.12-1-.37-1.91-1.18-.71-.63-1.18-1.41-1.32-1.65-.14-.24-.02-.37.1-.49.11-.11.23-.28.35-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.53-1.27-.72-1.74-.19-.46-.38-.4-.53-.4h-.45c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.69 2.58 4.1 3.62.57.25 1.02.4 1.37.51.57.18 1.09.15 1.5.09.46-.07 1.38-.56 1.58-1.11.2-.55.2-1.02.14-1.11-.06-.09-.22-.15-.45-.27z" fill="#fff"/></svg>
   </a>
 
   <a href="cart.html" class="floating-cart">
@@ -551,7 +541,7 @@
       render();
     }
 
-    // ✅ Global function for top cards
+    // Global function for top cards
     window.filterByCategory = function(dbCategoryName, btnDisplayName) {
       currentActiveCategory = dbCategoryName; 
       
@@ -608,7 +598,6 @@
       grid.innerHTML = list.map((p) => {
         const isOut = p.stock <= 0;
         
-        // ✅ Size & Color Arrays Setup
         const sizesArray = Array.isArray(p.sizes) && p.sizes.length > 0 ? p.sizes : ["Standard"];
         const colorsArray = Array.isArray(p.colors) && p.colors.length > 0 ? p.colors : ["Standard"];
         
