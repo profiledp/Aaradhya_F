@@ -1,10 +1,7 @@
 /* ==========================================================
    AARADHYA MART — SHARED MODULE
-   - Single Firebase config
-   - Phone normalization
-   - Cart helpers
-   - Toast helpers
-   - Order ID normalization
+   Single source of truth for Firebase, cart, phone, toasts.
+   Import this from every page instead of copy-pasting config.
    ========================================================== */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -19,7 +16,6 @@ export const FIREBASE_CONFIG = {
   appId: "1:146782544824:web:d605e1971d3480fab1654d"
 };
 
-// Singleton — safe to import from multiple pages/modules
 let _app = null;
 let _db = null;
 export function getApp() {
@@ -36,25 +32,15 @@ export const CART_KEY = "aaradhyaMartCart";
 export const MY_ORDERS_KEY = "aaradhyaMyOrders";
 
 /* ---------- Phone normalization ---------- */
-/**
- * Normalizes an Indian phone number to a bare 10-digit string.
- * Accepts: "9876543210", "+919876543210", "91 98765 43210",
- *          "09876543210", "98765-43210", " 9876543210 "
- * Returns "" if invalid.
- */
 export function normalizePhone(input) {
   if (!input) return "";
   let digits = String(input).replace(/\D/g, "");
-  // Strip country code 91 if present and length is 12
   if (digits.length === 12 && digits.startsWith("91")) digits = digits.slice(2);
-  // Strip leading 0 (e.g. "09876543210")
   if (digits.length === 11 && digits.startsWith("0")) digits = digits.slice(1);
   if (digits.length !== 10) return "";
-  // Indian mobile numbers start with 6-9
   if (!/^[6-9]/.test(digits)) return "";
   return digits;
 }
-
 export function isValidPhone(input) {
   return normalizePhone(input) !== "";
 }
@@ -66,11 +52,8 @@ export function normalizeOrderId(input) {
 
 /* ---------- Cart helpers ---------- */
 export function readCart() {
-  try {
-    return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
-  } catch {
-    return [];
-  }
+  try { return JSON.parse(localStorage.getItem(CART_KEY) || "[]"); }
+  catch { return []; }
 }
 export function writeCart(cart) {
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
@@ -80,15 +63,11 @@ export function cartCount() {
 }
 export function addToCart(item) {
   const cart = readCart();
-  // Merge if same id+size+color already exists
   const existing = cart.find(
     (c) => c.id === item.id && c.size === item.size && c.color === item.color
   );
-  if (existing) {
-    existing.qty = (Number(existing.qty) || 1) + 1;
-  } else {
-    cart.push({ ...item, qty: 1 });
-  }
+  if (existing) existing.qty = (Number(existing.qty) || 1) + 1;
+  else cart.push({ ...item, qty: 1 });
   writeCart(cart);
   return cart;
 }
@@ -101,7 +80,7 @@ export function updateCartBadge() {
   badge.style.color = count === 0 ? "#fff" : "var(--navy)";
 }
 
-/* ---------- Toast helpers ---------- */
+/* ---------- Toast ---------- */
 export function showToast(message, icon = "✅") {
   let t = document.querySelector(".toast-notification");
   if (t) t.remove();
@@ -116,33 +95,28 @@ export function showToast(message, icon = "✅") {
   }, 3000);
 }
 
-/* ---------- Fly-to-cart animation ---------- */
+/* ---------- Fly-to-cart ---------- */
 export function flyToCart(imgSrc, btnElement) {
   const cartBtn = document.getElementById("globalCartBtn");
   const cartBadge = document.getElementById("globalCartCount");
   if (!cartBtn) return;
-
   const img = document.createElement("img");
   img.src = imgSrc;
   img.className = "fly-image-anim";
-
-  const startRect = btnElement.getBoundingClientRect();
-  const endRect = cartBtn.getBoundingClientRect();
-
-  img.style.left = startRect.left + "px";
-  img.style.top = startRect.top + "px";
-  img.style.width = startRect.width + "px";
-  img.style.height = startRect.height + "px";
+  const s = btnElement.getBoundingClientRect();
+  const e = cartBtn.getBoundingClientRect();
+  img.style.left = s.left + "px";
+  img.style.top = s.top + "px";
+  img.style.width = s.width + "px";
+  img.style.height = s.height + "px";
   document.body.appendChild(img);
-
   requestAnimationFrame(() => {
-    img.style.left = endRect.left + endRect.width / 2 - 15 + "px";
-    img.style.top = endRect.top + endRect.height / 2 - 15 + "px";
+    img.style.left = e.left + e.width / 2 - 15 + "px";
+    img.style.top = e.top + e.height / 2 - 15 + "px";
     img.style.width = "30px";
     img.style.height = "30px";
     img.style.opacity = "0.5";
   });
-
   setTimeout(() => {
     img.remove();
     if (cartBadge) {
