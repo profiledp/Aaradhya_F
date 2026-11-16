@@ -2,163 +2,362 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>My Orders | Aaradhya Mart</title>
+  <title>Track Order | Aaradhya Mart</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%2310243b'/><text x='50' y='68' font-size='55' font-family='Georgia' fill='%23c5a36b' text-anchor='middle'>A</text></svg>">
   <link rel="stylesheet" href="style.css">
-  <style>
-    .my-orders-wrap { max-width: 800px; margin: 50px auto; padding: 20px; }
-    .page-title { font: normal 32px Georgia, serif; color: var(--navy); margin-bottom: 25px; text-align: center; }
-    .order-card {
-      background: #fff; border: 1px solid var(--line); border-radius: 12px;
-      padding: 20px; margin-bottom: 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: 0.2s;
-    }
-    .order-card:hover {
-      box-shadow: 0 8px 25px rgba(16,36,59,0.08);
-      border-color: var(--gold);
-    }
-    .order-header {
-      display: flex; justify-content: space-between; align-items: flex-start;
-      border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px;
-      flex-wrap: wrap; gap: 10px;
-    }
-    .order-id { font-size: 16px; font-weight: bold; color: var(--navy); margin: 0; }
-    .order-date { font-size: 12px; color: #777; margin-top: 4px; }
-    .status-badge {
-      font-size: 11px; font-weight: bold; padding: 6px 12px;
-      border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;
-    }
-    .status-pending { background: #fef3c7; color: #92400e; }
-    .status-confirmed { background: #e0f2fe; color: #0369a1; }
-    .status-packed { background: #ffedd5; color: #9a3412; }
-    .status-out-for-delivery { background: #f3e8ff; color: #6b21a8; }
-    .status-delivered { background: #dcfce7; color: #166534; }
-    .status-cancelled { background: #fee2e2; color: #991b1b; }
-    .order-items-list { font-size: 13px; color: #4b5563; margin-bottom: 15px; line-height: 1.6; }
-    .order-items-list strong { color: var(--navy); }
-    .order-footer {
-      display: flex; justify-content: space-between; align-items: center;
-      border-top: 1px dashed #eee; padding-top: 15px; flex-wrap: wrap; gap: 10px;
-    }
-    .order-total { font-size: 18px; font-weight: bold; color: var(--navy); }
-    .order-total span { font-size: 12px; font-weight: normal; color: #777; }
-    .btn-track-now {
-      background: var(--navy); color: #fff; padding: 10px 20px;
-      border-radius: 6px; font-size: 12px; font-weight: bold;
-      text-decoration: none; transition: 0.2s; border: none; cursor: pointer;
-    }
-    .btn-track-now:hover { background: #1e3a5f; transform: translateY(-2px); }
-    .empty-orders {
-      text-align: center; padding: 60px 20px; background: #f8f9fa;
-      border: 2px dashed #ccc; border-radius: 12px; margin-top: 30px;
-    }
-    .empty-orders h3 { font: normal 22px Georgia, serif; color: var(--navy); margin-bottom: 10px; }
-    .empty-orders p { font-size: 14px; color: #777; margin-bottom: 20px; }
-    .btn-shop {
-      background: var(--gold); color: var(--navy); padding: 12px 25px;
-      border-radius: 6px; font-weight: bold; text-decoration: none;
-      display: inline-block; transition: 0.2s;
-    }
-    .btn-shop:hover { background: #d4b47a; }
-  </style>
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="index.html"><span class="brand-mark">AM</span><span><strong>AARADHYA MART</strong><small>MY ORDERS</small></span></a>
+    <a class="brand" href="index.html"><span class="brand-mark">AM</span><span><strong>AARADHYA MART</strong><small>ORDER TRACKING</small></span></a>
     <div style="display: flex; gap: 8px; align-items: center;">
       <a href="support.html" style="font-size: 11px; background: #25D366; color: #fff; padding: 11px 14px; border-radius: 4px; text-decoration: none; font-weight: bold; letter-spacing: 0.5px;">💬 Support</a>
       <a href="index.html" class="header-wa" style="background:#fff; color:var(--navy); border:1px solid var(--navy);">← Home</a>
     </div>
   </header>
 
-  <main class="my-orders-wrap">
-    <h1 class="page-title">📦 My Orders</h1>
-    <div id="ordersContainer"></div>
+  <main>
+    <div class="track-container">
+      <div class="track-header">
+        <div class="track-icon-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle>
+          </svg>
+        </div>
+        <h2>Track Your Order</h2>
+        <p>Enter your Order ID and Mobile Number below.</p>
+      </div>
+
+      <div class="track-form-group">
+        <label>Order ID *</label>
+        <input type="text" id="trackOrderId" placeholder="e.g. ORD-123456" autocomplete="off" required>
+      </div>
+      <div class="track-form-group">
+        <label>Registered Mobile Number *</label>
+        <input type="tel" id="trackPhone" placeholder="e.g. 9876543210" autocomplete="tel" required>
+      </div>
+
+      <button class="btn-track" id="trackBtn">Check Status</button>
+      <p id="errorMsg" class="error-msg">Order not found. Please check your details.</p>
+      <div id="orderResults"></div>
+
+      <div class="policy-card">
+        <h4>📋 Order Policies & Guidelines</h4>
+        <div class="policy-item"><div class="policy-icon">💳</div><div class="policy-text"><strong>Advance Payment:</strong> A 20% advance payment is mandatory to confirm your order.</div></div>
+        <div class="policy-item"><div class="policy-icon">❌</div><div class="policy-text"><strong>Cancellation (Before Delivery):</strong> Orders can be cancelled free of cost before they are packed.</div></div>
+        <div class="policy-item"><div class="policy-icon">🚚</div><div class="policy-text"><strong>Return/Cancel (After Delivery):</strong> If you cancel or return the order after delivery, delivery charges will be deducted. We do NOT have a 7-day return policy.</div></div>
+      </div>
+    </div>
+
+    <div class="support-cta-box">
+      <h3>Need Help With Your Order?</h3>
+      <p>Our team is ready to help you with any tracking, delivery, or return questions.</p>
+      <div class="support-btns">
+        <a href="support.html" class="support-btn support-btn-primary">💬 Visit Support Center</a>
+        <a href="https://wa.me/918931911428?text=Hello%20Aaradhya%20Mart%2C%20I%20need%20help%20with%20my%20order." target="_blank" rel="noopener" class="support-btn support-btn-secondary">📞 WhatsApp Direct</a>
+      </div>
+    </div>
   </main>
 
+  <!-- REVIEW MODAL -->
+  <div id="reviewModal" style="display: none; position: fixed; inset: 0; background: rgba(16,36,59,0.75); backdrop-filter: blur(4px); z-index: 10000; align-items: center; justify-content: center; padding: 15px;">
+    <div style="background: #fff; border-radius: 12px; padding: 30px; max-width: 420px; width: 100%; box-shadow: 0 20px 50px rgba(0,0,0,0.3);">
+      <h3 style="font: normal 22px Georgia, serif; color: var(--navy); margin: 0 0 20px; text-align: center;">Write a Review</h3>
+      <input type="hidden" id="reviewProductId">
+      <input type="hidden" id="reviewProductName">
+      <div style="margin-bottom: 12px;"><label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 5px;">Your Name</label><input type="text" id="reviewName" placeholder="Enter your name" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; outline: none;"></div>
+      <div style="margin-bottom: 12px;"><label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 5px;">Rating</label>
+        <select id="reviewRating" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; outline: none;">
+          <option value="5">⭐⭐⭐⭐⭐ (5 Star)</option><option value="4">⭐⭐⭐⭐ (4 Star)</option><option value="3">⭐⭐⭐ (3 Star)</option><option value="2">⭐⭐ (2 Star)</option><option value="1">⭐ (1 Star)</option>
+        </select>
+      </div>
+      <div style="margin-bottom: 20px;"><label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 5px;">Comment</label><textarea id="reviewComment" rows="3" placeholder="Share your experience..." style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; resize: vertical; outline: none;"></textarea></div>
+      <div style="display: flex; gap: 10px;">
+        <button id="reviewCancelBtn" style="flex: 1; padding: 12px; border: 1px solid #ccc; background: #fff; border-radius: 6px; cursor: pointer; font-weight: bold;">Cancel</button>
+        <button id="reviewSubmitBtn" style="flex: 1; padding: 12px; border: none; background: var(--navy); color: #fff; border-radius: 6px; cursor: pointer; font-weight: bold;">Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer" style="margin-top: 50px;">
+    <p>© 2026 Aaradhya Mart. All rights reserved.</p>
+  </footer>
+
   <script type="module">
-    import { getDb, MY_ORDERS_KEY, normalizePhone } from "./shared.js";
     import {
-      collection, query, where, getDocs
+      getDb, WHATSAPP_NUMBER, normalizePhone, normalizeOrderId
+    } from "./shared.js";
+    import {
+      collection, getDocs, query, where, addDoc
     } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const db = getDb();
 
-    function statusClass(status) {
-      const map = {
-        "Confirmed": "status-confirmed",
-        "Packed": "status-packed",
-        "Out for Delivery": "status-out-for-delivery",
-        "Delivered": "status-delivered",
-        "Cancelled": "status-cancelled"
-      };
-      return map[status] || "status-pending";
+    function premiumToast(msg, type = "success") {
+      let t = document.querySelector(".premium-toast");
+      if (t) t.remove();
+      const toast = document.createElement("div");
+      toast.className = "premium-toast" + (type === "error" ? " is-error" : "");
+      toast.innerHTML = `<span>${type === "success" ? "✅" : "⚠️"}</span> ${msg}`;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.classList.add("show"), 10);
+      setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => toast.remove(), 400);
+      }, 3500);
     }
 
-    async function renderMyOrders() {
-      const container = document.getElementById("ordersContainer");
-      const myOrderIds = JSON.parse(localStorage.getItem(MY_ORDERS_KEY) || "[]");
+    window.addEventListener("DOMContentLoaded", () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const orderParam = urlParams.get("order");
+      const phoneParam = urlParams.get("phone");
+      if (orderParam) document.getElementById("trackOrderId").value = normalizeOrderId(orderParam);
+      if (phoneParam) document.getElementById("trackPhone").value = normalizePhone(phoneParam) || phoneParam;
+      if (orderParam && phoneParam) {
+        setTimeout(() => document.getElementById("trackBtn").click(), 300);
+      }
+    });
 
-      if (myOrderIds.length === 0) {
-        container.innerHTML = `
-          <div class="empty-orders">
-            <h3>No orders yet!</h3>
-            <p>You haven't placed any orders with us.</p>
-            <a href="index.html" class="btn-shop">Start Shopping 🛍️</a>
-          </div>`;
+    const STATUS_ORDER = ["Pending", "Confirmed", "Packed", "Out for Delivery", "Delivered"];
+    const STEP_LABELS = ["Pending", "Confirmed", "Packed", "Out for Delivery", "Delivered"];
+
+    function buildTracker(order) {
+      const isCancelled = order.status === "Cancelled";
+      const stepIndex = isCancelled ? 0 : Math.max(0, STATUS_ORDER.indexOf(order.status));
+      const history = order.statusHistory || {};
+      const getTime = (s) => history[s] ? `<div class="step-time">${history[s]}</div>` : "";
+
+      if (isCancelled) {
+        return `
+          <div class="cancelled-banner">
+            <h4>❌ Order Cancelled</h4>
+            <p>This order was cancelled. If you didn't request this, contact support.</p>
+          </div>
+          <div class="tracker-wrap">
+            <div class="tracker-steps">
+              <div class="tracker-progress-line cancelled" style="width:100%"></div>
+              ${STEP_LABELS.map((label) => `
+                <div class="step cancelled">
+                  <div class="step-icon">✖️</div>
+                  <div class="step-label">${label}</div>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+        `;
+      }
+
+      const progressPct = stepIndex * 25;
+      const stepsHtml = STEP_LABELS.map((label, i) => {
+        const active = stepIndex >= i;
+        const current = stepIndex === i;
+        const icon = stepIndex > i ? "✔️" : String(i + 1);
+        return `
+          <div class="step ${active ? "active" : ""} ${current ? "current" : ""}">
+            <div class="step-icon">${icon}</div>
+            <div class="step-label">${label}</div>
+            ${getTime(label)}
+          </div>
+        `;
+      }).join("");
+
+      const riderHtml = order.status === "Out for Delivery" ? `
+        <div class="rider-animation-container">
+          <div class="rider-track">
+            <span class="rider-bike">🛵</span>
+            <span class="rider-text">Your order is on the way!</span>
+          </div>
+          <div class="rider-dots">
+            <span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+      ` : "";
+
+      return `
+        <div class="tracker-wrap">
+          <div class="tracker-steps">
+            <div class="tracker-progress-line" style="width:${progressPct}%"></div>
+            ${stepsHtml}
+          </div>
+        </div>
+        ${riderHtml}
+      `;
+    }
+
+    function buildReviewBlock(order) {
+      if (order.status !== "Delivered" || !order.items?.length) return "";
+      const first = order.items[0];
+      const payload = encodeURIComponent(JSON.stringify({ id: first.id, name: first.name }));
+      return `
+        <div style="margin-top: 15px; text-align: center;">
+          <button class="review-open-btn"
+            data-review="${payload}"
+            style="background: var(--gold); color: var(--navy); border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; font-size: 13px;">
+            ⭐ Write a Review
+          </button>
+        </div>
+      `;
+    }
+
+    function buildActions(order) {
+      const isCancelled = order.status === "Cancelled";
+      const stepIndex = isCancelled ? 0 : STATUS_ORDER.indexOf(order.status);
+      if (isCancelled || stepIndex >= 4) return { actions: "", review: buildReviewBlock(order) };
+
+      let actions = `<div class="action-buttons">`;
+      if (stepIndex < 2) {
+        actions += `<button class="action-btn btn-cancel-order" data-cancel="${order.orderId}">❌ Cancel Order</button>`;
+      }
+      if (stepIndex < 3) {
+        actions += `<a href="https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+          `Hello Aaradhya Mart, I want to ADD items to my Order ${order.orderId}`
+        )}" target="_blank" rel="noopener" class="action-btn btn-update-order">➕ Update Order</a>`;
+      }
+      actions += `</div>`;
+      return { actions, review: buildReviewBlock(order) };
+    }
+
+    async function findOrders(orderId, phone) {
+      const q1 = query(
+        collection(db, "orders"),
+        where("orderId", "==", orderId),
+        where("customerPhone", "==", phone)
+      );
+      let snap = await getDocs(q1);
+      if (!snap.empty) return snap;
+
+      const q2 = query(
+        collection(db, "orders"),
+        where("orderId", "==", orderId),
+        where("customerPhone", "==", "+91" + phone)
+      );
+      snap = await getDocs(q2);
+      if (!snap.empty) return snap;
+
+      const q3 = query(
+        collection(db, "orders"),
+        where("orderId", "==", orderId),
+        where("customerPhone", "==", "91" + phone)
+      );
+      return await getDocs(q3);
+    }
+
+    document.getElementById("trackBtn").addEventListener("click", async () => {
+      const orderId = normalizeOrderId(document.getElementById("trackOrderId").value);
+      const phone = normalizePhone(document.getElementById("trackPhone").value);
+      const resultsDiv = document.getElementById("orderResults");
+      const errorMsg = document.getElementById("errorMsg");
+      const btn = document.getElementById("trackBtn");
+
+      if (!orderId || !phone) {
+        errorMsg.textContent = "Please enter a valid Order ID and a 10-digit Indian mobile number.";
+        errorMsg.style.display = "block";
+        resultsDiv.innerHTML = "";
         return;
       }
 
-      container.innerHTML = `<p style="text-align:center; color:#777; font-size:13px;">Loading your orders...</p>`;
+      btn.textContent = "Searching...";
+      btn.disabled = true;
+      errorMsg.style.display = "none";
+      resultsDiv.innerHTML = "";
 
       try {
-        // Firestore "in" caps at 10 — chunk it
-        const allOrders = [];
-        for (let i = 0; i < myOrderIds.length; i += 10) {
-          const chunk = myOrderIds.slice(i, i + 10);
-          const q = query(collection(db, "orders"), where("orderId", "in", chunk));
-          const snap = await getDocs(q);
-          snap.forEach((doc) => allOrders.push(doc.data()));
-        }
-
-        allOrders.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
-
-        if (allOrders.length === 0) {
-          container.innerHTML = `
-            <div class="empty-orders">
-              <h3>No orders found.</h3>
-              <p>We couldn't find any recent orders on this device.</p>
-              <a href="index.html" class="btn-shop">Start Shopping 🛍️</a>
-            </div>`;
+        const snap = await findOrders(orderId, phone);
+        if (snap.empty) {
+          errorMsg.textContent = "Order not found. Please check your Order ID and Phone Number.";
+          errorMsg.style.display = "block";
           return;
         }
 
-        container.innerHTML = allOrders.map((o) => {
-          const itemsStr = (o.items || []).map((i) => `${i.name} (x${i.qty})`).join(", ");
-          const phone = normalizePhone(o.customerPhone) || o.customerPhone;
-          return `
-            <div class="order-card">
-              <div class="order-header">
-                <div>
-                  <h3 class="order-id">Order #${o.orderId}</h3>
-                  <p class="order-date">Placed on: ${o.orderDate || "—"}</p>
-                </div>
-                <span class="status-badge ${statusClass(o.status)}">${o.status}</span>
-              </div>
-              <div class="order-items-list"><strong>Items:</strong> ${itemsStr}</div>
-              <div class="order-footer">
-                <div class="order-total">₹${o.totalAmount} <span>(incl. taxes)</span></div>
-                <a href="track.html?order=${encodeURIComponent(o.orderId)}&phone=${encodeURIComponent(phone)}" class="btn-track-now">Track / View Details →</a>
-              </div>
+        let html = "";
+        snap.forEach((docSnap) => {
+          const o = docSnap.data();
+          const itemsStr = (o.items || []).map((i) => `${i.name} (x${i.qty || 1})`).join(", ");
+          const trackerHtml = buildTracker(o);
+          const { actions, review } = buildActions(o);
+          const statusBadge = `
+            <div style="text-align:center; margin-top:15px;">
+              <span style="font-size:12px; font-weight:bold; color:var(--navy); background:#e0e7ff; padding:5px 15px; border-radius:20px;">
+                Current Status: ${o.status}
+              </span>
             </div>`;
-        }).join("");
-      } catch (err) {
-        console.error("Error loading orders:", err);
-        container.innerHTML = `<p style="color:red; text-align:center;">Failed to load orders. Please check your internet connection.</p>`;
-      }
-    }
 
-    document.addEventListener("DOMContentLoaded", renderMyOrders);
+          html += `
+            <div class="result-box" style="display:block;">
+              <h3>Order ID: ${o.orderId}</h3>
+              <p><strong>Date:</strong> ${o.orderDate || "—"}</p>
+              <p><strong>Items:</strong> ${itemsStr}</p>
+              <p><strong>Total:</strong> ₹${o.totalAmount}</p>
+              <p><strong>Address:</strong> ${o.address || "—"}</p>
+              ${trackerHtml}
+              ${statusBadge}
+              ${actions}
+              ${review}
+            </div>`;
+        });
+        resultsDiv.innerHTML = html;
+      } catch (e) {
+        console.error(e);
+        errorMsg.textContent = "Error fetching order. Please try again.";
+        errorMsg.style.display = "block";
+      } finally {
+        btn.textContent = "Check Status";
+        btn.disabled = false;
+      }
+    });
+
+    document.getElementById("orderResults").addEventListener("click", (e) => {
+      const cancelBtn = e.target.closest("[data-cancel]");
+      if (cancelBtn) {
+        const orderId = cancelBtn.dataset.cancel;
+        const msg = `Hello Aaradhya Mart,\nI want to CANCEL my order.\nOrder ID: ${orderId}\nPlease confirm cancellation.`;
+        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
+        return;
+      }
+      const reviewBtn = e.target.closest("[data-review]");
+      if (reviewBtn) {
+        try {
+          const { id, name } = JSON.parse(decodeURIComponent(reviewBtn.dataset.review));
+          document.getElementById("reviewProductId").value = id;
+          document.getElementById("reviewProductName").value = name;
+          document.getElementById("reviewModal").style.display = "flex";
+        } catch (err) { console.error(err); }
+      }
+    });
+
+    document.getElementById("reviewCancelBtn").addEventListener("click", () => {
+      document.getElementById("reviewModal").style.display = "none";
+    });
+
+    document.getElementById("reviewSubmitBtn").addEventListener("click", async () => {
+      const prodId = document.getElementById("reviewProductId").value;
+      const prodName = document.getElementById("reviewProductName").value;
+      const name = document.getElementById("reviewName").value.trim();
+      const rating = document.getElementById("reviewRating").value;
+      const comment = document.getElementById("reviewComment").value.trim();
+
+      if (!name || !comment) {
+        premiumToast("Please fill Name and Comment", "error");
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "reviews"), {
+          productId: prodId,
+          productName: prodName,
+          customerName: name,
+          rating: Number(rating),
+          comment,
+          date: new Date().toLocaleString("en-IN")
+        });
+        premiumToast("Thank you! Your review has been submitted.");
+        document.getElementById("reviewModal").style.display = "none";
+        document.getElementById("reviewName").value = "";
+        document.getElementById("reviewComment").value = "";
+      } catch (e) {
+        console.error(e);
+        premiumToast("Failed to submit review. Try again.", "error");
+      }
+    });
   </script>
 </body>
 </html>
