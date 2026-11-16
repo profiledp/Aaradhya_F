@@ -193,7 +193,7 @@ img { max-width: 100%; }
   align-items: stretch;
 }
 
-/* ==================== PRODUCT CARD (MODERN) ==================== */
+/* ==================== PRODUCT CARD ==================== */
 .product-card {
   border: 1px solid #e5e7eb;
   border-radius: 12px;
@@ -641,7 +641,7 @@ img { max-width: 100%; }
 }
 .slider-dot.active { background: var(--navy); width: 12px; height: 12px; }
 
-/* ==================== TOASTS (UNIFIED) ==================== */
+/* ==================== TOASTS ==================== */
 .toast-notification {
   position: fixed;
   top: 100px;
@@ -664,7 +664,6 @@ img { max-width: 100%; }
 .toast-notification.show { transform: translateX(0); }
 .toast-icon { font-size: 18px; }
 
-/* Premium centered toast (used by track.html review submit) */
 .premium-toast {
   position: fixed;
   top: 30px;
@@ -685,10 +684,7 @@ img { max-width: 100%; }
   border: 2px solid var(--gold);
 }
 .premium-toast.show { transform: translateX(-50%) translateY(0); }
-.premium-toast.is-error {
-  background: var(--danger);
-  border-color: #fca5a5;
-}
+.premium-toast.is-error { background: var(--danger); border-color: #fca5a5; }
 
 /* ==================== FOOTER ==================== */
 .site-footer {
@@ -779,7 +775,7 @@ img { max-width: 100%; }
   100% { box-shadow: 0 0 0 0 rgba(37,211,102,0); }
 }
 
-/* ==================== FLY-TO-CART ANIMATION (single source of truth) ==================== */
+/* ==================== FLY-TO-CART (single source) ==================== */
 .fly-image-anim {
   position: fixed;
   z-index: 99999;
@@ -798,6 +794,80 @@ img { max-width: 100%; }
 }
 .bounce-anim { animation: cartBounce 0.5s ease; }
 
+/* ==================== DISCOUNT BADGE / HEADER SEARCH ==================== */
+.discount-badge {
+  display: inline-block;
+  background: #10b981;
+  color: #fff;
+  font-size: 9px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 5px;
+  letter-spacing: 0.5px;
+  vertical-align: middle;
+  box-shadow: 0 2px 5px rgba(16, 185, 129, 0.3);
+}
+.header-search-container {
+  flex: 1;
+  max-width: 700px;
+  margin: 0 30px;
+  position: relative;
+}
+.header-search-input {
+  width: 100%;
+  padding: 12px 18px 12px 45px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  background: #f8f9fa url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23777" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>') no-repeat 15px center;
+  transition: 0.3s;
+}
+.header-search-input:focus {
+  background-color: #fff;
+  border-color: var(--navy);
+  box-shadow: 0 4px 15px rgba(16,36,59,0.1);
+}
+.header-search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  margin-top: 5px;
+  max-height: 400px;
+  overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  display: none;
+  z-index: 1000;
+}
+.header-search-results.active { display: block; }
+.search-result-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 18px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: 0.2s;
+  text-decoration: none;
+  color: inherit;
+}
+.search-result-item:hover { background: #f0fdf4; }
+.search-result-item img {
+  width: 45px;
+  height: 45px;
+  object-fit: contain;
+  border-radius: 4px;
+  background: #f8f9fa;
+}
+.search-result-item h4 { margin: 0 0 3px; font-size: 14px; color: var(--navy); }
+.search-result-item p { margin: 0; font-size: 11px; color: var(--muted); }
+.search-result-item .s-price { font-weight: bold; font-size: 14px; color: var(--navy); }
+
 /* ==================== RESPONSIVE ==================== */
 @media (max-width: 900px) {
   .product-grid { grid-template-columns: repeat(3, 1fr); }
@@ -813,12 +883,12 @@ img { max-width: 100%; }
   .global-cart-btn { bottom: 20px !important; right: 15px !important; padding: 10px 14px !important; }
   .global-cart-btn .cart-text { display: none !important; }
   .global-cart-btn .cart-badge { width: 20px !important; height: 20px !important; font-size: 10px !important; }
+  .header-search-container { display: none; }
 }
 
 @media (max-width: 650px) {
   .site-header { padding: 0 4%; height: 70px; }
   .hero { height: 300px; padding: 0 7%; }
-
   .product-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
   .product-card { padding: 8px !important; }
   .product-info h3 { font-size: 12px !important; height: 32px !important; line-height: 1.35 !important; }
@@ -829,12 +899,10 @@ img { max-width: 100%; }
   .coming-soon-card { grid-column: 1 / -1 !important; min-height: 240px !important; padding: 20px 12px !important; }
   .coming-soon-icon { font-size: 30px; }
   .shop-trust-row { gap: 10px; font-size: 10px; }
-
   .shop-controls { flex-wrap: wrap; }
   .search-field { flex-basis: 100%; height: 42px; }
   .shop-controls select { flex: 1; min-width: 0; height: 40px; font-size: 11px; }
   .cat-nav-btn { padding: 8px 14px; font-size: 11px; }
-
   .dialog-layout { grid-template-columns: 1fr; max-height: 92vh; overflow-y: auto; }
   .dialog-image-slider { min-height: 280px !important; max-height: 320px !important; }
   .dialog-image-slider img { padding: 15px !important; }
@@ -842,8 +910,7 @@ img { max-width: 100%; }
 }
 
 /* ==========================================================
-   TRACK ORDER PAGE — REUSABLE COMPONENT STYLES
-   Moved out of track.html inline styles
+   TRACK ORDER PAGE — REUSABLE COMPONENTS
    ========================================================== */
 .track-container {
   max-width: 600px;
@@ -919,7 +986,7 @@ img { max-width: 100%; }
 }
 .result-box p { text-align: left; margin-bottom: 8px; color: var(--ink); font-size: 14px; }
 
-/* ---- Tracker steps ---- */
+/* Tracker */
 .tracker-wrap { margin-top: 30px; padding: 0 10px; }
 .tracker-steps {
   display: flex;
@@ -999,7 +1066,7 @@ img { max-width: 100%; }
   100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
 }
 
-/* ---- Rider animation ---- */
+/* Rider */
 .rider-animation-container {
   background: #e0f2fe;
   border: 1px dashed #7dd3fc;
@@ -1035,7 +1102,7 @@ img { max-width: 100%; }
   100% { opacity: 1; transform: scale(1.2); }
 }
 
-/* ---- Cancelled banner (unified) ---- */
+/* Cancelled banner */
 .cancelled-banner {
   background: #fee2e2;
   border: 1px solid #fca5a5;
@@ -1047,7 +1114,7 @@ img { max-width: 100%; }
 .cancelled-banner h4 { color: #991b1b; margin: 0 0 5px; }
 .cancelled-banner p { color: #991b1b; font-size: 12px; margin: 0; }
 
-/* ---- Action buttons ---- */
+/* Action buttons */
 .action-buttons { display: flex; gap: 10px; margin-top: 25px; }
 .action-btn {
   flex: 1;
@@ -1066,7 +1133,7 @@ img { max-width: 100%; }
 .btn-update-order { background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc; }
 .btn-update-order:hover { background: #bae6fd; }
 
-/* ---- Policy card ---- */
+/* Policy card */
 .policy-card {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
@@ -1109,7 +1176,7 @@ img { max-width: 100%; }
   display: none;
 }
 
-/* ---- Support CTA ---- */
+/* Support CTA */
 .support-cta-box {
   max-width: 600px;
   margin: 0 auto 40px;
@@ -1143,7 +1210,6 @@ img { max-width: 100%; }
   color: var(--gold);
 }
 
-/* ---- Mobile tracker ---- */
 @media (max-width: 650px) {
   .track-container { margin: 25px 12px; padding: 22px 18px; }
   .tracker-steps { overflow-x: auto; padding-bottom: 8px; }
