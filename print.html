@@ -225,12 +225,11 @@
       </select>
     </div>
 
+    <!-- Main Category Pills (Fixed Filter) -->
     <div class="category-pills" id="categoryNav">
       <button class="pill active" data-cat="All">All Products</button>
+      <!-- JS will load categories here -->
     </div>
-    
-    <!-- Hidden Select for Logic -->
-    <select id="categoryFilter" style="display:none;"><option value="All">All</option></select>
 
     <div class="product-grid" id="productGrid"></div>
     
@@ -309,6 +308,9 @@
     const PAGE_STORE = "Print";
     let products = [];
 
+    // ✅ Yahan hum direct active category track karenge
+    let currentActiveCategory = "All";
+
     const PLACEHOLDER = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'><rect width='400' height='400' fill='%23f8f9fa'/><text x='200' y='200' font-size='52' font-family='Georgia' fill='%23c5a36b' text-anchor='middle' dominant-baseline='middle' opacity='0.5'>AM</text></svg>";
 
     // Modal Logic
@@ -356,55 +358,65 @@
       snap.forEach((doc) => products.push({ id: doc.id, ...doc.data() }));
 
       const catNav = document.getElementById("categoryNav");
+      // Get unique categories
       const uniqueCats = [...new Set(products.filter((p) => p.store === PAGE_STORE).map((p) => p.category?.trim()).filter(Boolean))];
       
+      // Create buttons
       catNav.innerHTML = `<button class="pill active" data-cat="All">All Products</button>` +
         uniqueCats.map((c) => `<button class="pill" data-cat="${c}">${c}</button>`).join("");
 
-      // ✅ Filter click logic
+      // ✅ FIX: Direct click event to update category and render
       catNav.querySelectorAll(".pill").forEach((item) => {
         item.onclick = () => {
           catNav.querySelectorAll(".pill").forEach((el) => el.classList.remove("active"));
           item.classList.add("active");
-          document.getElementById("categoryFilter").value = item.dataset.cat;
-          render();
+          currentActiveCategory = item.dataset.cat; // Save current category
+          render(); // Re-render products
         };
       });
       
       render();
     }
 
-    // ✅ Global function for top category cards to trigger filter
+    // ✅ Global function for top icons (T-shirt, Mug, etc.)
     window.filterByCategory = function(catName) {
-      const catFilter = document.getElementById("categoryFilter");
-      catFilter.value = catName;
+      currentActiveCategory = catName; 
       
       const pills = document.querySelectorAll(".pill");
+      let found = false;
       pills.forEach(p => {
         p.classList.remove("active");
-        if(p.dataset.cat === catName) p.classList.add("active");
+        if(p.dataset.cat === catName) {
+          p.classList.add("active");
+          found = true;
+        }
       });
+      if(!found) {
+        document.querySelector('.pill[data-cat="All"]').classList.remove("active");
+      }
       
-      // Scroll to products
       document.querySelector(".products-section").scrollIntoView({ behavior: 'smooth' });
       render();
     }
 
     function money(v) { return "₹" + Number(v || 0).toLocaleString("en-IN"); }
 
-    // ✅ Render Products
+    // ✅ Render Products (Using currentActiveCategory)
     function render() {
       const queryStr = document.getElementById("searchInput").value.toLowerCase();
-      const cat = document.getElementById("categoryFilter")?.value || "All";
       const sort = document.getElementById("sortFilter").value;
 
       let list = products.filter((p) => p.store === PAGE_STORE);
       
-      if (cat !== "All") {
-        list = list.filter((p) => (p.category || "").trim().toLowerCase() === cat.trim().toLowerCase());
+      // Filter by active category
+      if (currentActiveCategory !== "All") {
+        list = list.filter((p) => (p.category || "").trim().toLowerCase() === currentActiveCategory.trim().toLowerCase());
       }
       
+      // Filter by search text
       list = list.filter((p) => [p.name, p.category].join(" ").toLowerCase().includes(queryStr));
+      
+      // Sort
       if (sort === "low") list.sort((a, b) => a.price - b.price);
       if (sort === "high") list.sort((a, b) => b.price - a.price);
 
@@ -448,7 +460,11 @@
       }).join("");
     }
 
-    // Event Listeners
+    // Event Listeners for Search & Sort
+    document.getElementById("searchInput").addEventListener("input", render);
+    document.getElementById("sortFilter").addEventListener("change", render);
+
+    // Add to Cart / Buy Now Logic
     document.addEventListener("click", (e) => {
       const order = e.target.closest("[data-order]");
       const cartBtn = e.target.closest("[data-cart]");
@@ -467,9 +483,6 @@
         showToast("Item added to cart!");
       }
     });
-
-    document.getElementById("searchInput").addEventListener("input", render);
-    document.getElementById("sortFilter").addEventListener("change", render);
 
     document.addEventListener("DOMContentLoaded", () => {
       loadFirebaseProducts();
