@@ -15,27 +15,45 @@
     /* 1. Top Banner / Hero */
     .vp-hero {
       background: #10243b;
-      color: #fff; text-align: center; padding: 50px 20px 60px;
+      color: #fff; text-align: center; padding: 50px 20px 70px;
     }
     .vp-hero h1 { font: normal clamp(28px, 3.5vw, 36px)/1.2 Georgia, serif; margin: 0 0 10px; letter-spacing: -0.5px; }
     .vp-hero h1 em { color: #c5a36b; font-style: italic; }
     .vp-hero p { font-size: 14px; color: #cbd5e1; max-width: 500px; margin: 0 auto; line-height: 1.6; }
 
-    /* 2. Direct Category Grid */
+    /* ==========================================
+       2. Direct Category Grid (WITH IMAGES)
+       ========================================== */
     .category-showcase {
-      max-width: 1200px; margin: -25px auto 40px; padding: 0 20px;
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px;
+      max-width: 1200px; margin: -35px auto 50px; padding: 0 20px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px;
       position: relative; z-index: 10;
     }
     .cat-card {
-      background: #fff; border-radius: 8px; padding: 12px 8px;
-      text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-      cursor: pointer; transition: 0.2s; border: 1px solid #eee;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: #fff; border-radius: 12px; overflow: hidden;
+      text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      cursor: pointer; transition: 0.3s; border: 1px solid #eee;
+      display: flex; flex-direction: column; height: 110px; position: relative;
     }
-    .cat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); border-color: #c5a36b; }
-    .cat-icon { font-size: 22px; margin-bottom: 4px; }
-    .cat-card h3 { font-size: 11px; color: #10243b; margin: 0; font-weight: bold; }
+    .cat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); border-color: #c5a36b; }
+    
+    /* Image styling inside cat-card */
+    .cat-card img {
+      width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1; transition: 0.4s;
+    }
+    .cat-card:hover img { transform: scale(1.1); }
+    
+    /* Overlay to make text readable */
+    .cat-overlay {
+      position: absolute; inset: 0; 
+      background: linear-gradient(to top, rgba(16,36,59,0.9) 0%, rgba(16,36,59,0.1) 60%, transparent 100%);
+      z-index: 2;
+    }
+    
+    .cat-card h3 { 
+      position: relative; z-index: 3; color: #fff; font-size: 12px; font-weight: bold; 
+      margin: auto 5px 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); line-height: 1.2;
+    }
 
     /* 3. Why Choose Us */
     .trust-section {
@@ -124,6 +142,9 @@
 
     /* Responsive */
     @media (max-width: 768px) {
+      .category-showcase { grid-template-columns: repeat(3, 1fr); margin-top: -20px; }
+      .cat-card { height: 90px; }
+      .cat-card h3 { font-size: 10px; }
       .trust-section { grid-template-columns: 1fr; gap: 15px; }
       .product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
       .p-options { grid-template-columns: 1fr; gap: 4px; }
@@ -202,50 +223,61 @@
     <p>High-quality printed products, delivered to your doorstep. From business cards to personal gifts, we've got you covered.</p>
   </section>
 
-  <!-- DIRECT CATEGORY SHOWCASE -->
+  <!-- DIRECT CATEGORY SHOWCASE (With Images) -->
   <div class="category-showcase">
     <div class="cat-card" onclick="filterByCategory('T-Shirts')">
-      <div class="cat-icon">👕</div>
+      <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=200&q=80" alt="T-Shirts">
+      <div class="cat-overlay"></div>
       <h3>T-Shirts</h3>
     </div>
     <div class="cat-card" onclick="filterByCategory('Mugs/Cups')">
-      <div class="cat-icon">☕</div>
+      <img src="https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?auto=format&fit=crop&w=200&q=80" alt="Mugs">
+      <div class="cat-overlay"></div>
       <h3>Mugs/Cups</h3>
     </div>
     <div class="cat-card" onclick="filterByCategory('Cushions')">
-      <div class="cat-icon">🛋️</div>
+      <img src="https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&w=200&q=80" alt="Cushions">
+      <div class="cat-overlay"></div>
       <h3>Cushions</h3>
     </div>
     <div class="cat-card" onclick="filterByCategory('Caps')">
-      <div class="cat-icon">🧢</div>
+      <img src="https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&w=200&q=80" alt="Caps">
+      <div class="cat-overlay"></div>
       <h3>Caps</h3>
     </div>
     <div class="cat-card" onclick="filterByCategory('Keychains')">
-      <div class="cat-icon">🔑</div>
+      <img src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&w=200&q=80" alt="Keychains">
+      <div class="cat-overlay"></div>
       <h3>Keychains</h3>
     </div>
     <div class="cat-card" onclick="filterByCategory('Photo Frames')">
-      <div class="cat-icon">🖼️</div>
+      <img src="https://images.unsplash.com/photo-1582053433976-25c00369fc93?auto=format&fit=crop&w=200&q=80" alt="Photo Frames">
+      <div class="cat-overlay"></div>
       <h3>Photo Frames</h3>
     </div>
     <div class="cat-card" onclick="filterByCategory('Bottles')">
-      <div class="cat-icon">🍼</div>
+      <img src="https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&w=200&q=80" alt="Bottles">
+      <div class="cat-overlay"></div>
       <h3>Bottles</h3>
     </div>
     <div class="cat-card" onclick="filterByCategory('Visiting Card')">
-      <div class="cat-icon">💳</div>
+      <img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=200&q=80" alt="Visiting Card">
+      <div class="cat-overlay"></div>
       <h3>Visiting Card</h3>
     </div>
     <div class="cat-card" onclick="filterByCategory('Marriage Card')">
-      <div class="cat-icon">💌</div>
+      <img src="https://images.unsplash.com/photo-1607344645866-009c320b63e0?auto=format&fit=crop&w=200&q=80" alt="Marriage Card">
+      <div class="cat-overlay"></div>
       <h3>Marriage Card</h3>
     </div>
     <div class="cat-card" onclick="filterByCategory('Pamphlet')">
-      <div class="cat-icon">📄</div>
+      <img src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&w=200&q=80" alt="Pamphlet">
+      <div class="cat-overlay"></div>
       <h3>Pamphlet</h3>
     </div>
     <div class="cat-card" onclick="openQuoteModal()">
-      <div class="cat-icon">🎨</div>
+      <img src="https://images.unsplash.com/photo-1626785771621-3a3145c88311?auto=format&fit=crop&w=200&q=80" alt="Other">
+      <div class="cat-overlay"></div>
       <h3>Other / Custom</h3>
     </div>
   </div>
