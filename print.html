@@ -35,7 +35,7 @@
     }
     .cat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.08); border-color: #c5a36b; }
     .cat-icon { font-size: 26px; margin-bottom: 6px; }
-    .cat-card h3 { font-size: 12px; color: #10243b; margin: 0; font-weight: bold; }
+    .cat-card h3 { font-size: 12px; color: #10243b; margin: 0; font-weight: bold; text-align: center; }
 
     /* 3. Why Choose Us */
     .trust-section {
@@ -63,7 +63,7 @@
     .pill.active { background: #10243b; color: #fff; border-color: #10243b; }
 
     /* ==========================================
-       COMPACT PRODUCT CARD
+       COMPACT PRODUCT CARD (No Price)
        ========================================== */
     .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
     .p-card { background: #fff; border: 1px solid #eaeaea; border-radius: 8px; padding: 12px; display: flex; flex-direction: column; transition: 0.2s; }
@@ -77,19 +77,15 @@
 
     .p-info { flex: 1; display: flex; flex-direction: column; text-align: left; padding: 0 2px; }
     .p-category { font-size: 10px; color: #888; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px; margin-bottom: 4px; }
-    .p-name { font-size: 13px; font-weight: bold; color: #10243b; margin: 0 0 10px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 34px; }
+    .p-name { font-size: 14px; font-weight: bold; color: #10243b; margin: 0 0 10px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 36px; }
     
-    .p-price-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; margin-top: auto; }
-    .p-price { font-size: 16px; font-weight: bold; color: #10243b; }
-    .p-size-select { padding: 4px 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 11px; color: #333; outline: none; background: #fff; cursor: pointer; }
-    
-    .p-color-row { margin-bottom: 10px; }
-    .p-color-select { width: 100%; padding: 6px 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 11px; color: #333; outline: none; background: #fff; cursor: pointer; }
+    .p-size-row { display: flex; gap: 8px; margin-bottom: 12px; margin-top: auto; }
+    .p-size-select, .p-color-select { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 12px; color: #333; outline: none; background: #fff; cursor: pointer; }
     
     .p-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: auto; }
-    .btn-add { background: #fff; color: #10243b; border: 1px solid #10243b; padding: 8px; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px; }
+    .btn-add { background: #fff; color: #10243b; border: 1px solid #10243b; padding: 10px; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px; }
     .btn-add:hover { background: #f0f4f8; }
-    .btn-buy { background: #10243b; color: #fff; border: 1px solid #10243b; padding: 8px; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+    .btn-buy { background: #10243b; color: #fff; border: 1px solid #10243b; padding: 10px; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.2s; }
     .btn-buy:hover { background: #1e3a5f; }
 
     /* 5. Custom Design Banner */
@@ -115,10 +111,9 @@
     @media (max-width: 768px) {
       .trust-section { grid-template-columns: 1fr; gap: 15px; }
       .product-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-      .p-name { font-size: 12px; height: 32px; }
-      .p-price { font-size: 15px; }
+      .p-name { font-size: 13px; height: 34px; }
       .p-buttons { grid-template-columns: 1fr; gap: 4px; }
-      .btn-add, .btn-buy { padding: 6px; font-size: 11px; }
+      .btn-add, .btn-buy { padding: 8px; font-size: 11px; }
       .cd-inner { flex-direction: column; text-align: center; padding: 20px; }
       
       .floating-track { bottom: 85px; left: 15px; padding: 6px 10px; font-size: 9px; }
@@ -129,7 +124,7 @@
     }
 
     /* ==========================================
-       POPUP FORM (With Calculator & Trust Badges)
+       POPUP FORM (No Calculator, With Bulk Info)
        ========================================== */
     .modal-overlay { position: fixed; inset: 0; background: rgba(16, 36, 59, 0.7); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; visibility: hidden; transition: 0.3s; padding: 15px; }
     .modal-overlay.active { opacity: 1; visibility: visible; }
@@ -147,11 +142,14 @@
     .m-field label { font-size: 12px; font-weight: bold; color: #333; }
     .m-field input, .m-field select, .m-field textarea { padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; font-size: 14px; outline: none; background: #f8fafc; transition: 0.2s; }
     .m-field input:focus, .m-field select:focus, .m-field textarea:focus { border-color: #c5a36b; background: #fff; box-shadow: 0 0 0 3px rgba(197,163,107,0.15); }
-    
-    /* Price Calculator Box */
-    .price-calc-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 12px 15px; margin-top: 15px; display: flex; justify-content: space-between; align-items: center; }
-    .price-calc-box span { font-size: 13px; color: #166534; font-weight: bold; }
-    .price-calc-box strong { font-size: 18px; color: #15803d; }
+
+    /* ✅ NAYA: Bulk Discount Info Box */
+    .bulk-discount-box {
+      background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px;
+      padding: 12px 15px; margin-top: 15px; display: flex; align-items: center; gap: 10px;
+    }
+    .bulk-discount-box .icon { font-size: 20px; }
+    .bulk-discount-box p { margin: 0; font-size: 12px; color: #1e3a8a; font-weight: 600; line-height: 1.4; }
 
     /* Design Upload Info Box */
     .design-upload-box { background: #f8fafc; border: 1px dashed #94a3b8; border-radius: 8px; padding: 15px; margin-top: 15px; display: flex; align-items: center; gap: 15px; }
@@ -196,7 +194,7 @@
     <p>High-quality printed products, delivered to your doorstep. From business cards to personal gifts, we've got you covered.</p>
   </section>
 
-  <!-- DIRECT CATEGORY SHOWCASE (Updated with new categories) -->
+  <!-- DIRECT CATEGORY SHOWCASE (With Other) -->
   <div class="category-showcase">
     <div class="cat-card" onclick="filterByCategory('T-Shirts')">
       <div class="cat-icon">👕</div>
@@ -240,7 +238,7 @@
     </div>
     <div class="cat-card" onclick="openQuoteModal()">
       <div class="cat-icon">🎨</div>
-      <h3>Custom Design</h3>
+      <h3>Other / Custom</h3>
     </div>
   </div>
 
@@ -324,7 +322,7 @@
   </a>
 
   <!-- ==========================================
-       POPUP FORM (With Calculator & Trust Badges)
+       POPUP FORM (No Price Calculator, Bulk Discount)
        ========================================== -->
   <div class="modal-overlay" id="quoteModal">
     <div class="modal-box">
@@ -348,23 +346,24 @@
           
           <div class="m-field">
             <label>Print Product *</label>
-            <select id="qProduct" required onchange="calculateEstimate()">
+            <select id="qProduct" required>
               <option value="">Select Product</option>
-              <option value="T-Shirts" data-price="250">T-Shirts (₹250/pc)</option>
-              <option value="Mugs/Cups" data-price="150">Mugs/Cups (₹150/pc)</option>
-              <option value="Cushions" data-price="300">Cushions (₹300/pc)</option>
-              <option value="Caps" data-price="200">Caps (₹200/pc)</option>
-              <option value="Keychains" data-price="50">Keychains (₹50/pc)</option>
-              <option value="Photo Frames" data-price="400">Photo Frames (₹400/pc)</option>
-              <option value="Bottles" data-price="350">Bottles (₹350/pc)</option>
-              <option value="Visiting Card" data-price="2">Visiting Card (₹2/pc)</option>
-              <option value="Marriage Card" data-price="15">Marriage Card (₹15/pc)</option>
-              <option value="Pamphlet" data-price="5">Pamphlet (₹5/pc)</option>
+              <option value="T-Shirts">T-Shirts</option>
+              <option value="Mugs/Cups">Mugs/Cups</option>
+              <option value="Cushions">Cushions</option>
+              <option value="Caps">Caps</option>
+              <option value="Keychains">Keychains</option>
+              <option value="Photo Frames">Photo Frames</option>
+              <option value="Bottles">Bottles</option>
+              <option value="Visiting Card">Visiting Card</option>
+              <option value="Marriage Card">Marriage Card</option>
+              <option value="Pamphlet">Pamphlet</option>
+              <option value="Other (Mention in details)">Other (Mention in details)</option>
             </select>
           </div>
           <div class="m-field">
             <label>Quantity *</label>
-            <input type="number" id="qQuantity" min="1" placeholder="e.g. 50" required oninput="calculateEstimate()">
+            <input type="number" id="qQuantity" min="1" placeholder="e.g. 50" required>
           </div>
 
           <div class="m-field full">
@@ -373,10 +372,10 @@
           </div>
         </div>
 
-        <!-- Live Price Calculator -->
-        <div class="price-calc-box">
-          <span>Estimated Cost:</span>
-          <strong id="estimateDisplay">₹0</strong>
+        <!-- ✅ NAYA: Bulk Discount Info Box -->
+        <div class="bulk-discount-box">
+          <div class="icon">🎉</div>
+          <p>Bulk orders (50+ quantity) get special wholesale discounts! Mention your quantity above to get a better quote.</p>
         </div>
 
         <!-- Design File Upload Info -->
@@ -435,24 +434,6 @@
     window.closeQuoteModal = function() { document.getElementById("quoteModal").classList.remove("active"); }
     document.getElementById("quoteModal").addEventListener("click", (e) => { if(e.target.id === "quoteModal") closeQuoteModal(); });
 
-    // Live Price Calculator Logic
-    window.calculateEstimate = function() {
-      const select = document.getElementById("qProduct");
-      const qtyInput = document.getElementById("qQuantity");
-      const display = document.getElementById("estimateDisplay");
-      
-      const selectedOption = select.options[select.selectedIndex];
-      const price = selectedOption.getAttribute("data-price");
-      const qty = parseInt(qtyInput.value);
-
-      if(price && qty > 0) {
-        const total = price * qty;
-        display.textContent = "₹" + total.toLocaleString('en-IN');
-      } else {
-        display.textContent = "₹0";
-      }
-    }
-
     // Form Submit
     document.getElementById("customQuoteForm").addEventListener("submit", (e) => {
       e.preventDefault();
@@ -469,15 +450,10 @@
 
       btn.textContent = "Opening WhatsApp..."; btn.disabled = true;
 
-      const productName = document.getElementById("qProduct").value;
-      const qtyVal = document.getElementById("qQuantity").value;
-      const estimate = document.getElementById("estimateDisplay").textContent;
-
       const msg = `*🎨 CUSTOM PRINT QUOTE REQUEST*\n\n` +
                   `*Name:* ${name}\n*Phone:* ${phone}\n` +
-                  `*Product:* ${productName}\n` +
-                  `*Qty:* ${qtyVal} pcs\n` +
-                  `*Est. Cost:* ${estimate}\n\n` +
+                  `*Product:* ${document.getElementById("qProduct").value}\n` +
+                  `*Qty:* ${document.getElementById("qQuantity").value} pcs\n\n` +
                   `*Details:*\n${document.getElementById("qDetails").value.trim()}\n\n` +
                   `_I agree to the 50-70% advance policy._\n\n` +
                   `_(I will send my design file in the next message)_`;
@@ -486,7 +462,6 @@
         window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
         btn.textContent = "Get Quote via WhatsApp 📲"; btn.disabled = false;
         document.getElementById("customQuoteForm").reset();
-        document.getElementById("estimateDisplay").textContent = "₹0"; // Reset calculator
         closeQuoteModal();
       }, 500);
     });
@@ -535,8 +510,6 @@
       document.querySelector(".products-section").scrollIntoView({ behavior: 'smooth' });
       render();
     }
-
-    function money(v) { return "₹" + Number(v || 0).toLocaleString("en-IN"); }
 
     function render() {
       const queryStr = document.getElementById("searchInput").value.toLowerCase();
@@ -591,15 +564,10 @@
             <span class="p-category">${p.category || "Print"}</span>
             <h3 class="p-name">${p.name}</h3>
             
-            <div class="p-price-row">
-              <span class="p-price">${p.price === 0 ? "Quote" : money(p.price)}</span>
-              ${!isOut && p.price > 0 ? `<select id="unit-${p.id}" class="p-size-select">${sizeOptions}</select>` : ""}
+            <div class="p-size-row">
+              ${!isOut ? `<select id="unit-${p.id}" class="p-size-select">${sizeOptions}</select>` : ""}
+              ${!isOut && colorsArray.length > 0 && colorsArray[0] !== "Standard" ? `<select id="color-${p.id}" class="p-color-select">${colorOptions}</select>` : ""}
             </div>
-            
-            ${!isOut && colorsArray.length > 0 && colorsArray[0] !== "Standard" ? `
-            <div class="p-color-row">
-              <select id="color-${p.id}" class="p-color-select">${colorOptions}</select>
-            </div>` : ''}
             
             <div class="p-buttons">
               <button class="btn-add" data-cart="${p.id}" ${isOut ? "disabled" : ""}>🛒 Add</button>
