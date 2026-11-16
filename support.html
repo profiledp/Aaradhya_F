@@ -8,7 +8,6 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%2310243b'/><text x='50' y='68' font-size='55' font-family='Georgia' fill='%23c5a36b' text-anchor='middle'>A</text></svg>">
   <link rel="stylesheet" href="style.css">
   <style>
-    /* ============ SUPPORT HERO ============ */
     .support-hero {
       background: linear-gradient(135deg, #10243b 0%, #1e3a5f 100%);
       color: #fff; padding: 60px 7% 50px; text-align: center;
@@ -36,11 +35,9 @@
       font-size: 15px; color: #cbd5e1; max-width: 580px;
       margin: 0 auto; line-height: 1.7; position: relative;
     }
-
-    /* ============ QUICK ACTIONS ============ */
     .quick-actions-wrap {
       max-width: 1100px; margin: -30px auto 40px; padding: 0 20px;
-      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; /* 3 Columns */
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;
       position: relative; z-index: 10;
     }
     .quick-action-card {
@@ -61,12 +58,9 @@
     .quick-action-card:hover .qa-icon { background: var(--navy); color: #fff; }
     .qa-text h3 { font: normal 18px Georgia, serif; color: var(--navy); margin: 0 0 5px; }
     .qa-text p { font-size: 12px; color: #68717a; margin: 0; }
-    
     @media (max-width: 768px) {
       .quick-actions-wrap { grid-template-columns: 1fr; margin-top: -20px; }
     }
-
-    /* ============ SUPPORT GRID ============ */
     .support-section { padding: 20px 7% 50px; background: #f8f9fa; }
     .support-section-heading { text-align: center; margin-bottom: 30px; }
     .support-section-heading h2 { font: normal 30px Georgia, serif; color: var(--navy); margin: 8px 0 0; }
@@ -91,8 +85,6 @@
     }
     .support-card h3 { font: normal 16px Georgia, serif; color: var(--navy); margin: 0 0 4px; }
     .support-card p { font-size: 12px; color: #777; margin: 0; }
-
-    /* ============ SUPPORT HOURS ============ */
     .support-hours {
       max-width: 1000px; margin: 0 auto 40px; padding: 15px 25px;
       background: #f0fdf4; border: 1px solid #86efac; border-radius: 12px;
@@ -101,8 +93,6 @@
     }
     .support-hours .hours-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #166534; font-weight: 600; }
     .support-hours .hours-item strong { color: #14532d; }
-
-    /* ============ FAQ SECTION ============ */
     .faq-section { padding: 60px 7% 80px; background: #fff; }
     .faq-section-heading { text-align: center; margin-bottom: 40px; }
     .faq-section-heading h2 { font: normal 32px Georgia, serif; color: var(--navy); margin: 8px 0 0; }
@@ -123,8 +113,6 @@
     .faq-item summary::after { content: '+'; font-size: 22px; color: var(--gold); font-weight: normal; transition: transform 0.3s; line-height: 1; flex-shrink: 0; }
     .faq-item[open] summary::after { transform: rotate(45deg); }
     .faq-item p { margin: 0; padding: 0 24px 22px; font-size: 14px; color: #555; line-height: 1.75; }
-
-    /* ============ RESPONSIVE ============ */
     @media (max-width: 650px) {
       .support-hero { padding: 45px 5% 40px; }
       .support-section { padding: 20px 5% 40px; }
@@ -145,97 +133,60 @@
     </div>
   </header>
 
-  <!-- HERO -->
   <section class="support-hero">
     <span class="eyebrow">WE'RE HERE TO HELP</span>
     <h1>How Can We <em>Help You?</em></h1>
     <p>Get instant answers or connect with our support team on WhatsApp. We're available 7 days a week.</p>
   </section>
 
-  <!-- 3 QUICK ACTIONS -->
   <div class="quick-actions-wrap">
     <a href="track.html" class="quick-action-card">
       <div class="qa-icon">🚚</div>
-      <div class="qa-text">
-        <h3>Track Order</h3>
-        <p>Check live status of delivery</p>
-      </div>
+      <div class="qa-text"><h3>Track Order</h3><p>Check live status of delivery</p></div>
     </a>
     <a href="my-orders.html" class="quick-action-card">
       <div class="qa-icon">📦</div>
-      <div class="qa-text">
-        <h3>My Orders</h3>
-        <p>Order history & details</p>
-      </div>
+      <div class="qa-text"><h3>My Orders</h3><p>Order history & details</p></div>
     </a>
     <a href="delivery-policy.html" class="quick-action-card">
       <div class="qa-icon">🛡️</div>
-      <div class="qa-text">
-        <h3>Delivery Info</h3>
-        <p>Charges & timing</p>
-      </div>
+      <div class="qa-text"><h3>Delivery Info</h3><p>Charges & timing</p></div>
     </a>
   </div>
 
-  <!-- WHATSAPP SUPPORT GRID -->
   <section class="support-section">
     <div class="support-section-heading">
       <span class="eyebrow">NEED TO TALK?</span>
       <h2>Chat With Our Team</h2>
     </div>
-
     <div class="support-grid">
       <a class="support-card" target="_blank" rel="noopener" href="https://wa.me/918931911428?text=Hello%20Aaradhya%20Mart%2C%20I%20have%20a%20question%20about%20an%20order.">
         <div class="sc-icon">🛍️</div>
-        <div>
-          <h3>Order Inquiry</h3>
-          <p>Ask about order status or delivery</p>
-        </div>
+        <div><h3>Order Inquiry</h3><p>Ask about order status or delivery</p></div>
       </a>
-
       <a class="support-card" target="_blank" rel="noopener" href="https://wa.me/918931911428?text=Hi%20Aaradhya%20Mart%2C%20I%20want%20to%20request%20a%20return%20or%20refund.">
         <div class="sc-icon">🔄</div>
-        <div>
-          <h3>Return / Refund</h3>
-          <p>Request a return, exchange, or refund</p>
-        </div>
+        <div><h3>Return / Refund</h3><p>Request a return, exchange, or refund</p></div>
       </a>
-
       <a class="support-card" target="_blank" rel="noopener" href="https://wa.me/918931911428?text=Hi%20Aaradhya%20Mart%2C%20I%20have%20a%20payment%20related%20issue.">
         <div class="sc-icon">💳</div>
-        <div>
-          <h3>Payment Issue</h3>
-          <p>20% advance, UPI or COD problems</p>
-        </div>
+        <div><h3>Payment Issue</h3><p>20% advance, UPI or COD problems</p></div>
       </a>
-
       <a class="support-card" target="_blank" rel="noopener" href="https://wa.me/918931911428?text=Hi%20Aaradhya%20Mart%2C%20I%20want%20to%20place%20a%20custom%20print%20order.">
         <div class="sc-icon">🖨️</div>
-        <div>
-          <h3>Custom Print (A-Print)</h3>
-          <p>Get a quote for T-shirts, cards, or banners</p>
-        </div>
+        <div><h3>Custom Print (A-Print)</h3><p>Get a quote for T-shirts, cards, or banners</p></div>
       </a>
-
       <a class="support-card" target="_blank" rel="noopener" href="https://wa.me/918931911428?text=Hi%20Aaradhya%20Mart%2C%20I%20want%20to%20order%20groceries%20from%20Kirana.">
         <div class="sc-icon">🛒</div>
-        <div>
-          <h3>Kirana / Grocery</h3>
-          <p>Ask about stock, availability, or order help</p>
-        </div>
+        <div><h3>Kirana / Grocery</h3><p>Ask about stock, availability, or order help</p></div>
       </a>
-
       <a class="support-card" target="_blank" rel="noopener" href="https://wa.me/918931911428?text=Hello%20Aaradhya%20Mart%2C%20I%20need%20general%20assistance.">
         <div class="sc-icon">💬</div>
-        <div>
-          <h3>General Support</h3>
-          <p>Any other question, feedback, or suggestion</p>
-        </div>
+        <div><h3>General Support</h3><p>Any other question, feedback, or suggestion</p></div>
       </a>
     </div>
   </section>
 
-  <!-- SUPPORT HOURS -->
   <div style="padding: 0 7% 50px; background: #f8f9fa;">
     <div class="support-hours">
       <div class="hours-item">🕐 <strong>Hours:</strong> 9 AM – 9 PM (7 Days)</div>
@@ -244,39 +195,32 @@
     </div>
   </div>
 
-  <!-- FAQ SECTION -->
   <section class="faq-section">
     <div class="faq-section-heading">
       <span class="eyebrow">QUICK ANSWERS</span>
       <h2>Frequently Asked Questions</h2>
     </div>
-
     <div class="faq-container">
       <details class="faq-item">
         <summary>How do I pay the 20% advance payment?</summary>
         <p>After placing your order, our team will send you a UPI ID or QR code on WhatsApp. Simply scan, pay the 20% advance, and send us the payment screenshot. Your order will be confirmed within 10 minutes.</p>
       </details>
-
       <details class="faq-item">
         <summary>How long does delivery take?</summary>
         <p>For Azamgarh city: 24–48 hours. For locations outside Azamgarh: 3–5 business days via courier service. You'll receive a tracking link on WhatsApp once your order is shipped.</p>
       </details>
-
       <details class="faq-item">
         <summary>Can I cancel my order?</summary>
         <p>Yes, orders can be cancelled <strong>FREE of cost before packing</strong>. Once the order is packed or out for delivery, cancellation is not allowed. Please contact us on WhatsApp immediately if you need to cancel.</p>
       </details>
-
       <details class="faq-item">
         <summary>What is your return policy?</summary>
         <p>We do NOT have a 7-day return policy. Returns are accepted only for damaged, expired, or wrong items — reported within 12 hours of delivery with photos or video. Delivery charges are non-refundable for post-delivery returns.</p>
       </details>
-
       <details class="faq-item">
         <summary>Are custom printed products returnable?</summary>
         <p>No, custom printed items (A-Print) are made specifically for you and are <strong>non-returnable and non-refundable</strong>. We only replace items if there is a printing mistake from our side.</p>
       </details>
-
       <details class="faq-item">
         <summary>Can I exchange clothing for a different size?</summary>
         <p>Yes, clothing items can be exchanged for size issues within 24 hours of delivery — provided tags are intact and the item is unused. Contact us on WhatsApp with your Order ID and preferred size.</p>
@@ -296,20 +240,9 @@
     <p>© 2026 Aaradhya Mart. All rights reserved.</p>
   </footer>
 
-  <script>
-    // Update cart badge in header/footer if needed
-    (function() {
-      try {
-        const cart = JSON.parse(localStorage.getItem("aaradhyaMartCart") || "[]");
-        const count = cart.reduce((sum, item) => sum + (Number(item.qty) || 1), 0);
-        const badge = document.getElementById("globalCartCount");
-        if (badge) {
-          badge.textContent = count;
-          badge.style.background = count === 0 ? "#ccc" : "var(--gold)";
-          badge.style.color = count === 0 ? "#fff" : "var(--navy)";
-        }
-      } catch(e) {}
-    })();
+  <script type="module">
+    import { updateCartBadge } from "./shared.js";
+    document.addEventListener("DOMContentLoaded", updateCartBadge);
   </script>
 </body>
 </html>
