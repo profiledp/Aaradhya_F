@@ -7,13 +7,13 @@
   <link rel="stylesheet" href="style.css">
   <style>
     /* ==========================================
-       NEW PREMIUM STYLES FOR PRINT PAGE
+       PREMIUM PAGE STYLES
        ========================================== */
     
     /* 1. Hero Section */
     .print-hero {
       background: linear-gradient(135deg, #10243b 0%, #1e3a5f 100%);
-      color: #fff; padding: 60px 20px; text-align: center;
+      color: #fff; padding: 70px 20px; text-align: center;
       position: relative; overflow: hidden;
     }
     .print-hero::before { content: "🖨️"; position: absolute; font-size: 200px; opacity: 0.05; left: -50px; top: -50px; transform: rotate(-20deg); }
@@ -69,12 +69,88 @@
     .btn-bulk-wa { background: #25D366; color: #fff; padding: 16px 30px; border-radius: 50px; text-decoration: none; font-weight: bold; font-size: 15px; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; box-shadow: 0 10px 25px rgba(37,211,102,0.3); position: relative; z-index: 1; }
     .btn-bulk-wa:hover { background: #128C7E; transform: translateY(-3px); }
 
-    /* Responsive */
+    /* ==========================================
+       FLOATING BUTTON & MODAL STYLES (FIXED)
+       ========================================== */
+    .floating-quote-btn { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; padding: 14px 28px; border-radius: 50px; display: flex; align-items: center; gap: 10px; font-weight: bold; font-size: 15px; box-shadow: 0 10px 30px rgba(217, 119, 6, 0.4); cursor: pointer; z-index: 999; border: 2px solid #fff; transition: all 0.3s ease; animation: floatBounce 2s infinite; }
+    .floating-quote-btn:hover { transform: translateX(-50%) scale(1.05); box-shadow: 0 15px 40px rgba(217, 119, 6, 0.6); }
+    @keyframes floatBounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-8px); } }
+    @media (max-width: 768px) { .floating-quote-btn { bottom: 80px; padding: 12px 20px; font-size: 13px; width: max-content; } }
+
+    /* Modal Overlay */
+    .quote-modal-overlay { 
+      position: fixed; inset: 0; 
+      background: rgba(16,36,59,0.7); 
+      backdrop-filter: blur(5px); 
+      display: flex; align-items: center; justify-content: center; 
+      z-index: 10000; opacity: 0; visibility: hidden; 
+      transition: all 0.3s ease; padding: 15px; 
+    }
+    .quote-modal-overlay.active { opacity: 1; visibility: visible; }
+    
+    /* Modal Box */
+    .quote-modal-box { 
+      background: #fff; 
+      border-radius: 16px; 
+      padding: 30px; 
+      width: 100%; max-width: 650px; 
+      position: relative; 
+      box-shadow: 0 25px 60px rgba(0,0,0,0.3); 
+      transform: scale(0.9) translateY(20px); 
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+      max-height: 90vh; 
+      overflow-y: auto; 
+    }
+    .quote-modal-overlay.active .quote-modal-box { transform: scale(1) translateY(0); }
+    
+    /* Modal Inner Elements */
+    .close-quote-modal { 
+      position: absolute; top: 15px; right: 15px; 
+      background: #fee2e2; color: #ef4444; 
+      border: none; width: 32px; height: 32px; border-radius: 50%; 
+      font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; 
+      transition: 0.2s; z-index: 10;
+    }
+    .close-quote-modal:hover { background: #fecaca; transform: rotate(90deg); }
+    
+    .quote-modal-header { text-align: center; margin-bottom: 25px; }
+    .quote-modal-header h2 { font: normal 26px Georgia, serif; color: var(--navy); margin: 0 0 8px; }
+    .quote-modal-header p { font-size: 13px; color: #777; margin: 0; }
+
+    .quote-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    .quote-field { display: flex; flex-direction: column; gap: 6px; }
+    .quote-field.full { grid-column: 1 / -1; }
+    .quote-field label { font-size: 12px; font-weight: bold; color: var(--ink); }
+    
+    .quote-field input, .quote-field select, .quote-field textarea { 
+      padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; 
+      font-family: inherit; font-size: 14px; outline: none; background: #f8f9fa; transition: 0.2s; 
+      width: 100%; box-sizing: border-box;
+    }
+    .quote-field input:focus, .quote-field select:focus, .quote-field textarea:focus { 
+      border-color: var(--gold); background: #fff; box-shadow: 0 0 0 3px rgba(197, 163, 107, 0.2); 
+    }
+    .quote-field small { font-size: 11px; color: #10b981; font-weight: bold; }
+
+    .advance-policy-box { background: #fffbeb; border: 1px dashed #f59e0b; border-radius: 8px; padding: 12px 15px; margin-top: 15px; font-size: 12px; color: #92400e; line-height: 1.5; }
+    .advance-policy-box strong { color: #b45309; }
+    
+    .policy-agree-checkbox { display: flex; align-items: flex-start; gap: 10px; margin-top: 12px; cursor: pointer; background: #f8f9fa; padding: 10px; border-radius: 6px; border: 1px solid #d1d5db; }
+    .policy-agree-checkbox input { margin-top: 3px; width: 16px; height: 16px; cursor: pointer; flex-shrink: 0; }
+    .policy-agree-checkbox span { font-size: 12px; color: #475569; font-weight: 600; line-height: 1.4; }
+
+    .btn-quote-submit { width: 100%; padding: 15px; margin-top: 20px; background: var(--navy); color: var(--gold); border: none; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-quote-submit:hover { background: #1e3a5f; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(16,36,59,0.2); }
+    .btn-quote-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* Mobile Responsiveness */
     @media (max-width: 768px) {
       .how-it-works-grid { grid-template-columns: 1fr; }
       .bulk-order-cta { flex-direction: column; text-align: center; padding: 30px 20px; }
       .product-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
       .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .quote-grid { grid-template-columns: 1fr; }
+      .quote-modal-box { padding: 20px; }
     }
   </style>
 </head>
@@ -90,7 +166,7 @@
     </div>
   </header>
 
-  <!-- NEW HERO SECTION -->
+  <!-- HERO SECTION -->
   <section class="print-hero">
     <h1>Premium Custom <em>Printing Services</em></h1>
     <p>Bring your ideas to life with high-quality prints on T-shirts, Mugs, Cards, and Banners. Premium quality guaranteed.</p>
@@ -99,7 +175,7 @@
     </button>
   </section>
 
-  <!-- HOW IT WORKS SECTION -->
+  <!-- HOW IT WORKS -->
   <section class="section-padding">
     <div class="section-head">
       <span class="eyebrow">SIMPLE 3-STEP PROCESS</span>
@@ -141,12 +217,12 @@
       <span>🛡️ 100% Satisfaction</span>
     </div>
 
-    <div class="shop-controls" style="margin-bottom: 20px; display: flex; gap: 12px;">
-      <label class="search-field" style="flex: 1; height: 46px; display: flex; align-items: center; padding: 0 14px; border: 1px solid var(--line); border-radius: 8px; background: #f8f9fa;">
+    <div class="shop-controls" style="margin-bottom: 20px; display: flex; gap: 12px; flex-wrap: wrap;">
+      <label class="search-field" style="flex: 1; min-width: 200px; height: 46px; display: flex; align-items: center; padding: 0 14px; border: 1px solid var(--line); border-radius: 8px; background: #f8f9fa;">
         <span style="margin-right: 8px;">⌕</span>
         <input id="searchInput" type="search" placeholder="Search prints..." autocomplete="off" style="border: none; background: transparent; outline: none; width: 100%;">
       </label>
-      <select id="sortFilter" style="border: 1px solid var(--line); border-radius: 8px; padding: 0 15px; background: #f8f9fa; font-weight: bold; color: var(--navy); outline: none; cursor: pointer;">
+      <select id="sortFilter" style="border: 1px solid var(--line); border-radius: 8px; padding: 0 15px; background: #f8f9fa; font-weight: bold; color: var(--navy); outline: none; cursor: pointer; height: 46px;">
         <option value="featured">Sort: Featured</option>
         <option value="low">Price: Low to High</option>
         <option value="high">Price: High to Low</option>
@@ -154,7 +230,7 @@
     </div>
 
     <div class="category-nav" id="categoryNav" style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 15px; margin-bottom: 20px;"></div>
-    <select id="categoryFilter" style="display:none;"><option value="All">All Categories</option></select>
+    <select id="categoryFilter" style="display:none;"><option value="All">All</option></select>
 
     <div class="product-grid" id="productGrid"></div>
     
@@ -198,7 +274,7 @@
     🎨 Need Custom Design? Get Quote
   </div>
 
-  <!-- QUOTE MODAL -->
+  <!-- QUOTE MODAL (FIXED) -->
   <div class="quote-modal-overlay" id="quoteModal">
     <div class="quote-modal-box">
       <button class="close-quote-modal" id="closeQuoteModalBtn">✕</button>
@@ -274,7 +350,6 @@
     </div>
   </div>
 
-  <!-- PRODUCT DIALOG -->
   <dialog class="product-dialog" id="productDialog">
     <button class="dialog-close" id="dialogClose">×</button>
     <div id="dialogContent"></div>
