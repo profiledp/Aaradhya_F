@@ -102,10 +102,59 @@
       display: flex; justify-content: space-between; align-items: end;
       margin-bottom: 20px; flex-wrap: wrap; gap: 12px;
     }
+
+    /* ✅ NAYA: Custom Quote Form Styles */
+    .custom-quote-wrapper {
+      background: #fff;
+      border: 2px dashed var(--gold);
+      border-radius: 16px;
+      padding: 30px;
+      margin-bottom: 40px;
+      box-shadow: 0 10px 40px rgba(197, 163, 107, 0.15);
+      position: relative;
+      overflow: hidden;
+    }
+    .custom-quote-wrapper::before {
+      content: "✨"; position: absolute; top: -10px; right: -10px;
+      font-size: 100px; opacity: 0.05; transform: rotate(15deg);
+    }
+    .custom-quote-header {
+      text-align: center; margin-bottom: 25px; position: relative; z-index: 1;
+    }
+    .custom-quote-header h2 {
+      font: normal 28px Georgia, serif; color: var(--navy); margin: 0 0 8px;
+    }
+    .custom-quote-header p {
+      font-size: 13px; color: #777; margin: 0;
+    }
+    .quote-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 15px; position: relative; z-index: 1;
+    }
+    .quote-field { display: flex; flex-direction: column; gap: 6px; }
+    .quote-field.full { grid-column: 1 / -1; }
+    .quote-field label { font-size: 12px; font-weight: bold; color: var(--ink); }
+    .quote-field input, .quote-field select, .quote-field textarea {
+      padding: 12px; border: 1px solid var(--line); border-radius: 8px;
+      font-family: inherit; font-size: 14px; outline: none; background: #f8f9fa; transition: 0.2s;
+    }
+    .quote-field input:focus, .quote-field select:focus, .quote-field textarea:focus {
+      border-color: var(--gold); background: #fff; box-shadow: 0 0 0 3px rgba(197, 163, 107, 0.2);
+    }
+    .btn-quote-submit {
+      width: 100%; padding: 15px; margin-top: 20px;
+      background: var(--navy); color: var(--gold); border: none; border-radius: 8px;
+      font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.3s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      position: relative; z-index: 1;
+    }
+    .btn-quote-submit:hover { background: #1e3a5f; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(16,36,59,0.2); }
+
     @media (max-width: 650px) {
       .header-actions { gap: 6px; }
       .header-wa, .header-support-btn { padding: 9px 12px !important; font-size: 10px !important; }
       .header-support-btn svg { display: none; }
+      .custom-quote-wrapper { padding: 20px; }
+      .quote-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -122,12 +171,74 @@
   </header>
 
   <main class="section-wrap shop-section" style="padding-top: 40px;">
+    
     <section id="blinkitDealSection" class="blinkit-deal-banner" style="display:none;">
       <div class="deal-banner-header">
         <h3>⚡ Deal of the Day <span>ENDS SOON</span></h3>
       </div>
       <div class="deal-products-scroll" id="dealProductsScroll"></div>
     </section>
+
+    <!-- ✅ NAYA: Custom Quote Form Section -->
+    <div class="custom-quote-wrapper">
+      <div class="custom-quote-header">
+        <h2>Need Something Custom? 🎨</h2>
+        <p>Fill out this form with your design details, size, and quantity. Our team will contact you on WhatsApp with a quote within 2 hours.</p>
+      </div>
+      <form id="customQuoteForm">
+        <div class="quote-grid">
+          <div class="quote-field">
+            <label>Your Name *</label>
+            <input type="text" id="qName" placeholder="e.g. Rahul Sharma" required>
+          </div>
+          <div class="quote-field">
+            <label>WhatsApp Number *</label>
+            <input type="tel" id="qPhone" placeholder="10-digit mobile no." required>
+          </div>
+
+          <div class="quote-field">
+            <label>Print Product *</label>
+            <select id="qProduct" required>
+              <option value="">Select Product</option>
+              <option value="T-Shirt Printing">T-Shirt Printing</option>
+              <option value="Mug Printing">Mug Printing</option>
+              <option value="Visiting Cards">Visiting Cards</option>
+              <option value="Banner / Flex">Banner / Flex</option>
+              <option value="Custom Stickers">Custom Stickers</option>
+              <option value="Other (Mention in details)">Other...</option>
+            </select>
+          </div>
+          <div class="quote-field">
+            <label>Quantity *</label>
+            <input type="number" id="qQuantity" min="1" placeholder="e.g. 50" required>
+          </div>
+
+          <div class="quote-field">
+            <label>Size / Dimensions</label>
+            <input type="text" id="qSize" placeholder="e.g. A4, XL, 3x2 ft">
+          </div>
+          <div class="quote-field">
+            <label>Fabric / Material</label>
+            <select id="qMaterial">
+              <option value="Not Sure">Not Sure (Suggest me)</option>
+              <option value="Cotton">Cotton</option>
+              <option value="Polyester">Polyester</option>
+              <option value="Ceramic">Ceramic (Mug)</option>
+              <option value="Vinyl">Vinyl (Stickers/Banner)</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="quote-field full">
+            <label>Design Description / Special Instructions *</label>
+            <textarea id="qDetails" rows="3" placeholder="Explain your design idea, text to print, colors, etc. (You can share your design file on WhatsApp later)" required></textarea>
+          </div>
+        </div>
+        <button type="submit" class="btn-quote-submit" id="quoteSubmitBtn">
+          Get Quote via WhatsApp 📲
+        </button>
+      </form>
+    </div>
 
     <div class="shop-heading-row">
       <div>
@@ -166,7 +277,7 @@
   <a href="track.html" class="track-float-btn" aria-label="Track Order"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg><span>Track Order</span></a>
 
   <script type="module">
-    import { getDb, addToCart, updateCartBadge, flyToCart, showToast } from "./shared.js";
+    import { getDb, addToCart, updateCartBadge, flyToCart, showToast, WHATSAPP_NUMBER } from "./shared.js";
     import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const db = getDb();
@@ -176,6 +287,44 @@
     let currentImgIndex = 0;
 
     const PLACEHOLDER = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'><rect width='400' height='400' fill='%23f8f9fa'/><text x='200' y='200' font-size='52' font-family='Georgia' fill='%23c5a36b' text-anchor='middle' dominant-baseline='middle' opacity='0.5'>AM</text></svg>";
+
+    // ✅ NAYA: Custom Quote Form Submit Handler
+    document.getElementById("customQuoteForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const btn = document.getElementById("quoteSubmitBtn");
+      
+      const name = document.getElementById("qName").value.trim();
+      const phone = document.getElementById("qPhone").value.trim();
+      const product = document.getElementById("qProduct").value;
+      const quantity = document.getElementById("qQuantity").value;
+      const size = document.getElementById("qSize").value.trim();
+      const material = document.getElementById("qMaterial").value;
+      const details = document.getElementById("qDetails").value.trim();
+
+      if(phone.length !== 10) {
+        showToast("Please enter a valid 10-digit WhatsApp number.", "error");
+        return;
+      }
+
+      btn.textContent = "Opening WhatsApp..."; btn.disabled = true;
+
+      // Construct a clean WhatsApp Message
+      const message = `*🎨 CUSTOM PRINT QUOTE REQUEST*\n\n` +
+                      `*Name:* ${name}\n` +
+                      `*Phone:* ${phone}\n` +
+                      `*Product:* ${product}\n` +
+                      `*Quantity:* ${quantity} pcs\n` +
+                      `*Size/Dimension:* ${size || 'Not specified'}\n` +
+                      `*Material:* ${material}\n\n` +
+                      `*Details:*\n${details}\n\n` +
+                      `_Please provide a price quote for this custom order._`;
+
+      setTimeout(() => {
+        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, "_blank");
+        btn.textContent = "Get Quote via WhatsApp 📲"; btn.disabled = false;
+        document.getElementById("customQuoteForm").reset();
+      }, 500);
+    });
 
     async function loadFirebaseProducts() {
       const querySnapshot = await getDocs(collection(db, "products"));
@@ -264,7 +413,7 @@
           <div class="coming-soon-icon">🖨️</div>
           <h3>More print services coming</h3>
           <p>Custom orders welcome!</p>
-          <a href="https://wa.me/918931911428?text=Hi%2C%20I%20want%20a%20custom%20print%20quote" target="_blank" rel="noopener">Get Custom Quote</a>
+          <a href="https://wa.me/${WHATSAPP_NUMBER}?text=Hi%2C%20I%20want%20a%20custom%20print%20quote" target="_blank" rel="noopener">Get Custom Quote</a>
         </div>`;
       }
       grid.innerHTML = html;
