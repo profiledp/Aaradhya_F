@@ -126,7 +126,7 @@
       .cd-inner { flex-direction: column; text-align: center; padding: 30px 20px; }
     }
 
-    /* Popup Form (Same as before) */
+    /* Popup Form */
     .modal-overlay { position: fixed; inset: 0; background: rgba(11, 27, 45, 0.85); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; visibility: hidden; transition: 0.3s; padding: 15px; }
     .modal-overlay.active { opacity: 1; visibility: visible; }
     .modal-box { background: #fff; border-radius: 16px; padding: 30px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.4); transform: scale(0.95) translateY(20px); transition: 0.3s; }
@@ -165,19 +165,19 @@
 
   <!-- DIRECT CATEGORY SHOWCASE -->
   <div class="category-showcase">
-    <div class="cat-card" onclick="filterByCategory('T-Shirt Printing')">
+    <div class="cat-card" onclick="filterByCategory('T-Shirt Printing', event)">
       <div class="cat-icon">👕</div>
       <h3>T-Shirts</h3>
     </div>
-    <div class="cat-card" onclick="filterByCategory('Mug Printing')">
+    <div class="cat-card" onclick="filterByCategory('Mug Printing', event)">
       <div class="cat-icon">☕</div>
       <h3>Mugs</h3>
     </div>
-    <div class="cat-card" onclick="filterByCategory('Visiting Cards')">
+    <div class="cat-card" onclick="filterByCategory('Visiting Cards', event)">
       <div class="cat-icon">💳</div>
       <h3>Visiting Cards</h3>
     </div>
-    <div class="cat-card" onclick="filterByCategory('Banner / Flex')">
+    <div class="cat-card" onclick="filterByCategory('Banner / Flex', event)">
       <div class="cat-icon">🚩</div>
       <h3>Banners</h3>
     </div>
@@ -358,7 +358,7 @@
       const uniqueCats = [...new Set(products.filter((p) => p.store === PAGE_STORE).map((p) => p.category?.trim()).filter(Boolean))];
       
       catNav.innerHTML = `<button class="pill active" data-cat="All">All Products</button>` +
-        uniqueCats.map((c) => `<button class="pill" data-cat="${c}">${c}</button>`).join("");
+        uniqueCats.map((c) => `<button class="pill" data-cat="${c.trim()}">${c.trim()}</button>`).join("");
 
       catNav.querySelectorAll(".pill").forEach((item) => {
         item.onclick = () => {
@@ -372,17 +372,19 @@
     }
 
     // Global function for top category cards
-    window.filterByCategory = function(catName) {
+    window.filterByCategory = function(catName, event) {
+      if(event) event.preventDefault();
+      
       const catFilter = document.getElementById("categoryFilter");
       catFilter.value = catName;
       
       const pills = document.querySelectorAll(".pill");
       pills.forEach(p => {
         p.classList.remove("active");
-        if(p.dataset.cat === catName) p.classList.add("active");
+        // Flexible matching for pill highlight
+        if(p.dataset.cat.toLowerCase() === catName.toLowerCase()) p.classList.add("active");
       });
       
-      // Scroll to products
       document.querySelector(".products-section").scrollIntoView({ behavior: 'smooth' });
       render();
     }
@@ -390,14 +392,20 @@
     function money(v) { return "₹" + Number(v || 0).toLocaleString("en-IN"); }
 
     function render() {
-      const queryStr = document.getElementById("searchInput").value.toLowerCase();
+      const queryStr = document.getElementById("searchInput").value.toLowerCase().trim();
       const cat = document.getElementById("categoryFilter")?.value || "All";
       const sort = document.getElementById("sortFilter").value;
 
       let list = products.filter((p) => p.store === PAGE_STORE);
       
+      // ✅ FIX: Flexible category matching (ignores case, spaces, and plurals)
       if (cat !== "All") {
-        list = list.filter((p) => (p.category || "").trim().toLowerCase() === cat.trim().toLowerCase());
+        const searchCat = cat.trim().toLowerCase();
+        list = list.filter((p) => {
+          const pCat = (p.category || "").trim().toLowerCase();
+          // Check if category is exactly same OR one contains the other (e.g., Mug vs Mugs)
+          return pCat === searchCat || pCat.includes(searchCat) || searchCat.includes(pCat);
+        });
       }
       
       list = list.filter((p) => [p.name, p.category].join(" ").toLowerCase().includes(queryStr));
