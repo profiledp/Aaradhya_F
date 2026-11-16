@@ -23,18 +23,19 @@
 
     /* 2. Direct Category Grid */
     .category-showcase {
-      max-width: 1000px; margin: -30px auto 50px; padding: 0 20px;
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px;
+      max-width: 1100px; margin: -30px auto 50px; padding: 0 20px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px;
       position: relative; z-index: 10;
     }
     .cat-card {
-      background: #fff; border-radius: 8px; padding: 20px 10px;
+      background: #fff; border-radius: 8px; padding: 15px 10px;
       text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.04);
       cursor: pointer; transition: 0.2s; border: 1px solid #eaeaea;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
     }
     .cat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.08); border-color: #c5a36b; }
-    .cat-icon { font-size: 28px; margin-bottom: 8px; }
-    .cat-card h3 { font-size: 13px; color: #10243b; margin: 0; font-weight: bold; }
+    .cat-icon { font-size: 26px; margin-bottom: 6px; }
+    .cat-card h3 { font-size: 12px; color: #10243b; margin: 0; font-weight: bold; }
 
     /* 3. Why Choose Us */
     .trust-section {
@@ -147,19 +148,13 @@
     .m-field input, .m-field select, .m-field textarea { padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; font-size: 14px; outline: none; background: #f8fafc; transition: 0.2s; }
     .m-field input:focus, .m-field select:focus, .m-field textarea:focus { border-color: #c5a36b; background: #fff; box-shadow: 0 0 0 3px rgba(197,163,107,0.15); }
     
-    /* ✅ NAYA: Price Calculator Box */
-    .price-calc-box {
-      background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px;
-      padding: 12px 15px; margin-top: 15px; display: flex; justify-content: space-between; align-items: center;
-    }
+    /* Price Calculator Box */
+    .price-calc-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 12px 15px; margin-top: 15px; display: flex; justify-content: space-between; align-items: center; }
     .price-calc-box span { font-size: 13px; color: #166534; font-weight: bold; }
     .price-calc-box strong { font-size: 18px; color: #15803d; }
 
-    /* ✅ NAYA: Design Upload Info Box */
-    .design-upload-box {
-      background: #f8fafc; border: 1px dashed #94a3b8; border-radius: 8px;
-      padding: 15px; margin-top: 15px; display: flex; align-items: center; gap: 15px;
-    }
+    /* Design Upload Info Box */
+    .design-upload-box { background: #f8fafc; border: 1px dashed #94a3b8; border-radius: 8px; padding: 15px; margin-top: 15px; display: flex; align-items: center; gap: 15px; }
     .design-upload-box .icon { font-size: 24px; background: #e2e8f0; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
     .design-upload-box .text h4 { margin: 0 0 4px; font-size: 13px; color: #10243b; }
     .design-upload-box .text p { margin: 0; font-size: 12px; color: #64748b; line-height: 1.4; }
@@ -172,7 +167,7 @@
     .btn-submit { width: 100%; padding: 15px; margin-top: 20px; background: #10243b; color: #fff; border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.3s; }
     .btn-submit:hover { background: #1e3a5f; }
 
-    /* ✅ NAYA: Trust Badges (Form ke niche) */
+    /* Trust Badges (Form ke niche) */
     .trust-badges-mini { display: flex; justify-content: space-between; margin-top: 25px; padding-top: 20px; border-top: 1px solid #eaeaea; }
     .tb-item { display: flex; flex-direction: column; align-items: center; gap: 5px; text-align: center; }
     .tb-item svg { width: 24px; height: 24px; stroke: #c5a36b; }
@@ -201,23 +196,47 @@
     <p>High-quality printed products, delivered to your doorstep. From business cards to personal gifts, we've got you covered.</p>
   </section>
 
-  <!-- DIRECT CATEGORY SHOWCASE -->
+  <!-- DIRECT CATEGORY SHOWCASE (Updated with new categories) -->
   <div class="category-showcase">
-    <div class="cat-card" onclick="filterByCategory('T-Shirt Printing', 'T-Shirts')">
+    <div class="cat-card" onclick="filterByCategory('T-Shirts')">
       <div class="cat-icon">👕</div>
       <h3>T-Shirts</h3>
     </div>
-    <div class="cat-card" onclick="filterByCategory('Mug Printing', 'Mugs')">
+    <div class="cat-card" onclick="filterByCategory('Mugs/Cups')">
       <div class="cat-icon">☕</div>
-      <h3>Mugs</h3>
+      <h3>Mugs/Cups</h3>
     </div>
-    <div class="cat-card" onclick="filterByCategory('Visiting Cards', 'Visiting Cards')">
+    <div class="cat-card" onclick="filterByCategory('Cushions')">
+      <div class="cat-icon">🛋️</div>
+      <h3>Cushions</h3>
+    </div>
+    <div class="cat-card" onclick="filterByCategory('Caps')">
+      <div class="cat-icon">🧢</div>
+      <h3>Caps</h3>
+    </div>
+    <div class="cat-card" onclick="filterByCategory('Keychains')">
+      <div class="cat-icon">🔑</div>
+      <h3>Keychains</h3>
+    </div>
+    <div class="cat-card" onclick="filterByCategory('Photo Frames')">
+      <div class="cat-icon">🖼️</div>
+      <h3>Photo Frames</h3>
+    </div>
+    <div class="cat-card" onclick="filterByCategory('Bottles')">
+      <div class="cat-icon">🍼</div>
+      <h3>Bottles</h3>
+    </div>
+    <div class="cat-card" onclick="filterByCategory('Visiting Card')">
       <div class="cat-icon">💳</div>
-      <h3>Visiting Cards</h3>
+      <h3>Visiting Card</h3>
     </div>
-    <div class="cat-card" onclick="filterByCategory('Banner / Flex', 'Banners')">
-      <div class="cat-icon">🚩</div>
-      <h3>Banners</h3>
+    <div class="cat-card" onclick="filterByCategory('Marriage Card')">
+      <div class="cat-icon">💌</div>
+      <h3>Marriage Card</h3>
+    </div>
+    <div class="cat-card" onclick="filterByCategory('Pamphlet')">
+      <div class="cat-icon">📄</div>
+      <h3>Pamphlet</h3>
     </div>
     <div class="cat-card" onclick="openQuoteModal()">
       <div class="cat-icon">🎨</div>
@@ -329,18 +348,22 @@
           
           <div class="m-field">
             <label>Print Product *</label>
-            <!-- ✅ onChange event added for Calculator -->
             <select id="qProduct" required onchange="calculateEstimate()">
               <option value="">Select Product</option>
-              <option value="T-Shirt Printing" data-price="250">T-Shirt Printing (₹250/pc)</option>
-              <option value="Mug Printing" data-price="150">Mug Printing (₹150/pc)</option>
-              <option value="Visiting Cards" data-price="2">Visiting Cards (₹2/pc)</option>
-              <option value="Banner / Flex" data-price="50">Banner / Flex (₹50/sqft)</option>
+              <option value="T-Shirts" data-price="250">T-Shirts (₹250/pc)</option>
+              <option value="Mugs/Cups" data-price="150">Mugs/Cups (₹150/pc)</option>
+              <option value="Cushions" data-price="300">Cushions (₹300/pc)</option>
+              <option value="Caps" data-price="200">Caps (₹200/pc)</option>
+              <option value="Keychains" data-price="50">Keychains (₹50/pc)</option>
+              <option value="Photo Frames" data-price="400">Photo Frames (₹400/pc)</option>
+              <option value="Bottles" data-price="350">Bottles (₹350/pc)</option>
+              <option value="Visiting Card" data-price="2">Visiting Card (₹2/pc)</option>
+              <option value="Marriage Card" data-price="15">Marriage Card (₹15/pc)</option>
+              <option value="Pamphlet" data-price="5">Pamphlet (₹5/pc)</option>
             </select>
           </div>
           <div class="m-field">
             <label>Quantity *</label>
-            <!-- ✅ onInput event added for Calculator -->
             <input type="number" id="qQuantity" min="1" placeholder="e.g. 50" required oninput="calculateEstimate()">
           </div>
 
@@ -350,13 +373,13 @@
           </div>
         </div>
 
-        <!-- ✅ NAYA: Live Price Calculator Display -->
+        <!-- Live Price Calculator -->
         <div class="price-calc-box">
           <span>Estimated Cost:</span>
           <strong id="estimateDisplay">₹0</strong>
         </div>
 
-        <!-- ✅ NAYA: Design File Upload Info -->
+        <!-- Design File Upload Info -->
         <div class="design-upload-box">
           <div class="icon">🖼️</div>
           <div class="text">
@@ -377,7 +400,7 @@
         <button type="submit" class="btn-submit" id="quoteSubmitBtn">Get Quote via WhatsApp 📲</button>
       </form>
 
-      <!-- ✅ NAYA: Trust Badges (Form ke theek niche) -->
+      <!-- Trust Badges -->
       <div class="trust-badges-mini">
         <div class="tb-item">
           <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
@@ -412,7 +435,7 @@
     window.closeQuoteModal = function() { document.getElementById("quoteModal").classList.remove("active"); }
     document.getElementById("quoteModal").addEventListener("click", (e) => { if(e.target.id === "quoteModal") closeQuoteModal(); });
 
-    // ✅ NAYA: Live Price Calculator Logic
+    // Live Price Calculator Logic
     window.calculateEstimate = function() {
       const select = document.getElementById("qProduct");
       const qtyInput = document.getElementById("qQuantity");
@@ -492,14 +515,14 @@
       render();
     }
 
-    window.filterByCategory = function(dbCategoryName, btnDisplayName) {
+    window.filterByCategory = function(dbCategoryName) {
       currentActiveCategory = dbCategoryName; 
       
       const pills = document.querySelectorAll(".pill");
       let found = false;
       pills.forEach(p => {
         p.classList.remove("active");
-        if(p.dataset.cat === dbCategoryName || p.dataset.cat === btnDisplayName) { 
+        if(p.dataset.cat === dbCategoryName) { 
           p.classList.add("active"); 
           found = true; 
         }
