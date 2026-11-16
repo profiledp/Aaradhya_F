@@ -12,6 +12,671 @@
        ========================================== */
     body { background: #f4f6f8; margin: 0; padding-bottom: 60px; font-family: Arial, sans-serif; color: #333; }
 
+    /* 1. HERO SECTION WITH PRINTING BACKGROUND */
+    .vp-hero {
+      background: url('https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=2000&q=80') center/cover no-repeat;
+      position: relative;
+      color: #fff; text-align: center; padding: 70px 20px 90px;
+    }
+    .vp-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to right, rgba(16,36,59,0.95), rgba(16,36,59,0.75));
+    }
+    .vp-hero-content { position: relative; z-index: 1; max-width: 600px; margin: 0 auto; }
+    .vp-hero h1 { font: normal clamp(28px, 3.5vw, 38px)/1.2 Georgia, serif; margin: 0 0 12px; letter-spacing: -0.5px; }
+    .vp-hero h1 em { color: #c5a36b; font-style: italic; }
+    .vp-hero p { font-size: 14px; color: #cbd5e1; margin: 0 auto; line-height: 1.6; }
+
+    /* 2. Direct Category Grid */
+    .category-showcase {
+      max-width: 1200px; margin: -35px auto 40px; padding: 0 20px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px;
+      position: relative; z-index: 10;
+    }
+    .cat-card {
+      background: #fff; border-radius: 12px; overflow: hidden;
+      text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      cursor: pointer; transition: 0.3s; border: 1px solid #eee;
+      display: flex; flex-direction: column; height: 110px; position: relative;
+    }
+    .cat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); border-color: #c5a36b; }
+    
+    .cat-card img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1; transition: 0.4s; }
+    .cat-card:hover img { transform: scale(1.1); }
+    
+    .cat-overlay {
+      position: absolute; inset: 0; 
+      background: linear-gradient(to top, rgba(16,36,59,0.9) 0%, rgba(16,36,59,0.1) 60%, transparent 100%);
+      z-index: 2;
+    }
+    
+    .cat-card h3 { 
+      position: relative; z-index: 3; color: #fff; font-size: 12px; font-weight: bold; 
+      margin: auto 5px 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); line-height: 1.2;
+    }
+
+    /* ==========================================
+       3. CLASSIC TRUST SECTION
+       ========================================== */
+    .trust-section-wrapper {
+      max-width: 1000px; margin: 0 auto 50px; padding: 0 20px;
+    }
+    .trust-section-inner {
+      background: #fff; border: 1px solid #eaeaea; border-radius: 12px;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; 
+      padding: 35px 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    }
+    .trust-item { text-align: center; }
+    
+    .trust-icon-wrap {
+      width: 60px; height: 60px; margin: 0 auto 15px;
+      background: #fdfbf7; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      border: 1px solid #f3ead8;
+    }
+    .trust-icon { font-size: 28px; }
+    
+    .trust-item h3 { font: normal 16px Georgia, serif; color: #10243b; margin: 0 0 8px; }
+    .trust-item p { font-size: 12px; color: #666; margin: 0; line-height: 1.6; }
+
+    /* 4. Product Grid Section */
+    .products-section { max-width: 1200px; margin: 0 auto 60px; padding: 0 20px; }
+    .section-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; border-bottom: 1px solid #d1d5db; padding-bottom: 10px; flex-wrap: wrap; gap: 10px; }
+    .section-header h2 { font: normal 22px Georgia, serif; color: #10243b; margin: 0; }
+    
+    /* Filter Bar */
+    .filter-bar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+    .search-box { flex: 1; min-width: 200px; display: flex; align-items: center; background: #fff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; height: 38px; }
+    .search-box input { border: none; outline: none; width: 100%; font-size: 13px; margin-left: 8px; background: transparent; }
+    .sort-select { height: 38px; padding: 0 12px; border: 1px solid #cbd5e1; border-radius: 6px; background: #fff; font-weight: bold; color: #333; outline: none; cursor: pointer; font-size: 12px; }
+
+    .category-pills { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; margin-bottom: 20px; }
+    .category-pills::-webkit-scrollbar { display: none; }
+    .pill { background: #fff; border: 1px solid #cbd5e1; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: bold; color: #555; cursor: pointer; transition: 0.2s; white-space: nowrap; }
+    .pill.active { background: #10243b; color: #fff; border-color: #10243b; }
+
+    /* ==========================================
+       COMPACT & PREMIUM PRODUCT CARD
+       ========================================== */
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
+    
+    .p-card { 
+      background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; 
+      padding: 10px; display: flex; flex-direction: column; transition: 0.2s;
+    }
+    .p-card:hover { box-shadow: 0 8px 20px rgba(0,0,0,0.08); border-color: #c5a36b; }
+    
+    /* Image Area */
+    .p-img-wrap { 
+      aspect-ratio: 1/1; background: #f9fafb; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center; 
+      margin-bottom: 10px; position: relative; cursor: pointer; overflow: hidden;
+    }
+    .p-img-wrap img { width: 100%; height: 100%; object-fit: contain; padding: 8px; transition: 0.3s; }
+    .p-card:hover .p-img-wrap img { transform: scale(1.08); }
+    
+    .p-tag { position: absolute; top: 6px; left: 6px; background: #10243b; color: #fff; font-size: 9px; font-weight: bold; padding: 3px 6px; border-radius: 4px; z-index: 2; }
+
+    /* Info Area */
+    .p-info { flex: 1; display: flex; flex-direction: column; }
+    .p-category { font-size: 9px; color: #6b7280; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px; margin-bottom: 3px; }
+    .p-name { font-size: 13px; font-weight: bold; color: #111827; margin: 0 0 8px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 34px; }
+    
+    /* Dropdowns (Size & Color) */
+    .p-options { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 10px; margin-top: auto; }
+    .p-opt-select { 
+      width: 100%; padding: 6px; border: 1px solid #d1d5db; border-radius: 4px; 
+      font-size: 11px; color: #374151; font-weight: bold; outline: none; background: #fff; cursor: pointer; 
+    }
+    
+    /* Buttons */
+    .p-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .btn-add { background: #fff; color: #10243b; border: 1px solid #10243b; padding: 8px; border-radius: 4px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px; }
+    .btn-add:hover { background: #f0f4f8; }
+    .btn-buy { background: #10243b; color: #fff; border: 1px solid #10243b; padding: 8px; border-radius: 4px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+    .btn-buy:hover { background: #1e3a5f; }
+
+    /* 5. Custom Design Banner */
+    .custom-design-banner { max-width: 1200px; margin: 0 auto 50px; padding: 0 20px; }
+    .cd-inner { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+    .cd-text h2 { font: normal 18px Georgia, serif; color: #10243b; margin: 0 0 6px; }
+    .cd-text p { font-size: 12px; color: #6b7280; margin: 0; }
+    .btn-quote { background: #c5a36b; color: #10243b; padding: 10px 20px; border-radius: 4px; font-weight: bold; font-size: 12px; border: none; cursor: pointer; transition: 0.2s; }
+    .btn-quote:hover { background: #b08e59; color: #fff; }
+
+    /* 6. Floating Buttons */
+    .floating-track { position: fixed; bottom: 90px; left: 25px; background: #fff; color: #10243b; border: 1px solid #10243b; padding: 8px 16px; border-radius: 50px; font-size: 11px; font-weight: bold; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); z-index: 999; text-decoration: none; }
+    .floating-track:hover { background: #10243b; color: #fff; }
+    .floating-track svg { width: 14px; height: 14px; stroke: currentColor; }
+
+    .floating-cart { position: fixed; bottom: 25px; right: 25px; background: #10243b; color: #fff; border: 1px solid #c5a36b; padding: 10px 18px; border-radius: 50px; display: flex; align-items: center; gap: 8px; box-shadow: 0 6px 20px rgba(16,36,59,0.3); z-index: 999; text-decoration: none; }
+    .floating-cart:hover { transform: translateY(-2px); }
+    .floating-cart span { font-size: 13px; font-weight: bold; }
+    .cart-badge { background: #c5a36b; color: #10243b; font-size: 11px; font-weight: bold; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .category-showcase { grid-template-columns: repeat(3, 1fr); margin-top: -20px; }
+      .cat-card { height: 90px; }
+      .cat-card h3 { font-size: 10px; }
+      
+      .trust-section-inner { grid-template-columns: 1fr; gap: 20px; padding: 25px 20px; }
+      
+      .product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .p-options { grid-template-columns: 1fr; gap: 4px; }
+      .p-name { font-size: 12px; height: 32px; }
+      .p-buttons { grid-template-columns: 1fr; gap: 4px; }
+      .btn-add, .btn-buy { padding: 6px; font-size: 10px; }
+      .cd-inner { flex-direction: column; text-align: center; padding: 20px; }
+      .floating-track { bottom: 80px; left: 15px; padding: 6px 10px; font-size: 10px; }
+      .floating-track span { display: none; }
+      .floating-cart { bottom: 20px; right: 15px; padding: 8px 12px; }
+      .floating-cart span { display: none; }
+    }
+
+    /* ==========================================
+       POPUP FORM
+       ========================================== */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(16, 36, 59, 0.7); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; visibility: hidden; transition: 0.3s; padding: 15px; }
+    .modal-overlay.active { opacity: 1; visibility: visible; }
+    .modal-box { background: #fff; border-radius: 12px; padding: 30px; width: 100%; max-width: 580px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.2); transform: scale(0.95) translateY(10px); transition: 0.3s; }
+    .modal-overlay.active .modal-box { transform: scale(1) translateY(0); }
+    .close-btn { position: absolute; top: 15px; right: 15px; background: #f1f5f9; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; color: #666; }
+    .close-btn:hover { background: #fee2e2; color: #ef4444; }
+    .modal-header { text-align: center; margin-bottom: 20px; }
+    .modal-header h2 { font: normal 22px Georgia, serif; color: #10243b; margin: 0 0 6px; }
+    .modal-header p { font-size: 12px; color: #666; margin: 0; }
+    
+    .m-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .m-field { display: flex; flex-direction: column; gap: 4px; }
+    .m-field.full { grid-column: 1 / -1; }
+    .m-field label { font-size: 11px; font-weight: bold; color: #333; }
+    .m-field input, .m-field select, .m-field textarea { padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; font-size: 13px; outline: none; background: #f8fafc; transition: 0.2s; }
+    .m-field input:focus, .m-field select:focus, .m-field textarea:focus { border-color: #c5a36b; background: #fff; }
+
+    .bulk-discount-box { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 10px; margin-top: 15px; display: flex; align-items: center; gap: 10px; }
+    .bulk-discount-box .icon { font-size: 18px; }
+    .bulk-discount-box p { margin: 0; font-size: 11px; color: #1e3a8a; font-weight: 600; line-height: 1.4; }
+
+    .design-upload-box { background: #f8fafc; border: 1px dashed #94a3b8; border-radius: 6px; padding: 12px; margin-top: 12px; display: flex; align-items: center; gap: 10px; }
+    .design-upload-box .icon { font-size: 20px; background: #e2e8f0; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+    .design-upload-box .text h4 { margin: 0 0 2px; font-size: 12px; color: #10243b; }
+    .design-upload-box .text p { margin: 0; font-size: 11px; color: #64748b; line-height: 1.3; }
+
+    .policy-box { background: #fffbeb; border: 1px dashed #f59e0b; border-radius: 6px; padding: 10px; margin-top: 15px; font-size: 11px; color: #92400e; line-height: 1.4; }
+    .check-label { display: flex; align-items: flex-start; gap: 6px; margin-top: 12px; cursor: pointer; }
+    .check-label input { margin-top: 2px; width: 14px; height: 14px; cursor: pointer; }
+    .check-label span { font-size: 11px; color: #475569; font-weight: 500; }
+    
+    .btn-submit { width: 100%; padding: 12px; margin-top: 15px; background: #10243b; color: #fff; border: none; border-radius: 6px; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+    .btn-submit:hover { background: #1e3a5f; }
+
+    .trust-badges-mini { display: flex; justify-content: space-between; margin-top: 20px; padding-top: 15px; border-top: 1px solid #eaeaea; }
+    .tb-item { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
+    .tb-item svg { width: 20px; height: 20px; stroke: #c5a36b; }
+    .tb-item span { font-size: 10px; color: #64748b; font-weight: 600; }
+    
+    @media(max-width: 600px) { 
+      .m-grid { grid-template-columns: 1fr; } 
+      .modal-box { padding: 20px; } 
+      .design-upload-box { flex-direction: column; text-align: center; }
+      .trust-badges-mini { flex-direction: column; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html"><span class="brand-mark">AM</span><span><strong>A-PRINT</strong><small>BY AARADHYA FASHION</small></span></a>
+    <div style="display: flex; gap: 8px; align-items: center;">
+      <a href="support.html" style="font-size: 11px; background: #25D366; color: #fff; padding: 11px 14px; border-radius: 4px; text-decoration: none; font-weight: bold;">💬 Support</a>
+      <a href="index.html" class="header-wa" style="background:#fff; color:var(--navy); border:1px solid var(--navy);">← Home</a>
+    </div>
+  </header>
+
+  <!-- HERO WITH PRINTING BACKGROUND -->
+  <section class="vp-hero">
+    <div class="vp-hero-content">
+      <h1>Custom Printing for <em>Every Need</em></h1>
+      <p>High-quality printed products, delivered to your doorstep. From business cards to personal gifts, we've got you covered.</p>
+    </div>
+  </section>
+
+  <!-- DIRECT CATEGORY SHOWCASE -->
+  <div class="category-showcase">
+    <div class="cat-card" onclick="filterByCategory('T-Shirts')">
+      <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=200&q=80" alt="T-Shirts">
+      <div class="cat-overlay"></div>
+      <h3>T-Shirts</h3>
+    </div>
+    <div class="cat-card" onclick="filterByCategory('Mugs/Cups')">
+      <img src="https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?auto=format&fit=crop&w=200&q=80" alt="Mugs">
+      <div class="cat-overlay"></div>
+      <h3>Mugs/Cups</h3>
+    </div>
+    <div class="cat-card" onclick="filterByCategory('Cushions')">
+      <img src="https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&w=200&q=80" alt="Cushions">
+      <div class="cat-overlay"></div>
+      <h3>Cushions</h3>
+    </div>
+    <div class="cat-card" onclick="filterByCategory('Caps')">
+      <img src="https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&w=200&q=80" alt="Caps">
+      <div class="cat-overlay"></div>
+      <h3>Caps</h3>
+    </div>
+    <div class="cat-card" onclick="filterByCategory('Keychains')">
+      <img src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&w=200&q=80" alt="Keychains">
+      <div class="cat-overlay"></div>
+      <h3>Keychains</h3>
+    </div>
+    <div class="cat-card" onclick="filterByCategory('Photo Frames')">
+      <img src="https://images.unsplash.com/photo-1582053433976-25c00369fc93?auto=format&fit=crop&w=200&q=80" alt="Photo Frames">
+      <div class="cat-overlay"></div>
+      <h3>Photo Frames</h3>
+    </div>
+    <div class="cat-card" onclick="filterByCategory('Bottles')">
+      <img src="https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&w=200&q=80" alt="Bottles">
+      <div class="cat-overlay"></div>
+      <h3>Bottles</h3>
+    </div>
+    <div class="cat-card" onclick="filterByCategory('Visiting Card')">
+      <img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=200&q=80" alt="Visiting Card">
+      <div class="cat-overlay"></div>
+      <h3>Visiting Card</h3>
+    </div>
+    <div class="cat-card" onclick="filterByCategory('Marriage Card')">
+      <img src="https://images.unsplash.com/photo-1607344645866-009c320b63e0?auto=format&fit=crop&w=200&q=80" alt="Marriage Card">
+      <div class="cat-overlay"></div>
+      <h3>Marriage Card</h3>
+    </div>
+    <div class="cat-card" onclick="filterByCategory('Pamphlet')">
+      <img src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&w=200&q=80" alt="Pamphlet">
+      <div class="cat-overlay"></div>
+      <h3>Pamphlet</h3>
+    </div>
+    <!-- ✅ FIXED Other/Custom Image -->
+    <div class="cat-card" onclick="openQuoteModal()">
+      <img src="https://images.unsplash.com/photo-1626785771621-3a3145c88311?auto=format&fit=crop&w=200&q=80" alt="Other Custom">
+      <div class="cat-overlay"></div>
+      <h3>Other / Custom</h3>
+    </div>
+  </div>
+
+  <!-- ✅ CLASSIC TRUST SECTION -->
+  <div class="trust-section-wrapper">
+    <div class="trust-section-inner">
+      <div class="trust-item">
+        <div class="trust-icon-wrap"><div class="trust-icon">🏆</div></div>
+        <h3>Premium Quality</h3>
+        <p>We use the best materials and latest printing tech to ensure your products look amazing.</p>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon-wrap"><div class="trust-icon">📦</div></div>
+        <h3>Low Quantity Orders</h3>
+        <p>Order just 1 piece or 1000. We offer competitive pricing at every quantity level.</p>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon-wrap"><div class="trust-icon">🛡️</div></div>
+        <h3>Satisfaction Guaranteed</h3>
+        <p>If you're not happy with the print quality, we'll replace it or refund your money.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCTS SECTION -->
+  <section class="products-section">
+    <div class="section-header">
+      <h2>Shop All Products</h2>
+      <span style="font-size: 12px; color: #666;">Showing <strong id="productCount" style="color: #10243b;">0</strong> items</span>
+    </div>
+
+    <div class="filter-bar">
+      <div class="search-box">
+        <span>⌕</span>
+        <input id="searchInput" type="search" placeholder="Search products..." autocomplete="off">
+      </div>
+      <select id="sortFilter" class="sort-select">
+        <option value="featured">Sort: Featured</option>
+        <option value="low">Price: Low to High</option>
+        <option value="high">Price: High to Low</option>
+      </select>
+    </div>
+
+    <div class="category-pills" id="categoryNav">
+      <button class="pill active" data-cat="All">All Products</button>
+    </div>
+
+    <div class="product-grid" id="productGrid"></div>
+    
+    <div id="emptyState" style="display: none; text-align: center; padding: 40px;">
+      <span style="font-size: 40px; opacity: 0.5;">🔍</span>
+      <h3 style="color: #10243b; margin: 10px 0; font-size: 15px;">No products found</h3>
+      <p style="color:#666; font-size: 12px;">Try changing your search or category.</p>
+    </div>
+  </section>
+
+  <!-- CUSTOM DESIGN CTA -->
+  <section class="custom-design-banner">
+    <div class="cd-inner">
+      <div class="cd-text">
+        <h2>Have a specific design in mind? 🤔</h2>
+        <p>Share your idea, size, and quantity with us. Our team will provide a free quote on WhatsApp.</p>
+      </div>
+      <button class="btn-quote" onclick="openQuoteModal()">🎨 Get Custom Quote</button>
+    </div>
+  </section>
+
+  <!-- FLOATING BUTTONS -->
+  <a href="track.html" class="floating-track">
+    <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+    <span>Track Order</span>
+  </a>
+
+  <a href="https://wa.me/918931911428?text=Hello%20Aaradhya%20Mart" target="_blank" class="whatsapp-float-btn" aria-label="Chat on WhatsApp">
+    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M16.004 2C8.28 2 2 8.28 2 16c0 2.47.64 4.79 1.76 6.81L2 30l7.39-1.71A13.93 13.93 0 0 0 16.004 30C23.72 30 30 23.72 30 16S23.72 2 16.004 2zm0 2.31c6.76 0 12.23 5.47 12.23 12.23 0 6.76-5.47 12.23-12.23 12.23-2.13 0-4.13-.55-5.86-1.51l-.42-.23-4.32 1 1-4.21-.24-.4A12.17 12.17 0 0 1 3.77 16c0-6.76 5.47-12.23 12.23-12.23z" fill="#fff"/><path d="M21.66 18.14c-.23-.12-1.38-.68-1.6-.76-.21-.08-.37-.12-.53.12-.16.24-.61.76-.75.92-.14.16-.28.18-.51.06-.23-.12-1-.37-1.91-1.18-.71-.63-1.18-1.41-1.32-1.65-.14-.24-.02-.37.1-.49.11-.11.23-.28.35-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.53-1.27-.72-1.74-.19-.46-.38-.4-.53-.4h-.45c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.69 2.58 4.1 3.62.57.25 1.02.4 1.37.51.57.18 1.09.15 1.5.09.46-.07 1.38-.56 1.58-1.11.2-.55.2-1.02.14-1.11-.06-.09-.22-.15-.45-.27z" fill="#fff"/></svg>
+  </a>
+
+  <a href="cart.html" class="floating-cart">
+    <span style="font-size:16px;">🛒</span>
+    <span>Cart</span>
+    <div class="cart-badge" id="globalCartCount">0</div>
+  </a>
+
+  <!-- POPUP FORM -->
+  <div class="modal-overlay" id="quoteModal">
+    <div class="modal-box">
+      <button class="close-btn" onclick="closeQuoteModal()">✕</button>
+      
+      <div class="modal-header">
+        <h2>Get Custom Quote 🎨</h2>
+        <p>Fill details below. We'll reply on WhatsApp within 2 hours.</p>
+      </div>
+      
+      <form id="customQuoteForm">
+        <div class="m-grid">
+          <div class="m-field">
+            <label>Your Name *</label>
+            <input type="text" id="qName" placeholder="e.g. Rahul Sharma" required>
+          </div>
+          <div class="m-field">
+            <label>WhatsApp Number *</label>
+            <input type="tel" id="qPhone" placeholder="10-digit mobile no." required>
+          </div>
+          
+          <div class="m-field">
+            <label>Print Product *</label>
+            <select id="qProduct" required>
+              <option value="">Select Product</option>
+              <option value="T-Shirts">T-Shirts</option>
+              <option value="Mugs/Cups">Mugs/Cups</option>
+              <option value="Cushions">Cushions</option>
+              <option value="Caps">Caps</option>
+              <option value="Keychains">Keychains</option>
+              <option value="Photo Frames">Photo Frames</option>
+              <option value="Bottles">Bottles</option>
+              <option value="Visiting Card">Visiting Card</option>
+              <option value="Marriage Card">Marriage Card</option>
+              <option value="Pamphlet">Pamphlet</option>
+              <option value="Other (Mention in details)">Other (Mention in details)</option>
+            </select>
+          </div>
+          <div class="m-field">
+            <label>Quantity *</label>
+            <input type="number" id="qQuantity" min="1" placeholder="e.g. 50" required>
+          </div>
+
+          <div class="m-field full">
+            <label>Design Description / Special Instructions *</label>
+            <textarea id="qDetails" rows="3" placeholder="Explain your design idea, text to print, colors, etc." required></textarea>
+          </div>
+        </div>
+
+        <div class="bulk-discount-box">
+          <div class="icon">🎉</div>
+          <p>Bulk orders (50+ quantity) get special wholesale discounts! Mention your quantity above to get a better quote.</p>
+        </div>
+
+        <div class="design-upload-box">
+          <div class="icon">🖼️</div>
+          <div class="text">
+            <h4>Have a design file ready?</h4>
+            <p>You can send your photo/logo (PNG, JPG, PDF) directly on WhatsApp after submitting this form.</p>
+          </div>
+        </div>
+
+        <div class="policy-box">
+          <strong>⚠️ Payment Policy:</strong> Custom printing orders require <strong>50% to 70% advance payment</strong> to start the work.
+        </div>
+        
+        <label class="check-label">
+          <input type="checkbox" id="qAgreePolicy" required>
+          <span>I understand and agree to the advance payment policy.</span>
+        </label>
+        
+        <button type="submit" class="btn-submit" id="quoteSubmitBtn">Get Quote via WhatsApp 📲</button>
+      </form>
+
+      <div class="trust-badges-mini">
+        <div class="tb-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
+          <span>Fast Delivery</span>
+        </div>
+        <div class="tb-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          <span>Quality Assured</span>
+        </div>
+        <div class="tb-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"></path></svg>
+          <span>WhatsApp Support</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script type="module">
+    import { getDb, addToCart, updateCartBadge, showToast, WHATSAPP_NUMBER } from "./shared.js";
+    import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const db = getDb();
+    const PAGE_STORE = "Print";
+    let products = [];
+    let currentActiveCategory = "All";
+
+    const PLACEHOLDER = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'><rect width='400' height='400' fill='%23f8f9fa'/><text x='200' y='200' font-size='52' font-family='Georgia' fill='%23c5a36b' text-anchor='middle' dominant-baseline='middle' opacity='0.5'>AM</text></svg>";
+
+    // Modal Logic
+    window.openQuoteModal = function() { document.getElementById("quoteModal").classList.add("active"); }
+    window.closeQuoteModal = function() { document.getElementById("quoteModal").classList.remove("active"); }
+    document.getElementById("quoteModal").addEventListener("click", (e) => { if(e.target.id === "quoteModal") closeQuoteModal(); });
+
+    // Form Submit
+    document.getElementById("customQuoteForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      if(!document.getElementById("qAgreePolicy").checked) {
+        showToast("Please agree to the advance payment policy.", "error"); return;
+      }
+      const btn = document.getElementById("quoteSubmitBtn");
+      const name = document.getElementById("qName").value.trim();
+      const phone = document.getElementById("qPhone").value.trim();
+      
+      if(phone.length !== 10) {
+        showToast("Please enter a valid 10-digit WhatsApp number.", "error"); return;
+      }
+
+      btn.textContent = "Opening WhatsApp..."; btn.disabled = true;
+
+      const msg = `*🎨 CUSTOM PRINT QUOTE REQUEST*\n\n` +
+                  `*Name:* ${name}\n*Phone:* ${phone}\n` +
+                  `*Product:* ${document.getElementById("qProduct").value}\n` +
+                  `*Qty:* ${document.getElementById("qQuantity").value} pcs\n\n` +
+                  `*Details:*\n${document.getElementById("qDetails").value.trim()}\n\n` +
+                  `_I agree to the 50-70% advance policy._\n\n` +
+                  `_(I will send my design file in the next message)_`;
+
+      setTimeout(() => {
+        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
+        btn.textContent = "Get Quote via WhatsApp 📲"; btn.disabled = false;
+        document.getElementById("customQuoteForm").reset();
+        closeQuoteModal();
+      }, 500);
+    });
+
+    // Load Products
+    async function loadFirebaseProducts() {
+      const snap = await getDocs(collection(db, "products"));
+      products = [];
+      snap.forEach((doc) => products.push({ id: doc.id, ...doc.data() }));
+
+      const catNav = document.getElementById("categoryNav");
+      const uniqueCats = [...new Set(products.filter((p) => p.store === PAGE_STORE).map((p) => p.category?.trim()).filter(Boolean))];
+      
+      catNav.innerHTML = `<button class="pill active" data-cat="All">All Products</button>` +
+        uniqueCats.map((c) => `<button class="pill" data-cat="${c}">${c}</button>`).join("");
+
+      catNav.querySelectorAll(".pill").forEach((item) => {
+        item.onclick = () => {
+          catNav.querySelectorAll(".pill").forEach((el) => el.classList.remove("active"));
+          item.classList.add("active");
+          currentActiveCategory = item.dataset.cat;
+          render();
+        };
+      });
+      
+      render();
+    }
+
+    window.filterByCategory = function(dbCategoryName) {
+      currentActiveCategory = dbCategoryName; 
+      
+      const pills = document.querySelectorAll(".pill");
+      let found = false;
+      pills.forEach(p => {
+        p.classList.remove("active");
+        if(p.dataset.cat === dbCategoryName) { 
+          p.classList.add("active"); 
+          found = true; 
+        }
+      });
+      
+      if(!found) {
+        document.querySelector('.pill[data-cat="All"]').classList.remove("active");
+      }
+      
+      document.querySelector(".products-section").scrollIntoView({ behavior: 'smooth' });
+      render();
+    }
+
+    function render() {
+      const queryStr = document.getElementById("searchInput").value.toLowerCase();
+      const sort = document.getElementById("sortFilter").value;
+
+      let list = products.filter((p) => p.store === PAGE_STORE);
+      
+      if (currentActiveCategory !== "All") {
+        list = list.filter((p) => {
+          const cat = (p.category || "").trim().toLowerCase();
+          const target = currentActiveCategory.trim().toLowerCase();
+          return cat === target || 
+                 cat.includes(target.split(' ')[0]) || 
+                 target.includes(cat.split(' ')[0]);
+        });
+      }
+      
+      list = list.filter((p) => [p.name, p.category].join(" ").toLowerCase().includes(queryStr));
+      if (sort === "low") list.sort((a, b) => a.price - b.price);
+      if (sort === "high") list.sort((a, b) => b.price - a.price);
+
+      document.getElementById("productCount").textContent = list.length;
+      const grid = document.getElementById("productGrid");
+      
+      if (list.length === 0) {
+        grid.innerHTML = "";
+        document.getElementById("emptyState").style.display = "block";
+        return;
+      }
+      document.getElementById("emptyState").style.display = "none";
+
+      grid.innerHTML = list.map((p) => {
+        const isOut = p.stock <= 0;
+        
+        const sizesArray = Array.isArray(p.sizes) && p.sizes.length > 0 ? p.sizes : ["Standard"];
+        const colorsArray = Array.isArray(p.colors) && p.colors.length > 0 ? p.colors : ["Standard"];
+        
+        const sizeOptions = sizesArray.map((s) => `<option value="${s}">${s}</option>`).join("");
+        const colorOptions = colorsArray.map((c) => `<option value="${c}">${c}</option>`).join("");
+        
+        const firstImg = p.image ? String(p.image).split(",")[0].trim() : PLACEHOLDER;
+
+        return `
+        <article class="p-card">
+          <div class="p-img-wrap" data-open="${p.id}">
+            <img src="${firstImg}" alt="${p.name}" onerror="this.src='${PLACEHOLDER}'">
+            ${p.tag ? `<span class="p-tag">${p.tag}</span>` : ""}
+            ${isOut ? `<span style="position:absolute;inset:0;background:rgba(255,255,255,0.85);display:flex;align-items:center;justify-content:center;font-weight:bold;color:#ef4444;font-size:12px;">OUT OF STOCK</span>` : ""}
+          </div>
+          
+          <div class="p-info">
+            <span class="p-category">${p.category || "Print"}</span>
+            <h3 class="p-name">${p.name}</h3>
+            
+            <div class="p-options">
+              ${!isOut ? `<select id="unit-${p.id}" class="p-opt-select">${sizeOptions}</select>` : ""}
+              ${!isOut && colorsArray.length > 0 && colorsArray[0] !== "Standard" ? `<select id="color-${p.id}" class="p-opt-select">${colorOptions}</select>` : ""}
+            </div>
+            
+            <div class="p-buttons">
+              <button class="btn-add" data-cart="${p.id}" ${isOut ? "disabled" : ""}>🛒 Add</button>
+              <button class="btn-buy" data-order="${p.id}" ${isOut ? "disabled" : ""}>Buy Now</button>
+            </div>
+          </div>
+        </article>`;
+      }).join("");
+    }
+
+    document.addEventListener("click", (e) => {
+      const order = e.target.closest("[data-order]");
+      const cartBtn = e.target.closest("[data-cart]");
+
+      if (order && !order.disabled) {
+        const p = products.find((x) => x.id === order.dataset.order);
+        const size = document.getElementById(`unit-${p.id}`)?.value || "Standard";
+        const color = document.getElementById(`color-${p.id}`)?.value || "Standard";
+        window.location.href = `checkout.html?id=${p.id}&size=${encodeURIComponent(size)}&color=${encodeURIComponent(color)}&store=A-Print`;
+      }
+
+      if (cartBtn && !cartBtn.disabled) {
+        const pId = cartBtn.dataset.cart;
+        const size = document.getElementById(`unit-${pId}`)?.value || "Standard";
+        const color = document.getElementById(`color-${pId}`)?.value || "Standard";
+        addToCart({ id: pId, size: size, color: color });
+        updateCartBadge();
+        showToast("Item added to cart!");
+      }
+    });
+
+    document.getElementById("searchInput").addEventListener("input", render);
+    document.getElementById("sortFilter").addEventListener("change", render);
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadFirebaseProducts();
+      updateCartBadge();
+    });
+  </script>
+</body>
+</html><!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A-Print | Custom Printing Services</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%2310243b'/><text x='50' y='68' font-size='55' font-family='Georgia' fill='%23c5a36b' text-anchor='middle'>A</text></svg>">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ==========================================
+       PREMIUM CLEAN DESIGN
+       ========================================== */
+    body { background: #f4f6f8; margin: 0; padding-bottom: 60px; font-family: Arial, sans-serif; color: #333; }
+
     /* ==========================================
        1. HERO SECTION WITH PRINTING BACKGROUND
        ========================================== */
