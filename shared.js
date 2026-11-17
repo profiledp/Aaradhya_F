@@ -1,7 +1,6 @@
 /* ==========================================================
-   AARADHYA MART — SHARED MODULE
+   AARADHYA MART — SHARED MODULE (v2)
    Single source of truth for Firebase, cart, phone, toasts.
-   Import this from every page instead of copy-pasting config.
    ========================================================== */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -30,7 +29,8 @@ export function getDb() {
 export const WHATSAPP_NUMBER = "918931911428";
 export const CART_KEY = "aaradhyaMartCart";
 export const MY_ORDERS_KEY = "aaradhyaMyOrders";
-export const REVIEW_COOLDOWN_MS = 60 * 1000; // 1 min per-product cooldown
+export const REVIEW_KEY = "aaradhyaReviewTimes";
+export const REVIEW_COOLDOWN_MS = 60 * 1000;
 
 /* ---------- Phone normalization ---------- */
 export function normalizePhone(input) {
@@ -100,10 +100,10 @@ export function showToast(message, type = "success") {
   }, 3500);
 }
 
-/* ---------- Review rate limit (client-side, best effort) ---------- */
+/* ---------- Review rate limit (client-side) ---------- */
 export function canSubmitReview(productId) {
   try {
-    const raw = localStorage.getItem("aaradhyaReviewTimes") || "{}";
+    const raw = localStorage.getItem(REVIEW_KEY) || "{}";
     const times = JSON.parse(raw);
     const last = Number(times[productId] || 0);
     return Date.now() - last > REVIEW_COOLDOWN_MS;
@@ -111,10 +111,10 @@ export function canSubmitReview(productId) {
 }
 export function markReviewSubmitted(productId) {
   try {
-    const raw = localStorage.getItem("aaradhyaReviewTimes") || "{}";
+    const raw = localStorage.getItem(REVIEW_KEY) || "{}";
     const times = JSON.parse(raw);
     times[productId] = Date.now();
-    localStorage.setItem("aaradhyaReviewTimes", JSON.stringify(times));
+    localStorage.setItem(REVIEW_KEY, JSON.stringify(times));
   } catch { /* ignore */ }
 }
 
@@ -147,4 +147,4 @@ export function flyToCart(imgSrc, btnElement) {
       setTimeout(() => cartBadge.classList.remove("bounce-anim"), 500);
     }
   }, 800);
-}
+}z
