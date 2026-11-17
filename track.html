@@ -61,7 +61,8 @@
   <!-- REVIEW MODAL -->
   <div id="reviewModal" style="display: none; position: fixed; inset: 0; background: rgba(16,36,59,0.75); backdrop-filter: blur(4px); z-index: 10000; align-items: center; justify-content: center; padding: 15px;">
     <div style="background: #fff; border-radius: 12px; padding: 30px; max-width: 420px; width: 100%; box-shadow: 0 20px 50px rgba(0,0,0,0.3);">
-      <h3 style="font: normal 22px Georgia, serif; color: var(--navy); margin: 0 0 20px; text-align: center;">Write a Review</h3>
+      <h3 style="font: normal 22px Georgia, serif; color: var(--navy); margin: 0 0 8px; text-align: center;">Write a Review</h3>
+      <p id="reviewProductLabel" style="font-size: 12px; color: #777; margin: 0 0 20px; text-align: center;">Reviewing: —</p>
       <input type="hidden" id="reviewProductId">
       <input type="hidden" id="reviewProductName">
       <div style="margin-bottom: 12px;"><label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 5px;">Your Name</label><input type="text" id="reviewName" placeholder="Enter your name" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; outline: none;"></div>
@@ -84,27 +85,14 @@
 
   <script type="module">
     import {
-      getDb, WHATSAPP_NUMBER, normalizePhone, normalizeOrderId
+      getDb, WHATSAPP_NUMBER, normalizePhone, normalizeOrderId,
+      showToast, canSubmitReview, markReviewSubmitted
     } from "./shared.js";
     import {
       collection, getDocs, query, where, addDoc
     } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const db = getDb();
-
-    function premiumToast(msg, type = "success") {
-      let t = document.querySelector(".premium-toast");
-      if (t) t.remove();
-      const toast = document.createElement("div");
-      toast.className = "premium-toast" + (type === "error" ? " is-error" : "");
-      toast.innerHTML = `<span>${type === "success" ? "✅" : "⚠️"}</span> ${msg}`;
-      document.body.appendChild(toast);
-      setTimeout(() => toast.classList.add("show"), 10);
-      setTimeout(() => {
-        toast.classList.remove("show");
-        setTimeout(() => toast.remove(), 400);
-      }, 3500);
-    }
 
     window.addEventListener("DOMContentLoaded", () => {
       const urlParams = new URLSearchParams(window.location.search);
@@ -183,17 +171,26 @@
       `;
     }
 
+    /* Build a review button for EVERY item in the order */
     function buildReviewBlock(order) {
       if (order.status !== "Delivered" || !order.items?.length) return "";
-      const first = order.items[0];
-      const payload = encodeURIComponent(JSON.stringify({ id: first.id, name: first.name }));
-      return `
-        <div style="margin-top: 15px; text-align: center;">
+      const buttons = order.items.map((item) => {
+        const payload = encodeURIComponent(JSON.stringify({
+          id: item.id || "unknown",
+          name: item.name || "Item"
+        }));
+        return `
           <button class="review-open-btn"
             data-review="${payload}"
-            style="background: var(--gold); color: var(--navy); border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; font-size: 13px;">
-            ⭐ Write a Review
+            style="background: var(--gold); color: var(--navy); border: none; padding: 10px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; font-size: 12px; text-align: left; margin-bottom: 6px;">
+            ⭐ Review: ${item.name || "Item"} (x${item.qty || 1})
           </button>
+        `;
+      }).join("");
+      return `
+        <div style="margin-top: 15px;">
+          <p style="font-size: 12px; color: var(--navy); font-weight: bold; margin: 0 0 8px;">Rate your items:</p>
+          ${buttons}
         </div>
       `;
     }
@@ -297,7 +294,12 @@
         resultsDiv.innerHTML = html;
       } catch (e) {
         console.error(e);
-        errorMsg.textContent = "Error fetching order. Please try again.";
+        // Detect missing composite index (Firebase error code)
+        if (e && (e.code === "failed-precondition" || String(e.message || "").includes("index"))) {
+          errorMsg.textContent = "Tracking is temporarily unavailable. Please contact support on WhatsApp.";
+        } else {
+          errorMsg.textContent = "Error fetching order. Please try again.";
+        }
         errorMsg.style.display = "block";
       } finally {
         btn.textContent = "Check Status";
@@ -319,6 +321,7 @@
           const { id, name } = JSON.parse(decodeURIComponent(reviewBtn.dataset.review));
           document.getElementById("reviewProductId").value = id;
           document.getElementById("reviewProductName").value = name;
+          document.getElementById("reviewProductLabel").textContent = `Reviewing: ${name}`;
           document.getElementById("reviewModal").style.display = "flex";
         } catch (err) { console.error(err); }
       }
@@ -336,9 +339,18 @@
       const comment = document.getElementById("reviewComment").value.trim();
 
       if (!name || !comment) {
-        premiumToast("Please fill Name and Comment", "error");
+        showToast("Please fill Name and Comment", "error");
         return;
       }
+
+      if (!canSubmitReview(prodId)) {
+        showToast("You just reviewed this item. Please wait a minute.", "error");
+        return;
+      }
+
+      const submitBtn = document.getElementById("reviewSubmitBtn");
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Submitting...";
 
       try {
         await addDoc(collection(db, "reviews"), {
@@ -347,15 +359,20 @@
           customerName: name,
           rating: Number(rating),
           comment,
-          date: new Date().toLocaleString("en-IN")
+          date: new Date().toLocaleString("en-IN"),
+          createdAt: Date.now()
         });
-        premiumToast("Thank you! Your review has been submitted.");
+        markReviewSubmitted(prodId);
+        showToast("Thank you! Your review has been submitted.");
         document.getElementById("reviewModal").style.display = "none";
         document.getElementById("reviewName").value = "";
         document.getElementById("reviewComment").value = "";
       } catch (e) {
         console.error(e);
-        premiumToast("Failed to submit review. Try again.", "error");
+        showToast("Failed to submit review. Try again.", "error");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Submit";
       }
     });
   </script>
