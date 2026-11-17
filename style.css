@@ -1,8 +1,9 @@
 /* ==========================================================
-   AARADHYA MART — MASTER STYLESHEET (REFACTORED)
+   AARADHYA MART — MASTER STYLESHEET (REFACTORED v2)
    - Removed duplicate animations (fly-to-cart, cartBounce)
    - Centralized toast styles
    - Added reusable tracker component styles
+   - Scoped product grid variants; removed !important conflicts
    ========================================================== */
 
 :root {
@@ -185,15 +186,21 @@ img { max-width: 100%; }
   box-shadow: 0 4px 10px rgba(16,36,59,0.2);
 }
 
-/* ==================== PRODUCT GRID ==================== */
+/* ==================== PRODUCT GRID (GLOBAL DEFAULT) ==================== */
 .product-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 15px;
   align-items: stretch;
 }
+/* Scoped variant for print.html — no !important conflicts */
+.print-product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+}
 
-/* ==================== PRODUCT CARD ==================== */
+/* ==================== PRODUCT CARD (DEFAULT) ==================== */
 .product-card {
   border: 1px solid #e5e7eb;
   border-radius: 12px;
@@ -889,14 +896,15 @@ img { max-width: 100%; }
 @media (max-width: 650px) {
   .site-header { padding: 0 4%; height: 70px; }
   .hero { height: 300px; padding: 0 7%; }
-  .product-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
-  .product-card { padding: 8px !important; }
-  .product-info h3 { font-size: 12px !important; height: 32px !important; line-height: 1.35 !important; }
-  .product-category { font-size: 9px !important; }
-  .price-row .price-display { font-size: 15px !important; }
-  .price-row .unit-pill { font-size: 9px !important; padding: 3px 5px !important; }
-  .btn-add-cart, .btn-buy-now { font-size: 10px !important; padding: 8px 3px !important; }
-  .coming-soon-card { grid-column: 1 / -1 !important; min-height: 240px !important; padding: 20px 12px !important; }
+  .product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .print-product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .product-card { padding: 8px; }
+  .product-info h3 { font-size: 12px; height: 32px; line-height: 1.35; }
+  .product-category { font-size: 9px; }
+  .price-row .price-display { font-size: 15px; }
+  .price-row .unit-pill { font-size: 9px; padding: 3px 5px; }
+  .btn-add-cart, .btn-buy-now { font-size: 10px; padding: 8px 3px; }
+  .coming-soon-card { grid-column: 1 / -1; min-height: 240px; padding: 20px 12px; }
   .coming-soon-icon { font-size: 30px; }
   .shop-trust-row { gap: 10px; font-size: 10px; }
   .shop-controls { flex-wrap: wrap; }
@@ -904,8 +912,8 @@ img { max-width: 100%; }
   .shop-controls select { flex: 1; min-width: 0; height: 40px; font-size: 11px; }
   .cat-nav-btn { padding: 8px 14px; font-size: 11px; }
   .dialog-layout { grid-template-columns: 1fr; max-height: 92vh; overflow-y: auto; }
-  .dialog-image-slider { min-height: 280px !important; max-height: 320px !important; }
-  .dialog-image-slider img { padding: 15px !important; }
+  .dialog-image-slider { min-height: 280px; max-height: 320px; }
+  .dialog-image-slider img { padding: 15px; }
   .dialog-details { padding: 20px; }
 }
 
