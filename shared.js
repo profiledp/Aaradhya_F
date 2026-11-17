@@ -30,6 +30,7 @@ export function getDb() {
 export const WHATSAPP_NUMBER = "918931911428";
 export const CART_KEY = "aaradhyaMartCart";
 export const MY_ORDERS_KEY = "aaradhyaMyOrders";
+export const REVIEW_COOLDOWN_MS = 60 * 1000; // 1 min per-product cooldown
 
 /* ---------- Phone normalization ---------- */
 export function normalizePhone(input) {
@@ -80,19 +81,41 @@ export function updateCartBadge() {
   badge.style.color = count === 0 ? "#fff" : "var(--navy)";
 }
 
-/* ---------- Toast ---------- */
-export function showToast(message, icon = "✅") {
-  let t = document.querySelector(".toast-notification");
+/* ---------- Toast (single source of truth) ---------- */
+let _toastTimer = null;
+export function showToast(message, type = "success") {
+  const isError = type === "error";
+  let t = document.querySelector(".premium-toast");
   if (t) t.remove();
+  if (_toastTimer) { clearTimeout(_toastTimer); _toastTimer = null; }
+
   const toast = document.createElement("div");
-  toast.className = "toast-notification";
-  toast.innerHTML = `<span class="toast-icon">${icon}</span> ${message}`;
+  toast.className = "premium-toast" + (isError ? " is-error" : "");
+  toast.innerHTML = `<span>${isError ? "⚠️" : "✅"}</span> ${message}`;
   document.body.appendChild(toast);
   setTimeout(() => toast.classList.add("show"), 10);
-  setTimeout(() => {
+  _toastTimer = setTimeout(() => {
     toast.classList.remove("show");
     setTimeout(() => toast.remove(), 400);
-  }, 3000);
+  }, 3500);
+}
+
+/* ---------- Review rate limit (client-side, best effort) ---------- */
+export function canSubmitReview(productId) {
+  try {
+    const raw = localStorage.getItem("aaradhyaReviewTimes") || "{}";
+    const times = JSON.parse(raw);
+    const last = Number(times[productId] || 0);
+    return Date.now() - last > REVIEW_COOLDOWN_MS;
+  } catch { return true; }
+}
+export function markReviewSubmitted(productId) {
+  try {
+    const raw = localStorage.getItem("aaradhyaReviewTimes") || "{}";
+    const times = JSON.parse(raw);
+    times[productId] = Date.now();
+    localStorage.setItem("aaradhyaReviewTimes", JSON.stringify(times));
+  } catch { /* ignore */ }
 }
 
 /* ---------- Fly-to-cart ---------- */
