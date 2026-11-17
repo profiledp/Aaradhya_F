@@ -171,7 +171,7 @@
       `;
     }
 
-    /* Build a review button for EVERY item in the order */
+    /* Review buttons — one per item */
     function buildReviewBlock(order) {
       if (order.status !== "Delivered" || !order.items?.length) return "";
       const buttons = order.items.map((item) => {
@@ -214,28 +214,22 @@
     }
 
     async function findOrders(orderId, phone) {
-      const q1 = query(
-        collection(db, "orders"),
-        where("orderId", "==", orderId),
-        where("customerPhone", "==", phone)
-      );
-      let snap = await getDocs(q1);
-      if (!snap.empty) return snap;
-
-      const q2 = query(
-        collection(db, "orders"),
-        where("orderId", "==", orderId),
-        where("customerPhone", "==", "+91" + phone)
-      );
-      snap = await getDocs(q2);
-      if (!snap.empty) return snap;
-
-      const q3 = query(
+      const variants = [phone, "+91" + phone, "91" + phone];
+      for (const variant of variants) {
+        const q = query(
+          collection(db, "orders"),
+          where("orderId", "==", orderId),
+          where("customerPhone", "==", variant)
+        );
+        const snap = await getDocs(q);
+        if (!snap.empty) return snap;
+      }
+      // Return last empty snap
+      return await getDocs(query(
         collection(db, "orders"),
         where("orderId", "==", orderId),
         where("customerPhone", "==", "91" + phone)
-      );
-      return await getDocs(q3);
+      ));
     }
 
     document.getElementById("trackBtn").addEventListener("click", async () => {
@@ -294,7 +288,6 @@
         resultsDiv.innerHTML = html;
       } catch (e) {
         console.error(e);
-        // Detect missing composite index (Firebase error code)
         if (e && (e.code === "failed-precondition" || String(e.message || "").includes("index"))) {
           errorMsg.textContent = "Tracking is temporarily unavailable. Please contact support on WhatsApp.";
         } else {
