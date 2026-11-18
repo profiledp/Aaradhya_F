@@ -6,115 +6,9 @@
   <title>A-Print | Custom Printing Services</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%2310243b'/><text x='50' y='68' font-size='55' font-family='Georgia' fill='%23c5a36b' text-anchor='middle'>A</text></svg>">
   <link rel="stylesheet" href="style.css">
-  <style>
-    /* Specific styles just for the print page header/banner */
-    .vp-hero {
-      background: url('https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=2000&q=80') center/cover no-repeat;
-      position: relative; color: #fff; text-align: center; padding: 60px 20px 80px;
-    }
-    .vp-hero::before {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(to right, rgba(16,36,59,0.95), rgba(16,36,59,0.75));
-    }
-    .vp-hero-content { position: relative; z-index: 1; max-width: 600px; margin: 0 auto; }
-    .vp-hero h1 { font: normal clamp(28px, 3.5vw, 38px)/1.2 Georgia, serif; margin: 0 0 12px; letter-spacing: -0.5px; text-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-    .vp-hero h1 em { color: #c5a36b; font-style: italic; }
-    .vp-hero p { font-size: 14px; color: #cbd5e1; margin: 0 auto; line-height: 1.6; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-
-    .category-showcase {
-      max-width: 1200px; margin: -35px auto 40px; padding: 0 7%;
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px;
-      position: relative; z-index: 10;
-    }
-    .cat-card {
-      background: #fff; border-radius: 12px; overflow: hidden; text-align: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05); cursor: pointer; transition: all 0.3s ease;
-      border: 1px solid #eee; display: flex; flex-direction: column; height: 110px; position: relative;
-    }
-    .cat-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 15px 30px rgba(16,36,59,0.15); border-color: #c5a36b; z-index: 2; }
-    .cat-card img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1; transition: 0.4s; }
-    .cat-card:hover img { transform: scale(1.1); }
-    .cat-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(16,36,59,0.9) 0%, rgba(16,36,59,0.1) 60%, transparent 100%); z-index: 2; }
-    .cat-card h3 { position: relative; z-index: 3; color: #fff; font-size: 12px; font-weight: bold; margin: auto 5px 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); line-height: 1.2; }
-
-    .trust-section-wrapper { max-width: 1000px; margin: 0 auto 30px; padding: 0 7%; }
-    .trust-section-inner {
-      background: #fff; border: 1px solid #eaeaea; border-radius: 16px;
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; padding: 30px 40px;
-      box-shadow: 0 10px 30px rgba(16,36,59,0.05), inset 0 1px 0 #fff;
-    }
-    .trust-item { text-align: center; }
-    .trust-icon-wrap { width: 65px; height: 65px; margin: 0 auto 15px; background: #fdfbf7; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid #f3ead8; box-shadow: 0 5px 15px rgba(197,163,107,0.2), inset 0 -2px 5px rgba(0,0,0,0.05); }
-    .trust-icon { font-size: 30px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
-    .trust-item h3 { font: normal 16px Georgia, serif; color: #10243b; margin: 0 0 8px; }
-    .trust-item p { font-size: 12px; color: #666; margin: 0; line-height: 1.6; }
-
-    .custom-design-banner { max-width: 1200px; margin: 0 auto 50px; padding: 0 7%; }
-    .cd-inner { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.03); }
-    .cd-text h2 { font: normal 18px Georgia, serif; color: #10243b; margin: 0 0 6px; }
-    .cd-text p { font-size: 12px; color: #6b7280; margin: 0; }
-    .btn-quote { background: #c5a36b; color: #10243b; padding: 10px 20px; border-radius: 4px; font-weight: bold; font-size: 12px; border: none; cursor: pointer; transition: 0.2s; box-shadow: 0 3px 0 #b08e59; }
-    .btn-quote:active { transform: translateY(3px); box-shadow: none; }
-    .btn-quote:hover { background: #b08e59; color: #fff; }
-
-    /* MODAL */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(16, 36, 59, 0.8); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; visibility: hidden; transition: 0.3s; padding: 15px; }
-    .modal-overlay.active { opacity: 1; visibility: visible; }
-    .modal-box { background: #fff; border-radius: 12px; padding: 30px; width: 100%; max-width: 580px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.3); transform: scale(0.95) translateY(20px); transition: 0.3s; }
-    .modal-overlay.active .modal-box { transform: scale(1) translateY(0); }
-    .close-btn { position: absolute; top: 15px; right: 15px; background: #f1f5f9; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; color: #666; }
-    .close-btn:hover { background: #fee2e2; color: #ef4444; }
-    .modal-header { text-align: center; margin-bottom: 20px; }
-    .modal-header h2 { font: normal 22px Georgia, serif; color: #10243b; margin: 0 0 6px; }
-    .modal-header p { font-size: 12px; color: #666; margin: 0; }
-    .m-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .m-field { display: flex; flex-direction: column; gap: 4px; }
-    .m-field.full { grid-column: 1 / -1; }
-    .m-field label { font-size: 11px; font-weight: bold; color: #333; }
-    .m-field input, .m-field select, .m-field textarea { padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; font-size: 13px; outline: none; background: #f8fafc; transition: 0.2s; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
-    .m-field input:focus, .m-field select:focus, .m-field textarea:focus { border-color: #c5a36b; background: #fff; box-shadow: 0 0 0 3px rgba(197,163,107,0.2); }
-    .bulk-discount-box { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 10px; margin-top: 15px; display: flex; align-items: center; gap: 10px; }
-    .bulk-discount-box .icon { font-size: 18px; }
-    .bulk-discount-box p { margin: 0; font-size: 11px; color: #1e3a8a; font-weight: 600; line-height: 1.4; }
-    .design-upload-box { background: #f8fafc; border: 1px dashed #94a3b8; border-radius: 6px; padding: 12px; margin-top: 12px; display: flex; align-items: center; gap: 10px; }
-    .design-upload-box .icon { font-size: 20px; background: #e2e8f0; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
-    .design-upload-box .text h4 { margin: 0 0 2px; font-size: 12px; color: #10243b; }
-    .design-upload-box .text p { margin: 0; font-size: 11px; color: #64748b; line-height: 1.3; }
-    .policy-box { background: #fffbeb; border: 1px dashed #f59e0b; border-radius: 6px; padding: 10px; margin-top: 15px; font-size: 11px; color: #92400e; line-height: 1.4; }
-    .check-label { display: flex; align-items: flex-start; gap: 6px; margin-top: 12px; cursor: pointer; }
-    .check-label input { margin-top: 2px; width: 14px; height: 14px; cursor: pointer; }
-    .check-label span { font-size: 11px; color: #475569; font-weight: 500; }
-    .btn-submit { width: 100%; padding: 12px; margin-top: 15px; background: #10243b; color: #fff; border: none; border-radius: 6px; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 0 #000; }
-    .btn-submit:active { transform: translateY(4px); box-shadow: none; }
-    .btn-submit:hover { background: #1e3a5f; }
-    .trust-badges-mini { display: flex; justify-content: space-between; margin-top: 20px; padding-top: 15px; border-top: 1px solid #eaeaea; }
-    .tb-item { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
-    .tb-item svg { width: 20px; height: 20px; stroke: #c5a36b; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.1)); }
-    .tb-item span { font-size: 10px; color: #64748b; font-weight: 600; }
-    
-    @media (max-width: 768px) {
-      .category-showcase { grid-template-columns: repeat(3, 1fr); margin-top: -20px; }
-      .cat-card { height: 90px; }
-      .cat-card h3 { font-size: 10px; }
-      .trust-section-inner { grid-template-columns: 1fr; gap: 20px; padding: 25px 20px; }
-      .cd-inner { flex-direction: column; text-align: center; padding: 20px; }
-    }
-    @media(max-width: 600px) {
-      .m-grid { grid-template-columns: 1fr; }
-      .modal-box { padding: 20px; }
-      .design-upload-box { flex-direction: column; text-align: center; }
-      .trust-badges-mini { flex-direction: column; gap: 12px; }
-    }
-    
-    /* DEBUG BOX STYLE */
-    .debug-box {
-      background: #fffbeb; color: #b45309; border: 1px solid #fcd34d;
-      padding: 12px; margin: 20px auto; max-width: 1200px; border-radius: 8px;
-      font-family: monospace; font-size: 13px; display: none; line-height: 1.6; text-align: left;
-    }
-  </style>
 </head>
 <body>
+  <!-- HEADER -->
   <header class="site-header">
     <a class="brand" href="index.html"><span class="brand-mark">AM</span><span><strong>A-PRINT</strong><small>BY AARADHYA FASHION</small></span></a>
     <div style="display: flex; gap: 8px; align-items: center;">
@@ -123,38 +17,19 @@
     </div>
   </header>
 
-  <section class="vp-hero">
-    <div class="vp-hero-content">
-      <h1>Custom Printing for <em>Every Need</em></h1>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-shade"></div>
+    <div class="hero-copy">
+      <span class="eyebrow">CUSTOM PRINTING</span>
+      <h1>Printing for <br><em>Every Need</em></h1>
       <p>High-quality printed products, delivered to your doorstep. From business cards to personal gifts, we've got you covered.</p>
     </div>
   </section>
 
-  <div class="category-showcase">
-    <div class="cat-card" data-cat-link="T-Shirts"><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=200&q=80" alt="T-Shirts"><div class="cat-overlay"></div><h3>T-Shirts</h3></div>
-    <div class="cat-card" data-cat-link="Mugs/Cups"><img src="https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?auto=format&fit=crop&w=200&q=80" alt="Mugs"><div class="cat-overlay"></div><h3>Mugs/Cups</h3></div>
-    <div class="cat-card" data-cat-link="Cushions"><img src="https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&w=200&q=80" alt="Cushions"><div class="cat-overlay"></div><h3>Cushions</h3></div>
-    <div class="cat-card" data-cat-link="Caps"><img src="https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&w=200&q=80" alt="Caps"><div class="cat-overlay"></div><h3>Caps</h3></div>
-    <div class="cat-card" data-cat-link="Keychains"><img src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&w=200&q=80" alt="Keychains"><div class="cat-overlay"></div><h3>Keychains</h3></div>
-    <div class="cat-card" data-cat-link="Photo Frames"><img src="https://images.unsplash.com/photo-1582053433976-25c00369fc93?auto=format&fit=crop&w=200&q=80" alt="Photo Frames"><div class="cat-overlay"></div><h3>Photo Frames</h3></div>
-    <div class="cat-card" data-cat-link="Bottles"><img src="https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&w=200&q=80" alt="Bottles"><div class="cat-overlay"></div><h3>Bottles</h3></div>
-    <div class="cat-card" data-cat-link="Visiting Card"><img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=200&q=80" alt="Visiting Card"><div class="cat-overlay"></div><h3>Visiting Card</h3></div>
-    <div class="cat-card" data-cat-link="Marriage Card"><img src="https://images.unsplash.com/photo-1607344645866-009c320b63e0?auto=format&fit=crop&w=200&q=80" alt="Marriage Card"><div class="cat-overlay"></div><h3>Marriage Card</h3></div>
-    <div class="cat-card" data-cat-link="Pamphlet"><img src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&w=200&q=80" alt="Pamphlet"><div class="cat-overlay"></div><h3>Pamphlet</h3></div>
-    <div class="cat-card" data-quote-open><img src="https://images.unsplash.com/photo-1626785771621-3a3145c88311?auto=format&fit=crop&w=200&q=80" alt="Other Custom"><div class="cat-overlay"></div><h3>Other / Custom</h3></div>
-  </div>
-
-  <div class="trust-section-wrapper">
-    <div class="trust-section-inner">
-      <div class="trust-item"><div class="trust-icon-wrap"><div class="trust-icon">🏆</div></div><h3>Premium Quality</h3><p>We use the best materials and latest printing tech to ensure your products look amazing.</p></div>
-      <div class="trust-item"><div class="trust-icon-wrap"><div class="trust-icon">📦</div></div><h3>Low Quantity Orders</h3><p>Order just 1 piece or 1000. We offer competitive pricing at every quantity level.</p></div>
-      <div class="trust-item"><div class="trust-icon-wrap"><div class="trust-icon">🛡️</div></div><h3>Satisfaction Guaranteed</h3><p>If you're not happy with the print quality, we'll replace it or refund your money.</p></div>
-    </div>
-  </div>
-
-  <div id="debugBox" class="debug-box"></div>
-
-  <section class="shop-section section-wrap">
+  <!-- MAIN SHOP SECTION - EXACT FASHION LAYOUT -->
+  <main class="shop-section section-wrap">
+    
     <div class="section-heading" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
       <div>
         <span class="eyebrow" style="color: var(--gold); font-size: 10px; letter-spacing: 3px; font-weight: bold;">A-PRINT PRODUCTS</span>
@@ -163,6 +38,7 @@
       <div class="product-count-label">Showing <strong id="productCount">0</strong> items</div>
     </div>
 
+    <!-- SEARCH & SORT -->
     <div class="shop-controls">
       <div class="search-field">
         <span style="color: #777;">⌕</span>
@@ -175,12 +51,22 @@
       </select>
     </div>
 
+    <!-- CATEGORY PILLS -->
     <div class="category-nav" id="categoryNav">
       <button class="cat-nav-btn active" data-cat="All">All Products</button>
     </div>
 
-    <div class="product-grid" id="productGrid"></div>
+    <!-- TRUST ROW -->
+    <div class="shop-trust-row">
+      <span>🚚 Free Delivery above ₹500</span>
+      <span>✅ Easy 24hr Size Exchange</span>
+      <span>⚡ Same Day Dispatch</span>
+      <span>🛡️ 100% Secure</span>
+    </div>
 
+    <!-- PRODUCT GRID -->
+    <div class="product-grid" id="productGrid"></div>
+    
     <div id="emptyState" class="empty-state" style="display: none;">
       <span>🔍</span>
       <h3>No products found</h3>
@@ -190,18 +76,24 @@
     <div id="loadingState" style="text-align: center; padding: 40px; color: #666; font-size: 14px;">
       Loading products...
     </div>
-  </section>
 
-  <section class="custom-design-banner">
-    <div class="cd-inner">
+    <!-- DEBUG INFO (FOR TROUBLESHOOTING) -->
+    <div id="debugBox" style="display: none; background: #fffbeb; color: #b45309; border: 1px solid #fcd34d; padding: 12px; margin-top: 20px; border-radius: 8px; font-family: monospace; font-size: 13px;"></div>
+
+  </main>
+
+  <!-- CUSTOM DESIGN BANNER -->
+  <section class="custom-design-banner" style="max-width: 1200px; margin: 0 auto 50px; padding: 0 7%;">
+    <div class="cd-inner" style="background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.03);">
       <div class="cd-text">
-        <h2>Have a specific design in mind? 🤔</h2>
-        <p>Share your idea, size, and quantity with us. Our team will provide a free quote on WhatsApp.</p>
+        <h2 style="font: normal 18px Georgia, serif; color: #10243b; margin: 0 0 6px;">Have a specific design in mind? 🤔</h2>
+        <p style="font-size: 12px; color: #6b7280; margin: 0;">Share your idea, size, and quantity with us. Our team will provide a free quote on WhatsApp.</p>
       </div>
-      <button class="btn-quote" data-quote-open>🎨 Get Custom Quote</button>
+      <button class="btn-quote" data-quote-open style="background: #c5a36b; color: #10243b; padding: 10px 20px; border-radius: 4px; font-weight: bold; font-size: 12px; border: none; cursor: pointer; transition: 0.2s; box-shadow: 0 3px 0 #b08e59;">🎨 Get Custom Quote</button>
     </div>
   </section>
 
+  <!-- FLOATING BUTTONS -->
   <a href="track.html" class="track-float-btn" aria-label="Track Order">
     <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
     <span>Track Order</span>
@@ -213,20 +105,21 @@
     <span class="cart-icon-svg">🛒</span><span class="cart-text">Cart</span><span class="cart-badge" id="globalCartCount">0</span>
   </a>
 
-  <div class="modal-overlay" id="quoteModal">
-    <div class="modal-box">
-      <button class="close-btn" type="button" data-quote-close>✕</button>
-      <div class="modal-header">
-        <h2>Get Custom Quote 🎨</h2>
-        <p>Fill details below. We'll reply on WhatsApp within 2 hours.</p>
+  <!-- QUOTE MODAL -->
+  <div class="modal-overlay" id="quoteModal" style="position: fixed; inset: 0; background: rgba(16, 36, 59, 0.8); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; visibility: hidden; transition: 0.3s; padding: 15px;">
+    <div class="modal-box" style="background: #fff; border-radius: 12px; padding: 30px; width: 100%; max-width: 580px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.3); transform: scale(0.95) translateY(20px); transition: 0.3s;">
+      <button class="close-btn" type="button" data-quote-close style="position: absolute; top: 15px; right: 15px; background: #f1f5f9; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; color: #666;">✕</button>
+      <div class="modal-header" style="text-align: center; margin-bottom: 20px;">
+        <h2 style="font: normal 22px Georgia, serif; color: #10243b; margin: 0 0 6px;">Get Custom Quote 🎨</h2>
+        <p style="font-size: 12px; color: #666; margin: 0;">Fill details below. We'll reply on WhatsApp within 2 hours.</p>
       </div>
       <form id="customQuoteForm">
-        <div class="m-grid">
-          <div class="m-field"><label>Your Name *</label><input type="text" id="qName" placeholder="e.g. Rahul Sharma" required></div>
-          <div class="m-field"><label>WhatsApp Number *</label><input type="tel" id="qPhone" placeholder="10-digit mobile no." required></div>
-          <div class="m-field">
-            <label>Print Product *</label>
-            <select id="qProduct" required>
+        <div class="m-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="m-field" style="display: flex; flex-direction: column; gap: 4px;"><label style="font-size: 11px; font-weight: bold; color: #333;">Your Name *</label><input type="text" id="qName" placeholder="e.g. Rahul Sharma" required style="padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; font-size: 13px; outline: none; background: #f8fafc;"></div>
+          <div class="m-field" style="display: flex; flex-direction: column; gap: 4px;"><label style="font-size: 11px; font-weight: bold; color: #333;">WhatsApp Number *</label><input type="tel" id="qPhone" placeholder="10-digit mobile no." required style="padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; font-size: 13px; outline: none; background: #f8fafc;"></div>
+          <div class="m-field" style="display: flex; flex-direction: column; gap: 4px;">
+            <label style="font-size: 11px; font-weight: bold; color: #333;">Print Product *</label>
+            <select id="qProduct" required style="padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; font-size: 13px; outline: none; background: #f8fafc;">
               <option value="">Select Product</option>
               <option value="T-Shirts">T-Shirts</option>
               <option value="Mugs/Cups">Mugs/Cups</option>
@@ -241,20 +134,15 @@
               <option value="Other (Mention in details)">Other (Mention in details)</option>
             </select>
           </div>
-          <div class="m-field"><label>Quantity *</label><input type="number" id="qQuantity" min="1" placeholder="e.g. 50" required></div>
-          <div class="m-field full"><label>Design Description / Special Instructions *</label><textarea id="qDetails" rows="3" placeholder="Explain your design idea, text to print, colors, etc." required></textarea></div>
+          <div class="m-field" style="display: flex; flex-direction: column; gap: 4px;"><label style="font-size: 11px; font-weight: bold; color: #333;">Quantity *</label><input type="number" id="qQuantity" min="1" placeholder="e.g. 50" required style="padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; font-size: 13px; outline: none; background: #f8fafc;"></div>
+          <div class="m-field full" style="display: flex; flex-direction: column; gap: 4px; grid-column: 1 / -1;"><label style="font-size: 11px; font-weight: bold; color: #333;">Design Description / Special Instructions *</label><textarea id="qDetails" rows="3" placeholder="Explain your design idea, text to print, colors, etc." required style="padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; font-size: 13px; outline: none; background: #f8fafc; resize: vertical;"></textarea></div>
         </div>
-        <div class="bulk-discount-box"><div class="icon">🎉</div><p>Bulk orders (50+ quantity) get special wholesale discounts! Mention your quantity above to get a better quote.</p></div>
-        <div class="design-upload-box"><div class="icon">🖼️</div><div class="text"><h4>Have a design file ready?</h4><p>You can send your photo/logo (PNG, JPG, PDF) directly on WhatsApp after submitting this form.</p></div></div>
-        <div class="policy-box"><strong>⚠️ Payment Policy:</strong> Custom printing orders require <strong>50% to 70% advance payment</strong> to start the work.</div>
-        <label class="check-label"><input type="checkbox" id="qAgreePolicy" required><span>I understand and agree to the advance payment policy.</span></label>
-        <button type="submit" class="btn-submit" id="quoteSubmitBtn">Get Quote via WhatsApp 📲</button>
+        <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 10px; margin-top: 15px; display: flex; align-items: center; gap: 10px;"><div style="font-size: 18px;">🎉</div><p style="margin: 0; font-size: 11px; color: #1e3a8a; font-weight: 600; line-height: 1.4;">Bulk orders (50+ quantity) get special wholesale discounts! Mention your quantity above to get a better quote.</p></div>
+        <div style="background: #f8fafc; border: 1px dashed #94a3b8; border-radius: 6px; padding: 12px; margin-top: 12px; display: flex; align-items: center; gap: 10px;"><div style="font-size: 20px; background: #e2e8f0; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">🖼️</div><div><h4 style="margin: 0 0 2px; font-size: 12px; color: #10243b;">Have a design file ready?</h4><p style="margin: 0; font-size: 11px; color: #64748b; line-height: 1.3;">You can send your photo/logo (PNG, JPG, PDF) directly on WhatsApp after submitting this form.</p></div></div>
+        <div style="background: #fffbeb; border: 1px dashed #f59e0b; border-radius: 6px; padding: 10px; margin-top: 15px; font-size: 11px; color: #92400e; line-height: 1.4;"><strong>⚠️ Payment Policy:</strong> Custom printing orders require <strong>50% to 70% advance payment</strong> to start the work.</div>
+        <label style="display: flex; align-items: flex-start; gap: 6px; margin-top: 12px; cursor: pointer;"><input type="checkbox" id="qAgreePolicy" required style="margin-top: 2px; width: 14px; height: 14px; cursor: pointer;"><span style="font-size: 11px; color: #475569; font-weight: 500;">I understand and agree to the advance payment policy.</span></label>
+        <button type="submit" class="btn-submit" id="quoteSubmitBtn" style="width: 100%; padding: 12px; margin-top: 15px; background: #10243b; color: #fff; border: none; border-radius: 6px; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 0 #000;">Get Quote via WhatsApp 📲</button>
       </form>
-      <div class="trust-badges-mini">
-        <div class="tb-item"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg><span>Fast Delivery</span></div>
-        <div class="tb-item"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg><span>Quality Assured</span></div>
-        <div class="tb-item"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"></path></svg><span>WhatsApp Support</span></div>
-      </div>
     </div>
   </div>
 
@@ -273,6 +161,7 @@
     const firstImg = (img) => img ? String(img).split(",")[0].trim() : PLACEHOLDER;
     const escapeHtml = (s) => String(s ?? "").replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
 
+    /* ---------- Safe Setup ---------- */
     document.addEventListener("DOMContentLoaded", () => {
       try { updateCartBadge(); } catch(e) {}
       setupUI();
@@ -280,13 +169,21 @@
     });
 
     function setupUI() {
+      // Quote Modal
       const quoteModal = document.getElementById("quoteModal");
       if (quoteModal) {
-        document.querySelectorAll("[data-quote-open]").forEach((el) => el.addEventListener("click", () => quoteModal.classList.add("active")));
-        document.querySelectorAll("[data-quote-close]").forEach((el) => el.addEventListener("click", () => quoteModal.classList.remove("active")));
-        quoteModal.addEventListener("click", (e) => { if (e.target === quoteModal) quoteModal.classList.remove("active"); });
+        document.querySelectorAll("[data-quote-open]").forEach((el) => 
+          el.addEventListener("click", () => quoteModal.classList.add("active"))
+        );
+        document.querySelectorAll("[data-quote-close]").forEach((el) => 
+          el.addEventListener("click", () => quoteModal.classList.remove("active"))
+        );
+        quoteModal.addEventListener("click", (e) => { 
+          if (e.target === quoteModal) quoteModal.classList.remove("active"); 
+        });
       }
 
+      // Quote Form Submit
       const quoteForm = document.getElementById("customQuoteForm");
       if (quoteForm) {
         quoteForm.addEventListener("submit", (e) => {
@@ -303,7 +200,13 @@
             return;
           }
           btn.textContent = "Opening WhatsApp..."; btn.disabled = true;
-          const msg = `*🎨 CUSTOM PRINT QUOTE REQUEST*\n\n*Name:* ${name}\n*Phone:* ${phone}\n*Product:* ${document.getElementById("qProduct").value}\n*Qty:* ${document.getElementById("qQuantity").value} pcs\n\n*Details:*\n${document.getElementById("qDetails").value.trim()}\n\n_I agree to the 50-70% advance policy._\n\n_(I will send my design file in the next message)_`;
+          const msg = `*🎨 CUSTOM PRINT QUOTE REQUEST*\n\n` +
+                      `*Name:* ${name}\n*Phone:* ${phone}\n` +
+                      `*Product:* ${document.getElementById("qProduct").value}\n` +
+                      `*Qty:* ${document.getElementById("qQuantity").value} pcs\n\n` +
+                      `*Details:*\n${document.getElementById("qDetails").value.trim()}\n\n` +
+                      `_I agree to the 50-70% advance policy._\n\n` +
+                      `_(I will send my design file in the next message)_`;
           setTimeout(() => {
             window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
             btn.textContent = "Get Quote via WhatsApp 📲"; btn.disabled = false;
@@ -313,20 +216,23 @@
         });
       }
 
+      // Search & Sort
       document.getElementById("searchInput")?.addEventListener("input", render);
       document.getElementById("sortFilter")?.addEventListener("change", render);
 
+      // Category Cards
       document.querySelectorAll("[data-cat-link]").forEach((card) => {
         card.addEventListener("click", () => filterByCategory(card.dataset.catLink));
       });
     }
 
+    /* ---------- Load Products ---------- */
     async function loadProducts() {
       const debugBox = document.getElementById("debugBox");
       const loadingEl = document.getElementById("loadingState");
       let loadedFromDB = false;
 
-      // 1. TRY TO FETCH FROM FIREBASE
+      // 1. Try Firebase
       try {
         const snap = await getDocs(collection(db, "products"));
         products = [];
@@ -342,14 +248,14 @@
         console.warn("[A-Print] Firestore fetch failed:", err);
       }
 
-      // 2. IF FIREBASE FAILS, USE LOCAL STORAGE
+      // 2. Fallback to LocalStorage if Firebase fails
       if (!loadedFromDB) {
         const cached = localStorage.getItem("aaradhyaAllProducts");
         if (cached) {
           products = JSON.parse(cached);
           if (debugBox) {
             debugBox.style.display = "block";
-            debugBox.innerHTML = `⚠️ <b>Database connection blocked (Check Firestore Rules).</b><br>Showing ${products.length} products loaded from Home Page cache.`;
+            debugBox.innerHTML = `⚠️ <b>Database connection blocked.</b><br>Showing ${products.length} products loaded from Home Page cache.`;
           }
         } else {
           if (loadingEl) loadingEl.innerHTML = "❌ No products found in database or local cache.";
@@ -361,22 +267,18 @@
         }
       } else {
         if (debugBox) {
-          debugBox.style.display = "block";
-          debugBox.innerHTML = `✅ <b>Database Connected!</b> Total products in DB: ${products.length}`;
+          debugBox.style.display = "none"; // Hide debug if successful
         }
       }
 
       if (loadingEl) loadingEl.style.display = "none";
 
-      // 3. FILTER PRODUCTS FOR PRINT
+      // 3. Render Categories
       let printProducts = products.filter((p) => norm(p.store).includes("print"));
-      
-      // Safety net: if filter fails, show everything
       if (printProducts.length === 0 && products.length > 0) {
-        printProducts = products; 
+        printProducts = products; // Fallback
       }
 
-      // Render Categories based on what we found
       const uniqueCats = [...new Set(printProducts.map((p) => (p.category || "").trim()).filter(Boolean))].sort();
       const catNav = document.getElementById("categoryNav");
       if (catNav) {
@@ -396,6 +298,7 @@
       render();
     }
 
+    /* ---------- Filter by Click on Category Card ---------- */
     function filterByCategory(categoryName) {
       currentActiveCategory = categoryName;
       const btns = document.querySelectorAll("#categoryNav .cat-nav-btn");
@@ -413,6 +316,7 @@
       render();
     }
 
+    /* ---------- Render Grid ---------- */
     function render() {
       let list = products.filter((p) => norm(p.store).includes("print"));
       if (list.length === 0 && products.length > 0) list = products;
@@ -441,6 +345,7 @@
       }
       emptyEl.style.display = "none";
 
+      // EXACT FASHION CARD LAYOUT
       grid.innerHTML = list.map((p) => {
         const isOut = Number(p.stock) <= 0;
         const sizes = Array.isArray(p.sizes) && p.sizes.length ? p.sizes : ["Standard"];
@@ -473,6 +378,7 @@
       }).join("");
     }
 
+    /* ---------- Event Delegation ---------- */
     document.getElementById("productGrid").addEventListener("click", (e) => {
       const addBtn = e.target.closest("[data-add]");
       if (addBtn) return handleAdd(addBtn);
