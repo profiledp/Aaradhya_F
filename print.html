@@ -105,10 +105,16 @@
       .design-upload-box { flex-direction: column; text-align: center; }
       .trust-badges-mini { flex-direction: column; gap: 12px; }
     }
+    
+    /* DEBUG BOX STYLE */
+    .debug-box {
+      background: #fffbeb; color: #b45309; border: 1px solid #fcd34d;
+      padding: 12px; margin: 20px auto; max-width: 1200px; border-radius: 8px;
+      font-family: monospace; font-size: 13px; display: none; line-height: 1.6; text-align: left;
+    }
   </style>
 </head>
 <body>
-  <!-- HEADER SAME AS HOME -->
   <header class="site-header">
     <a class="brand" href="index.html"><span class="brand-mark">AM</span><span><strong>A-PRINT</strong><small>BY AARADHYA FASHION</small></span></a>
     <div style="display: flex; gap: 8px; align-items: center;">
@@ -117,7 +123,6 @@
     </div>
   </header>
 
-  <!-- HERO -->
   <section class="vp-hero">
     <div class="vp-hero-content">
       <h1>Custom Printing for <em>Every Need</em></h1>
@@ -125,7 +130,6 @@
     </div>
   </section>
 
-  <!-- CATEGORY SHOWCASE -->
   <div class="category-showcase">
     <div class="cat-card" data-cat-link="T-Shirts"><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=200&q=80" alt="T-Shirts"><div class="cat-overlay"></div><h3>T-Shirts</h3></div>
     <div class="cat-card" data-cat-link="Mugs/Cups"><img src="https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?auto=format&fit=crop&w=200&q=80" alt="Mugs"><div class="cat-overlay"></div><h3>Mugs/Cups</h3></div>
@@ -140,7 +144,6 @@
     <div class="cat-card" data-quote-open><img src="https://images.unsplash.com/photo-1626785771621-3a3145c88311?auto=format&fit=crop&w=200&q=80" alt="Other Custom"><div class="cat-overlay"></div><h3>Other / Custom</h3></div>
   </div>
 
-  <!-- TRUST -->
   <div class="trust-section-wrapper">
     <div class="trust-section-inner">
       <div class="trust-item"><div class="trust-icon-wrap"><div class="trust-icon">🏆</div></div><h3>Premium Quality</h3><p>We use the best materials and latest printing tech to ensure your products look amazing.</p></div>
@@ -149,7 +152,8 @@
     </div>
   </div>
 
-  <!-- SHOP SECTION - SAME AS HOME PAGE -->
+  <div id="debugBox" class="debug-box"></div>
+
   <section class="shop-section section-wrap">
     <div class="section-heading" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
       <div>
@@ -175,7 +179,6 @@
       <button class="cat-nav-btn active" data-cat="All">All Products</button>
     </div>
 
-    <!-- REUSING HOME PAGE PRODUCT GRID CLASSES -->
     <div class="product-grid" id="productGrid"></div>
 
     <div id="emptyState" class="empty-state" style="display: none;">
@@ -183,9 +186,12 @@
       <h3>No products found</h3>
       <p style="font-size: 13px; color: #777; margin-top: 5px;">Try changing your search or category.</p>
     </div>
+    
+    <div id="loadingState" style="text-align: center; padding: 40px; color: #666; font-size: 14px;">
+      Loading products...
+    </div>
   </section>
 
-  <!-- CUSTOM DESIGN BANNER -->
   <section class="custom-design-banner">
     <div class="cd-inner">
       <div class="cd-text">
@@ -196,7 +202,6 @@
     </div>
   </section>
 
-  <!-- FLOATING BUTTONS & MODAL SAME AS BEFORE -->
   <a href="track.html" class="track-float-btn" aria-label="Track Order">
     <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
     <span>Track Order</span>
@@ -262,14 +267,12 @@
     let products = [];
     let currentActiveCategory = "All";
     
-    // Exact same placeholder as home page
     const PLACEHOLDER = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'><rect width='400' height='400' fill='%23f8f9fa'/><text x='200' y='200' font-size='52' font-family='Georgia' fill='%23c5a36b' text-anchor='middle' dominant-baseline='middle' opacity='0.5'>AM</text></svg>";
 
     const norm = (s) => String(s || "").trim().toLowerCase();
     const firstImg = (img) => img ? String(img).split(",")[0].trim() : PLACEHOLDER;
     const escapeHtml = (s) => String(s ?? "").replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
 
-    /* ---------- Safe Setup ---------- */
     document.addEventListener("DOMContentLoaded", () => {
       try { updateCartBadge(); } catch(e) {}
       setupUI();
@@ -277,21 +280,13 @@
     });
 
     function setupUI() {
-      // Quote Modal
       const quoteModal = document.getElementById("quoteModal");
       if (quoteModal) {
-        document.querySelectorAll("[data-quote-open]").forEach((el) => 
-          el.addEventListener("click", () => quoteModal.classList.add("active"))
-        );
-        document.querySelectorAll("[data-quote-close]").forEach((el) => 
-          el.addEventListener("click", () => quoteModal.classList.remove("active"))
-        );
-        quoteModal.addEventListener("click", (e) => { 
-          if (e.target === quoteModal) quoteModal.classList.remove("active"); 
-        });
+        document.querySelectorAll("[data-quote-open]").forEach((el) => el.addEventListener("click", () => quoteModal.classList.add("active")));
+        document.querySelectorAll("[data-quote-close]").forEach((el) => el.addEventListener("click", () => quoteModal.classList.remove("active")));
+        quoteModal.addEventListener("click", (e) => { if (e.target === quoteModal) quoteModal.classList.remove("active"); });
       }
 
-      // Quote Form Submit
       const quoteForm = document.getElementById("customQuoteForm");
       if (quoteForm) {
         quoteForm.addEventListener("submit", (e) => {
@@ -308,13 +303,7 @@
             return;
           }
           btn.textContent = "Opening WhatsApp..."; btn.disabled = true;
-          const msg = `*🎨 CUSTOM PRINT QUOTE REQUEST*\n\n` +
-                      `*Name:* ${name}\n*Phone:* ${phone}\n` +
-                      `*Product:* ${document.getElementById("qProduct").value}\n` +
-                      `*Qty:* ${document.getElementById("qQuantity").value} pcs\n\n` +
-                      `*Details:*\n${document.getElementById("qDetails").value.trim()}\n\n` +
-                      `_I agree to the 50-70% advance policy._\n\n` +
-                      `_(I will send my design file in the next message)_`;
+          const msg = `*🎨 CUSTOM PRINT QUOTE REQUEST*\n\n*Name:* ${name}\n*Phone:* ${phone}\n*Product:* ${document.getElementById("qProduct").value}\n*Qty:* ${document.getElementById("qQuantity").value} pcs\n\n*Details:*\n${document.getElementById("qDetails").value.trim()}\n\n_I agree to the 50-70% advance policy._\n\n_(I will send my design file in the next message)_`;
           setTimeout(() => {
             window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
             btn.textContent = "Get Quote via WhatsApp 📲"; btn.disabled = false;
@@ -324,18 +313,20 @@
         });
       }
 
-      // Search & Sort
       document.getElementById("searchInput")?.addEventListener("input", render);
       document.getElementById("sortFilter")?.addEventListener("change", render);
 
-      // Category Cards
       document.querySelectorAll("[data-cat-link]").forEach((card) => {
         card.addEventListener("click", () => filterByCategory(card.dataset.catLink));
       });
     }
 
-    /* ---------- Load Products ---------- */
     async function loadProducts() {
+      const debugBox = document.getElementById("debugBox");
+      const loadingEl = document.getElementById("loadingState");
+      let loadedFromDB = false;
+
+      // 1. TRY TO FETCH FROM FIREBASE
       try {
         const snap = await getDocs(collection(db, "products"));
         products = [];
@@ -343,16 +334,49 @@
           const data = doc.data();
           products.push({ id: doc.id, ...data });
         });
+        if (products.length > 0) {
+          localStorage.setItem("aaradhyaAllProducts", JSON.stringify(products));
+          loadedFromDB = true;
+        }
       } catch (err) {
-        console.error("[A-Print] DB fetch failed:", err);
+        console.warn("[A-Print] Firestore fetch failed:", err);
       }
 
-      // Render Categories
+      // 2. IF FIREBASE FAILS, USE LOCAL STORAGE
+      if (!loadedFromDB) {
+        const cached = localStorage.getItem("aaradhyaAllProducts");
+        if (cached) {
+          products = JSON.parse(cached);
+          if (debugBox) {
+            debugBox.style.display = "block";
+            debugBox.innerHTML = `⚠️ <b>Database connection blocked (Check Firestore Rules).</b><br>Showing ${products.length} products loaded from Home Page cache.`;
+          }
+        } else {
+          if (loadingEl) loadingEl.innerHTML = "❌ No products found in database or local cache.";
+          if (debugBox) {
+            debugBox.style.display = "block";
+            debugBox.innerHTML = `❌ <b>Database connection failed and no local cache found.</b>`;
+          }
+          return;
+        }
+      } else {
+        if (debugBox) {
+          debugBox.style.display = "block";
+          debugBox.innerHTML = `✅ <b>Database Connected!</b> Total products in DB: ${products.length}`;
+        }
+      }
+
+      if (loadingEl) loadingEl.style.display = "none";
+
+      // 3. FILTER PRODUCTS FOR PRINT
       let printProducts = products.filter((p) => norm(p.store).includes("print"));
+      
+      // Safety net: if filter fails, show everything
       if (printProducts.length === 0 && products.length > 0) {
-        printProducts = products; // Fallback if store name doesn't match exactly
+        printProducts = products; 
       }
 
+      // Render Categories based on what we found
       const uniqueCats = [...new Set(printProducts.map((p) => (p.category || "").trim()).filter(Boolean))].sort();
       const catNav = document.getElementById("categoryNav");
       if (catNav) {
@@ -372,7 +396,6 @@
       render();
     }
 
-    /* ---------- Filter by Click on Category Card ---------- */
     function filterByCategory(categoryName) {
       currentActiveCategory = categoryName;
       const btns = document.querySelectorAll("#categoryNav .cat-nav-btn");
@@ -390,10 +413,9 @@
       render();
     }
 
-    /* ---------- Render Grid (Using Home Page Card HTML) ---------- */
     function render() {
       let list = products.filter((p) => norm(p.store).includes("print"));
-      if (list.length === 0 && products.length > 0) list = products; // Fallback
+      if (list.length === 0 && products.length > 0) list = products;
 
       const queryStr = norm(document.getElementById("searchInput")?.value);
       const sort = document.getElementById("sortFilter")?.value || "featured";
@@ -424,10 +446,8 @@
         const sizes = Array.isArray(p.sizes) && p.sizes.length ? p.sizes : ["Standard"];
         const colors = Array.isArray(p.colors) && p.colors.length ? p.colors : ["Standard"];
         const sizeOptions = sizes.map((s) => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join("");
-        const colorOptions = colors.map((c) => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
         const img = firstImg(p.image);
 
-        // EXACT SAME CARD HTML AS HOME PAGE
         return `
           <div class="product-card">
             <div class="product-image-wrap" data-open="${escapeHtml(p.id)}">
@@ -453,7 +473,6 @@
       }).join("");
     }
 
-    /* ---------- Event Delegation (Using Home Page Card Data Attributes) ---------- */
     document.getElementById("productGrid").addEventListener("click", (e) => {
       const addBtn = e.target.closest("[data-add]");
       if (addBtn) return handleAdd(addBtn);
