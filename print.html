@@ -7,9 +7,6 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%2310243b'/><text x='50' y='68' font-size='55' font-family='Georgia' fill='%23c5a36b' text-anchor='middle'>A</text></svg>">
   <link rel="stylesheet" href="style.css">
   <style>
-    /* ==========================================
-       PREMIUM 3D BACKGROUND DESIGN
-       ========================================== */
     body {
       background: #f4f6f8 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400"><g fill="none" stroke="%23e2e8f0" stroke-width="1.5" opacity="0.6"><path d="M50 50 L100 70 L100 120 L50 100 Z M100 70 L150 50 L150 100 L100 120 Z M50 100 L100 120 L100 170 L50 150 Z"/><circle cx="300" cy="80" r="30"/><circle cx="300" cy="80" r="40"/><path d="M250 250 L300 230 L350 250 L300 270 Z M300 270 L300 320 L250 300 L250 250 Z M300 270 L300 320 L350 300 L350 250 Z"/><path d="M80 300 C 100 250, 150 250, 170 300 C 150 350, 100 350, 80 300 Z"/></g></svg>') repeat;
       margin: 0; padding-bottom: 60px; font-family: Arial, sans-serif; color: #333;
@@ -40,38 +37,23 @@
       cursor: pointer; transition: all 0.3s ease; border: 1px solid #eee;
       display: flex; flex-direction: column; height: 110px; position: relative;
     }
-    .cat-card:hover {
-      transform: translateY(-8px) scale(1.02);
-      box-shadow: 0 15px 30px rgba(16,36,59,0.15);
-      border-color: #c5a36b;
-      z-index: 2;
-    }
+    .cat-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 15px 30px rgba(16,36,59,0.15); border-color: #c5a36b; z-index: 2; }
     .cat-card img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1; transition: 0.4s; }
     .cat-card:hover img { transform: scale(1.1); }
-    .cat-overlay {
-      position: absolute; inset: 0;
-      background: linear-gradient(to top, rgba(16,36,59,0.9) 0%, rgba(16,36,59,0.1) 60%, transparent 100%);
-      z-index: 2;
-    }
-    .cat-card h3 {
-      position: relative; z-index: 3; color: #fff; font-size: 12px; font-weight: bold;
-      margin: auto 5px 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); line-height: 1.2;
-    }
+    .cat-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(16,36,59,0.9) 0%, rgba(16,36,59,0.1) 60%, transparent 100%); z-index: 2; }
+    .cat-card h3 { position: relative; z-index: 3; color: #fff; font-size: 12px; font-weight: bold; margin: auto 5px 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); line-height: 1.2; }
 
     .trust-section-wrapper { max-width: 1000px; margin: 0 auto 50px; padding: 0 20px; }
     .trust-section-inner {
       background: #fff; border: 1px solid #eaeaea; border-radius: 16px;
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;
-      padding: 35px 40px;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; padding: 35px 40px;
       box-shadow: 0 10px 30px rgba(16,36,59,0.05), inset 0 1px 0 #fff;
     }
     .trust-item { text-align: center; }
     .trust-icon-wrap {
       width: 65px; height: 65px; margin: 0 auto 15px;
-      background: #fdfbf7; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      border: 1px solid #f3ead8;
-      box-shadow: 0 5px 15px rgba(197,163,107,0.2), inset 0 -2px 5px rgba(0,0,0,0.05);
+      background: #fdfbf7; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      border: 1px solid #f3ead8; box-shadow: 0 5px 15px rgba(197,163,107,0.2), inset 0 -2px 5px rgba(0,0,0,0.05);
     }
     .trust-icon { font-size: 30px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
     .trust-item h3 { font: normal 16px Georgia, serif; color: #10243b; margin: 0 0 8px; }
@@ -91,69 +73,35 @@
     .pill { background: #fff; border: 1px solid #cbd5e1; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: bold; color: #555; cursor: pointer; transition: 0.2s; white-space: nowrap; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
     .pill.active { background: #10243b; color: #fff; border-color: #10243b; box-shadow: 0 4px 10px rgba(16,36,59,0.2); }
 
-    /* Print-specific product grid (uses .print-product-grid class from style.css) */
     .p-card {
-      background: #fff; border: 1px solid #e5e7eb; border-radius: 10px;
-      padding: 10px; display: flex; flex-direction: column;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+      background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 10px;
+      display: flex; flex-direction: column; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.03);
     }
-    .p-card:hover {
-      box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-      border-color: #c5a36b;
-      transform: translateY(-5px);
-    }
-    .p-img-wrap {
-      aspect-ratio: 1/1; background: #f9fafb; border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      margin-bottom: 10px; position: relative; cursor: pointer; overflow: hidden;
-      border: 1px solid #f3f4f6;
-    }
+    .p-card:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.1); border-color: #c5a36b; transform: translateY(-5px); }
+    .p-img-wrap { aspect-ratio: 1/1; background: #f9fafb; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; position: relative; cursor: pointer; overflow: hidden; border: 1px solid #f3f4f6; }
     .p-img-wrap img { width: 100%; height: 100%; object-fit: contain; padding: 8px; transition: 0.3s; }
     .p-card:hover .p-img-wrap img { transform: scale(1.08); }
-    .p-tag {
-      position: absolute; top: 6px; left: 6px; background: #10243b; color: #fff;
-      font-size: 9px; font-weight: bold; padding: 3px 6px; border-radius: 4px; z-index: 2;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
+    .p-tag { position: absolute; top: 6px; left: 6px; background: #10243b; color: #fff; font-size: 9px; font-weight: bold; padding: 3px 6px; border-radius: 4px; z-index: 2; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
     .p-info { flex: 1; display: flex; flex-direction: column; }
     .p-category { font-size: 9px; color: #6b7280; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px; margin-bottom: 3px; }
     .p-name { font-size: 13px; font-weight: bold; color: #111827; margin: 0 0 8px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 34px; }
     .p-options { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 10px; margin-top: auto; }
-    .p-opt-select {
-      width: 100%; padding: 6px; border: 1px solid #d1d5db; border-radius: 4px;
-      font-size: 11px; color: #374151; font-weight: bold; outline: none; background: #fff; cursor: pointer;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-    }
+    .p-opt-select { width: 100%; padding: 6px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 11px; color: #374151; font-weight: bold; outline: none; background: #fff; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
     .p-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-    .btn-add {
-      background: #fff; color: #10243b; border: 1px solid #10243b; padding: 8px; border-radius: 4px;
-      font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s;
-      display: flex; align-items: center; justify-content: center; gap: 4px;
-      box-shadow: 0 2px 0 #10243b;
-    }
+    .btn-add { background: #fff; color: #10243b; border: 1px solid #10243b; padding: 8px; border-radius: 4px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 2px 0 #10243b; }
     .btn-add:active { transform: translateY(2px); box-shadow: none; }
     .btn-add:hover { background: #f0f4f8; }
-    .btn-buy {
-      background: #10243b; color: #fff; border: 1px solid #10243b; padding: 8px; border-radius: 4px;
-      font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s;
-      box-shadow: 0 2px 0 #000;
-    }
+    .btn-add:disabled { background: #e5e7eb; color: #999; border-color: #e5e7eb; box-shadow: none; cursor: not-allowed; }
+    .btn-buy { background: #10243b; color: #fff; border: 1px solid #10243b; padding: 8px; border-radius: 4px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 0 #000; }
     .btn-buy:active { transform: translateY(2px); box-shadow: none; }
     .btn-buy:hover { background: #1e3a5f; }
+    .btn-buy:disabled { background: #e5e7eb; color: #999; border-color: #e5e7eb; box-shadow: none; cursor: not-allowed; }
 
     .custom-design-banner { max-width: 1200px; margin: 0 auto 50px; padding: 0 20px; }
-    .cd-inner {
-      background: #fff; border: 1px solid #e5e7eb; border-radius: 10px;
-      padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.03);
-    }
+    .cd-inner { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.03); }
     .cd-text h2 { font: normal 18px Georgia, serif; color: #10243b; margin: 0 0 6px; }
     .cd-text p { font-size: 12px; color: #6b7280; margin: 0; }
-    .btn-quote {
-      background: #c5a36b; color: #10243b; padding: 10px 20px; border-radius: 4px; font-weight: bold; font-size: 12px;
-      border: none; cursor: pointer; transition: 0.2s; box-shadow: 0 3px 0 #b08e59;
-    }
+    .btn-quote { background: #c5a36b; color: #10243b; padding: 10px 20px; border-radius: 4px; font-weight: bold; font-size: 12px; border: none; cursor: pointer; transition: 0.2s; box-shadow: 0 3px 0 #b08e59; }
     .btn-quote:active { transform: translateY(3px); box-shadow: none; }
     .btn-quote:hover { background: #b08e59; color: #fff; }
 
@@ -169,7 +117,6 @@
       .cd-inner { flex-direction: column; text-align: center; padding: 20px; }
     }
 
-    /* POPUP FORM */
     .modal-overlay { position: fixed; inset: 0; background: rgba(16, 36, 59, 0.8); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; visibility: hidden; transition: 0.3s; padding: 15px; }
     .modal-overlay.active { opacity: 1; visibility: visible; }
     .modal-box { background: #fff; border-radius: 12px; padding: 30px; width: 100%; max-width: 580px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.3); transform: scale(0.95) translateY(20px); transition: 0.3s; }
@@ -257,10 +204,7 @@
     </div>
 
     <div class="filter-bar">
-      <div class="search-box">
-        <span>⌕</span>
-        <input id="searchInput" type="search" placeholder="Search products..." autocomplete="off">
-      </div>
+      <div class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="Search products..." autocomplete="off"></div>
       <select id="sortFilter" class="sort-select">
         <option value="featured">Sort: Featured</option>
         <option value="low">Price: Low to High</option>
@@ -283,10 +227,7 @@
 
   <section class="custom-design-banner">
     <div class="cd-inner">
-      <div class="cd-text">
-        <h2>Have a specific design in mind? 🤔</h2>
-        <p>Share your idea, size, and quantity with us. Our team will provide a free quote on WhatsApp.</p>
-      </div>
+      <div class="cd-text"><h2>Have a specific design in mind? 🤔</h2><p>Share your idea, size, and quantity with us. Our team will provide a free quote on WhatsApp.</p></div>
       <button class="btn-quote" onclick="openQuoteModal()">🎨 Get Custom Quote</button>
     </div>
   </section>
@@ -307,10 +248,7 @@
   <div class="modal-overlay" id="quoteModal">
     <div class="modal-box">
       <button class="close-btn" onclick="closeQuoteModal()">✕</button>
-      <div class="modal-header">
-        <h2>Get Custom Quote 🎨</h2>
-        <p>Fill details below. We'll reply on WhatsApp within 2 hours.</p>
-      </div>
+      <div class="modal-header"><h2>Get Custom Quote 🎨</h2><p>Fill details below. We'll reply on WhatsApp within 2 hours.</p></div>
       <form id="customQuoteForm">
         <div class="m-grid">
           <div class="m-field"><label>Your Name *</label><input type="text" id="qName" placeholder="e.g. Rahul Sharma" required></div>
@@ -318,16 +256,11 @@
           <div class="m-field"><label>Print Product *</label>
             <select id="qProduct" required>
               <option value="">Select Product</option>
-              <option value="T-Shirts">T-Shirts</option>
-              <option value="Mugs/Cups">Mugs/Cups</option>
-              <option value="Cushions">Cushions</option>
-              <option value="Caps">Caps</option>
-              <option value="Keychains">Keychains</option>
-              <option value="Photo Frames">Photo Frames</option>
-              <option value="Bottles">Bottles</option>
-              <option value="Visiting Card">Visiting Card</option>
-              <option value="Marriage Card">Marriage Card</option>
-              <option value="Pamphlet">Pamphlet</option>
+              <option value="T-Shirts">T-Shirts</option><option value="Mugs/Cups">Mugs/Cups</option>
+              <option value="Cushions">Cushions</option><option value="Caps">Caps</option>
+              <option value="Keychains">Keychains</option><option value="Photo Frames">Photo Frames</option>
+              <option value="Bottles">Bottles</option><option value="Visiting Card">Visiting Card</option>
+              <option value="Marriage Card">Marriage Card</option><option value="Pamphlet">Pamphlet</option>
               <option value="Other (Mention in details)">Other (Mention in details)</option>
             </select>
           </div>
@@ -370,8 +303,7 @@
       }
       const btn = document.getElementById("quoteSubmitBtn");
       const name = document.getElementById("qName").value.trim();
-      const phoneRaw = document.getElementById("qPhone").value.trim();
-      const phone = normalizePhone(phoneRaw);
+      const phone = normalizePhone(document.getElementById("qPhone").value);
 
       if (!phone) {
         showToast("Please enter a valid 10-digit Indian mobile number.", "error");
@@ -506,7 +438,6 @@
         </article>`;
       }).join("");
 
-      // Wire Add/Buy buttons
       grid.querySelectorAll("[data-add]").forEach((btn) => {
         btn.addEventListener("click", () => {
           const id = btn.dataset.add;
