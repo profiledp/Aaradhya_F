@@ -1,8 +1,8 @@
 /* ==========================================================
    AARADHYA MART — MASTER STYLESHEET (REFACTORED v2)
-   - Removed duplicate animations (fly-to-cart, cartBounce)
+   - Removed duplicate animations
    - Centralized toast styles
-   - Added reusable tracker component styles
+   - Reusable tracker component styles
    - Scoped product grid variants; removed !important conflicts
    ========================================================== */
 
@@ -782,7 +782,7 @@ img { max-width: 100%; }
   100% { box-shadow: 0 0 0 0 rgba(37,211,102,0); }
 }
 
-/* ==================== FLY-TO-CART (single source) ==================== */
+/* ==================== FLY-TO-CART ==================== */
 .fly-image-anim {
   position: fixed;
   z-index: 99999;
