@@ -56,10 +56,31 @@
     }
     .bounce-anim { animation: cartBounce 0.5s ease; }
 
+    /* --- PRINT POLICIES STYLING --- */
+    .print-policies-section {
+      max-width: 1000px; margin: 60px auto; padding: 30px; background: #fff;
+      border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 10px 30px rgba(16,36,59,0.04);
+    }
+    .print-policies-header { text-align: center; margin-bottom: 30px; }
+    .print-policies-header h2 { font: normal 28px Georgia, serif; color: var(--navy); margin: 0 0 8px; }
+    .print-policies-header p { font-size: 13px; color: #666; margin: 0; }
+    .policy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .policy-box { display: flex; gap: 15px; align-items: flex-start; background: #f8fafc; padding: 15px; border-radius: 8px; border-left: 4px solid var(--gold); }
+    .policy-icon { font-size: 20px; background: #fff; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.05); flex-shrink: 0; }
+    .policy-text h4 { margin: 0 0 4px; font-size: 14px; color: var(--navy); font-weight: bold; }
+    .policy-text p { margin: 0; font-size: 12px; color: #555; line-height: 1.5; }
+    .highlight-box { grid-column: 1 / -1; background: #fffbeb; border: 1px dashed #f59e0b; border-left: none; text-align: center; padding: 15px; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    .highlight-box .policy-text h4 { color: #b45309; }
+    .highlight-box .policy-text p { color: #92400e; }
+
+    @media (max-width: 768px) {
+      .policy-grid { grid-template-columns: 1fr; }
+    }
     @media (max-width: 650px) {
       .header-actions { gap: 6px; }
       .header-wa, .header-support-btn { padding: 9px 12px !important; font-size: 10px !important; }
       .header-support-btn svg { display: none; }
+      .print-policies-section { margin: 30px 15px; padding: 20px; }
     }
   </style>
 </head>
@@ -88,7 +109,6 @@
       <div>
         <span class="eyebrow">CUSTOM PRINTING</span>
         <h2 style="margin: 6px 0 0;">A-Print Collection</h2>
-        <!-- CUSTOM DESIGN BUTTON -->
         <button id="openCustomRequestBtn" style="background: linear-gradient(135deg, #10243b, #1e3a5f); color: #fff; border: 1px solid var(--gold); padding: 10px 20px; border-radius: 6px; font-weight: bold; font-size: 13px; cursor: pointer; margin-top: 12px; box-shadow: 0 4px 10px rgba(16,36,59,0.2); display: inline-flex; align-items: center; gap: 6px;">
           🎨 Request Custom Design
         </button>
@@ -114,6 +134,81 @@
     <div class="product-grid" id="productGrid"></div>
     <div class="empty-state hidden" id="emptyState"><span>✧</span><h3>No print products found</h3></div>
   </main>
+
+  <!-- ========================================== -->
+  <!-- PRINT POLICIES SECTION -->
+  <!-- ========================================== -->
+  <section class="print-policies-section">
+    <div class="print-policies-header">
+      <span class="eyebrow">TERMS & CONDITIONS</span>
+      <h2>Printing Policies & Guidelines</h2>
+      <p>Please read our policies carefully before placing a custom print order.</p>
+    </div>
+    
+    <div class="policy-grid">
+      <!-- 1. Design Approval -->
+      <div class="policy-box">
+        <div class="policy-icon">📝</div>
+        <div class="policy-text">
+          <h4>Design Approval</h4>
+          <p>Customers must check and approve all names, spellings, phone numbers, and photos before printing starts, as we cannot fix customer typos later.</p>
+        </div>
+      </div>
+
+      <!-- 2. Advance Payment -->
+      <div class="policy-box">
+        <div class="policy-icon">💳</div>
+        <div class="policy-text">
+          <h4>Advance Payment</h4>
+          <p>At least 50% advance payment is required to confirm your order, with the remaining balance due upon pickup or delivery.</p>
+        </div>
+      </div>
+
+      <!-- 3. No Cancellations -->
+      <div class="policy-box">
+        <div class="policy-icon">🚫</div>
+        <div class="policy-text">
+          <h4>No Cancellations</h4>
+          <p>Because items are custom-made for you, orders cannot be canceled or changed once printing has begun.</p>
+        </div>
+      </div>
+
+      <!-- 4. Color Differences -->
+      <div class="policy-box">
+        <div class="policy-icon">🎨</div>
+        <div class="policy-text">
+          <h4>Color Differences</h4>
+          <p>Slight variations between phone screen colors and actual printed colors are normal and are not considered defects.</p>
+        </div>
+      </div>
+
+      <!-- 5. Print Defects -->
+      <div class="policy-box">
+        <div class="policy-icon">🛠️</div>
+        <div class="policy-text">
+          <h4>Print Defects</h4>
+          <p>If there is a printing mistake or damage from our side, we will reprint your order free of cost if reported at the time of pickup or within 24 hours.</p>
+        </div>
+      </div>
+
+      <!-- 6. Pickup & Storage -->
+      <div class="policy-box">
+        <div class="policy-icon">📦</div>
+        <div class="policy-text">
+          <h4>Pickup & Storage</h4>
+          <p>Please collect your completed order within 7 days of notification, as we cannot be responsible for unclaimed items stored longer.</p>
+        </div>
+      </div>
+
+      <!-- Suggestion Box (Highlight) -->
+      <div class="policy-box highlight-box">
+        <div class="policy-text">
+          <h4>💡 Pro Tip: Send Your Design Directly</h4>
+          <p>Have a logo or photo ready? You can send it to us directly on WhatsApp after placing the order. We use high-resolution printing to ensure the best quality!</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <dialog class="product-dialog" id="productDialog">
     <button class="dialog-close" id="dialogClose">×</button>
