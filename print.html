@@ -88,6 +88,10 @@
       <div>
         <span class="eyebrow">CUSTOM PRINTING</span>
         <h2 style="margin: 6px 0 0;">A-Print Collection</h2>
+        <!-- CUSTOM DESIGN BUTTON -->
+        <button id="openCustomRequestBtn" style="background: linear-gradient(135deg, #10243b, #1e3a5f); color: #fff; border: 1px solid var(--gold); padding: 10px 20px; border-radius: 6px; font-weight: bold; font-size: 13px; cursor: pointer; margin-top: 12px; box-shadow: 0 4px 10px rgba(16,36,59,0.2); display: inline-flex; align-items: center; gap: 6px;">
+          🎨 Request Custom Design
+        </button>
       </div>
       <span class="product-count-label">Showing <strong id="productCount">0</strong> products</span>
     </div>
@@ -116,6 +120,63 @@
     <div id="dialogContent"></div>
   </dialog>
 
+  <!-- CUSTOM DESIGN REQUEST POPUP -->
+  <div id="customRequestOverlay" style="display: none; position: fixed; inset: 0; background: rgba(16,36,59,0.7); backdrop-filter: blur(4px); z-index: 10000; align-items: center; justify-content: center; padding: 15px;">
+    <div style="background: #fff; border-radius: 12px; padding: 25px; max-width: 500px; width: 100%; box-shadow: 0 20px 50px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; position: relative;">
+      
+      <button id="closeRequestBtn" style="position: absolute; top: 15px; right: 15px; background: #f1f5f9; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 16px; cursor: pointer; color: #666; display: flex; align-items: center; justify-content: center;">✕</button>
+      
+      <h2 style="font: normal 24px Georgia, serif; color: var(--navy); margin: 0 0 5px; text-align: center;">Request Custom Design 🎨</h2>
+      <p style="font-size: 12px; color: #666; text-align: center; margin-bottom: 20px;">Fill this form and we will reach out to you on WhatsApp.</p>
+
+      <form id="customDesignForm">
+        <div style="margin-bottom: 12px;">
+          <label style="font-size: 11px; font-weight: bold; color: #333; display: block; margin-bottom: 4px;">Your Name *</label>
+          <input type="text" id="cdName" required placeholder="Enter your full name" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; font-size: 13px; outline: none; box-sizing: border-box;">
+        </div>
+        
+        <div style="margin-bottom: 12px;">
+          <label style="font-size: 11px; font-weight: bold; color: #333; display: block; margin-bottom: 4px;">WhatsApp Number *</label>
+          <input type="tel" id="cdPhone" required placeholder="10-digit mobile number" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; font-size: 13px; outline: none; box-sizing: border-box;">
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label style="font-size: 11px; font-weight: bold; color: #333; display: block; margin-bottom: 4px;">What do you want to print? *</label>
+          <select id="cdProduct" required style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; font-size: 13px; outline: none; background: #fff; box-sizing: border-box;">
+            <option value="">-- Select Product --</option>
+            <option value="T-Shirts">T-Shirts</option>
+            <option value="Mugs/Cups">Mugs / Cups</option>
+            <option value="Cushions">Cushions</option>
+            <option value="Caps">Caps</option>
+            <option value="Keychains">Keychains</option>
+            <option value="Photo Frames">Photo Frames</option>
+            <option value="Bottles">Bottles</option>
+            <option value="Visiting Card">Visiting Card</option>
+            <option value="Marriage Card">Marriage Card</option>
+            <option value="Pamphlet">Pamphlet</option>
+            <option value="Other">Other (Mention in description)</option>
+          </select>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label style="font-size: 11px; font-weight: bold; color: #333; display: block; margin-bottom: 4px;">Quantity *</label>
+          <input type="number" id="cdQuantity" required min="1" placeholder="e.g. 50" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; font-size: 13px; outline: none; box-sizing: border-box;">
+        </div>
+
+        <div style="margin-bottom: 15px;">
+          <label style="font-size: 11px; font-weight: bold; color: #333; display: block; margin-bottom: 4px;">Design Description *</label>
+          <textarea id="cdDetails" required rows="3" placeholder="Explain your idea (colors, text, size, etc.)" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; font-size: 13px; outline: none; resize: vertical; box-sizing: border-box;"></textarea>
+        </div>
+
+        <div style="background: #fffbeb; border: 1px dashed #f59e0b; border-radius: 6px; padding: 10px; margin-bottom: 15px; font-size: 11px; color: #92400e;">
+          <strong>Note:</strong> You can send your logo/photo directly on WhatsApp after submitting this form.
+        </div>
+
+        <button type="submit" style="width: 100%; padding: 12px; background: var(--navy); color: #fff; border: none; border-radius: 6px; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.3s;">Send to WhatsApp 📲</button>
+      </form>
+    </div>
+  </div>
+
   <a href="cart.html" id="globalCartBtn" class="global-cart-btn"><span class="cart-icon-svg">🛒</span><span class="cart-text">Cart</span><span class="cart-badge" id="globalCartCount">0</span></a>
   <a href="https://wa.me/918931911428?text=Hello%20Aaradhya%20Mart" target="_blank" class="whatsapp-float-btn" aria-label="Chat on WhatsApp"><svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M16.004 2C8.28 2 2 8.28 2 16c0 2.47.64 4.79 1.76 6.81L2 30l7.39-1.71A13.93 13.93 0 0 0 16.004 30C23.72 30 30 23.72 30 16S23.72 2 16.004 2zm0 2.31c6.76 0 12.23 5.47 12.23 12.23 0 6.76-5.47 12.23-12.23 12.23-2.13 0-4.13-.55-5.86-1.51l-.42-.23-4.32 1 1-4.21-.24-.4A12.17 12.17 0 0 1 3.77 16c0-6.76 5.47-12.23 12.23-12.23z" fill="#fff"/><path d="M21.66 18.14c-.23-.12-1.38-.68-1.6-.76-.21-.08-.37-.12-.53.12-.16.24-.61.76-.75.92-.14.16-.28.18-.51.06-.23-.12-1-.37-1.91-1.18-.71-.63-1.18-1.41-1.32-1.65-.14-.24-.02-.37.1-.49.11-.11.23-.28.35-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.53-1.27-.72-1.74-.19-.46-.38-.4-.53-.4h-.45c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.69 2.58 4.1 3.62.57.25 1.02.4 1.37.51.57.18 1.09.15 1.5.09.46-.07 1.38-.56 1.58-1.11.2-.55.2-1.02.14-1.11-.06-.09-.22-.15-.45-.27z" fill="#fff"/></svg></a>
   <a href="track.html" class="track-float-btn" aria-label="Track Order"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg><span>Track Order</span></a>
@@ -127,7 +188,6 @@
     const firebaseConfig = { apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y", authDomain: "aaradhya-mart.firebaseapp.com", projectId: "aaradhya-mart", storageBucket: "aaradhya-mart.firebasestorage.app", messagingSenderId: "146782544824", appId: "1:146782544824:web:d605e1971d3480fab1654d" };
     const app = initializeApp(firebaseConfig); const db = getFirestore(app);
     
-    // ✅ YAHAN STORE KA NAAM SET KIYA HAI
     const PAGE_STORE = "Print"; 
     let products = [];
     let currentImages = []; let currentImgIndex = 0;
@@ -143,7 +203,6 @@
         const catSelect = document.getElementById("categoryFilter");
         catSelect.innerHTML = `<option value="All">All Categories</option>`;
         
-        // Filter categories only for "Print" store
         const uniqueCats = [...new Set(products.filter(p => p.store === PAGE_STORE).map(p => p.category).filter(Boolean))];
         
         const catNav = document.getElementById("categoryNav");
@@ -162,7 +221,6 @@
         render();
       } catch (err) {
         console.error("Error loading products:", err);
-        // Fallback: If Firebase fails, try loading from local cache
         const cached = localStorage.getItem("aaradhyaAllProducts");
         if (cached) {
           products = JSON.parse(cached);
@@ -178,7 +236,6 @@
       const cat = document.getElementById("categoryFilter").value;
       const sort = document.getElementById("sortFilter").value;
       
-      // Strict filter for Print store
       let list = products.filter(p => p.store === PAGE_STORE);
       if (cat !== "All") list = list.filter(p => p.category === cat);
       list = list.filter(p => [p.name, p.category].join(" ").toLowerCase().includes(queryStr));
@@ -229,14 +286,13 @@
         </article>`;
       }).join("");
 
-      // Coming Soon card if few products
       if (list.length < 4) {
         html += `
         <div class="coming-soon-card">
           <div class="coming-soon-icon">🖨️</div>
           <h3>More print items coming soon</h3>
           <p>New designs every week!</p>
-          <a href="https://wa.me/918931911428?text=Hi%2C%20I%20want%20to%20request%20a%20print%20product" target="_blank" rel="noopener">Request a Design</a>
+          <a href="javascript:void(0)" onclick="document.getElementById('customRequestOverlay').style.display='flex'" style="display:inline-block; background:var(--navy); color:#fff; padding:8px 16px; border-radius:5px; font-size:11px; font-weight:bold; text-decoration:none;">Request a Design</a>
         </div>`;
       }
 
@@ -389,7 +445,6 @@
 
     async function loadDeals() {
       try {
-        // Deal load logic filtered for Print
         const q = query(collection(db, "products"), where("isDeal", "==", true), where("store", "==", PAGE_STORE)); 
         const querySnapshot = await getDocs(q);
         const scrollBox = document.getElementById("dealProductsScroll"); 
@@ -422,6 +477,41 @@
       document.getElementById("searchInput").addEventListener("input", render); 
       document.getElementById("sortFilter").addEventListener("change", render);
       
+      // Custom Design Form Logic
+      const requestOverlay = document.getElementById("customRequestOverlay");
+      const requestForm = document.getElementById("customDesignForm");
+      
+      document.getElementById("openCustomRequestBtn").onclick = () => requestOverlay.style.display = "flex";
+      document.getElementById("closeRequestBtn").onclick = () => requestOverlay.style.display = "none";
+      requestOverlay.addEventListener("click", (e) => { if (e.target === requestOverlay) requestOverlay.style.display = "none"; });
+
+      requestForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const name = document.getElementById("cdName").value.trim();
+        const phone = document.getElementById("cdPhone").value.trim();
+        const product = document.getElementById("cdProduct").value;
+        const qty = document.getElementById("cdQuantity").value;
+        const details = document.getElementById("cdDetails").value.trim();
+
+        if (!/^[6-9]\d{9}$/.test(phone)) {
+          alert("Please enter a valid 10-digit Indian mobile number.");
+          return;
+        }
+
+        const msg = `*🎨 CUSTOM DESIGN REQUEST*\n\n` +
+                    `*Name:* ${name}\n` +
+                    `*Phone:* ${phone}\n` +
+                    `*Product:* ${product}\n` +
+                    `*Quantity:* ${qty} pcs\n\n` +
+                    `*Design Details:*\n${details}\n\n` +
+                    `_(I will send my design file/photo in the next message)_`;
+
+        window.open(`https://wa.me/918931911428?text=${encodeURIComponent(msg)}`, "_blank");
+        
+        requestForm.reset();
+        requestOverlay.style.display = "none";
+      });
+
       document.addEventListener("click", e => {
         const open = e.target.closest("[data-open]"); const order = e.target.closest("[data-order]"); const cartBtn = e.target.closest("[data-cart]");
         if(open) openProduct(open.dataset.open);
@@ -442,6 +532,7 @@
           addToCart(pId, selectedSize, selectedColor); 
         }
       });
+      
       document.getElementById("dialogClose").onclick = () => document.getElementById("productDialog").close();
     });
   </script>
