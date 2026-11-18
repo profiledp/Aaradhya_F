@@ -153,7 +153,6 @@
       .trust-badges-mini { flex-direction: column; gap: 12px; }
     }
     
-    /* DEBUG PANEL */
     .debug-panel {
       background: #fff3cd; color: #856404; border: 1px solid #ffeeba;
       padding: 10px; margin: 20px auto; max-width: 1200px; border-radius: 6px;
@@ -199,7 +198,6 @@
     </div>
   </div>
 
-  <!-- DEBUG PANEL -->
   <div id="debugPanel" class="debug-panel"></div>
 
   <section class="products-section">
@@ -308,43 +306,80 @@
     const firstImg = (img) => img ? String(img).split(",")[0].trim() : PLACEHOLDER;
     const escapeHtml = (s) => String(s ?? "").replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
 
-    /* ---------- Quote Modal ---------- */
-    const quoteModal = document.getElementById("quoteModal");
-    const openQuoteModal = () => quoteModal.classList.add("active");
-    const closeQuoteModal = () => quoteModal.classList.remove("active");
-    quoteModal.addEventListener("click", (e) => { if (e.target === quoteModal) closeQuoteModal(); });
-    document.querySelectorAll("[data-quote-open]").forEach((el) => el.addEventListener("click", openQuoteModal));
-    document.querySelectorAll("[data-quote-close]").forEach((el) => el.addEventListener("click", closeQuoteModal));
+    /* ---------- Safe App Initialization ---------- */
+    try {
+      // 1. Setup UI Events first so they work regardless of DB
+      setupUIEvents();
+      
+      // 2. Load data asynchronously
+      document.addEventListener("DOMContentLoaded", () => {
+        try { updateCartBadge(); } catch(e) {}
+        loadProducts();
+      });
+    } catch (e) {
+      console.error("Initialization error:", e);
+    }
 
-    /* ---------- Quote Form ---------- */
-    document.getElementById("customQuoteForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      if (!document.getElementById("qAgreePolicy").checked) {
-        showToast("Please agree to the advance payment policy.", "⚠️"); return;
+    /* ---------- UI Events ---------- */
+    function setupUIEvents() {
+      // Quote Modal open/close
+      const quoteModal = document.getElementById("quoteModal");
+      if (quoteModal) {
+        document.querySelectorAll("[data-quote-open]").forEach((el) => 
+          el.addEventListener("click", () => quoteModal.classList.add("active"))
+        );
+        document.querySelectorAll("[data-quote-close]").forEach((el) => 
+          el.addEventListener("click", () => quoteModal.classList.remove("active"))
+        );
+        quoteModal.addEventListener("click", (e) => { 
+          if (e.target === quoteModal) quoteModal.classList.remove("active"); 
+        });
       }
-      const btn = document.getElementById("quoteSubmitBtn");
-      const name = document.getElementById("qName").value.trim();
-      const phone = document.getElementById("qPhone").value.trim();
-      if (!/^[6-9]\d{9}$/.test(phone)) {
-        showToast("Please enter a valid 10-digit WhatsApp number.", "⚠️"); return;
-      }
-      btn.textContent = "Opening WhatsApp..."; btn.disabled = true;
-      const msg = `*🎨 CUSTOM PRINT QUOTE REQUEST*\n\n` +
-                  `*Name:* ${name}\n*Phone:* ${phone}\n` +
-                  `*Product:* ${document.getElementById("qProduct").value}\n` +
-                  `*Qty:* ${document.getElementById("qQuantity").value} pcs\n\n` +
-                  `*Details:*\n${document.getElementById("qDetails").value.trim()}\n\n` +
-                  `_I agree to the 50-70% advance policy._\n\n` +
-                  `_(I will send my design file in the next message)_`;
-      setTimeout(() => {
-        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
-        btn.textContent = "Get Quote via WhatsApp 📲"; btn.disabled = false;
-        document.getElementById("customQuoteForm").reset();
-        closeQuoteModal();
-      }, 400);
-    });
 
-    /* ---------- Load Products (WITH DEBUG PANEL & FALLBACK) ---------- */
+      // Quote Form Submission
+      const quoteForm = document.getElementById("customQuoteForm");
+      if (quoteForm) {
+        quoteForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          if (!document.getElementById("qAgreePolicy").checked) {
+            try { showToast("Please agree to the advance payment policy.", "⚠️"); } catch(e) { alert("Please agree to the policy."); }
+            return;
+          }
+          const btn = document.getElementById("quoteSubmitBtn");
+          const name = document.getElementById("qName").value.trim();
+          const phone = document.getElementById("qPhone").value.trim();
+          if (!/^[6-9]\d{9}$/.test(phone)) {
+            try { showToast("Please enter a valid 10-digit WhatsApp number.", "⚠️"); } catch(e) { alert("Invalid Phone"); }
+            return;
+          }
+          btn.textContent = "Opening WhatsApp..."; btn.disabled = true;
+          const msg = `*🎨 CUSTOM PRINT QUOTE REQUEST*\n\n` +
+                      `*Name:* ${name}\n*Phone:* ${phone}\n` +
+                      `*Product:* ${document.getElementById("qProduct").value}\n` +
+                      `*Qty:* ${document.getElementById("qQuantity").value} pcs\n\n` +
+                      `*Details:*\n${document.getElementById("qDetails").value.trim()}\n\n` +
+                      `_I agree to the 50-70% advance policy._\n\n` +
+                      `_(I will send my design file in the next message)_`;
+          setTimeout(() => {
+            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
+            btn.textContent = "Get Quote via WhatsApp 📲"; btn.disabled = false;
+            quoteForm.reset();
+            quoteModal.classList.remove("active");
+          }, 400);
+        });
+      }
+
+      // Search / Sort
+      document.getElementById("searchInput")?.addEventListener("input", render);
+      document.getElementById("sortFilter")?.addEventListener("change", render);
+
+      // Category Showcase Click
+      document.querySelectorAll("[data-cat-link]").forEach((card) => {
+        card.addEventListener("click", () => filterByCategory(card.dataset.catLink));
+      });
+    }
+
+    /* ---------- Load Products ---------- */
     async function loadProducts() {
       const loadingEl = document.getElementById("loadingState");
       const debugPanel = document.getElementById("debugPanel");
@@ -359,62 +394,59 @@
           products.push({ id: doc.id, ...data });
         });
 
-        // Show debug info on screen
         if (products.length > 0) {
           const uniqueStores = [...new Set(products.map(p => p.store))];
           debugPanel.innerHTML = `
             ✅ <strong>Database Connected!</strong><br>
-            Total Products in DB: <b>${products.length}</b><br>
-            Store Names found: <code style="background:#e2e8f0; padding:2px 4px;">"${uniqueStores.join('", "')}"</code><br>
-            We are looking for: <code style="background:#c5a36b; color:#fff; padding:2px 4px;">"${PAGE_STORE}"</code>
+            Total Products: <b>${products.length}</b><br>
+            Stores Found: <code style="background:#e2e8f0; padding:2px 4px;">"${uniqueStores.join('", "')}"</code>
           `;
           localStorage.setItem("aaradhyaAllProducts", JSON.stringify(products));
         } else {
-          debugPanel.innerHTML = `⚠️ Database connected, but <b>0 products found</b> in the collection. Check Firebase.`;
+          debugPanel.innerHTML = `⚠️ Database connected, but <b>0 products found</b>.`;
         }
       } catch (err) {
         console.error("[A-Print] Firestore fetch failed:", err);
-        debugPanel.innerHTML = `❌ <strong>Database connection blocked!</strong><br>Error: ${err.message}<br>Check your Firestore Security Rules.`;
-
+        debugPanel.innerHTML = `❌ <strong>Database connection blocked!</strong><br>Error: ${err.message}`;
         const cached = localStorage.getItem("aaradhyaAllProducts");
         if (cached) {
           products = JSON.parse(cached);
-          debugPanel.innerHTML += `<br>⚠️ Showing cached products instead.`;
-        } else {
-          if (loadingEl) loadingEl.innerHTML = `⚠️ Could not load products. Check debug panel above.`;
-          return;
+          debugPanel.innerHTML += `<br>⚠️ Showing cached products.`;
         }
       }
 
-      // Super forgiving store filter (ignores capitalization/spaces)
-      const printProducts = products.filter((p) => norm(p.store).includes("print"));
+      // Filter strictly for Print items (super forgiving)
+      let printProducts = products.filter((p) => norm(p.store).includes("print"));
       
-      const uniqueCats = [...new Set(
-        printProducts.map((p) => (p.category || "").trim()).filter(Boolean)
-      )].sort();
+      // If we found 0, but the DB has products, fallback to showing ALL of them so user sees something
+      if (printProducts.length === 0 && products.length > 0) {
+        console.warn("[A-Print] No 'Print' store found. Showing all products as fallback.");
+        debugPanel.innerHTML += `<br>⚠️ Store name mismatch. Showing ALL products as fallback.`;
+        printProducts = products;
+      }
 
+      // Render Categories
+      const uniqueCats = [...new Set(printProducts.map((p) => (p.category || "").trim()).filter(Boolean))].sort();
       const catNav = document.getElementById("categoryNav");
-      catNav.innerHTML = `<button class="pill active" data-cat="All">All Products</button>` +
-        uniqueCats.map((c) => `<button class="pill" data-cat="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join("");
+      if (catNav) {
+        catNav.innerHTML = `<button class="pill active" data-cat="All">All Products</button>` +
+          uniqueCats.map((c) => `<button class="pill" data-cat="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join("");
 
-      catNav.querySelectorAll(".pill").forEach((item) => {
-        item.addEventListener("click", () => {
-          catNav.querySelectorAll(".pill").forEach((el) => el.classList.remove("active"));
-          item.classList.add("active");
-          currentActiveCategory = item.dataset.cat;
-          render();
+        catNav.querySelectorAll(".pill").forEach((item) => {
+          item.addEventListener("click", () => {
+            catNav.querySelectorAll(".pill").forEach((el) => el.classList.remove("active"));
+            item.classList.add("active");
+            currentActiveCategory = item.dataset.cat;
+            render();
+          });
         });
-      });
+      }
 
       if (loadingEl) loadingEl.style.display = "none";
       render();
     }
 
-    /* ---------- Category Showcase Click ---------- */
-    document.querySelectorAll("[data-cat-link]").forEach((card) => {
-      card.addEventListener("click", () => filterByCategory(card.dataset.catLink));
-    });
-
+    /* ---------- Category Logic ---------- */
     function filterByCategory(categoryName) {
       currentActiveCategory = categoryName;
       const pills = document.querySelectorAll("#categoryNav .pill");
@@ -427,7 +459,7 @@
       if (!matched) {
         pills.forEach((p) => p.classList.toggle("active", p.dataset.cat === "All"));
         currentActiveCategory = "All";
-        showToast(`Category "${categoryName}" not found — showing all.`, "ℹ️");
+        try { showToast(`Category "${categoryName}" not found — showing all.`, "ℹ️"); } catch(e){}
       }
       document.querySelector(".products-section").scrollIntoView({ behavior: "smooth" });
       render();
@@ -435,10 +467,12 @@
 
     /* ---------- Render Grid ---------- */
     function render() {
+      let list = products.filter((p) => norm(p.store).includes("print"));
+      // Fallback for render if store mismatch
+      if (list.length === 0 && products.length > 0) list = products;
+
       const queryStr = norm(document.getElementById("searchInput")?.value);
       const sort = document.getElementById("sortFilter")?.value || "featured";
-
-      let list = products.filter((p) => norm(p.store).includes("print"));
 
       if (currentActiveCategory !== "All") {
         list = list.filter((p) => norm(p.category) === norm(currentActiveCategory));
@@ -451,17 +485,18 @@
       if (sort === "low") list = [...list].sort((a, b) => Number(a.price) - Number(b.price));
       if (sort === "high") list = [...list].sort((a, b) => Number(b.price) - Number(a.price));
 
-      document.getElementById("productCount").textContent = list.length;
+      const countEl = document.getElementById("productCount");
+      if (countEl) countEl.textContent = list.length;
 
       const grid = document.getElementById("productGrid");
       const emptyEl = document.getElementById("emptyState");
 
       if (list.length === 0) {
         grid.innerHTML = "";
-        emptyEl.style.display = "block";
+        if(emptyEl) emptyEl.style.display = "block";
         return;
       }
-      emptyEl.style.display = "none";
+      if(emptyEl) emptyEl.style.display = "none";
 
       grid.innerHTML = list.map((p) => {
         const isOut = Number(p.stock) <= 0;
@@ -507,7 +542,7 @@
         const card = buyBtn.closest(".p-card");
         const size = card.querySelector('[data-role="size"]')?.value;
         const color = card.querySelector('[data-role="color"]')?.value;
-        addToCart({ id: p.id, name: p.name, price: Number(p.price), image: firstImg(p.image), size, color });
+        try { addToCart({ id: p.id, name: p.name, price: Number(p.price), image: firstImg(p.image), size, color }); } catch(e){}
         updateCartBadge();
         window.location.href = "cart.html";
         return;
@@ -526,24 +561,14 @@
     function handleAdd(btn) {
       const p = products.find((x) => x.id === btn.dataset.add);
       if (!p) return;
-      if (Number(p.stock) <= 0) { showToast("Out of stock", "⚠️"); return; }
+      if (Number(p.stock) <= 0) { try { showToast("Out of stock", "⚠️"); } catch(e){} return; }
       const card = btn.closest(".p-card");
       const size = card.querySelector('[data-role="size"]')?.value;
       const color = card.querySelector('[data-role="color"]')?.value;
-      addToCart({ id: p.id, name: p.name, price: Number(p.price), image: firstImg(p.image), size, color });
+      try { addToCart({ id: p.id, name: p.name, price: Number(p.price), image: firstImg(p.image), size, color }); } catch(e){}
       updateCartBadge();
-      showToast(`${p.name} added to cart`, "🛒");
+      try { showToast(`${p.name} added to cart`, "🛒"); } catch(e){}
     }
-
-    /* ---------- Search / Sort ---------- */
-    document.getElementById("searchInput")?.addEventListener("input", render);
-    document.getElementById("sortFilter")?.addEventListener("change", render);
-
-    /* ---------- Boot ---------- */
-    document.addEventListener("DOMContentLoaded", () => {
-      updateCartBadge();
-      loadProducts();
-    });
   </script>
 </body>
 </html>
