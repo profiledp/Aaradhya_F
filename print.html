@@ -334,49 +334,57 @@
       }, 400);
     });
 
-    /* ---------- Load Products ---------- */
+    /* ---------- Load Products (WITH LOCAL STORAGE FALLBACK) ---------- */
     async function loadProducts() {
       const loadingEl = document.getElementById("loadingState");
       try {
         const snap = await getDocs(collection(db, "products"));
         products = [];
-        snap.forEach((doc) => products.push({ id: doc.id, ...doc.data() }));
-
-        // Debug: what did we get?
-        console.log(`[A-Print] Loaded ${products.length} total products from Firestore.`);
-        const printProducts = products.filter((p) => norm(p.store) === norm(PAGE_STORE));
-        console.log(`[A-Print] ${printProducts.length} with store === "${PAGE_STORE}".`);
-        if (products.length > 0) {
-          const stores = [...new Set(products.map((p) => p.store).filter(Boolean))];
-          console.log("[A-Print] Stores present in DB:", stores);
-        }
-
-        // Build category pills from Print products only
-        const uniqueCats = [...new Set(
-          printProducts.map((p) => (p.category || "").trim()).filter(Boolean)
-        )].sort();
-
-        const catNav = document.getElementById("categoryNav");
-        catNav.innerHTML = `<button class="pill active" data-cat="All">All Products</button>` +
-          uniqueCats.map((c) => `<button class="pill" data-cat="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join("");
-
-        catNav.querySelectorAll(".pill").forEach((item) => {
-          item.addEventListener("click", () => {
-            catNav.querySelectorAll(".pill").forEach((el) => el.classList.remove("active"));
-            item.classList.add("active");
-            currentActiveCategory = item.dataset.cat;
-            render();
-          });
+        snap.forEach((doc) => {
+          const data = doc.data();
+          console.log(`[A-Print Debug] Product: ${data.name}, Store: "${data.store}"`);
+          products.push({ id: doc.id, ...data });
         });
 
-        if (loadingEl) loadingEl.style.display = "none";
-        render();
+        if (products.length > 0) {
+          localStorage.setItem("aaradhyaAllProducts", JSON.stringify(products));
+        }
       } catch (err) {
-        console.error("[A-Print] Failed to load products:", err);
-        if (loadingEl) {
-          loadingEl.innerHTML = `⚠️ Could not load products. Check console. <br><small>${escapeHtml(err.message || "")}</small>`;
+        console.error("[A-Print] Firestore fetch failed, trying local cache...", err);
+        const cached = localStorage.getItem("aaradhyaAllProducts");
+        if (cached) {
+          products = JSON.parse(cached);
+          console.log(`[A-Print] Loaded ${products.length} products from local cache.`);
+        } else {
+          if (loadingEl) {
+            loadingEl.innerHTML = `⚠️ Could not load products. <br><small>${escapeHtml(err.message || "")}</small>`;
+          }
+          return;
         }
       }
+
+      const printProducts = products.filter((p) => norm(p.store) === norm(PAGE_STORE));
+      console.log(`[A-Print] Found ${printProducts.length} products with Store === "Print".`);
+
+      const uniqueCats = [...new Set(
+        printProducts.map((p) => (p.category || "").trim()).filter(Boolean)
+      )].sort();
+
+      const catNav = document.getElementById("categoryNav");
+      catNav.innerHTML = `<button class="pill active" data-cat="All">All Products</button>` +
+        uniqueCats.map((c) => `<button class="pill" data-cat="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join("");
+
+      catNav.querySelectorAll(".pill").forEach((item) => {
+        item.addEventListener("click", () => {
+          catNav.querySelectorAll(".pill").forEach((el) => el.classList.remove("active"));
+          item.classList.add("active");
+          currentActiveCategory = item.dataset.cat;
+          render();
+        });
+      });
+
+      if (loadingEl) loadingEl.style.display = "none";
+      render();
     }
 
     /* ---------- Category Showcase Click ---------- */
@@ -394,7 +402,6 @@
         if (isMatch) matched = true;
       });
       if (!matched) {
-        // fall back to All so user isn't left with empty view
         pills.forEach((p) => p.classList.toggle("active", p.dataset.cat === "All"));
         currentActiveCategory = "All";
         showToast(`Category "${categoryName}" not found — showing all.`, "ℹ️");
@@ -485,7 +492,6 @@
 
       const openEl = e.target.closest("[data-open]");
       if (openEl) {
-        // Placeholder: open WhatsApp inquiry if detail modal isn't implemented
         const p = products.find((x) => x.id === openEl.dataset.open);
         if (p) {
           const msg = `Hello Aaradhya Mart, I want to know more about: ${p.name} (ID: ${p.id})`;
