@@ -61,16 +61,31 @@ export function writeCart(cart) {
 export function cartCount() {
   return readCart().reduce((sum, i) => sum + (Number(i.qty) || 1), 0);
 }
+
+// ✅ FIXED: Cart me item ka 'name', 'image' aur 'price' bhi save ho raha hai
 export function addToCart(item) {
   const cart = readCart();
   const existing = cart.find(
     (c) => c.id === item.id && c.size === item.size && c.color === item.color
   );
-  if (existing) existing.qty = (Number(existing.qty) || 1) + 1;
-  else cart.push({ ...item, qty: 1 });
+  
+  if (existing) {
+    existing.qty = (Number(existing.qty) || 1) + 1;
+  } else {
+    cart.push({ 
+      id: item.id, 
+      name: item.name,
+      image: item.image, 
+      price: Number(item.price), 
+      size: item.size, 
+      color: item.color, 
+      qty: 1 
+    });
+  }
   writeCart(cart);
   return cart;
 }
+
 export function updateCartBadge() {
   const badge = document.getElementById("globalCartCount");
   if (!badge) return;
