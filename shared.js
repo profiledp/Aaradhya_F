@@ -1,5 +1,6 @@
 /* ==========================================================
-   AARADHYA MART — SHARED MODULE (WITH SIDE OFFERS)
+   AARADHYA MART — SHARED MODULE (FINAL - WITH SIDE OFFERS)
+   सभी पुराने functions बरकरार + नया loadSideOffers जोड़ा
    ========================================================== */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -30,7 +31,7 @@ export const WHATSAPP_NUMBER = "918931911428";
 export const CART_KEY = "aaradhyaMartCart";
 export const MY_ORDERS_KEY = "aaradhyaMyOrders";
 
-/* ---------- Phone ---------- */
+/* ---------- Phone normalization ---------- */
 export function normalizePhone(input) {
   if (!input) return "";
   let digits = String(input).replace(/\D/g, "");
@@ -43,11 +44,13 @@ export function normalizePhone(input) {
 export function isValidPhone(input) {
   return normalizePhone(input) !== "";
 }
+
+/* ---------- Order ID normalization ---------- */
 export function normalizeOrderId(input) {
   return String(input || "").trim().toUpperCase();
 }
 
-/* ---------- Cart ---------- */
+/* ---------- Cart helpers ---------- */
 export function readCart() {
   try { return JSON.parse(localStorage.getItem(CART_KEY) || "[]"); }
   catch { return []; }
@@ -92,7 +95,7 @@ export function showToast(message, icon = "✅") {
   }, 3000);
 }
 
-/* ---------- Fly to cart ---------- */
+/* ---------- Fly-to-cart ---------- */
 export function flyToCart(imgSrc, btnElement) {
   const cartBtn = document.getElementById("globalCartBtn");
   const cartBadge = document.getElementById("globalCartCount");
@@ -124,7 +127,7 @@ export function flyToCart(imgSrc, btnElement) {
 }
 
 /* ==========================================================
-   SIDE OFFER BANNERS
+   SIDE OFFER BANNERS (नया फीचर)
    ========================================================== */
 export async function loadSideOffers() {
   // data-no-offers वाले पेज पर न चले (admin, checkout)
@@ -144,9 +147,11 @@ export async function loadSideOffers() {
       offers.push({ id: docSnap.id, ...o });
     });
 
+    // priority से sort
+    offers.sort((a, b) => (a.priority || 1) - (b.priority || 1));
     renderSideOffers(offers);
   } catch (err) {
-    console.warn("Side offers load failed:", err);
+    console.warn("Side offers load failed (normal agar collection abhi nahi bana):", err);
   }
 }
 
@@ -154,7 +159,6 @@ function renderSideOffers(offers) {
   document.querySelectorAll(".side-offer-banner").forEach((el) => el.remove());
 
   offers.forEach((offer) => {
-    // localStorage में बंद किया गया याद रखें (7 दिन)
     const closeKey = "offerClosed_" + offer.id;
     const closedAt = localStorage.getItem(closeKey);
     if (closedAt && Date.now() - Number(closedAt) < 7 * 24 * 60 * 60 * 1000) return;
@@ -163,9 +167,10 @@ function renderSideOffers(offers) {
     banner.className = `side-offer-banner side-${offer.position || "right"}`;
     if (offer.mobileShow) banner.classList.add("mobile-show");
 
+    const isExternal = offer.link && offer.link.startsWith("http");
     banner.innerHTML = `
       ${offer.closeable !== false ? `<button class="side-offer-close" aria-label="Close">✕</button>` : ""}
-      <a href="${offer.link || "#"}" ${offer.link?.startsWith("http") ? 'target="_blank" rel="noopener"' : ""}>
+      <a href="${offer.link || "#"}" ${isExternal ? 'target="_blank" rel="noopener"' : ""}>
         <img src="${offer.image}" alt="Special Offer" loading="lazy">
       </a>
     `;
@@ -183,10 +188,10 @@ function renderSideOffers(offers) {
   });
 }
 
-// हर पेज पर auto-load
+/* ---------- Auto-load on every page ---------- */
 if (typeof window !== "undefined") {
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", loadSideOffers);
+    document.addEventListener("DOMContentLoaded", () => loadSideOffers());
   } else {
     loadSideOffers();
   }
