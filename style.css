@@ -1225,3 +1225,83 @@ img { max-width: 100%; }
   .step-label { font-size: 9px; }
   .step-time { font-size: 8px; }
 }
+/* ==========================================================
+   SIDE OFFER BANNERS
+   ========================================================== */
+.side-offer-banner {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 170px;
+  z-index: 9998;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 12px 35px rgba(16,36,59,0.25);
+  border: 2px solid var(--gold, #c5a36b);
+  background: #fff;
+  animation: slideInOffer 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.side-offer-banner.side-right { right: 15px; }
+.side-offer-banner.side-left  { left: 15px; }
+
+.side-offer-banner a { display: block; }
+.side-offer-banner img {
+  width: 100%;
+  display: block;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+.side-offer-banner:hover img { transform: scale(1.04); }
+
+.side-offer-close {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(16,36,59,0.9);
+  color: #fff;
+  border: none;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+}
+.side-offer-close:hover { background: #ef4444; transform: rotate(90deg); }
+
+@keyframes slideInOffer {
+  from { opacity: 0; transform: translateY(-50%) translateX(120px); }
+  to   { opacity: 1; transform: translateY(-50%) translateX(0); }
+}
+.side-offer-banner.side-left { animation-name: slideInOfferLeft; }
+@keyframes slideInOfferLeft {
+  from { opacity: 0; transform: translateY(-50%) translateX(-120px); }
+  to   { opacity: 1; transform: translateY(-50%) translateX(0); }
+}
+
+/* मोबाइल पर default छिपा */
+@media (max-width: 1024px) {
+  .side-offer-banner { display: none; }
+}
+/* अगर mobileShow true है तो मोबाइल पर नीचे दिखेगा */
+@media (max-width: 768px) {
+  .side-offer-banner.mobile-show {
+    display: block;
+    top: auto;
+    bottom: 95px;
+    transform: none;
+    width: 130px;
+    animation: slideInOfferMobile 0.5s ease;
+  }
+  .side-offer-banner.mobile-show.side-right { right: 10px; }
+  .side-offer-banner.mobile-show.side-left  { left: 10px; }
+}
+@keyframes slideInOfferMobile {
+  from { opacity: 0; transform: translateY(50px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
