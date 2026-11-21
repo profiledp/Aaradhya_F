@@ -1,11 +1,10 @@
 /* ==========================================================
-   AARADHYA MART — SHARED MODULE
-   Single source of truth for Firebase, cart, phone, toasts.
-   Import this from every page instead of copy-pasting config.
+   AARADHYA MART — SHARED MODULE (WITH SIDE OFFERS)
    ========================================================== */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, query, where }
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 export const FIREBASE_CONFIG = {
   apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y",
@@ -31,7 +30,7 @@ export const WHATSAPP_NUMBER = "918931911428";
 export const CART_KEY = "aaradhyaMartCart";
 export const MY_ORDERS_KEY = "aaradhyaMyOrders";
 
-/* ---------- Phone normalization ---------- */
+/* ---------- Phone ---------- */
 export function normalizePhone(input) {
   if (!input) return "";
   let digits = String(input).replace(/\D/g, "");
@@ -44,13 +43,11 @@ export function normalizePhone(input) {
 export function isValidPhone(input) {
   return normalizePhone(input) !== "";
 }
-
-/* ---------- Order ID normalization ---------- */
 export function normalizeOrderId(input) {
   return String(input || "").trim().toUpperCase();
 }
 
-/* ---------- Cart helpers ---------- */
+/* ---------- Cart ---------- */
 export function readCart() {
   try { return JSON.parse(localStorage.getItem(CART_KEY) || "[]"); }
   catch { return []; }
@@ -61,31 +58,16 @@ export function writeCart(cart) {
 export function cartCount() {
   return readCart().reduce((sum, i) => sum + (Number(i.qty) || 1), 0);
 }
-
-// ✅ FIXED: Cart me item ka 'name', 'image' aur 'price' bhi save ho raha hai
 export function addToCart(item) {
   const cart = readCart();
   const existing = cart.find(
     (c) => c.id === item.id && c.size === item.size && c.color === item.color
   );
-  
-  if (existing) {
-    existing.qty = (Number(existing.qty) || 1) + 1;
-  } else {
-    cart.push({ 
-      id: item.id, 
-      name: item.name,
-      image: item.image, 
-      price: Number(item.price), 
-      size: item.size, 
-      color: item.color, 
-      qty: 1 
-    });
-  }
+  if (existing) existing.qty = (Number(existing.qty) || 1) + 1;
+  else cart.push({ ...item, qty: 1 });
   writeCart(cart);
   return cart;
 }
-
 export function updateCartBadge() {
   const badge = document.getElementById("globalCartCount");
   if (!badge) return;
@@ -110,7 +92,7 @@ export function showToast(message, icon = "✅") {
   }, 3000);
 }
 
-/* ---------- Fly-to-cart ---------- */
+/* ---------- Fly to cart ---------- */
 export function flyToCart(imgSrc, btnElement) {
   const cartBtn = document.getElementById("globalCartBtn");
   const cartBadge = document.getElementById("globalCartCount");
@@ -139,4 +121,73 @@ export function flyToCart(imgSrc, btnElement) {
       setTimeout(() => cartBadge.classList.remove("bounce-anim"), 500);
     }
   }, 800);
+}
+
+/* ==========================================================
+   SIDE OFFER BANNERS
+   ========================================================== */
+export async function loadSideOffers() {
+  // data-no-offers वाले पेज पर न चले (admin, checkout)
+  if (document.body.dataset.noOffers !== undefined) return;
+
+  try {
+    const db = getDb();
+    const q = query(collection(db, "sideOffers"), where("active", "==", true));
+    const snap = await getDocs(q);
+    const today = new Date().toISOString().split("T")[0];
+    const offers = [];
+
+    snap.forEach((docSnap) => {
+      const o = docSnap.data();
+      if (o.startDate && today < o.startDate) return;
+      if (o.endDate && today > o.endDate) return;
+      offers.push({ id: docSnap.id, ...o });
+    });
+
+    renderSideOffers(offers);
+  } catch (err) {
+    console.warn("Side offers load failed:", err);
+  }
+}
+
+function renderSideOffers(offers) {
+  document.querySelectorAll(".side-offer-banner").forEach((el) => el.remove());
+
+  offers.forEach((offer) => {
+    // localStorage में बंद किया गया याद रखें (7 दिन)
+    const closeKey = "offerClosed_" + offer.id;
+    const closedAt = localStorage.getItem(closeKey);
+    if (closedAt && Date.now() - Number(closedAt) < 7 * 24 * 60 * 60 * 1000) return;
+
+    const banner = document.createElement("div");
+    banner.className = `side-offer-banner side-${offer.position || "right"}`;
+    if (offer.mobileShow) banner.classList.add("mobile-show");
+
+    banner.innerHTML = `
+      ${offer.closeable !== false ? `<button class="side-offer-close" aria-label="Close">✕</button>` : ""}
+      <a href="${offer.link || "#"}" ${offer.link?.startsWith("http") ? 'target="_blank" rel="noopener"' : ""}>
+        <img src="${offer.image}" alt="Special Offer" loading="lazy">
+      </a>
+    `;
+    document.body.appendChild(banner);
+
+    const closeBtn = banner.querySelector(".side-offer-close");
+    if (closeBtn) {
+      closeBtn.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        localStorage.setItem(closeKey, Date.now());
+        banner.remove();
+      };
+    }
+  });
+}
+
+// हर पेज पर auto-load
+if (typeof window !== "undefined") {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", loadSideOffers);
+  } else {
+    loadSideOffers();
+  }
 }
