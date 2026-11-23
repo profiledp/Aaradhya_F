@@ -239,24 +239,37 @@
     </div>
   </section>
 
-  <!-- ====== AI CHATBOT UI ====== -->
-  <div id="aiChatBtn" style="position: fixed; bottom: 95px; right: 25px; background: var(--navy); color: #fff; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; box-shadow: 0 4px 15px rgba(16,36,59,0.4); z-index: 9999; border: 2px solid var(--gold);">
-    🤖
-  </div>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Customer Support | Aaradhya Mart</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ... (आपका पिछला CSS कोड वैसा ही रहेगा, चैट विंडो की शैली सहित) ... */
+    .ai-chat-window { display: none; position: fixed; bottom: 160px; right: 25px; width: 350px; height: 480px; background: #fff; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 10000; flex-direction: column; overflow: hidden; border: 1px solid var(--line); }
+    .ai-chat-header { background: var(--navy); color: #fff; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+    .ai-chat-messages { flex: 1; padding: 15px; overflow-y: auto; font-size: 13px; display: flex; flex-direction: column; gap: 10px; background: #f8f9fa; }
+    .ai-msg-bot { background: #fff; padding: 10px; border-radius: 8px; border: 1px solid #eee; align-self: flex-start; max-width: 85%; line-height: 1.5; }
+    .ai-msg-user { background: var(--navy); color: #fff; padding: 10px; border-radius: 8px; align-self: flex-end; max-width: 85%; line-height: 1.5; }
+    .chat-menu-btn { background: #fff; border: 1px solid var(--gold); color: var(--navy); padding: 10px; border-radius: 6px; text-align: left; cursor: pointer; font-weight: bold; font-size: 12px; transition: 0.2s; width: 100%; margin-bottom: 5px; }
+    .chat-menu-btn:hover { background: var(--navy); color: #fff; }
+    .chat-wa-btn { background: #25D366; color: #fff; text-decoration: none; display: block; text-align: center; padding: 10px; border-radius: 6px; font-weight: bold; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <!-- ... (आपका पिछला हेडर, हीरो, FAQ आदि HTML बरकरार रहेगा) ... -->
 
+  <!-- AI चैट विंडो UI -->
+  <div id="aiChatBtn" style="position: fixed; bottom: 95px; right: 25px; background: var(--navy); color: #fff; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; box-shadow: 0 4px 15px rgba(16,36,59,0.4); z-index: 9999; border: 2px solid var(--gold);">🤖</div>
   <div id="aiChatWindow" class="ai-chat-window">
     <div class="ai-chat-header">
-      <div>
-        <strong>🤖 Aaradhya AI</strong><br>
-        <span style="font-size: 10px; color: #cbd5e1;">Usually replies instantly</span>
-      </div>
+      <div><strong>🤖 Aaradhya AI</strong><br><span style="font-size: 10px; color: #cbd5e1;">Usually replies instantly</span></div>
       <button id="closeAiChat" style="background: none; border: none; color: #fff; font-size: 18px; cursor: pointer;">✕</button>
     </div>
-    
     <div id="aiChatMessages" class="ai-chat-messages">
-      <div class="ai-msg-bot">
-        Namaste! Main aapka AI Assistant hoon. Niche diye gaye options me se chunein ya apna sawal type karein:
-      </div>
+      <div class="ai-msg-bot">Namaste! Main aapka AI Assistant hoon. Niche diye gaye options me se chunein ya apna sawal type karein:</div>
       <div id="chatMenuOptions">
         <button class="chat-menu-btn" onclick="handleMenuClick('order')">📦 Where is my order?</button>
         <button class="chat-menu-btn" onclick="handleMenuClick('delivery')">🚚 Delivery charges & time?</button>
@@ -264,33 +277,16 @@
         <button class="chat-menu-btn" onclick="handleMenuClick('print')">🖨️ Custom Print rates?</button>
       </div>
     </div>
-
     <div style="padding: 10px; border-top: 1px solid var(--line); display: flex; gap: 5px; background: #fff;">
       <input type="text" id="aiChatInput" placeholder="Type your question..." style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 6px; outline: none; font-size: 13px;">
       <button id="aiSendBtn" style="background: var(--gold); color: var(--navy); border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; cursor: pointer;">Send</button>
     </div>
   </div>
 
-  <footer class="site-footer" style="margin-top: 0;">
-    <div class="footer-links" style="display: flex; justify-content: center; gap: 20px; margin-bottom: 15px; flex-wrap: wrap;">
-      <a href="index.html">Home</a>
-      <a href="about.html">About Us & Policies</a>
-      <a href="delivery-policy.html">Delivery Policy</a>
-      <a href="support.html">Support</a>
-      <a href="track.html">Track Order</a>
-      <a href="https://wa.me/918931911428" target="_blank">Contact Us</a>
-    </div>
-    <p>© 2026 Aaradhya Mart. All rights reserved.</p>
-  </footer>
-
   <script type="module">
     import { updateCartBadge } from "./shared.js";
     document.addEventListener("DOMContentLoaded", updateCartBadge);
 
-    /* ==========================================
-       AI CHATBOT LOGIC (Menu + Puter.js Free AI + WhatsApp)
-       ========================================== */
-    
     const aiChatBtn = document.getElementById("aiChatBtn");
     const aiChatWindow = document.getElementById("aiChatWindow");
     const closeAiChat = document.getElementById("closeAiChat");
@@ -299,62 +295,35 @@
     const aiChatMessages = document.getElementById("aiChatMessages");
     const chatMenuOptions = document.getElementById("chatMenuOptions");
 
-    // फ्री AI (Puter.js) लोड करें
-    const script = document.createElement("script");
-    script.src = "https://js.puter.com/v2/";
-    document.head.appendChild(script);
-
     aiChatBtn.onclick = () => {
       aiChatWindow.style.display = (aiChatWindow.style.display === "flex") ? "none" : "flex";
     };
     closeAiChat.onclick = () => aiChatWindow.style.display = "none";
 
-    // ==========================================
-    // FIX: Main Menu par click karne ka naya tarika (Event Delegation)
-    // ==========================================
+    // मुख्य मेनू क्लिक लॉजिक (अपरिवर्तित)
     aiChatMessages.addEventListener("click", function(e) {
-      // Agar click "reset-menu-btn" par hua hai
       if (e.target && e.target.classList.contains("reset-menu-btn")) {
-        chatMenuOptions.style.display = "block"; // Menu wapas dikhao
-        aiChatMessages.scrollTop = aiChatMessages.scrollHeight; // Scroll ko neeche le jao
+        chatMenuOptions.style.display = "block";
+        aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
       }
     });
 
-    // 1. जब ग्राहक Quick Menu के बटन पर क्लिक करे
     window.handleMenuClick = function(type) {
-      let userText = "";
-      let botReply = "";
-
-      if (type === 'order') {
-        userText = "Where is my order?";
-        botReply = `Aap apna order track karne ke liye <a href="track.html" style="color:var(--navy); font-weight:bold; text-decoration:underline;">Track Order Page</a> par jayein. Wahan Order ID aur Mobile Number daal kar live status dekhein.`;
-      } else if (type === 'delivery') {
-        userText = "Delivery charges and time?";
-        botReply = `Azamgarh city ke andar delivery 24-48 hours me hoti hai. Bahar ke orders 3-5 din me pahunchte hain. Delivery charge order ki value par depend karta hai.`;
-      } else if (type === 'return') {
-        userText = "Return Policy?";
-        botReply = `Humari koi 7-day return policy nahi hai. Agar item damaged ya galat aaya hai, to delivery ke 12 ghante ke andar photo/video ke sath WhatsApp par report karein.`;
-      } else if (type === 'print') {
-        userText = "Custom print rates?";
-        botReply = `T-Shirt printing ₹199 se shuru hoti hai, Mugs ₹149, aur Visiting Cards ₹499 (100 pcs). Exact quote ke liye aap WhatsApp par design bhej sakte hain.`;
-      }
+      let userText = "", botReply = "";
+      if (type === 'order') { userText = "Where is my order?"; botReply = `Aap apna order track karne ke liye <a href="track.html" style="color:var(--navy); font-weight:bold; text-decoration:underline;">Track Order Page</a> par jayein.`; }
+      else if (type === 'delivery') { userText = "Delivery charges and time?"; botReply = `Azamgarh city ke andar delivery 24-48 hours me hoti hai. Bahar ke orders 3-5 din me pahunchte hain.`; }
+      else if (type === 'return') { userText = "Return Policy?"; botReply = `Humari koi 7-day return policy nahi hai. Agar item damaged ya galat aaya hai, to 12 ghante ke andar WhatsApp par report karein.`; }
+      else if (type === 'print') { userText = "Custom print rates?"; botReply = `T-Shirt printing ₹199 se shuru hoti hai, Mugs ₹149, aur Visiting Cards ₹499 (100 pcs).`; }
 
       aiChatMessages.innerHTML += `<div class="ai-msg-user">${userText}</div>`;
-      chatMenuOptions.style.display = "none"; // बटन छिपा दें
-      
+      chatMenuOptions.style.display = "none";
       setTimeout(() => {
-        aiChatMessages.innerHTML += `<div class="ai-msg-bot">${botReply}</div>`;
-        
-        // Yahan naya class add kiya gaya hai
-        aiChatMessages.innerHTML += `
-          <div style="text-align:center; margin-top:10px;">
-            <button class="reset-menu-btn" style="background:none; border:none; color:var(--navy); text-decoration:underline; cursor:pointer; font-size:12px;">← Main Menu</button>
-          </div>`;
+        aiChatMessages.innerHTML += `<div class="ai-msg-bot">${botReply}</div><div style="text-align:center; margin-top:10px;"><button class="reset-menu-btn" style="background:none; border:none; color:var(--navy); text-decoration:underline; cursor:pointer; font-size:12px;">← Main Menu</button></div>`;
         aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
       }, 400);
     }
 
-    // 2. जब ग्राहक अपना खुद का सवाल टाइप करे (AI का इस्तेमाल)
+    // === मुख्य परिवर्तन: मुफ्त KeylessAI का उपयोग करना और WhatsApp फ़ॉलबैक ===
     async function sendAiMessage() {
       const text = aiChatInput.value.trim();
       if (!text) return;
@@ -368,33 +337,41 @@
       aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
 
       try {
-        const systemPrompt = "You are a helpful customer support AI for 'Aaradhya Mart', an Indian e-commerce store in Azamgarh. We sell Fashion, Grocery (Kirana), and Custom Printing (A-Print). We take 20% advance payment. Orders can be cancelled before packing. We do not have a 7-day return policy. Reply in short, friendly Hinglish. If the user asks something completely out of context or you don't know the answer, tell them to contact WhatsApp at +918931911428.";
-        
-        // Puter.js AI Call
-        const response = await puter.ai.chat(systemPrompt + "\n\nCustomer Question: " + text, { model: 'gpt-5-nano' });
-        
-        const loadingEl = document.getElementById(loadingId);
-        if(loadingEl) loadingEl.remove();
+        // 1. KeylessAI के मुफ्त इंटरफेस का उपयोग करें (कोई API Key आवश्यक नहीं, कोई पॉपअप नहीं)
+        const response = await fetch("https://keylessai.thryx.workers.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "gpt-4o", // KeylessAI स्वचालित रूप से मुफ्त मॉडल पर रूट करेगा
+            messages: [
+              { role: "system", content: "You are Aaradhya Mart's support AI. Reply in short Hinglish. If you don't know the answer or the question is out of scope, reply exactly with: 'I don't know. Please contact WhatsApp.'" },
+              { role: "user", content: text }
+            ]
+          })
+        });
 
-        let aiReply = response;
-        
-        if (aiReply.toLowerCase().includes("whatsapp") || aiReply.toLowerCase().includes("contact")) {
-           aiReply = `Mujhe is sawal ka exact jawab nahi pata. Kripya humari Support Team se WhatsApp par baat karein.`;
-           aiChatMessages.innerHTML += `<div class="ai-msg-bot">${aiReply} <br><br> <a href="https://wa.me/918931911428?text=Hello%20Aaradhya%20Mart,%20I%20have%20a%20question:%20${encodeURIComponent(text)}" target="_blank" class="chat-wa-btn">💬 Chat on WhatsApp</a></div>`;
+        const data = await response.json();
+        document.getElementById(loadingId).remove();
+
+        let aiReply = data.choices[0].message.content.trim();
+
+        // 2. फ़ॉलबैक तर्क: यदि AI स्पष्ट रूप से "नहीं जानता" कहता है, तो WhatsApp बटन दिखाएं
+        if (aiReply.includes("WhatsApp") || aiReply.toLowerCase().includes("don't know") || aiReply.toLowerCase().includes("not sure")) {
+           aiChatMessages.innerHTML += `
+            <div class="ai-msg-bot">
+              Mujhe is sawal ka exact jawab nahi pata. Kripya humari Support Team se WhatsApp par baat karein.
+              <a href="https://wa.me/918931911428?text=Hello%20Aaradhya%20Mart,%20I%20have%20a%20question:%20${encodeURIComponent(text)}" target="_blank" class="chat-wa-btn">💬 Chat on WhatsApp</a>
+            </div>`;
         } else {
            aiChatMessages.innerHTML += `<div class="ai-msg-bot">${aiReply.replace(/\*\*/g, '')}</div>`;
         }
 
-        // AI ke jawab ke baad bhi Main Menu ka option dikhayein
-        aiChatMessages.innerHTML += `
-          <div style="text-align:center; margin-top:10px;">
-            <button class="reset-menu-btn" style="background:none; border:none; color:var(--navy); text-decoration:underline; cursor:pointer; font-size:12px;">← Main Menu</button>
-          </div>`;
+        // "Main Menu" रीसेट बटन जोड़ें
+        aiChatMessages.innerHTML += `<div style="text-align:center; margin-top:10px;"><button class="reset-menu-btn" style="background:none; border:none; color:var(--navy); text-decoration:underline; cursor:pointer; font-size:12px;">← Main Menu</button></div>`;
 
       } catch (error) {
-        const loadingEl = document.getElementById(loadingId);
-        if(loadingEl) loadingEl.remove();
-        
+        // 3. नेटवर्क विफलता फ़ॉलबैक: सीधे WhatsApp पर जंप करें
+        document.getElementById(loadingId)?.remove();
         aiChatMessages.innerHTML += `
           <div class="ai-msg-bot" style="color: #b91c1c;">
             Sorry, network issue. Please contact our support directly:
@@ -405,9 +382,7 @@
     }
 
     aiSendBtn.onclick = sendAiMessage;
-    aiChatInput.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") sendAiMessage();
-    });
+    aiChatInput.addEventListener("keypress", (e) => { if (e.key === "Enter") sendAiMessage(); });
   </script>
 </body>
 </html>
