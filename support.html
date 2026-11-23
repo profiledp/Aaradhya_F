@@ -239,7 +239,7 @@
     </div>
   </section>
 
-  <!-- ====== AI CHATBOT UI (Naya Feature) ====== -->
+  <!-- ====== AI CHATBOT UI ====== -->
   <div id="aiChatBtn" style="position: fixed; bottom: 95px; right: 25px; background: var(--navy); color: #fff; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; box-shadow: 0 4px 15px rgba(16,36,59,0.4); z-index: 9999; border: 2px solid var(--gold);">
     🤖
   </div>
@@ -309,6 +309,17 @@
     };
     closeAiChat.onclick = () => aiChatWindow.style.display = "none";
 
+    // ==========================================
+    // FIX: Main Menu par click karne ka naya tarika (Event Delegation)
+    // ==========================================
+    aiChatMessages.addEventListener("click", function(e) {
+      // Agar click "reset-menu-btn" par hua hai
+      if (e.target && e.target.classList.contains("reset-menu-btn")) {
+        chatMenuOptions.style.display = "block"; // Menu wapas dikhao
+        aiChatMessages.scrollTop = aiChatMessages.scrollHeight; // Scroll ko neeche le jao
+      }
+    });
+
     // 1. जब ग्राहक Quick Menu के बटन पर क्लिक करे
     window.handleMenuClick = function(type) {
       let userText = "";
@@ -333,17 +344,14 @@
       
       setTimeout(() => {
         aiChatMessages.innerHTML += `<div class="ai-msg-bot">${botReply}</div>`;
+        
+        // Yahan naya class add kiya gaya hai
         aiChatMessages.innerHTML += `
           <div style="text-align:center; margin-top:10px;">
-            <button onclick="resetChatMenu()" style="background:none; border:none; color:var(--navy); text-decoration:underline; cursor:pointer; font-size:12px;">← Main Menu</button>
+            <button class="reset-menu-btn" style="background:none; border:none; color:var(--navy); text-decoration:underline; cursor:pointer; font-size:12px;">← Main Menu</button>
           </div>`;
         aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
       }, 400);
-    }
-
-    window.resetChatMenu = function() {
-      chatMenuOptions.style.display = "block";
-      aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
     }
 
     // 2. जब ग्राहक अपना खुद का सवाल टाइप करे (AI का इस्तेमाल)
@@ -360,7 +368,6 @@
       aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
 
       try {
-        // मुफ्त AI (Puter.js) को कॉल करें
         const systemPrompt = "You are a helpful customer support AI for 'Aaradhya Mart', an Indian e-commerce store in Azamgarh. We sell Fashion, Grocery (Kirana), and Custom Printing (A-Print). We take 20% advance payment. Orders can be cancelled before packing. We do not have a 7-day return policy. Reply in short, friendly Hinglish. If the user asks something completely out of context or you don't know the answer, tell them to contact WhatsApp at +918931911428.";
         
         // Puter.js AI Call
@@ -371,7 +378,6 @@
 
         let aiReply = response;
         
-        // अगर AI को नहीं पता (वह WhatsApp का जिक्र करता है)
         if (aiReply.toLowerCase().includes("whatsapp") || aiReply.toLowerCase().includes("contact")) {
            aiReply = `Mujhe is sawal ka exact jawab nahi pata. Kripya humari Support Team se WhatsApp par baat karein.`;
            aiChatMessages.innerHTML += `<div class="ai-msg-bot">${aiReply} <br><br> <a href="https://wa.me/918931911428?text=Hello%20Aaradhya%20Mart,%20I%20have%20a%20question:%20${encodeURIComponent(text)}" target="_blank" class="chat-wa-btn">💬 Chat on WhatsApp</a></div>`;
@@ -379,11 +385,16 @@
            aiChatMessages.innerHTML += `<div class="ai-msg-bot">${aiReply.replace(/\*\*/g, '')}</div>`;
         }
 
+        // AI ke jawab ke baad bhi Main Menu ka option dikhayein
+        aiChatMessages.innerHTML += `
+          <div style="text-align:center; margin-top:10px;">
+            <button class="reset-menu-btn" style="background:none; border:none; color:var(--navy); text-decoration:underline; cursor:pointer; font-size:12px;">← Main Menu</button>
+          </div>`;
+
       } catch (error) {
         const loadingEl = document.getElementById(loadingId);
         if(loadingEl) loadingEl.remove();
         
-        // अगर AI बिल्कुल फेल हो जाए, तो सीधे WhatsApp पर भेजें
         aiChatMessages.innerHTML += `
           <div class="ai-msg-bot" style="color: #b91c1c;">
             Sorry, network issue. Please contact our support directly:
