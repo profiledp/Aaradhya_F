@@ -304,13 +304,11 @@
     };
     closeAiChat.onclick = () => aiChatWindow.style.display = "none";
 
-    // Main Menu Reset Logic
-    aiChatMessages.addEventListener("click", function(e) {
-      if (e.target && e.target.classList.contains("reset-menu-btn")) {
-        chatMenuOptions.style.display = "block";
-        aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
-      }
-    });
+    // Main Menu Reset Function
+    window.resetChatMenu = function() {
+      chatMenuOptions.style.display = "block"; // Menu wapas dikhao
+      aiChatMessages.scrollTop = aiChatMessages.scrollHeight; // Scroll neeche le jao
+    }
 
     // Menu Clicks Logic
     window.handleMenuClick = function(type) {
@@ -336,9 +334,11 @@
       
       setTimeout(() => {
         aiChatMessages.innerHTML += `<div class="ai-msg-bot">${botReply}</div>`;
+        
+        // Inline onclick for Main Menu (Click issue fixed)
         aiChatMessages.innerHTML += `
           <div style="text-align:center; margin-top:10px;">
-            <button class="reset-menu-btn" style="background:none; border:none; color:var(--navy); text-decoration:underline; cursor:pointer; font-size:12px;">← Main Menu</button>
+            <button onclick="resetChatMenu()" style="background:none; border:none; color:var(--navy); text-decoration:underline; cursor:pointer; font-size:12px;">← Main Menu</button>
           </div>`;
         aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
       }, 400);
@@ -360,7 +360,7 @@
       try {
         const systemPrompt = "You are a helpful customer support AI for 'Aaradhya Mart', an Indian e-commerce store in Azamgarh. We sell Fashion, Grocery (Kirana), and Custom Printing (A-Print). We take 20% advance payment. Orders can be cancelled before packing. We do not have a 7-day return policy. Reply in short, friendly Hinglish. If the user asks something completely out of context or you don't know the answer, you must reply exactly with: 'I don't know. Please contact WhatsApp.'";
         
-        // पूरी तरह से फ्री KeylessAI API
+        // KeylessAI API (No Login Required)
         const response = await fetch("https://keylessai.thryx.workers.dev/v1/chat/completions", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -380,7 +380,7 @@
 
         let aiReply = data.choices[0].message.content.trim();
         
-        // अगर AI को जवाब नहीं पता (WhatsApp Fallback)
+        // WhatsApp Fallback Logic
         if (aiReply.includes("WhatsApp") || aiReply.toLowerCase().includes("don't know") || aiReply.toLowerCase().includes("not sure")) {
            aiChatMessages.innerHTML += `
             <div class="ai-msg-bot">
@@ -391,17 +391,17 @@
            aiChatMessages.innerHTML += `<div class="ai-msg-bot">${aiReply.replace(/\*\*/g, '')}</div>`;
         }
 
-        // Main Menu Option
+        // Inline onclick for Main Menu
         aiChatMessages.innerHTML += `
           <div style="text-align:center; margin-top:10px;">
-            <button class="reset-menu-btn" style="background:none; border:none; color:var(--navy); text-decoration:underline; cursor:pointer; font-size:12px;">← Main Menu</button>
+            <button onclick="resetChatMenu()" style="background:none; border:none; color:var(--navy); text-decoration:underline; cursor:pointer; font-size:12px;">← Main Menu</button>
           </div>`;
 
       } catch (error) {
         const loadingEl = document.getElementById(loadingId);
         if(loadingEl) loadingEl.remove();
         
-        // अगर नेटवर्क फेल हो जाए (WhatsApp Fallback)
+        // Network Error Fallback
         aiChatMessages.innerHTML += `
           <div class="ai-msg-bot" style="color: #b91c1c;">
             Sorry, network issue. Please contact our support directly:
