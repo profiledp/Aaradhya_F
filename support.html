@@ -285,7 +285,7 @@
 
   <script type="module">
     import { updateCartBadge, getDb } from "./shared.js";
-    import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
     
     document.addEventListener("DOMContentLoaded", updateCartBadge);
 
@@ -300,6 +300,8 @@
 
     // --- 1. Firebase se Products Load karein ---
     let allProducts = [];
+    let missingProducts = []; // Admin Report ke liye (Stock out products)
+
     async function loadProductsForAI() {
       try {
         const snap = await getDocs(collection(db, "products"));
@@ -329,13 +331,14 @@
       aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
     }
 
+    // --- 3. Menu Clicks ---
     window.handleMenuClick = function(type) {
       let userText = "";
       let botReply = "";
 
       if (type === 'order') {
-        userText = "Where is my order?";
-        botReply = `Aap apna order track karne ke liye <a href="track.html" style="color:var(--navy); font-weight:bold; text-decoration:underline;">Track Order Page</a> par jayein. Wahan Order ID aur Mobile Number daal kar live status dekhein.`;
+        userText = "Mera order kaha hai? (Where is my order?)";
+        botReply = `Aap apna order track karne ke liye <a href="track.html" style="color:var(--navy); font-weight:bold; text-decoration:underline;">Track Order Page</a> par jayein. Ya fir aap mujhe apna Order ID bhej sakte hain (jaise: ORD-123456).`;
       } else if (type === 'delivery') {
         userText = "Delivery charges and time?";
         botReply = `Azamgarh city ke andar delivery 24-48 hours me hoti hai. Bahar ke orders 3-5 din me pahunchte hain. Delivery charge order ki value par depend karta hai.`;
@@ -357,7 +360,7 @@
       }, 400);
     }
 
-    // --- 3. SMART AI MESSAGE (Pollinations AI) ---
+    // --- 4. SMART AI MESSAGE (With Tracking, Multi-lingual, Coupons, Admin Report) ---
     async function sendAiMessage() {
       const text = aiChatInput.value.trim();
       if (!text) return;
@@ -367,23 +370,46 @@
       chatMenuOptions.style.display = "none";
       
       const loadingId = "loading_" + Date.now();
-      aiChatMessages.innerHTML += `<div id="${loadingId}" style="color: #888; font-size: 12px;">AI is searching products...</div>`;
+      aiChatMessages.innerHTML += `<div id="${loadingId}" style="color: #888; font-size: 12px;">AI is typing...</div>`;
       aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
 
       try {
-        // AI ko batayein ki dukaan me kya-kya hai
+        // Feature 3: Live Order Tracking Check (Agar user ne Order ID daala hai)
+        const orderIdMatch = text.match(/ORD-\d+/i);
+        if (orderIdMatch) {
+          const orderId = orderIdMatch[0].toUpperCase();
+          const q = query(collection(db, "orders"), where("orderId", "==", orderId));
+          const orderSnap = await getDocs(q);
+          
+          if (!orderSnap.empty) {
+            const orderData = orderSnap.docs[0].data();
+            const statusMsg = `Aapka Order (${orderId}) abhi **${orderData.status}** status me hai. Items: ${orderData.items.map(i=>i.name).join(', ')}. Total: ₹${orderData.totalAmount}`;
+            const loadingEl = document.getElementById(loadingId);
+            if(loadingEl) loadingEl.remove();
+            
+            aiChatMessages.innerHTML += `<div class="ai-msg-bot">${statusMsg} <br><br> <a href="track.html?order=${orderId}" class="chat-wa-btn" style="background:var(--navy);">📍 View Full Tracker</a></div>`;
+            aiChatMessages.innerHTML += `<div style="text-align:center; margin-top:10px;"><button onclick="resetChatMenu()" style="background:none; border:none; color:var(--navy); text-decoration:underline; cursor:pointer; font-size:12px;">← Main Menu</button></div>`;
+            aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+            return;
+          }
+        }
+
+        // Feature 1, 2 & 4: AI ko prompt dena
         const productListString = allProducts.map(p => `- ${p.name} (₹${p.price})`).join('\n');
         
-        const systemPrompt = `You are a smart sales assistant for 'Aaradhya Mart' (Indian e-commerce store). 
-Here is our product list:
+        const systemPrompt = `You are a smart, friendly sales assistant for 'Aaradhya Mart' (an Indian store in Azamgarh). 
+Here is our stock list:
 ${productListString}
 
-Rules:
-1. Suggest matching items from the list and mention price in Hinglish.
-2. General policies: 20% advance, no 7-day return, T-shirt print starts ₹199.
-3. If product not in list or you don't know, reply exactly: 'I don't know. Please contact WhatsApp.'`;
+STRICT RULES:
+1. LANGUAGE: Reply in the EXACT same language the user asked in (Hindi, English, or Hinglish).
+2. PRODUCT SEARCH: If they ask for an item, suggest from the list and mention the price.
+3. DISCOUNTS (Feature 2): If the customer says it is "too expensive", "mehnga hai", or "discount do", offer them a secret coupon code "SAVE50" for ₹50 off.
+4. MISSING ITEMS (Feature 4): If they ask for an item NOT in the list, reply with: 'MISSING: [item name]' and tell the customer in a friendly way that we don't have it, and offer WhatsApp support.
+5. POLICY: 20% advance, no 7-day return, T-shirt print ₹199.
+6. UNKNOWN: If you don't know what to say, reply exactly: 'I don't know. Please contact WhatsApp.'`;
 
-        // Pollinations AI (Free & No Login)
+        // Pollinations AI (Free)
         const response = await fetch("https://text.pollinations.ai/", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -398,19 +424,26 @@ Rules:
         if (!response.ok) throw new Error("API Failed");
         
         let aiReply = await response.text();
-        
         const loadingEl = document.getElementById(loadingId);
         if(loadingEl) loadingEl.remove();
 
-        // Check karein agar AI ne "I don't know" bola hai
-        if (aiReply.includes("I don't know") || aiReply.includes("WhatsApp") || aiReply.includes("Sorry")) {
+        // Feature 4: Admin Report Check
+        if (aiReply.includes("MISSING:")) {
+          const missingItem = aiReply.split("MISSING:")[1].split(".")[0].trim();
+          missingProducts.push(missingItem);
+          console.log("ADMIN ALERT - Out of stock requests:", missingProducts);
+          // Yahan aap chahain to Firebase me admin ke liye ek notification save kar sakte hain
+        }
+
+        // WhatsApp Fallback Check
+        if (aiReply.includes("I don't know") || aiReply.includes("WhatsApp") || aiReply.includes("MISSING:")) {
            aiChatMessages.innerHTML += `
             <div class="ai-msg-bot">
               Mujhe is sawal ka exact jawab nahi mila ya yeh product stock me nahi hai. Kripya humari Support Team se WhatsApp par baat karein.
               <a href="https://wa.me/918931911428?text=Hello%20Aaradhya%20Mart,%20I%20have%20a%20question:%20${encodeURIComponent(text)}" target="_blank" class="chat-wa-btn">💬 Chat on WhatsApp</a>
             </div>`;
         } else {
-           // Agar product mil gaya, toh jawab ke sath "View Website" ka link bhi dein
+           // Product mila ya AI ne coupon diya
            aiChatMessages.innerHTML += `
             <div class="ai-msg-bot">
               ${aiReply.replace(/\*\*/g, '')}
@@ -427,7 +460,6 @@ Rules:
         const loadingEl = document.getElementById(loadingId);
         if(loadingEl) loadingEl.remove();
         
-        // Agar Network Fail ho jaye
         aiChatMessages.innerHTML += `
           <div class="ai-msg-bot" style="color: #b91c1c;">
             Sorry, network issue. Please contact our support directly:
