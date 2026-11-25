@@ -52,6 +52,11 @@
     .place-order-btn { width: 100%; padding: 16px; background: var(--navy); color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 20px; }
     .advance-notice { background: #e0f2fe; border: 1px dashed #7dd3fc; color: #0369a1; padding: 12px; border-radius: 6px; font-size: 12px; font-weight: bold; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
     
+    /* 🌟 20% Advance Calculator Box 🌟 */
+    .advance-calc-box { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 8px; padding: 15px; margin-top: 15px; text-align: left; }
+    .advance-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: #92400e; }
+    .advance-row.total-row { border-top: 1px dashed #fcd34d; padding-top: 8px; margin-top: 8px; font-size: 15px; font-weight: bold; }
+
     /* ORDER SLIP POPUP */
     .slip-modal-overlay { position: fixed; inset: 0; background: rgba(16,36,59,0.7); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; visibility: hidden; transition: 0.3s; padding: 15px; }
     .slip-modal-overlay.active { opacity: 1; visibility: visible; }
@@ -135,6 +140,22 @@
           <p style="margin:0; font-size:14px;">Subtotal: ₹<span id="subTotalTxt">0</span></p>
           <p style="margin:5px 0 0; font-size:14px; color:#10b981; display:none;" id="discountTxtRow">Discount: -₹<span id="discountTxt">0</span></p>
           <h3 style="margin:10px 0 0; color:var(--navy);">Total Payable: ₹<span id="finalTotalTxt">0</span></h3>
+        </div>
+
+        <!-- 🌟 20% Advance Calculator Box 🌟 -->
+        <div class="advance-calc-box">
+          <div class="advance-row">
+            <span>Total Amount:</span>
+            <strong>₹<span id="calcTotal">0</span></strong>
+          </div>
+          <div class="advance-row">
+            <span>Advance Required (20%):</span>
+            <strong>₹<span id="calcAdvance">0</span></strong>
+          </div>
+          <div class="advance-row total-row">
+            <span>Balance on Delivery:</span>
+            <strong>₹<span id="calcBalance">0</span></strong>
+          </div>
         </div>
 
         <button type="submit" class="place-order-btn">CONFIRM ON WHATSAPP ↗</button>
@@ -270,9 +291,25 @@
 
     function updateTotals() {
       finalTotal = currentSubtotal - currentDiscount;
-      document.getElementById("subTotalTxt").textContent = currentSubtotal; document.getElementById("finalTotalTxt").textContent = finalTotal;
-      if(currentDiscount > 0) { document.getElementById("discountTxtRow").style.display = "block"; document.getElementById("discountTxt").textContent = currentDiscount; }
-      else { document.getElementById("discountTxtRow").style.display = "none"; }
+      
+      // मुख्य टोटल अपडेट करें
+      document.getElementById("subTotalTxt").textContent = currentSubtotal; 
+      document.getElementById("finalTotalTxt").textContent = finalTotal;
+      
+      if(currentDiscount > 0) { 
+        document.getElementById("discountTxtRow").style.display = "block"; 
+        document.getElementById("discountTxt").textContent = currentDiscount; 
+      } else { 
+        document.getElementById("discountTxtRow").style.display = "none"; 
+      }
+
+      // 🌟 20% Advance Calculator अपडेट करें 🌟
+      const advance = Math.round(finalTotal * 0.20);
+      const balance = finalTotal - advance;
+      
+      document.getElementById("calcTotal").textContent = finalTotal;
+      document.getElementById("calcAdvance").textContent = advance;
+      document.getElementById("calcBalance").textContent = balance;
     }
 
     document.getElementById("applyCouponBtn").onclick = async () => {
@@ -298,6 +335,10 @@
       const finalOrderItems = orderProducts.map(item => ({
         id: item.id, name: item.name, qty: item.selectedQty, size: item.selectedSize, color: item.selectedColor, price: item.finalItemPrice
       }));
+
+      // 20% Advance Calculate करें WhatsApp मैसेज के लिए
+      const advanceAmount = Math.round(finalTotal * 0.20);
+      const balanceAmount = finalTotal - advanceAmount;
 
       try {
         await addDoc(collection(db, "orders"), {
@@ -331,7 +372,9 @@
 
       document.getElementById("orderSlipModal").classList.add("active");
 
-      const msg = `*NEW ORDER*\n*ID: ${newOrderId}*\nTotal: ₹${finalTotal} ${currentDiscount ? `(Coupon: ${appliedCoupon})` : ''}\nName: ${name}\nPhone: ${phone}\nAddress: ${addr}\n\n*Note:* I understand 20% advance is required for confirmation.`;
+      // 🌟 WhatsApp मैसेज में 20% Advance की जानकारी जोड़ें 🌟
+      const msg = `*NEW ORDER*\n*ID: ${newOrderId}*\nTotal: ₹${finalTotal} ${currentDiscount ? `(Coupon: ${appliedCoupon})` : ''}\n\n*Advance Required (20%): ₹${advanceAmount}*\n*Balance on Delivery: ₹${balanceAmount}*\n\nName: ${name}\nPhone: ${phone}\nAddress: ${addr}\n\n*Note:* I understand 20% advance is required for confirmation.`;
+      
       if(isCartOrder) localStorage.removeItem("aaradhyaMartCart");
       
       setTimeout(() => { window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank"); }, 1000);
