@@ -330,6 +330,7 @@
     .ai-panel{position:fixed;right:20px;bottom:165px;width:min(390px,calc(100vw - 24px));height:min(590px,calc(100vh - 190px));z-index:10002;background:#fff;border:1px solid #dce2e9;border-radius:18px;box-shadow:0 22px 65px rgba(0,0,0,.25);display:none;overflow:hidden;flex-direction:column}
     .ai-panel.open{display:flex}.ai-head{background:linear-gradient(135deg,#10243b,#1e3a5f);color:#fff;padding:16px;display:flex;align-items:center;justify-content:space-between}.ai-brand{display:flex;align-items:center;gap:10px}.ai-avatar{width:38px;height:38px;border-radius:12px;background:#c5a36b;color:#10243b;display:grid;place-items:center;font-weight:900}.ai-head small{display:block;color:#d4dce5;font-size:11px;margin-top:3px}.ai-close{border:0;background:rgba(255,255,255,.15);color:#fff;width:32px;height:32px;border-radius:50%;font-size:20px;cursor:pointer}
     .ai-messages{flex:1;overflow-y:auto;padding:14px;background:#f7f9fb;display:flex;flex-direction:column;gap:11px}.ai-msg{max-width:88%;padding:11px 13px;border-radius:14px;font-size:13px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}.ai-msg.bot{align-self:flex-start;background:#fff;color:#263445;border:1px solid #e5eaf0;border-bottom-left-radius:4px}.ai-msg.user{align-self:flex-end;background:#10243b;color:#fff;border-bottom-right-radius:4px}.ai-suggestions{display:flex;gap:7px;flex-wrap:wrap;padding:10px 12px;background:#fff;border-top:1px solid #edf0f4}.ai-suggestion{background:#f8fafc;border:1px solid #dce3eb;border-radius:20px;padding:7px 10px;font-size:11px;color:#10243b;cursor:pointer}.ai-form{display:flex;gap:8px;padding:12px;border-top:1px solid #e5eaf0;background:#fff}.ai-input{flex:1;min-width:0;border:1px solid #d5dce5;border-radius:24px;padding:11px 14px;font-size:13px;outline:none}.ai-input:focus{border-color:#10243b}.ai-send{border:0;background:#10243b;color:#fff;border-radius:50%;width:42px;height:42px;cursor:pointer;font-size:18px}.ai-send:disabled{opacity:.55;cursor:not-allowed}.ai-footnote{text-align:center;font-size:10px;color:#8893a0;padding:0 10px 8px;background:#fff}
+    .ai-product-list{display:grid;gap:8px;margin-top:9px;width:100%}.ai-product-card{display:flex;gap:10px;align-items:center;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:8px;color:#263445;text-decoration:none;max-width:100%}.ai-product-card img{width:58px;height:62px;object-fit:cover;border-radius:8px;background:#f1f5f9}.ai-product-info{min-width:0;flex:1}.ai-product-info strong{display:block;font-size:12px;line-height:1.35}.ai-product-info small{display:block;color:#64748b;font-size:10px;margin-top:3px}.ai-product-price{font-weight:800;color:#10243b;font-size:13px;white-space:nowrap}.ai-action-link{display:inline-block;margin-top:8px;padding:8px 12px;background:#10243b;color:#fff!important;border-radius:18px;text-decoration:none;font-size:11px;font-weight:700}
     @media(max-width:600px){.ai-fab{right:12px;bottom:85px;padding:11px 14px}.ai-panel{right:8px;bottom:145px;width:calc(100vw - 16px);height:min(560px,calc(100vh - 165px))}}
   </style>
 </head>
@@ -992,40 +993,91 @@
   <section class="ai-panel" id="aiPanel" aria-label="Aaradhya Smart Shopping Assistant" aria-live="polite">
     <header class="ai-head"><div class="ai-brand"><div class="ai-avatar">AF</div><div><strong>Aaradhya Shopping Assistant</strong><small>Free Smart Search · Hindi / Hinglish / English</small></div></div><button class="ai-close" id="aiClose" type="button" aria-label="Close chat">×</button></header>
     <div class="ai-messages" id="aiMessages"><div class="ai-msg bot">Namaste! 🙏 Main Aaradhya Mart ka free shopping assistant hoon. Aap products, price, categories, order ya latest fashion trend ke baare mein pooch sakte hain.</div></div>
-    <div class="ai-suggestions" id="aiSuggestions"><button class="ai-suggestion" type="button">Sabse sasta product?</button><button class="ai-suggestion" type="button">₹500 ke andar</button><button class="ai-suggestion" type="button">Winter collection</button><button class="ai-suggestion" type="button">Order kaise karein?</button><button class="ai-suggestion" type="button">Latest fashion trend</button></div>
+    <div class="ai-suggestions" id="aiSuggestions"><button class="ai-suggestion" type="button">Product search</button><button class="ai-suggestion" type="button">Sabse sasta product?</button><button class="ai-suggestion" type="button">₹500 ke andar</button><button class="ai-suggestion" type="button">Where is my order?</button><button class="ai-suggestion" type="button">Return / Exchange</button><button class="ai-suggestion" type="button">Payment options</button><button class="ai-suggestion" type="button">Delivery time</button></div>
     <form class="ai-form" id="aiForm"><input class="ai-input" id="aiInput" maxlength="300" placeholder="Apna sawaal likhein..." autocomplete="off" aria-label="Message Aaradhya Assistant"><button class="ai-send" id="aiSend" type="submit" aria-label="Send">➤</button></form><div class="ai-footnote">Product availability and prices may change. Confirm with the store before ordering.</div>
   </section>
   <script>
   (() => {
     const fab=document.getElementById('aiFab'), panel=document.getElementById('aiPanel'), closeBtn=document.getElementById('aiClose'), form=document.getElementById('aiForm'), input=document.getElementById('aiInput'), messages=document.getElementById('aiMessages'), send=document.getElementById('aiSend');
     const SHOP_PHONE='918931911428';
+    const ORDER_PAGE='my-orders.html';
     function openChat(){panel.classList.add('open');fab.style.display='none';input.focus()}
     function closeChat(){panel.classList.remove('open');fab.style.display='flex'}
     fab.addEventListener('click',openChat);closeBtn.addEventListener('click',closeChat);
     function addMessage(text,role){const el=document.createElement('div');el.className='ai-msg '+role;el.textContent=text;messages.appendChild(el);messages.scrollTop=messages.scrollHeight;return el}
+    function addLink(parent,href,label){const a=document.createElement('a');a.href=href;a.textContent=label;a.className='ai-action-link';parent.appendChild(a);return a}
     function catalog(){return Array.isArray(window.allProductsForSearch)?window.allProductsForSearch:[]}
-    function priceOf(p){const v=Number(String(p.price??p.sellingPrice??'').replace(/[^0-9.]/g,''));return Number.isFinite(v)?v:Infinity}
-    function showProducts(list,title){if(!list.length){addMessage('Abhi website catalog mein is search ke products nahi mile. Aap category ya budget badal kar try karein.','bot');return}
-      const intro=document.createElement('div');intro.className='ai-msg bot';intro.textContent=title+'\n'+list.slice(0,8).map((p,i)=>`${i+1}. ${p.name||'Product'} — ₹${priceOf(p)===Infinity?'Price not listed':priceOf(p)}${p.category?' ('+p.category+')':''}`).join('\n')+(list.length>8?'\nAur products bhi hain—website par browse karein.':'');messages.appendChild(intro);messages.scrollTop=messages.scrollHeight;}
-    function googleSearch(q){const url='https://www.google.com/search?q='+encodeURIComponent(q);const box=document.createElement('div');box.className='ai-msg bot';box.textContent='Web search ke liye link ready hai: '+q+'\n';const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Google par search karein ↗';a.style.color='#1b63b5';a.style.fontWeight='700';box.appendChild(a);messages.appendChild(box);messages.scrollTop=messages.scrollHeight;}
-    function answer(text){const q=text.toLowerCase().trim(),items=catalog();const prices=items.filter(p=>priceOf(p)!==Infinity);const budgetMatch=q.match(/(?:₹|rs\.?|rupees?\s*)(\d{2,6})|(?:under|below|ke andar|within)\s*(\d{2,6})/i);const budget=budgetMatch?Number(budgetMatch[1]||budgetMatch[2]):null;
+    function priceOf(p){const v=Number(String(p.price??p.sellingPrice??p.selling_price??'').replace(/[^0-9.]/g,''));return Number.isFinite(v)&&v>0?v:Infinity}
+    function productText(p){return [p.name,p.category,p.store,p.description,p.brand,p.tags].filter(Boolean).join(' ').toLowerCase()}
+    function showProducts(list,title){
+      if(!list.length){addMessage('Is search mein abhi website catalog par product nahi mila. Aap product ka doosra naam ya category try karein.','bot');return}
+      const wrap=document.createElement('div');wrap.className='ai-msg bot';wrap.style.maxWidth='96%';
+      const heading=document.createElement('strong');heading.textContent=title+' ('+list.length+')';wrap.appendChild(heading);
+      const grid=document.createElement('div');grid.className='ai-product-list';
+      list.slice(0,8).forEach(p=>{
+        const card=document.createElement('a');card.className='ai-product-card';
+        const store=String(p.store||'').toLowerCase().replace(/[^a-z0-9-]/g,'');
+        card.href=store?store+'.html':'#shops';
+        const img=document.createElement('img');const raw=String(p.image||p.imageUrl||'').split(',')[0].trim();img.src=raw||'https://placehold.co/120x120?text=Product';img.alt=String(p.name||'Product');img.onerror=()=>{img.src='https://placehold.co/120x120?text=Product'};
+        const info=document.createElement('div');info.className='ai-product-info';const name=document.createElement('strong');name.textContent=String(p.name||'Product');const meta=document.createElement('small');meta.textContent=[p.category,p.store].filter(Boolean).join(' · ')||'Aaradhya Mart';info.append(name,meta);
+        const price=document.createElement('span');price.className='ai-product-price';price.textContent=priceOf(p)===Infinity?'Price N/A':'₹'+priceOf(p);
+        card.append(img,info,price);grid.appendChild(card);
+      });
+      wrap.appendChild(grid);messages.appendChild(wrap);messages.scrollTop=messages.scrollHeight;
+    }
+    function supportAnswer(q){
+      if(/where is my order|track.*order|order.*track|mera order|mera parcel|order status|order kahan|my order|order kaha|delivery status/.test(q)){
+        const box=addMessage('Aap apne order ka status “My Orders” page par check kar sakte hain. Wahan apne order details / registered mobile number ke saath tracking option dekhein. Agar status nahi dikhe, WhatsApp par order ID bhejkar support lein.','bot');
+        addLink(box,ORDER_PAGE,'📦 Open My Orders');addLink(box,'https://wa.me/'+SHOP_PHONE+'?text='+encodeURIComponent('Namaste, mujhe apne order ka status check karna hai. Order ID: '),'WhatsApp Support');return true;
+      }
+      if(/cancel.*order|order.*cancel|cancel kar|order radd/.test(q)){
+        const box=addMessage('Order cancel karne ke liye jaldi se WhatsApp support par order ID aur registered mobile number bhejein. Cancellation tabhi confirm maana jayega jab store se confirmation mil jaaye.','bot');addLink(box,'https://wa.me/'+SHOP_PHONE+'?text='+encodeURIComponent('Namaste, mujhe apna order cancel karwana hai. Order ID: '),'Request order cancellation');return true;
+      }
+      if(/return|exchange|replace|wapas|badalna|size.*change|wrong.*product|damaged/.test(q)){
+        const box=addMessage('Return / Exchange ke liye product receive karne ke baad order ID, product photo aur issue WhatsApp par share karein. Return/exchange approval store policy aur product condition ke hisaab se confirm hoga.','bot');addLink(box,'https://wa.me/'+SHOP_PHONE+'?text='+encodeURIComponent('Namaste, mujhe return/exchange support chahiye. Order ID: '),'Return / Exchange Support');return true;
+      }
+      if(/payment|pay|upi|cash|cod|cash on delivery|online payment|refund/.test(q)){
+        addMessage('Payment options order ke waqt available options par depend karte hain. Cash on Delivery ya online payment ki availability checkout / store se confirm karein. Refund ke liye order ID ke saath WhatsApp support se contact karein.','bot');return true;
+      }
+      if(/delivery|deliver|kitne din|kab tak|delivery time|shipping|pincode/.test(q)){
+        addMessage('Website par local delivery ka estimated time 1–2 hours aur 5 km radius ke liye mention hai. Doosre locations, pincode aur product availability ke liye store se confirm karein.','bot');return true;
+      }
+      if(/contact|phone|number|address|location|shop kahan/.test(q)){
+        addMessage('Aaradhya Mart\nBongariya Bazar, Azamgarh\nWhatsApp / Contact: +91 89319 11428','bot');return true;
+      }
+      if(/order kaise|how to order|place.*order|buy.*product|purchase|checkout/.test(q)){
+        const box=addMessage('Order karne ke liye product browse karein, product details dekhein aur website ke order process ko follow karein. Agar help chahiye to WhatsApp par product ka naam bhejein.','bot');addLink(box,'https://wa.me/'+SHOP_PHONE+'?text='+encodeURIComponent('Namaste, mujhe Aaradhya Mart se order karna hai.'),'Order on WhatsApp');return true;
+      }
+      if(/size|measurement|fit|sizing/.test(q)){addMessage('Size ke liye product listing mein available size options check karein. Agar size chart ya fitting confirm karni ho to product ka naam WhatsApp par bhejein.','bot');return true}
+      if(/offer|discount|sale|coupon/.test(q)){addMessage('Current offers website ke Deals section, banners aur product listing par check karein. Coupon ya discount ki validity checkout se pehle store se confirm karein.','bot');return true}
+      return false;
+    }
+    function googleSearch(q){const url='https://www.google.com/search?q='+encodeURIComponent(q);const box=addMessage('Aapke sawaal ke liye Google Web Search khol sakte hain: '+q,'bot');addLink(box,url,'🌐 Search the Web');}
+    function answer(text){
+      const q=text.toLowerCase().trim(),items=catalog();
+      if(supportAnswer(q))return;
       if(/web search|latest fashion|fashion trend|trending|trend|2026.*fashion|fashion.*2026/.test(q)){googleSearch(text+' clothing fashion India 2026');return}
-      if(/sabse sasta|sasta product|cheapest|lowest price|cheap product|kam price|low price/.test(q)){if(!prices.length){addMessage('Catalog price data abhi load nahi hua. Thodi der baad try karein.','bot');return}showProducts(prices.sort((a,b)=>priceOf(a)-priceOf(b)).slice(0,5),'Catalog ke sabse saste products:');return}
-      if(budget!==null||/500 ke andar|under 500|below 500|budget|affordable|kam budget/.test(q)){const limit=budget??500;showProducts(prices.filter(p=>priceOf(p)<=limit).sort((a,b)=>priceOf(a)-priceOf(b)),`₹${limit} ke andar available products:`);return}
-      if(/winter|hoodie|jacket|sweater|sweatshirt|windcheater/.test(q)){const found=items.filter(p=>/winter|hoodie|jacket|sweater|sweatshirt|windcheater/i.test([p.name,p.category].join(' ')));showProducts(found,'Winter collection ke products:');return}
-      if(/men|mens|male|ladk|boy|boys/.test(q)){const found=items.filter(p=>/men|mens|male|boy|boys/i.test([p.category,p.name,p.store].join(' ')));showProducts(found,'Men’s wear products:');return}
-      if(/women|womens|female|ladki|girl|girls|saree/.test(q)){const found=items.filter(p=>/women|womens|female|girl|girls|saree/i.test([p.category,p.name,p.store].join(' ')));showProducts(found,'Women’s wear products:');return}
-      if(/kids|child|children|baby/.test(q)){const found=items.filter(p=>/kids|child|children|baby/i.test([p.category,p.name,p.store].join(' ')));showProducts(found,'Kids wear products:');return}
-      if(/sports|track|gym|activewear/.test(q)){const found=items.filter(p=>/sports|track|gym|activewear/i.test([p.category,p.name,p.store].join(' ')));showProducts(found,'Sports wear products:');return}
-      if(/order|buy|purchase|kaise le|kaise kharid|checkout/.test(q)){addMessage('Order karne ke liye website par product/category browse karein. Product pasand aaye to store se order details confirm karein. WhatsApp par contact karne ke liye: +91 89319 11428.','bot');return}
-      if(/address|location|shop kahan|store kahan|contact|phone|number/.test(q)){addMessage('Aaradhya Mart / Aaradhya Fashion\nBongariya Bazar, Azamgarh.\nWhatsApp/Contact: +91 89319 11428','bot');return}
-      if(/offer|discount|sale|coupon/.test(q)){addMessage('Current offers website ke banners, Deals section aur product listing par check karein. Offer/stock badal sakte hain—store se confirm karna best rahega.','bot');return}
-      if(/category|kya milta|products|product|kapde|collection|catalog/.test(q)){addMessage('Aaradhya Mart par categories browse karein: Men’s Wear, Women’s Wear, Kids Wear, Sports Wear, Winter Wear, Accessories aur Footwear. Aap kisi category ka naam likhein, main catalog filter kar dunga.','bot');return}
-      if(/hello|hi|namaste|hey/.test(q)){addMessage('Namaste 🙏 Welcome to Aaradhya Mart! Aap products ka price, budget, category, order aur store details pooch sakte hain.','bot');return}
+      if(/sabse sasta|sasta product|cheapest|lowest price|cheap product|kam price|low price/.test(q)){const prices=items.filter(p=>priceOf(p)!==Infinity).sort((a,b)=>priceOf(a)-priceOf(b));showProducts(prices.slice(0,8),'Catalog ke sabse saste products');return}
+      const budgetMatch=q.match(/(?:₹|rs\.?|rupees?\s*)(\d{2,6})|(?:under|below|ke andar|within)\s*(\d{2,6})/i);const budget=budgetMatch?Number(budgetMatch[1]||budgetMatch[2]):null;
+      const categoryWords=[['winter',/winter|hoodie|jacket|sweater|sweatshirt|windcheater/],['men',/men|mens|male|ladk|boy|boys/],['women',/women|womens|female|ladki|girl|girls|saree/],['kids',/kids|child|children|baby/],['sports',/sports|track|gym|activewear/],['footwear',/footwear|shoes|shoe|sandal|slipper/],['accessories',/accessor|belt|wallet|cap|bag|watch/]];
+      const cat=categoryWords.find(x=>x[1].test(q));
+      if(budget!==null||/500 ke andar|under 500|below 500|budget|affordable|kam budget/.test(q)){
+        const limit=budget??500;let found=items.filter(p=>priceOf(p)<=limit);
+        if(cat)found=found.filter(p=>cat[1].test(productText(p)));
+        showProducts(found.sort((a,b)=>priceOf(a)-priceOf(b)),(cat?cat[0]+' ':'')+'₹'+limit+' ke andar products');return;
+      }
+      if(cat){showProducts(items.filter(p=>cat[1].test(productText(p))),(cat[0]+' collection ke products'));return}
+      if(/product search|search product|find product|dhundo|dikh|dikhao|chahiye|looking for|search/.test(q)){
+        const terms=q.replace(/product|search|find|dhundo|dikh|dikhao|chahiye|please|show|me|mujhe|koi|kuch|do|hai|the|a|an|for|under|below|ke|andar|rs\.?|rupees?|₹|\d+/g,' ').trim().split(/\s+/).filter(w=>w.length>1);
+        const found=items.filter(p=>terms.some(t=>productText(p).includes(t)));
+        showProducts(found,'Aapki product search ke results');return;
+      }
+      if(/category|kya milta|products|product|kapde|collection|catalog/.test(q)){addMessage('Aaradhya Mart par Men’s Wear, Women’s Wear, Kids Wear, Sports Wear, Winter Wear, Accessories aur Footwear categories hain. Product ka naam ya category likhein, main catalog mein search karunga.','bot');return}
+      if(/hello|hi|namaste|hey/.test(q)){addMessage('Namaste 🙏 Welcome to Aaradhya Mart! Main product search, price, order tracking page, cancellation, return/exchange, payment aur delivery se judi help kar sakta hoon.','bot');return}
       googleSearch(text);
     }
     document.getElementById('aiSuggestions').addEventListener('click',e=>{const b=e.target.closest('.ai-suggestion');if(b){input.value=b.textContent;form.requestSubmit()}});
-    form.addEventListener('submit',e=>{e.preventDefault();const text=input.value.trim();if(!text||send.disabled)return;input.value='';addMessage(text,'user');send.disabled=true;try{answer(text)}catch(err){addMessage('Maaf kijiye, is sawaal ka jawab abhi nahi de paaya.','bot');console.error('Aaradhya Smart Assistant:',err)}finally{send.disabled=false;input.focus()}});
+    form.addEventListener('submit',e=>{e.preventDefault();const text=input.value.trim();if(!text||send.disabled)return;input.value='';addMessage(text,'user');send.disabled=true;try{answer(text)}catch(err){addMessage('Maaf kijiye, is sawaal ka jawab abhi nahi de paaya. Kripya WhatsApp support try karein.','bot');console.error('Aaradhya Smart Assistant:',err)}finally{send.disabled=false;input.focus()}});
   })();
   </script>
 </body>
