@@ -987,30 +987,46 @@
     });
   </script>
 
-  <!-- Aaradhya AI Assistant -->
-  <button class="ai-fab" id="aiFab" type="button" aria-label="Open Aaradhya AI"><span class="ai-dot"></span> Ask Aaradhya AI</button>
-  <section class="ai-panel" id="aiPanel" aria-label="Aaradhya AI chat" aria-live="polite">
-    <header class="ai-head"><div class="ai-brand"><div class="ai-avatar">AI</div><div><strong>Aaradhya AI</strong><small>Shopping assistant · Hindi / Hinglish / English</small></div></div><button class="ai-close" id="aiClose" type="button" aria-label="Close chat">×</button></header>
-    <div class="ai-messages" id="aiMessages"><div class="ai-msg bot">Namaste! 🙏 Main Aaradhya Mart ka AI assistant hoon. Fashion, products, orders, delivery ya store ke baare mein pooch sakte hain.</div></div>
-    <div class="ai-suggestions" id="aiSuggestions"><button class="ai-suggestion" type="button">Winter collection kya hai?</button><button class="ai-suggestion" type="button">₹500 ke andar options</button><button class="ai-suggestion" type="button">Order kaise karein?</button></div>
-    <form class="ai-form" id="aiForm"><input class="ai-input" id="aiInput" maxlength="500" placeholder="Apna sawaal likhein..." autocomplete="off" aria-label="Message Aaradhya AI"><button class="ai-send" id="aiSend" type="submit" aria-label="Send">➤</button></form><div class="ai-footnote">AI replies can be inaccurate. Please confirm product/order details with the store.</div>
+  <!-- Aaradhya Free Smart Shopping Assistant (No API / No backend) -->
+  <button class="ai-fab" id="aiFab" type="button" aria-label="Open Aaradhya Smart Assistant"><span class="ai-dot"></span> Ask Aaradhya</button>
+  <section class="ai-panel" id="aiPanel" aria-label="Aaradhya Smart Shopping Assistant" aria-live="polite">
+    <header class="ai-head"><div class="ai-brand"><div class="ai-avatar">AF</div><div><strong>Aaradhya Shopping Assistant</strong><small>Free Smart Search · Hindi / Hinglish / English</small></div></div><button class="ai-close" id="aiClose" type="button" aria-label="Close chat">×</button></header>
+    <div class="ai-messages" id="aiMessages"><div class="ai-msg bot">Namaste! 🙏 Main Aaradhya Mart ka free shopping assistant hoon. Aap products, price, categories, order ya latest fashion trend ke baare mein pooch sakte hain.</div></div>
+    <div class="ai-suggestions" id="aiSuggestions"><button class="ai-suggestion" type="button">Sabse sasta product?</button><button class="ai-suggestion" type="button">₹500 ke andar</button><button class="ai-suggestion" type="button">Winter collection</button><button class="ai-suggestion" type="button">Order kaise karein?</button><button class="ai-suggestion" type="button">Latest fashion trend</button></div>
+    <form class="ai-form" id="aiForm"><input class="ai-input" id="aiInput" maxlength="300" placeholder="Apna sawaal likhein..." autocomplete="off" aria-label="Message Aaradhya Assistant"><button class="ai-send" id="aiSend" type="submit" aria-label="Send">➤</button></form><div class="ai-footnote">Product availability and prices may change. Confirm with the store before ordering.</div>
   </section>
   <script>
   (() => {
-    // Set this to your deployed Cloudflare Worker URL after deployment.
-    const AI_ENDPOINT = 'https://YOUR-WORKER-NAME.YOUR-SUBDOMAIN.workers.dev';
     const fab=document.getElementById('aiFab'), panel=document.getElementById('aiPanel'), closeBtn=document.getElementById('aiClose'), form=document.getElementById('aiForm'), input=document.getElementById('aiInput'), messages=document.getElementById('aiMessages'), send=document.getElementById('aiSend');
-    let chatHistory=[];
+    const SHOP_PHONE='918931911428';
     function openChat(){panel.classList.add('open');fab.style.display='none';input.focus()}
     function closeChat(){panel.classList.remove('open');fab.style.display='flex'}
     fab.addEventListener('click',openChat);closeBtn.addEventListener('click',closeChat);
     function addMessage(text,role){const el=document.createElement('div');el.className='ai-msg '+role;el.textContent=text;messages.appendChild(el);messages.scrollTop=messages.scrollHeight;return el}
+    function catalog(){return Array.isArray(window.allProductsForSearch)?window.allProductsForSearch:[]}
+    function priceOf(p){const v=Number(String(p.price??p.sellingPrice??'').replace(/[^0-9.]/g,''));return Number.isFinite(v)?v:Infinity}
+    function showProducts(list,title){if(!list.length){addMessage('Abhi website catalog mein is search ke products nahi mile. Aap category ya budget badal kar try karein.','bot');return}
+      const intro=document.createElement('div');intro.className='ai-msg bot';intro.textContent=title+'\n'+list.slice(0,8).map((p,i)=>`${i+1}. ${p.name||'Product'} — ₹${priceOf(p)===Infinity?'Price not listed':priceOf(p)}${p.category?' ('+p.category+')':''}`).join('\n')+(list.length>8?'\nAur products bhi hain—website par browse karein.':'');messages.appendChild(intro);messages.scrollTop=messages.scrollHeight;}
+    function googleSearch(q){const url='https://www.google.com/search?q='+encodeURIComponent(q);const box=document.createElement('div');box.className='ai-msg bot';box.textContent='Web search ke liye link ready hai: '+q+'\n';const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Google par search karein ↗';a.style.color='#1b63b5';a.style.fontWeight='700';box.appendChild(a);messages.appendChild(box);messages.scrollTop=messages.scrollHeight;}
+    function answer(text){const q=text.toLowerCase().trim(),items=catalog();const prices=items.filter(p=>priceOf(p)!==Infinity);const budgetMatch=q.match(/(?:₹|rs\.?|rupees?\s*)(\d{2,6})|(?:under|below|ke andar|within)\s*(\d{2,6})/i);const budget=budgetMatch?Number(budgetMatch[1]||budgetMatch[2]):null;
+      if(/web search|latest fashion|fashion trend|trending|trend|2026.*fashion|fashion.*2026/.test(q)){googleSearch(text+' clothing fashion India 2026');return}
+      if(/sabse sasta|sasta product|cheapest|lowest price|cheap product|kam price|low price/.test(q)){if(!prices.length){addMessage('Catalog price data abhi load nahi hua. Thodi der baad try karein.','bot');return}showProducts(prices.sort((a,b)=>priceOf(a)-priceOf(b)).slice(0,5),'Catalog ke sabse saste products:');return}
+      if(budget!==null||/500 ke andar|under 500|below 500|budget|affordable|kam budget/.test(q)){const limit=budget??500;showProducts(prices.filter(p=>priceOf(p)<=limit).sort((a,b)=>priceOf(a)-priceOf(b)),`₹${limit} ke andar available products:`);return}
+      if(/winter|hoodie|jacket|sweater|sweatshirt|windcheater/.test(q)){const found=items.filter(p=>/winter|hoodie|jacket|sweater|sweatshirt|windcheater/i.test([p.name,p.category].join(' ')));showProducts(found,'Winter collection ke products:');return}
+      if(/men|mens|male|ladk|boy|boys/.test(q)){const found=items.filter(p=>/men|mens|male|boy|boys/i.test([p.category,p.name,p.store].join(' ')));showProducts(found,'Men’s wear products:');return}
+      if(/women|womens|female|ladki|girl|girls|saree/.test(q)){const found=items.filter(p=>/women|womens|female|girl|girls|saree/i.test([p.category,p.name,p.store].join(' ')));showProducts(found,'Women’s wear products:');return}
+      if(/kids|child|children|baby/.test(q)){const found=items.filter(p=>/kids|child|children|baby/i.test([p.category,p.name,p.store].join(' ')));showProducts(found,'Kids wear products:');return}
+      if(/sports|track|gym|activewear/.test(q)){const found=items.filter(p=>/sports|track|gym|activewear/i.test([p.category,p.name,p.store].join(' ')));showProducts(found,'Sports wear products:');return}
+      if(/order|buy|purchase|kaise le|kaise kharid|checkout/.test(q)){addMessage('Order karne ke liye website par product/category browse karein. Product pasand aaye to store se order details confirm karein. WhatsApp par contact karne ke liye: +91 89319 11428.','bot');return}
+      if(/address|location|shop kahan|store kahan|contact|phone|number/.test(q)){addMessage('Aaradhya Mart / Aaradhya Fashion\nBongariya Bazar, Azamgarh.\nWhatsApp/Contact: +91 89319 11428','bot');return}
+      if(/offer|discount|sale|coupon/.test(q)){addMessage('Current offers website ke banners, Deals section aur product listing par check karein. Offer/stock badal sakte hain—store se confirm karna best rahega.','bot');return}
+      if(/category|kya milta|products|product|kapde|collection|catalog/.test(q)){addMessage('Aaradhya Mart par categories browse karein: Men’s Wear, Women’s Wear, Kids Wear, Sports Wear, Winter Wear, Accessories aur Footwear. Aap kisi category ka naam likhein, main catalog filter kar dunga.','bot');return}
+      if(/hello|hi|namaste|hey/.test(q)){addMessage('Namaste 🙏 Welcome to Aaradhya Mart! Aap products ka price, budget, category, order aur store details pooch sakte hain.','bot');return}
+      googleSearch(text);
+    }
     document.getElementById('aiSuggestions').addEventListener('click',e=>{const b=e.target.closest('.ai-suggestion');if(b){input.value=b.textContent;form.requestSubmit()}});
-    form.addEventListener('submit',async e=>{e.preventDefault();const text=input.value.trim();if(!text||send.disabled)return;input.value='';addMessage(text,'user');chatHistory.push({role:'user',content:text});send.disabled=true;const pending=addMessage('Soch raha hoon…','bot');
-      try{if(AI_ENDPOINT.includes('YOUR-WORKER-NAME'))throw new Error('AI setup pending: Worker URL add karein.');const catalog=(window.allProductsForSearch||[]).slice(0,30).map(p=>({name:p.name,category:p.category,store:p.store,price:p.price,stock:p.stock}));const resp=await fetch(AI_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:chatHistory.slice(-8),products:catalog})});if(!resp.ok)throw new Error('AI service temporarily unavailable ('+resp.status+')');const data=await resp.json();const answer=String(data.reply||'Maaf kijiye, mujhe jawab nahi mila.').slice(0,4000);pending.textContent=answer;chatHistory.push({role:'assistant',content:answer});
-      }catch(err){pending.textContent=err.message.includes('setup pending')?'AI chat UI ready hai! Cloudflare Worker deploy karke AI_ENDPOINT mein uska URL add karein.': 'Maaf kijiye, abhi AI connect nahi ho pa raha. Thodi der baad try karein.';console.error('Aaradhya AI:',err)}finally{send.disabled=false;input.focus()}});
+    form.addEventListener('submit',e=>{e.preventDefault();const text=input.value.trim();if(!text||send.disabled)return;input.value='';addMessage(text,'user');send.disabled=true;try{answer(text)}catch(err){addMessage('Maaf kijiye, is sawaal ka jawab abhi nahi de paaya.','bot');console.error('Aaradhya Smart Assistant:',err)}finally{send.disabled=false;input.focus()}});
   })();
   </script>
-
 </body>
 </html>
