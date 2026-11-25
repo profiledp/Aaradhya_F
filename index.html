@@ -325,13 +325,19 @@
     }
 
     /* ============ AARADHYA AI CHAT ============ */
-    .ai-fab{position:fixed;right:22px;bottom:105px;z-index:10001;background:linear-gradient(135deg,#10243b,#1e3a5f);color:#fff;border:1px solid var(--gold);border-radius:999px;padding:13px 18px;display:flex;align-items:center;gap:9px;box-shadow:0 8px 28px rgba(16,36,59,.3);cursor:pointer;font-weight:800}
-    .ai-fab:hover{transform:translateY(-2px)}.ai-fab .ai-dot{width:9px;height:9px;background:#55df9b;border-radius:50%;box-shadow:0 0 0 4px rgba(85,223,155,.15)}
+    .ai-launcher-dock{position:fixed;right:22px;bottom:105px;z-index:10001;display:flex;align-items:center;gap:8px;padding:7px;background:#fff;border:1px solid #e2e8f0;border-radius:999px;box-shadow:0 8px 28px rgba(16,36,59,.2)}
+    .ai-fab{background:linear-gradient(135deg,#10243b,#1e3a5f);color:#fff;border:1px solid var(--gold);border-radius:999px;padding:12px 16px;display:flex;align-items:center;gap:9px;cursor:pointer;font-weight:800;white-space:nowrap}
+    .ai-fab:hover,.ai-dock-link:hover{transform:translateY(-2px)}.ai-fab .ai-dot{width:9px;height:9px;background:#55df9b;border-radius:50%;box-shadow:0 0 0 4px rgba(85,223,155,.15)}
+    .ai-dock-link{width:42px;height:42px;display:grid;place-items:center;border-radius:50%;text-decoration:none;transition:transform .2s;flex:0 0 auto}
+    .ai-dock-link.track{background:#f1f5f9;color:#10243b}.ai-dock-link.whatsapp{background:#25D366;color:#fff}.ai-dock-link svg{width:21px;height:21px;display:block}
+    .ai-dock-link .dock-tip{position:absolute;bottom:calc(100% + 9px);background:#10243b;color:#fff;padding:5px 8px;border-radius:6px;font-size:10px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s}
+    .ai-dock-link:hover .dock-tip{opacity:1}
+    .whatsapp-float-btn,.track-float-btn{display:none!important}
     .ai-panel{position:fixed;right:20px;bottom:165px;width:min(390px,calc(100vw - 24px));height:min(590px,calc(100vh - 190px));z-index:10002;background:#fff;border:1px solid #dce2e9;border-radius:18px;box-shadow:0 22px 65px rgba(0,0,0,.25);display:none;overflow:hidden;flex-direction:column}
     .ai-panel.open{display:flex}.ai-head{background:linear-gradient(135deg,#10243b,#1e3a5f);color:#fff;padding:16px;display:flex;align-items:center;justify-content:space-between}.ai-brand{display:flex;align-items:center;gap:10px}.ai-avatar{width:38px;height:38px;border-radius:12px;background:#c5a36b;color:#10243b;display:grid;place-items:center;font-weight:900}.ai-head small{display:block;color:#d4dce5;font-size:11px;margin-top:3px}.ai-close{border:0;background:rgba(255,255,255,.15);color:#fff;width:32px;height:32px;border-radius:50%;font-size:20px;cursor:pointer}
     .ai-messages{flex:1;overflow-y:auto;padding:14px;background:#f7f9fb;display:flex;flex-direction:column;gap:11px}.ai-msg{max-width:88%;padding:11px 13px;border-radius:14px;font-size:13px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}.ai-msg.bot{align-self:flex-start;background:#fff;color:#263445;border:1px solid #e5eaf0;border-bottom-left-radius:4px}.ai-msg.user{align-self:flex-end;background:#10243b;color:#fff;border-bottom-right-radius:4px}.ai-suggestions{display:flex;gap:7px;flex-wrap:wrap;padding:10px 12px;background:#fff;border-top:1px solid #edf0f4}.ai-suggestion{background:#f8fafc;border:1px solid #dce3eb;border-radius:20px;padding:7px 10px;font-size:11px;color:#10243b;cursor:pointer}.ai-form{display:flex;gap:8px;padding:12px;border-top:1px solid #e5eaf0;background:#fff}.ai-input{flex:1;min-width:0;border:1px solid #d5dce5;border-radius:24px;padding:11px 14px;font-size:13px;outline:none}.ai-input:focus{border-color:#10243b}.ai-send{border:0;background:#10243b;color:#fff;border-radius:50%;width:42px;height:42px;cursor:pointer;font-size:18px}.ai-send:disabled{opacity:.55;cursor:not-allowed}.ai-footnote{text-align:center;font-size:10px;color:#8893a0;padding:0 10px 8px;background:#fff}
     .ai-product-list{display:grid;gap:8px;margin-top:9px;width:100%}.ai-product-card{display:flex;gap:10px;align-items:center;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:8px;color:#263445;text-decoration:none;max-width:100%}.ai-product-card img{width:58px;height:62px;object-fit:cover;border-radius:8px;background:#f1f5f9}.ai-product-info{min-width:0;flex:1}.ai-product-info strong{display:block;font-size:12px;line-height:1.35}.ai-product-info small{display:block;color:#64748b;font-size:10px;margin-top:3px}.ai-product-price{font-weight:800;color:#10243b;font-size:13px;white-space:nowrap}.ai-action-link{display:inline-block;margin-top:8px;padding:8px 12px;background:#10243b;color:#fff!important;border-radius:18px;text-decoration:none;font-size:11px;font-weight:700}
-    @media(max-width:600px){.ai-fab{right:12px;bottom:85px;padding:11px 14px}.ai-panel{right:8px;bottom:145px;width:calc(100vw - 16px);height:min(560px,calc(100vh - 165px))}}
+    @media(max-width:600px){.ai-launcher-dock{right:8px;bottom:82px;gap:5px;padding:5px}.ai-fab{padding:10px 12px;font-size:12px}.ai-dock-link{width:36px;height:36px}.ai-dock-link svg{width:19px;height:19px}.ai-panel{right:8px;bottom:140px;width:calc(100vw - 16px);height:min(560px,calc(100vh - 160px))}}
   </style>
 </head>
 <body>
@@ -611,19 +617,7 @@
     <span class="cart-text">Cart</span>
     <span class="cart-badge" id="globalCartCount">0</span>
   </a>
-  <a href="support.html" class="whatsapp-float-btn" aria-label="Customer Support">
-    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-      <path d="M16.004 2C8.28 2 2 8.28 2 16c0 2.47.64 4.79 1.76 6.81L2 30l7.39-1.71A13.93 13.93 0 0 0 16.004 30C23.72 30 30 23.72 30 16S23.72 2 16.004 2zm0 2.31c6.76 0 12.23 5.47 12.23 12.23 0 6.76-5.47 12.23-12.23 12.23-2.13 0-4.13-.55-5.86-1.51l-.42-.23-4.32 1 1-4.21-.24-.4A12.17 12.17 0 0 1 3.77 16c0-6.76 5.47-12.23 12.23-12.23z" fill="#fff"/>
-      <path d="M21.66 18.14c-.23-.12-1.38-.68-1.6-.76-.21-.08-.37-.12-.53.12-.16.24-.61.76-.75.92-.14.16-.28.18-.51.06-.23-.12-1-.37-1.91-1.18-.71-.63-1.18-1.41-1.32-1.65-.14-.24-.02-.37.1-.49.11-.11.23-.28.35-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.53-1.27-.72-1.74-.19-.46-.38-.4-.53-.4h-.45c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.69 2.58 4.1 3.62.57.25 1.02.4 1.37.51.57.18 1.09.15 1.5.09.46-.07 1.38-.56 1.58-1.11.2-.55.2-1.02.14-1.11-.06-.09-.22-.15-.45-.27z" fill="#fff"/>
-    </svg>
-  </a>
-  <a href="track.html" class="track-float-btn" aria-label="Track Order">
-    <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="12" r="10"></circle>
-      <polyline points="12 6 12 12 16 14"></polyline>
-    </svg>
-    <span>Track Order</span>
-  </a>
+  <!-- WhatsApp and Track Order shortcuts are grouped beside Ask Aaradhya below. -->
 
   <!-- DEALS MODAL -->
   <div class="deal-modal-overlay" id="dealsModal">
@@ -989,7 +983,15 @@
   </script>
 
   <!-- Aaradhya Free Smart Shopping Assistant (No API / No backend) -->
-  <button class="ai-fab" id="aiFab" type="button" aria-label="Open Aaradhya Smart Assistant"><span class="ai-dot"></span> Ask Aaradhya</button>
+  <div class="ai-launcher-dock" aria-label="Quick support actions">
+    <a class="ai-dock-link track" href="track.html" aria-label="Track Order" title="Track Order">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v11H3z"/><path d="M14 10h4l3 3v5h-7z"/><circle cx="7.5" cy="18.5" r="1.5"/><circle cx="17.5" cy="18.5" r="1.5"/></svg><span class="dock-tip">Track Order</span>
+    </a>
+    <a class="ai-dock-link whatsapp" href="https://wa.me/918931911428?text=Namaste%2C%20Aaradhya%20Mart%20se%20support%20chahiye." target="_blank" rel="noopener" aria-label="WhatsApp Support" title="WhatsApp Support">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 2.7A13.2 13.2 0 0 0 4.7 22.7L3 29l6.5-1.7A13.2 13.2 0 1 0 16 2.7zm0 2.4a10.8 10.8 0 0 1 0 21.6c-1.8 0-3.6-.5-5.1-1.3l-.4-.2-3.8 1 1-3.7-.3-.5A10.8 10.8 0 0 1 16 5.1zm-5.1 5.7c-.3 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.6s1.1 3 1.3 3.2c.2.2 2.1 3.4 5.2 4.6 2.6 1 3.1.8 3.7.7.6-.1 1.9-.8 2.2-1.6.3-.8.3-1.4.2-1.6-.1-.1-.3-.2-.7-.4l-2.1-1c-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.5-.6c.2-.2.2-.3.3-.6.1-.2 0-.4 0-.6l-.9-2.2c-.2-.5-.4-.5-.6-.5z"/></svg><span class="dock-tip">WhatsApp Support</span>
+    </a>
+    <button class="ai-fab" id="aiFab" type="button" aria-label="Open Aaradhya Smart Assistant"><span class="ai-dot"></span> Ask Aaradhya</button>
+  </div>
   <section class="ai-panel" id="aiPanel" aria-label="Aaradhya Smart Shopping Assistant" aria-live="polite">
     <header class="ai-head"><div class="ai-brand"><div class="ai-avatar">AF</div><div><strong>Aaradhya Shopping Assistant</strong><small>Free Smart Search · Hindi / Hinglish / English</small></div></div><button class="ai-close" id="aiClose" type="button" aria-label="Close chat">×</button></header>
     <div class="ai-messages" id="aiMessages"><div class="ai-msg bot">Namaste! 🙏 Main Aaradhya Mart ka free shopping assistant hoon. Aap products, price, categories, order ya latest fashion trend ke baare mein pooch sakte hain.</div></div>
