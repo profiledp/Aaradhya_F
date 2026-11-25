@@ -338,6 +338,47 @@
     .ai-messages{flex:1;overflow-y:auto;padding:14px;background:#f7f9fb;display:flex;flex-direction:column;gap:11px}.ai-msg{max-width:88%;padding:11px 13px;border-radius:14px;font-size:13px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}.ai-msg.bot{align-self:flex-start;background:#fff;color:#263445;border:1px solid #e5eaf0;border-bottom-left-radius:4px}.ai-msg.user{align-self:flex-end;background:#10243b;color:#fff;border-bottom-right-radius:4px}.ai-suggestions{display:flex;gap:7px;flex-wrap:wrap;padding:10px 12px;background:#fff;border-top:1px solid #edf0f4}.ai-suggestion{background:#f8fafc;border:1px solid #dce3eb;border-radius:20px;padding:7px 10px;font-size:11px;color:#10243b;cursor:pointer}.ai-form{display:flex;gap:8px;padding:12px;border-top:1px solid #e5eaf0;background:#fff}.ai-input{flex:1;min-width:0;border:1px solid #d5dce5;border-radius:24px;padding:11px 14px;font-size:13px;outline:none}.ai-input:focus{border-color:#10243b}.ai-send{border:0;background:#10243b;color:#fff;border-radius:50%;width:42px;height:42px;cursor:pointer;font-size:18px}.ai-send:disabled{opacity:.55;cursor:not-allowed}.ai-footnote{text-align:center;font-size:10px;color:#8893a0;padding:0 10px 8px;background:#fff}
     .ai-product-list{display:grid;gap:8px;margin-top:9px;width:100%}.ai-product-card{display:flex;gap:10px;align-items:center;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:8px;color:#263445;text-decoration:none;max-width:100%}.ai-product-card img{width:58px;height:62px;object-fit:cover;border-radius:8px;background:#f1f5f9}.ai-product-info{min-width:0;flex:1}.ai-product-info strong{display:block;font-size:12px;line-height:1.35}.ai-product-info small{display:block;color:#64748b;font-size:10px;margin-top:3px}.ai-product-price{font-weight:800;color:#10243b;font-size:13px;white-space:nowrap}.ai-action-link{display:inline-block;margin-top:8px;padding:8px 12px;background:#10243b;color:#fff!important;border-radius:18px;text-decoration:none;font-size:11px;font-weight:700}
     @media(max-width:600px){.ai-launcher-dock{right:8px;bottom:82px;gap:5px;padding:5px}.ai-fab{padding:10px 12px;font-size:12px}.ai-dock-link{width:36px;height:36px}.ai-dock-link svg{width:19px;height:19px}.ai-panel{right:8px;bottom:140px;width:calc(100vw - 16px);height:min(560px,calc(100vh - 160px))}}
+
+
+    /* ============ HOMEPAGE PREMIUM REFRESH ============ */
+    .home-intro-strip{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;padding:13px 5%;background:#f7f4ee;border-bottom:1px solid #e9e2d7;color:#34465a;font-size:12px;font-weight:700}
+    .home-intro-strip span{display:inline-flex;align-items:center;gap:7px}
+    .home-intro-strip i{width:6px;height:6px;border-radius:50%;background:var(--gold);display:inline-block}
+    .home-category-section{padding:58px 7%;background:#fff}
+    .home-section-head{text-align:center;max-width:680px;margin:0 auto 30px}
+    .home-section-head h2{font:normal clamp(27px,3vw,38px) Georgia,serif;color:var(--navy);margin:8px 0 10px}
+    .home-section-head p{font-size:13px;line-height:1.7;color:#697586;margin:0}
+    .home-category-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:15px;max-width:1250px;margin:auto}
+    .home-category-card{position:relative;overflow:hidden;min-height:190px;border-radius:13px;text-decoration:none;background:#e9e4dc;box-shadow:0 7px 22px rgba(16,36,59,.07);isolation:isolate}
+    .home-category-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .5s}
+    .home-category-card:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(7,20,35,.83),rgba(7,20,35,.02) 75%);z-index:0}
+    .home-category-card:hover img{transform:scale(1.07)}
+    .home-category-card strong{position:absolute;z-index:1;bottom:17px;left:14px;right:10px;color:#fff;font:normal 19px Georgia,serif}
+    .home-category-card small{display:block;font:600 9px Arial,sans-serif;letter-spacing:1.3px;text-transform:uppercase;color:#ead6b5;margin-top:5px}
+    .home-budget-section{padding:52px 7%;background:#f5f3ef}
+    .home-budget-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:1100px;margin:28px auto 0}
+    .home-budget-card{border:1px solid #e7dfd2;background:#fff;border-radius:12px;padding:22px 18px;text-decoration:none;color:var(--navy);transition:.25s;display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .home-budget-card:hover{transform:translateY(-4px);border-color:var(--gold);box-shadow:0 10px 25px rgba(16,36,59,.08)}
+    .home-budget-card b{display:block;font:normal 24px Georgia,serif}
+    .home-budget-card small{display:block;color:#78818c;font-size:10px;margin-top:5px}
+    .home-budget-card .budget-arrow{font-size:23px;color:var(--gold)}
+    .home-promo-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:52px 7%;background:#fff}
+    .home-promo-card{min-height:230px;border-radius:15px;overflow:hidden;position:relative;display:flex;align-items:center;padding:30px;color:#fff;text-decoration:none;background:#142b45;isolation:isolate}
+    .home-promo-card:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(9,25,43,.94),rgba(9,25,43,.25));z-index:-1}
+    .home-promo-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;transition:transform .5s}
+    .home-promo-card:hover img{transform:scale(1.05)}
+    .home-promo-card span{font-size:9px;letter-spacing:2px;color:#e5c58e;font-weight:800;text-transform:uppercase}
+    .home-promo-card h3{font:normal 27px Georgia,serif;margin:9px 0}
+    .home-promo-card p{font-size:12px;line-height:1.6;color:#e1e7ef;max-width:300px;margin:0 0 15px}
+    .home-promo-card b{font-size:11px;color:#f1d5a5}
+    .home-service-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:28px 7%;background:#10243b;color:#fff}
+    .home-service-item{display:flex;align-items:center;gap:11px;justify-content:center;padding:8px}
+    .home-service-icon{width:39px;height:39px;flex:0 0 39px;border:1px solid rgba(214,183,132,.45);border-radius:50%;display:grid;place-items:center;color:#e3c38e;font-size:17px}
+    .home-service-item strong{display:block;font-size:11px}
+    .home-service-item small{display:block;font-size:9px;color:#bdc8d5;margin-top:4px}
+    @media(max-width:950px){.home-category-grid{grid-template-columns:repeat(3,1fr)}.home-category-card{min-height:180px}}
+    @media(max-width:650px){.home-category-section,.home-budget-section{padding:40px 5%}.home-category-grid{grid-template-columns:repeat(2,1fr);gap:10px}.home-category-card{min-height:170px}.home-category-card strong{font-size:17px}.home-budget-grid{grid-template-columns:repeat(2,1fr);gap:9px}.home-budget-card{padding:17px 13px}.home-budget-card b{font-size:21px}.home-promo-row{grid-template-columns:1fr;padding:35px 5%;gap:12px}.home-promo-card{min-height:205px;padding:24px}.home-service-strip{grid-template-columns:repeat(2,1fr);padding:20px 4%;gap:8px}.home-service-item{justify-content:flex-start}.home-intro-strip{font-size:10px;gap:8px}}
+
   </style>
 </head>
 <body>
@@ -365,6 +406,10 @@
     <div class="trust-badge"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>Best Quality</div>
   </div>
 
+  <div class="home-intro-strip" aria-label="Store highlights">
+    <span><i></i> Fashion for Everyone</span><span><i></i> Everyday Value</span><span><i></i> Local Store Support</span>
+  </div>
+
   <main>
     <!-- HERO -->
     <section class="hero-new">
@@ -372,8 +417,8 @@
       <div class="hero-grid">
         <div class="hero-copy-new">
           <span class="eyebrow">BONGARIYA BAZAR · AZAMGARH</span>
-          <h1>Everything you need,<br><em>delivered.</em></h1>
-          <p>Fashion · Custom Printing · Groceries — all under one roof. Trusted by hundreds of families in Azamgarh.</p>
+          <h1>Discover your style,<br><em>every day.</em></h1>
+          <p>Explore fashion, everyday essentials and custom services from your local Aaradhya Mart. Browse collections and contact our team for assistance.</p>
 
           <div class="hero-cta-row">
             <a href="#shops" class="hero-btn-primary">Shop Now <span>→</span></a>
@@ -381,9 +426,9 @@
           </div>
 
           <div class="hero-stats">
-            <div class="hero-stat"><strong>500+</strong><span>Happy Customers</span></div>
-            <div class="hero-stat"><strong>1-2hr</strong><span>Fast Delivery</span></div>
-            <div class="hero-stat"><strong>3</strong><span>Store Verticals</span></div>
+            <div class="hero-stat"><strong>6+</strong><span>Shopping Categories</span></div>
+            <div class="hero-stat"><strong>Local</strong><span>Store Support</span></div>
+            <div class="hero-stat"><strong>Easy</strong><span>Shopping Help</span></div>
           </div>
         </div>
 
@@ -414,6 +459,30 @@
       </div>
     </section>
 
+    <!-- SHOP BY CATEGORY: VISUAL CATEGORY NAVIGATION -->
+    <section class="home-category-section" id="homeCategories">
+      <div class="home-section-head"><span class="eyebrow">FIND YOUR STYLE</span><h2>Shop by Category</h2><p>Explore collections for every age, occasion and everyday need.</p></div>
+      <div class="home-category-grid">
+        <a class="home-category-card" href="fashion.html?category=Men"><img loading="lazy" src="https://images.unsplash.com/photo-1617137968427-85924c800a22?auto=format&fit=crop&w=600&q=80" alt="Men's fashion"><strong>Men's Wear<small>Everyday essentials</small></strong></a>
+        <a class="home-category-card" href="fashion.html?category=Women"><img loading="lazy" src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=600&q=80" alt="Women's fashion"><strong>Women's Wear<small>Style and elegance</small></strong></a>
+        <a class="home-category-card" href="fashion.html?category=Kids"><img loading="lazy" src="https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?auto=format&fit=crop&w=600&q=80" alt="Kids clothing"><strong>Kids Wear<small>Comfort for little ones</small></strong></a>
+        <a class="home-category-card" href="fashion.html?category=Sports%20Wear"><img loading="lazy" src="https://images.unsplash.com/photo-1517467420782-6e7e6e8b3f7c?auto=format&fit=crop&w=600&q=80" alt="Sports clothing"><strong>Sports Wear<small>Move with comfort</small></strong></a>
+        <a class="home-category-card" href="fashion.html?category=Winter%20Wear"><img loading="lazy" src="https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=600&q=80" alt="Winter wear"><strong>Winter Wear<small>Seasonal favourites</small></strong></a>
+        <a class="home-category-card" href="fashion.html?category=Accessories"><img loading="lazy" src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=600&q=80" alt="Fashion accessories"><strong>Accessories<small>Complete your look</small></strong></a>
+      </div>
+    </section>
+
+    <!-- SHOP BY BUDGET: ASSISTANT-POWERED QUICK FILTERS -->
+    <section class="home-budget-section" id="shopByBudget">
+      <div class="home-section-head"><span class="eyebrow">SMART BUDGET SHOPPING</span><h2>Good Style, Great Prices</h2><p>Choose your budget. Ask Aaradhya will find matching products from the website catalog.</p></div>
+      <div class="home-budget-grid">
+        <button class="home-budget-card" type="button" data-ai-question="Show products under ₹299"><span><b>Under ₹299</b><small>Explore pocket-friendly picks</small></span><span class="budget-arrow">→</span></button>
+        <button class="home-budget-card" type="button" data-ai-question="Show products under ₹500"><span><b>Under ₹500</b><small>Everyday value shopping</small></span><span class="budget-arrow">→</span></button>
+        <button class="home-budget-card" type="button" data-ai-question="Show products under ₹999"><span><b>Under ₹999</b><small>More styles to explore</small></span><span class="budget-arrow">→</span></button>
+        <button class="home-budget-card" type="button" data-ai-question="Show the cheapest products"><span><b>Lowest Price</b><small>See lowest priced products</small></span><span class="budget-arrow">→</span></button>
+      </div>
+    </section>
+
     <!-- FEATURED PRODUCTS -->
     <section class="featured-section" id="featuredSection">
       <div class="featured-header">
@@ -426,6 +495,12 @@
       <div class="featured-grid" id="featuredGrid">
         <p style="grid-column: 1/-1; text-align: center; color: #999; padding: 30px;">Loading featured products...</p>
       </div>
+    </section>
+
+    <!-- SEASONAL / SERVICE PROMOTIONS -->
+    <section class="home-promo-row" aria-label="Explore more at Aaradhya Mart">
+      <a class="home-promo-card" href="fashion.html?category=Winter%20Wear"><img loading="lazy" src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1000&q=80" alt="Fashion collection"><div><span>Refresh your wardrobe</span><h3>Find Your Everyday Look</h3><p>Browse clothing collections for men, women and kids.</p><b>EXPLORE FASHION →</b></div></a>
+      <a class="home-promo-card" href="support.html"><img loading="lazy" src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1000&q=80" alt="Customer shopping support"><div><span>Here when you need us</span><h3>Shopping Made Easier</h3><p>Need help with products, orders, returns or payments? Our support team is here.</p><b>VISIT SUPPORT →</b></div></a>
     </section>
 
     <!-- RECENTLY VIEWED -->
@@ -570,6 +645,13 @@
       </div>
     </section>
   </main>
+
+  <section class="home-service-strip" aria-label="Shopping support highlights">
+    <div class="home-service-item"><span class="home-service-icon">🛍</span><span><strong>Easy Product Browsing</strong><small>Explore categories and collections</small></span></div>
+    <div class="home-service-item"><span class="home-service-icon">📦</span><span><strong>Order Assistance</strong><small>Get help with your orders</small></span></div>
+    <div class="home-service-item"><span class="home-service-icon">💬</span><span><strong>WhatsApp Support</strong><small>Talk to our store team</small></span></div>
+    <div class="home-service-item"><span class="home-service-icon">📍</span><span><strong>Visit Our Local Store</strong><small>Bongariya Bazar, Azamgarh</small></span></div>
+  </section>
 
   <!-- FOOTER -->
   <footer class="footer-new">
@@ -1006,6 +1088,7 @@
     function openChat(){panel.classList.add('open');fab.style.display='none';input.focus()}
     function closeChat(){panel.classList.remove('open');fab.style.display='flex'}
     fab.addEventListener('click',openChat);closeBtn.addEventListener('click',closeChat);
+    document.querySelectorAll('[data-ai-question]').forEach(btn=>btn.addEventListener('click',()=>{openChat();input.value=btn.getAttribute('data-ai-question')||'';form.requestSubmit()}));
     function addMessage(text,role){const el=document.createElement('div');el.className='ai-msg '+role;el.textContent=text;messages.appendChild(el);messages.scrollTop=messages.scrollHeight;return el}
     function addLink(parent,href,label){const a=document.createElement('a');a.href=href;a.textContent=label;a.className='ai-action-link';parent.appendChild(a);return a}
     function catalog(){return Array.isArray(window.allProductsForSearch)?window.allProductsForSearch:[]}
