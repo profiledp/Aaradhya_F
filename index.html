@@ -323,6 +323,14 @@
         display: none;
       }
     }
+
+    /* ============ AARADHYA AI CHAT ============ */
+    .ai-fab{position:fixed;right:22px;bottom:105px;z-index:10001;background:linear-gradient(135deg,#10243b,#1e3a5f);color:#fff;border:1px solid var(--gold);border-radius:999px;padding:13px 18px;display:flex;align-items:center;gap:9px;box-shadow:0 8px 28px rgba(16,36,59,.3);cursor:pointer;font-weight:800}
+    .ai-fab:hover{transform:translateY(-2px)}.ai-fab .ai-dot{width:9px;height:9px;background:#55df9b;border-radius:50%;box-shadow:0 0 0 4px rgba(85,223,155,.15)}
+    .ai-panel{position:fixed;right:20px;bottom:165px;width:min(390px,calc(100vw - 24px));height:min(590px,calc(100vh - 190px));z-index:10002;background:#fff;border:1px solid #dce2e9;border-radius:18px;box-shadow:0 22px 65px rgba(0,0,0,.25);display:none;overflow:hidden;flex-direction:column}
+    .ai-panel.open{display:flex}.ai-head{background:linear-gradient(135deg,#10243b,#1e3a5f);color:#fff;padding:16px;display:flex;align-items:center;justify-content:space-between}.ai-brand{display:flex;align-items:center;gap:10px}.ai-avatar{width:38px;height:38px;border-radius:12px;background:#c5a36b;color:#10243b;display:grid;place-items:center;font-weight:900}.ai-head small{display:block;color:#d4dce5;font-size:11px;margin-top:3px}.ai-close{border:0;background:rgba(255,255,255,.15);color:#fff;width:32px;height:32px;border-radius:50%;font-size:20px;cursor:pointer}
+    .ai-messages{flex:1;overflow-y:auto;padding:14px;background:#f7f9fb;display:flex;flex-direction:column;gap:11px}.ai-msg{max-width:88%;padding:11px 13px;border-radius:14px;font-size:13px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}.ai-msg.bot{align-self:flex-start;background:#fff;color:#263445;border:1px solid #e5eaf0;border-bottom-left-radius:4px}.ai-msg.user{align-self:flex-end;background:#10243b;color:#fff;border-bottom-right-radius:4px}.ai-suggestions{display:flex;gap:7px;flex-wrap:wrap;padding:10px 12px;background:#fff;border-top:1px solid #edf0f4}.ai-suggestion{background:#f8fafc;border:1px solid #dce3eb;border-radius:20px;padding:7px 10px;font-size:11px;color:#10243b;cursor:pointer}.ai-form{display:flex;gap:8px;padding:12px;border-top:1px solid #e5eaf0;background:#fff}.ai-input{flex:1;min-width:0;border:1px solid #d5dce5;border-radius:24px;padding:11px 14px;font-size:13px;outline:none}.ai-input:focus{border-color:#10243b}.ai-send{border:0;background:#10243b;color:#fff;border-radius:50%;width:42px;height:42px;cursor:pointer;font-size:18px}.ai-send:disabled{opacity:.55;cursor:not-allowed}.ai-footnote{text-align:center;font-size:10px;color:#8893a0;padding:0 10px 8px;background:#fff}
+    @media(max-width:600px){.ai-fab{right:12px;bottom:85px;padding:11px 14px}.ai-panel{right:8px;bottom:145px;width:calc(100vw - 16px);height:min(560px,calc(100vh - 165px))}}
   </style>
 </head>
 <body>
@@ -677,6 +685,7 @@
     async function initHeaderSearch() {
       const snap = await getDocs(collection(db, "products"));
       snap.forEach(d => allProductsForSearch.push({ id: d.id, ...d.data() }));
+      window.allProductsForSearch = allProductsForSearch;
 
       const input = document.getElementById("headerSearchInput");
       const resultsBox = document.getElementById("headerSearchResults");
@@ -977,5 +986,31 @@
       loadWelcomePopup();
     });
   </script>
+
+  <!-- Aaradhya AI Assistant -->
+  <button class="ai-fab" id="aiFab" type="button" aria-label="Open Aaradhya AI"><span class="ai-dot"></span> Ask Aaradhya AI</button>
+  <section class="ai-panel" id="aiPanel" aria-label="Aaradhya AI chat" aria-live="polite">
+    <header class="ai-head"><div class="ai-brand"><div class="ai-avatar">AI</div><div><strong>Aaradhya AI</strong><small>Shopping assistant · Hindi / Hinglish / English</small></div></div><button class="ai-close" id="aiClose" type="button" aria-label="Close chat">×</button></header>
+    <div class="ai-messages" id="aiMessages"><div class="ai-msg bot">Namaste! 🙏 Main Aaradhya Mart ka AI assistant hoon. Fashion, products, orders, delivery ya store ke baare mein pooch sakte hain.</div></div>
+    <div class="ai-suggestions" id="aiSuggestions"><button class="ai-suggestion" type="button">Winter collection kya hai?</button><button class="ai-suggestion" type="button">₹500 ke andar options</button><button class="ai-suggestion" type="button">Order kaise karein?</button></div>
+    <form class="ai-form" id="aiForm"><input class="ai-input" id="aiInput" maxlength="500" placeholder="Apna sawaal likhein..." autocomplete="off" aria-label="Message Aaradhya AI"><button class="ai-send" id="aiSend" type="submit" aria-label="Send">➤</button></form><div class="ai-footnote">AI replies can be inaccurate. Please confirm product/order details with the store.</div>
+  </section>
+  <script>
+  (() => {
+    // Set this to your deployed Cloudflare Worker URL after deployment.
+    const AI_ENDPOINT = 'https://YOUR-WORKER-NAME.YOUR-SUBDOMAIN.workers.dev';
+    const fab=document.getElementById('aiFab'), panel=document.getElementById('aiPanel'), closeBtn=document.getElementById('aiClose'), form=document.getElementById('aiForm'), input=document.getElementById('aiInput'), messages=document.getElementById('aiMessages'), send=document.getElementById('aiSend');
+    let chatHistory=[];
+    function openChat(){panel.classList.add('open');fab.style.display='none';input.focus()}
+    function closeChat(){panel.classList.remove('open');fab.style.display='flex'}
+    fab.addEventListener('click',openChat);closeBtn.addEventListener('click',closeChat);
+    function addMessage(text,role){const el=document.createElement('div');el.className='ai-msg '+role;el.textContent=text;messages.appendChild(el);messages.scrollTop=messages.scrollHeight;return el}
+    document.getElementById('aiSuggestions').addEventListener('click',e=>{const b=e.target.closest('.ai-suggestion');if(b){input.value=b.textContent;form.requestSubmit()}});
+    form.addEventListener('submit',async e=>{e.preventDefault();const text=input.value.trim();if(!text||send.disabled)return;input.value='';addMessage(text,'user');chatHistory.push({role:'user',content:text});send.disabled=true;const pending=addMessage('Soch raha hoon…','bot');
+      try{if(AI_ENDPOINT.includes('YOUR-WORKER-NAME'))throw new Error('AI setup pending: Worker URL add karein.');const catalog=(window.allProductsForSearch||[]).slice(0,30).map(p=>({name:p.name,category:p.category,store:p.store,price:p.price,stock:p.stock}));const resp=await fetch(AI_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:chatHistory.slice(-8),products:catalog})});if(!resp.ok)throw new Error('AI service temporarily unavailable ('+resp.status+')');const data=await resp.json();const answer=String(data.reply||'Maaf kijiye, mujhe jawab nahi mila.').slice(0,4000);pending.textContent=answer;chatHistory.push({role:'assistant',content:answer});
+      }catch(err){pending.textContent=err.message.includes('setup pending')?'AI chat UI ready hai! Cloudflare Worker deploy karke AI_ENDPOINT mein uska URL add karein.': 'Maaf kijiye, abhi AI connect nahi ho pa raha. Thodi der baad try karein.';console.error('Aaradhya AI:',err)}finally{send.disabled=false;input.focus()}});
+  })();
+  </script>
+
 </body>
 </html>
