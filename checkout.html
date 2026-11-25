@@ -52,7 +52,14 @@
     .place-order-btn { width: 100%; padding: 16px; background: var(--navy); color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 20px; }
     .advance-notice { background: #e0f2fe; border: 1px dashed #7dd3fc; color: #0369a1; padding: 12px; border-radius: 6px; font-size: 12px; font-weight: bold; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
     
-    /* 🌟 20% Advance Calculator Box 🌟 */
+    /* 🌟 Location Button Style 🌟 */
+    .share-location-btn {
+      display: inline-flex; align-items: center; gap: 6px; background: #e0f2fe; color: #0369a1;
+      padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; text-decoration: none;
+      margin-top: 8px; border: 1px solid #7dd3fc; transition: 0.2s;
+    }
+    .share-location-btn:hover { background: #bae6fd; }
+
     .advance-calc-box { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 8px; padding: 15px; margin-top: 15px; text-align: left; }
     .advance-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: #92400e; }
     .advance-row.total-row { border-top: 1px dashed #fcd34d; padding-top: 8px; margin-top: 8px; font-size: 15px; font-weight: bold; }
@@ -80,7 +87,6 @@
     .slip-btn-close { background: #eee; color: #333; }
     @media print { body * { visibility: hidden; } .slip-modal-overlay { position: absolute; left: 0; top: 0; background: transparent; backdrop-filter: none; visibility: visible; padding: 0; } .slip-box { box-shadow: none; transform: none; max-height: none; overflow: visible; visibility: visible; margin: 0 auto; border: 1px solid #ccc; } .slip-box * { visibility: visible; } .slip-actions { display: none; } .slip-footer { background: #fff; } }
 
-    /* ✅ NAYA: Premium Toast */
     .custom-premium-toast {
       position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-100px);
       background: var(--navy); color: #fff; padding: 15px 25px; border-radius: 50px;
@@ -110,7 +116,14 @@
       <form id="checkoutForm">
         <div class="form-group"><label>Full Name *</label><input type="text" id="custName" required></div>
         <div class="form-group"><label>Mobile Number *</label><input type="tel" id="custPhone" required pattern="[0-9]{10}"></div>
-        <div class="form-group"><label>Full Address *</label><textarea id="custAddress" required rows="2"></textarea></div>
+        <div class="form-group">
+          <label>Full Address *</label>
+          <textarea id="custAddress" required rows="2"></textarea>
+          <!-- 🌟 Location Share Button 🌟 -->
+          <a href="https://wa.me/918931911428?text=Hello%20Aaradhya%20Mart,%20I%20am%20sharing%20my%20exact%20location%20for%20delivery:" target="_blank" class="share-location-btn">
+            📍 Share Live Location on WhatsApp
+          </a>
+        </div>
         <div style="display:flex; gap:10px;">
           <div class="form-group" style="flex:1;"><label>City *</label><input type="text" id="custCity" required></div>
           <div class="form-group" style="flex:1;"><label>Pincode *</label><input type="text" id="custPincode" required pattern="[0-9]{6}"></div>
@@ -142,7 +155,6 @@
           <h3 style="margin:10px 0 0; color:var(--navy);">Total Payable: ₹<span id="finalTotalTxt">0</span></h3>
         </div>
 
-        <!-- 🌟 20% Advance Calculator Box 🌟 -->
         <div class="advance-calc-box">
           <div class="advance-row">
             <span>Total Amount:</span>
@@ -186,7 +198,6 @@
         <div class="slip-row" id="slipDiscountRow" style="display:none; color:#10b981;"><span>Discount:</span> <span>-₹<span id="slipDiscount"></span></span></div>
         <div class="slip-total-row"><span>TOTAL:</span> <span>₹<span id="slipTotal"></span></span></div>
         
-        <!-- 🌟 रसीद में एडवांस और बैलेंस 🌟 -->
         <div class="slip-divider"></div>
         <div class="slip-row" style="color: #d97706; font-weight: bold;">
           <span>20% Advance Required:</span> 
@@ -368,7 +379,6 @@
       document.getElementById("slipTotal").textContent = finalTotal;
       if(currentDiscount > 0) { document.getElementById("slipDiscountRow").style.display = "flex"; document.getElementById("slipDiscount").textContent = currentDiscount; }
 
-      // 🌟 Slip में Advance और Balance Update 🌟
       document.getElementById("slipAdvanceAmount").textContent = advanceAmount;
       document.getElementById("slipBalanceAmount").textContent = balanceAmount;
 
