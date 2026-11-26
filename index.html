@@ -379,6 +379,27 @@
     @media(max-width:950px){.home-category-grid{grid-template-columns:repeat(3,1fr)}.home-category-card{min-height:180px}}
     @media(max-width:650px){.home-category-section,.home-budget-section{padding:40px 5%}.home-category-grid{grid-template-columns:repeat(2,1fr);gap:10px}.home-category-card{min-height:170px}.home-category-card strong{font-size:17px}.home-budget-grid{grid-template-columns:repeat(2,1fr);gap:9px}.home-budget-card{padding:17px 13px}.home-budget-card b{font-size:21px}.home-promo-row{grid-template-columns:1fr;padding:35px 5%;gap:12px}.home-promo-card{min-height:205px;padding:24px}.home-service-strip{grid-template-columns:repeat(2,1fr);padding:20px 4%;gap:8px}.home-service-item{justify-content:flex-start}.home-intro-strip{font-size:10px;gap:8px}}
 
+
+  /* Universal search & filters */
+  .am-universal-filter{display:none;position:absolute;top:calc(100% + 8px);left:0;right:0;z-index:1000;background:#fff;border:1px solid #dbe2ea;border-radius:14px;box-shadow:0 16px 40px rgba(16,36,59,.18);padding:12px;color:#10243b;max-height:75vh;overflow:auto}
+  .am-universal-filter.active{display:block}
+  .am-filter-row{display:flex;gap:8px;align-items:center;margin-bottom:9px}
+  .am-filter-row select{min-width:0;flex:1;border:1px solid #d5dde6;border-radius:8px;background:#fff;padding:9px 10px;color:#10243b;font-size:12px}
+  .am-price-row label{display:flex;align-items:center;gap:5px;font-size:11px;white-space:nowrap;color:#475569}
+  .am-price-row input[type=number]{width:78px;border:1px solid #d5dde6;border-radius:7px;padding:8px;font-size:12px}
+  .am-stock-label{gap:5px!important}
+  #amClearFilters{border:1px solid #10243b;background:#10243b;color:#fff;border-radius:8px;padding:8px 11px;font-size:12px;cursor:pointer}
+  .am-filter-summary{font-size:11px;color:#64748b;padding:2px 3px 6px}
+  .am-universal-results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .am-universal-card{display:flex;gap:9px;align-items:center;text-decoration:none;color:#10243b;border:1px solid #edf0f4;border-radius:10px;padding:8px;min-width:0}
+  .am-universal-card img{width:58px;height:58px;object-fit:cover;border-radius:8px;background:#f1f5f9;flex:0 0 58px}
+  .am-universal-card .am-card-text{min-width:0;flex:1}
+  .am-universal-card strong{display:block;font-size:12px;line-height:1.35;overflow:hidden;text-overflow:ellipsis}
+  .am-universal-card small{display:block;color:#64748b;font-size:10px;margin-top:3px}
+  .am-universal-card b{display:block;font-size:12px;color:#b58a4b;margin-top:4px}
+  .am-no-results{padding:18px;text-align:center;color:#64748b;font-size:13px;grid-column:1/-1}
+  @media(max-width:650px){.am-filter-row{flex-wrap:wrap}.am-filter-row select{flex-basis:30%;font-size:11px;padding:8px 5px}.am-price-row label{font-size:10px}.am-price-row input[type=number]{width:60px}.am-universal-results{grid-template-columns:1fr}.am-universal-filter{left:-4px;right:-4px}}
+
   </style>
 </head>
 <body>
@@ -390,6 +411,20 @@
     <div class="header-search-container">
       <input type="text" id="headerSearchInput" class="header-search-input" placeholder="Search for Products, Brands and More..." autocomplete="off">
       <div id="headerSearchResults" class="header-search-results"></div>
+      <div class="am-universal-filter" id="amUniversalFilter" aria-label="Universal product search filters">
+        <div class="am-filter-row">
+          <select id="amStoreFilter" aria-label="Store"><option value="All">All Stores</option><option value="Fashion">Fashion</option><option value="Kirana">Kirana</option><option value="Print">Print</option></select>
+          <select id="amCategoryFilter" aria-label="Category"><option value="All">All Categories</option></select>
+          <select id="amSortFilter" aria-label="Sort products"><option value="relevance">Relevance</option><option value="low">Price: Low to High</option><option value="high">Price: High to Low</option><option value="name">Name A–Z</option></select>
+        </div>
+        <div class="am-filter-row am-price-row">
+          <label>Min ₹ <input id="amMinPrice" type="number" min="0" placeholder="0"></label>
+          <label>Max ₹ <input id="amMaxPrice" type="number" min="0" placeholder="Any"></label>
+          <label class="am-stock-label"><input id="amInStock" type="checkbox"> In stock only</label>
+          <button id="amClearFilters" type="button">Clear</button>
+        </div>
+        <div class="am-filter-summary" id="amFilterSummary">Start typing to search across all stores.</div>
+      </div>
     </div>
 
     <div class="header-actions" style="display: flex; gap: 8px; align-items: center;">
@@ -759,45 +794,50 @@
       const snap = await getDocs(collection(db, "products"));
       snap.forEach(d => allProductsForSearch.push({ id: d.id, ...d.data() }));
       window.allProductsForSearch = allProductsForSearch;
-
       const input = document.getElementById("headerSearchInput");
       const resultsBox = document.getElementById("headerSearchResults");
-
-      input.addEventListener("input", (e) => {
-        const queryStr = e.target.value.toLowerCase().trim();
-        if(queryStr.length < 2) { resultsBox.classList.remove("active"); return; }
-
-        const matched = allProductsForSearch.filter(p => 
-          (p.name && p.name.toLowerCase().includes(queryStr)) || 
-          (p.category && p.category.toLowerCase().includes(queryStr))
-        ).slice(0, 5);
-
-        if(matched.length === 0) {
-          resultsBox.innerHTML = `<div style="padding:15px; text-align:center; font-size:12px; color:#777;">No products found for "${queryStr}"</div>`;
-        } else {
-          resultsBox.innerHTML = matched.map(p => {
-            const img = p.image ? p.image.split(',')[0].trim() : 'https://placehold.co/100';
-            const storeFile = p.store.toLowerCase();
-            return `
-              <a href="${storeFile}.html" class="search-result-item">
-                <img src="${img}" alt="${p.name}" onerror="this.src='https://placehold.co/100'">
-                <div style="flex:1;">
-                  <h4>${p.name}</h4>
-                  <p>${p.category || 'General'} · ${p.store}</p>
-                </div>
-                <div class="s-price">₹${p.price}</div>
-              </a>
-            `;
-          }).join("");
-        }
-        resultsBox.classList.add("active");
-      });
-
-      document.addEventListener("click", (e) => {
-        if(!e.target.closest(".header-search-container")) {
-          resultsBox.classList.remove("active");
-        }
-      });
+      const filterPanel = document.getElementById("amUniversalFilter");
+      const storeSelect = document.getElementById("amStoreFilter");
+      const categorySelect = document.getElementById("amCategoryFilter");
+      const sortSelect = document.getElementById("amSortFilter");
+      const minPrice = document.getElementById("amMinPrice");
+      const maxPrice = document.getElementById("amMaxPrice");
+      const inStock = document.getElementById("amInStock");
+      const summary = document.getElementById("amFilterSummary");
+      const clearBtn = document.getElementById("amClearFilters");
+      let filtered = [];
+      const priceOf = p => { const n=Number(String(p.price ?? p.sellingPrice ?? p.selling_price ?? '').replace(/[^0-9.]/g,'')); return Number.isFinite(n)?n:0; };
+      const textOf = p => [p.name,p.category,p.store,p.description,p.brand,p.tags,p.color,p.colors,p.size,p.sizes].flat().filter(Boolean).join(' ').toLowerCase();
+      const storeFile = s => ({Fashion:'fashion.html',Kirana:'kirana.html',Print:'print.html'}[s] || 'index.html');
+      function updateCategories(){
+        const store=storeSelect.value;
+        const cats=[...new Set(allProductsForSearch.filter(p=>store==='All'||p.store===store).map(p=>p.category).filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b)));
+        const current=categorySelect.value;categorySelect.innerHTML='<option value="All">All Categories</option>'+cats.map(c=>`<option value="${String(c).replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[x]))}">${String(c).replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[x]))}</option>`).join('');
+        if(cats.includes(current))categorySelect.value=current;
+      }
+      function renderUniversal(){
+        const q=input.value.trim().toLowerCase();const store=storeSelect.value;const cat=categorySelect.value;const sort=sortSelect.value;
+        const min=minPrice.value===''?0:Number(minPrice.value);const max=maxPrice.value===''?Infinity:Number(maxPrice.value);
+        filtered=allProductsForSearch.filter(p=>{
+          if(store!=='All'&&p.store!==store)return false;if(cat!=='All'&&p.category!==cat)return false;
+          if(q&&!textOf(p).includes(q))return false;const price=priceOf(p);if(price<min||price>max)return false;
+          if(inStock.checked&&Number(p.stock)<=0)return false;return true;
+        });
+        if(sort==='low')filtered.sort((a,b)=>priceOf(a)-priceOf(b));else if(sort==='high')filtered.sort((a,b)=>priceOf(b)-priceOf(a));else if(sort==='name')filtered.sort((a,b)=>String(a.name||'').localeCompare(String(b.name||'')));
+        summary.textContent=`${filtered.length} product${filtered.length===1?'':'s'} found · ${store==='All'?'All Stores':store}${q?' · Search: '+q:''}`;
+        resultsBox.innerHTML='<div class="am-universal-results">'+filtered.slice(0,12).map(p=>{
+          const raw=String(p.image||p.imageUrl||p.images?.[0]||'').split(',')[0].trim();const img=raw||'https://placehold.co/120x120?text=Product';const name=String(p.name||'Product');const safeName=name.replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[x]));const store=String(p.store||'');const file=storeFile(store);
+          return `<a class="am-universal-card" href="${file}"><img src="${img}" alt="${safeName}" onerror="this.src='https://placehold.co/120x120?text=Product'"><span class="am-card-text"><strong>${safeName}</strong><small>${String(p.category||'General')} · ${store}</small><b>₹${priceOf(p).toLocaleString('en-IN')}</b></span></a>`;
+        }).join('')+(filtered.length===0?'<div class="am-no-results">😕 No matching products. Try changing filters or search terms.</div>':'')+'</div>';
+        resultsBox.classList.add('active');filterPanel.classList.add('active');
+      }
+      input.addEventListener('focus',()=>{filterPanel.classList.add('active');renderUniversal();});
+      input.addEventListener('input',()=>{filterPanel.classList.add('active');renderUniversal();});
+      [storeSelect,categorySelect,sortSelect,minPrice,maxPrice,inStock].forEach(el=>el.addEventListener('change',renderUniversal));
+      storeSelect.addEventListener('change',updateCategories);
+      clearBtn.addEventListener('click',()=>{input.value='';storeSelect.value='All';sortSelect.value='relevance';minPrice.value='';maxPrice.value='';inStock.checked=false;updateCategories();categorySelect.value='All';renderUniversal();});
+      updateCategories();
+      document.addEventListener('click',e=>{if(!e.target.closest('.header-search-container')){resultsBox.classList.remove('active');filterPanel.classList.remove('active');}});
     }
 
     /* ============ FESTIVE BANNER ============ */
