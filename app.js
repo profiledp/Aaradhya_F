@@ -48,106 +48,99 @@ function getProductImages(p) {
   return [];
 }
 
-/* ---------- Store switcher ---------- */
+/* ---------- Universal search + filters ---------- */
+function ensureUniversalFilters() {
+  if (document.getElementById('universalFilters')) return;
+  const grid = document.getElementById('productGrid');
+  if (!grid) return;
+  const wrap = document.createElement('section');
+  wrap.id = 'universalFilters';
+  wrap.className = 'universal-filters';
+  wrap.innerHTML = `
+    <div class="uf-row uf-search-row">
+      <label class="uf-search"><span aria-hidden="true">⌕</span><input id="searchInput" type="search" placeholder="Search products, category, size, colour..." autocomplete="off"></label>
+      <select id="storeFilter" aria-label="Filter by store"><option value="All">All Stores</option><option value="Fashion">Fashion</option><option value="Print">Print</option><option value="Kirana">Kirana</option></select>
+    </div>
+    <div class="uf-row">
+      <select id="categoryFilter" aria-label="Category"><option value="All">All Categories</option></select>
+      <input id="minPriceFilter" type="number" min="0" placeholder="Min ₹" aria-label="Minimum price">
+      <input id="maxPriceFilter" type="number" min="0" placeholder="Max ₹" aria-label="Maximum price">
+      <select id="stockFilter" aria-label="Stock status"><option value="All">All Stock</option><option value="In">In Stock</option><option value="Out">Out of Stock</option></select>
+      <select id="sortFilter" aria-label="Sort products"><option value="featured">Featured</option><option value="low">Price: Low to High</option><option value="high">Price: High to Low</option><option value="name">Name: A to Z</option></select>
+      <button type="button" id="clearUniversalFilters" class="uf-clear">Clear</button>
+    </div>`;
+  grid.parentNode.insertBefore(wrap, grid);
+}
+
+function updateCategoryOptions() {
+  const catSelect = document.getElementById('categoryFilter');
+  if (!catSelect) return;
+  const storeChoice = document.getElementById('storeFilter')?.value || currentStore;
+  const relevant = storeChoice === 'All' ? products : products.filter(p => p.store === storeChoice);
+  const uniqueCats = [...new Set(relevant.map(p => p.category).filter(Boolean))].sort((a,b) => String(a).localeCompare(String(b)));
+  const oldValue = catSelect.value;
+  catSelect.innerHTML = '<option value="All">All Categories</option>' + uniqueCats.map(cat => `<option value="${escapeText(cat)}">${escapeText(cat)}</option>`).join('');
+  if (uniqueCats.includes(oldValue)) catSelect.value = oldValue;
+}
 function switchStore(storeName) {
   currentStore = storeName;
-
   document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
   const activeTab = document.querySelector(`.tab-btn[data-store="${storeName}"]`);
   if (activeTab) activeTab.classList.add('active');
-
-  const titles = {
-    "Fashion": "Clothing & Apparel",
-    "Print": "Custom Printing Services",
-    "Kirana": "Grocery & Daily Needs"
-  };
-  const titleEl = document.getElementById("currentStoreTitle");
+  const titles = { Fashion: 'Clothing & Apparel', Print: 'Custom Printing Services', Kirana: 'Grocery & Daily Needs' };
+  const titleEl = document.getElementById('currentStoreTitle');
   if (titleEl) titleEl.textContent = titles[storeName] || storeName;
-
-  const printBanner = document.getElementById("printBanner");
-  if (printBanner) printBanner.classList.toggle("hidden", storeName !== "Print");
-
-  // Rebuild category dropdown for this store
-  const catSelect = document.getElementById("categoryFilter");
-  catSelect.innerHTML = `<option value="All">All Categories</option>`;
-  const storeProducts = products.filter(p => p.store === storeName);
-  const uniqueCats = [...new Set(storeProducts.map(p => p.category).filter(Boolean))];
-  uniqueCats.forEach(cat => {
-    catSelect.innerHTML += `<option value="${escapeText(cat)}">${escapeText(cat)}</option>`;
-  });
-
-  const searchEl = document.getElementById("searchInput");
-  if (searchEl) searchEl.value = "";
-
+  const printBanner = document.getElementById('printBanner');
+  if (printBanner) printBanner.classList.toggle('hidden', storeName !== 'Print');
+  ensureUniversalFilters();
+  const storeFilter = document.getElementById('storeFilter');
+  if (storeFilter && storeFilter.value !== 'All') storeFilter.value = storeName;
+  updateCategoryOptions();
   renderStore();
 }
-
-/* ---------- Render product grid ---------- */
 function renderStore() {
-  const query = (document.getElementById("searchInput")?.value || "").trim().toLowerCase();
-  const category = document.getElementById("categoryFilter")?.value || "All";
-  const sort = document.getElementById("sortFilter")?.value || "featured";
-
-  let list = products.filter(p => p.store === currentStore);
-
-  if (category !== "All") list = list.filter(p => p.category === category);
-
+  const query = (document.getElementById('searchInput')?.value || '').trim().toLowerCase();
+  const category = document.getElementById('categoryFilter')?.value || 'All';
+  const storeChoice = document.getElementById('storeFilter')?.value || currentStore;
+  const minPriceRaw = document.getElementById('minPriceFilter')?.value;
+  const maxPriceRaw = document.getElementById('maxPriceFilter')?.value;
+  const minPrice = minPriceRaw === '' || minPriceRaw == null ? null : Number(minPriceRaw);
+  const maxPrice = maxPriceRaw === '' || maxPriceRaw == null ? null : Number(maxPriceRaw);
+  const stockChoice = document.getElementById('stockFilter')?.value || 'All';
+  const sort = document.getElementById('sortFilter')?.value || 'featured';
+  let list = products.filter(p => storeChoice === 'All' || p.store === storeChoice);
+  if (category !== 'All') list = list.filter(p => p.category === category);
+  if (minPrice !== null && Number.isFinite(minPrice)) list = list.filter(p => Number(p.price || 0) >= minPrice);
+  if (maxPrice !== null && Number.isFinite(maxPrice)) list = list.filter(p => Number(p.price || 0) <= maxPrice);
+  if (stockChoice === 'In') list = list.filter(p => Number(p.stock) > 0);
+  if (stockChoice === 'Out') list = list.filter(p => Number(p.stock) <= 0);
   list = list.filter(p => {
-    const haystack = [
-      p.name,
-      p.category,
-      p.description,
-      ...(p.colors || []),
-      ...(p.sizes || [])
-    ].join(" ").toLowerCase();
+    const haystack = [p.name, p.store, p.category, p.description, p.tag, p.brand, p.id, p.keywords,
+      ...(p.searchTags || []), ...(p.colors || []), ...(p.sizes || [])].flat().join(' ').toLowerCase();
     return haystack.includes(query);
   });
-
-  if (sort === "low") list.sort((a, b) => Number(a.price) - Number(b.price));
-  if (sort === "high") list.sort((a, b) => Number(b.price) - Number(a.price));
-
-  document.getElementById("productCount").textContent = `${list.length} ITEMS`;
-  const grid = document.getElementById("productGrid");
-  document.getElementById("emptyState").classList.toggle("hidden", list.length !== 0);
-
+  if (sort === 'low') list.sort((a,b) => Number(a.price || 0) - Number(b.price || 0));
+  if (sort === 'high') list.sort((a,b) => Number(b.price || 0) - Number(a.price || 0));
+  if (sort === 'name') list.sort((a,b) => String(a.name || '').localeCompare(String(b.name || '')));
+  const countEl = document.getElementById('productCount');
+  if (countEl) countEl.textContent = `${list.length} ITEMS`;
+  const grid = document.getElementById('productGrid');
+  const empty = document.getElementById('emptyState');
+  if (empty) empty.classList.toggle('hidden', list.length !== 0);
+  if (!grid) return;
   grid.innerHTML = list.map(p => {
     const isOut = Number(p.stock) <= 0;
     const imgs = getProductImages(p);
     const cover = imgs[0];
-    const imgCountBadge = imgs.length > 1
-      ? `<span class="card-images-count">📷 ${imgs.length}</span>`
-      : "";
-
-    return `
-    <article class="product-card" style="${isOut ? 'opacity: 0.8;' : ''}">
-      <div class="product-image-wrap" data-open="${escapeText(p.id)}">
-        <img src="${safeImage(cover)}"
-             alt="${escapeText(p.name)}"
-             loading="lazy"
-             onerror="this.src='https://placehold.co/600x800/f1f0ed/10243b?text=No+Image'">
-        ${p.tag ? `<span class="product-tag">${escapeText(p.tag)}</span>` : ""}
-        ${imgCountBadge}
-        ${isOut ? `<span class="out-of-stock-tag">SOLD OUT</span>` : ""}
-      </div>
-      <div class="product-info">
-        <span class="product-category">${escapeText(p.category)}</span>
-        <h3>${escapeText(p.name)}</h3>
-        <div class="product-price">
-          ${p.price === 0 ? 'Custom Quote' : money(p.price)}
-          ${Number(p.originalPrice) > Number(p.price) && p.originalPrice > 0
-            ? `<span class="old-price">${money(p.originalPrice)}</span>`
-            : ""}
-        </div>
-        <div class="product-actions">
-          <button class="btn-view" data-open="${escapeText(p.id)}">Details</button>
-          <button class="btn-order" data-order="${escapeText(p.id)}" ${isOut ? 'disabled' : ''}>
-            ${isOut ? 'Sold Out' : 'Order'}
-          </button>
-        </div>
-      </div>
-    </article>`;
-  }).join("");
+    const imgCountBadge = imgs.length > 1 ? `<span class="card-images-count">📷 ${imgs.length}</span>` : '';
+    const storeBadge = storeChoice === 'All' ? `<span class="uf-store-badge">${escapeText(p.store || '')}</span>` : '';
+    return `<article class="product-card" style="${isOut ? 'opacity:0.8;' : ''}">
+      <div class="product-image-wrap" data-open="${escapeText(p.id)}"><img src="${safeImage(cover)}" alt="${escapeText(p.name)}" loading="lazy" onerror="this.src='https://placehold.co/600x800/f1f0ed/10243b?text=No+Image'">${p.tag ? `<span class="product-tag">${escapeText(p.tag)}</span>` : ''}${imgCountBadge}${storeBadge}${isOut ? `<span class="out-of-stock-tag">SOLD OUT</span>` : ''}</div>
+      <div class="product-info"><span class="product-category">${escapeText(p.category)}</span><h3>${escapeText(p.name)}</h3><div class="product-price">${p.price === 0 ? 'Custom Quote' : money(p.price)}${Number(p.originalPrice) > Number(p.price) && p.originalPrice > 0 ? `<span class="old-price">${money(p.originalPrice)}</span>` : ''}</div>
+      <div class="product-actions"><button class="btn-view" data-open="${escapeText(p.id)}">Details</button><button class="btn-order" data-order="${escapeText(p.id)}" ${isOut ? 'disabled' : ''}>${isOut ? 'Sold Out' : 'Order'}</button></div></div></article>`;
+  }).join('');
 }
+
 
 /* ---------- Product dialog with gallery ---------- */
 function openProduct(id) {
@@ -261,11 +254,19 @@ function orderProduct(id, size, color) {
 /* ---------- Init ---------- */
 document.addEventListener("DOMContentLoaded", () => {
   loadStoreProducts();
+  ensureUniversalFilters();
   switchStore('Fashion');
-
-  document.getElementById("searchInput")?.addEventListener("input", renderStore);
-  document.getElementById("categoryFilter")?.addEventListener("change", renderStore);
-  document.getElementById("sortFilter")?.addEventListener("change", renderStore);
+  document.getElementById('universalFilters')?.addEventListener('input', renderStore);
+  document.getElementById('universalFilters')?.addEventListener('change', e => {
+    if (e.target.id === 'storeFilter') updateCategoryOptions();
+    renderStore();
+  });
+  document.getElementById('clearUniversalFilters')?.addEventListener('click', () => {
+    ['searchInput','minPriceFilter','maxPriceFilter'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+    ['categoryFilter','stockFilter','sortFilter'].forEach(id => { const el=document.getElementById(id); if(el) el.value = id==='sortFilter' ? 'featured' : 'All'; });
+    const store = document.getElementById('storeFilter'); if(store) store.value='All';
+    updateCategoryOptions(); renderStore();
+  });
 
   document.getElementById("productGrid")?.addEventListener("click", e => {
     const open = e.target.closest("[data-open]");
