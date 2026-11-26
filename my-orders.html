@@ -73,88 +73,41 @@
 
   <main class="my-orders-wrap">
     <h1 class="page-title">📦 My Orders</h1>
+    <div style="background:#fff7e6;border:1px solid #f1d28a;border-radius:10px;padding:14px;margin:0 0 20px;color:#735b23;font-size:13px;line-height:1.6;">
+      <strong>📌 Order History Notice</strong><br>
+      Your order history is saved only in this browser on this device to help reduce online data storage. If you clear browser data, use Incognito/Private mode, switch browser, or change your device, your saved order history may not be available. Please keep your WhatsApp order confirmation for reference.
+    </div>
     <div id="ordersContainer"></div>
   </main>
 
   <script type="module">
-    import { getDb, MY_ORDERS_KEY, normalizePhone } from "./shared.js";
-    import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-    const db = getDb();
+    import { MY_ORDERS_KEY, normalizePhone } from "./shared.js";
 
     function statusClass(status) {
-      const map = {
-        "Confirmed": "status-confirmed",
-        "Packed": "status-packed",
-        "Out for Delivery": "status-out-for-delivery",
-        "Delivered": "status-delivered",
-        "Cancelled": "status-cancelled"
-      };
+      const map = { "Confirmed":"status-confirmed", "Packed":"status-packed", "Out for Delivery":"status-out-for-delivery", "Delivered":"status-delivered", "Cancelled":"status-cancelled" };
       return map[status] || "status-pending";
     }
-
-    async function renderMyOrders() {
+    function getLocalOrders() {
+      try {
+        const raw = JSON.parse(localStorage.getItem(MY_ORDERS_KEY) || "[]");
+        if (!Array.isArray(raw)) return [];
+        return raw.filter(o => o && typeof o === "object" && o.orderId);
+      } catch (e) { return []; }
+    }
+    function renderMyOrders() {
       const container = document.getElementById("ordersContainer");
-      const myOrderIds = JSON.parse(localStorage.getItem(MY_ORDERS_KEY) || "[]");
-
-      if (myOrderIds.length === 0) {
-        container.innerHTML = `
-          <div class="empty-orders">
-            <h3>No orders yet!</h3>
-            <p>You haven't placed any orders with us.</p>
-            <a href="index.html" class="btn-shop">Start Shopping 🛍️</a>
-          </div>`;
+      const orders = getLocalOrders();
+      if (!orders.length) {
+        container.innerHTML = `<div class="empty-orders"><h3>No orders saved on this device</h3><p>Orders placed after this update will appear here, if this browser keeps its local data.</p><a href="index.html" class="btn-shop">Start Shopping 🛍️</a></div>`;
         return;
       }
-
-      container.innerHTML = `<p style="text-align:center; color:#777; font-size:13px;">Loading your orders...</p>`;
-
-      try {
-        const allOrders = [];
-        for (let i = 0; i < myOrderIds.length; i += 10) {
-          const chunk = myOrderIds.slice(i, i + 10);
-          const q = query(collection(db, "orders"), where("orderId", "in", chunk));
-          const snap = await getDocs(q);
-          snap.forEach((doc) => allOrders.push(doc.data()));
-        }
-
-        allOrders.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
-
-        if (allOrders.length === 0) {
-          container.innerHTML = `
-            <div class="empty-orders">
-              <h3>No orders found.</h3>
-              <p>We couldn't find any recent orders on this device.</p>
-              <a href="index.html" class="btn-shop">Start Shopping 🛍️</a>
-            </div>`;
-          return;
-        }
-
-        container.innerHTML = allOrders.map((o) => {
-          const itemsStr = (o.items || []).map((i) => `${i.name} (x${i.qty})`).join(", ");
-          const phone = normalizePhone(o.customerPhone) || o.customerPhone;
-          return `
-            <div class="order-card">
-              <div class="order-header">
-                <div>
-                  <h3 class="order-id">Order #${o.orderId}</h3>
-                  <p class="order-date">Placed on: ${o.orderDate || "—"}</p>
-                </div>
-                <span class="status-badge ${statusClass(o.status)}">${o.status}</span>
-              </div>
-              <div class="order-items-list"><strong>Items:</strong> ${itemsStr}</div>
-              <div class="order-footer">
-                <div class="order-total">₹${o.totalAmount} <span>(incl. taxes)</span></div>
-                <a href="track.html?order=${encodeURIComponent(o.orderId)}&phone=${encodeURIComponent(phone)}" class="btn-track-now">Track / View Details →</a>
-              </div>
-            </div>`;
-        }).join("");
-      } catch (err) {
-        console.error("Error loading orders:", err);
-        container.innerHTML = `<p style="color:red; text-align:center;">Failed to load orders. Please check your internet connection.</p>`;
-      }
+      orders.sort((a,b) => new Date(b.localSavedAt || b.orderDate || 0) - new Date(a.localSavedAt || a.orderDate || 0));
+      container.innerHTML = orders.map(o => {
+        const itemsStr = (o.items || []).map(i => `${i.name || "Product"} (x${i.qty || 1})`).join(", ");
+        const status = o.status || "Pending";
+        return `<div class="order-card"><div class="order-header"><div><h3 class="order-id">Order #${o.orderId}</h3><p class="order-date">Placed on: ${o.orderDate || o.dateStr || "—"}</p></div><span class="status-badge ${statusClass(status)}">${status}</span></div><div class="order-items-list"><strong>Items:</strong> ${itemsStr || "Order details unavailable"}</div><div class="order-footer"><div class="order-total">₹${Number(o.totalAmount ?? o.total ?? 0)} <span>total</span></div><span style="font-size:12px;color:#777">Order confirmation/status via WhatsApp</span></div></div>`;
+      }).join("");
     }
-
     document.addEventListener("DOMContentLoaded", renderMyOrders);
   </script>
 </body>
