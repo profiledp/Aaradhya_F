@@ -181,7 +181,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = { apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y", authDomain: "aaradhya-mart.firebaseapp.com", projectId: "aaradhya-mart", storageBucket: "aaradhya-mart.firebasestorage.app", messagingSenderId: "146782544824", appId: "1:146782544824:web:d605e1971d3480fab1654d" };
     const app = initializeApp(firebaseConfig); const db = getFirestore(app);
@@ -380,6 +380,26 @@
         const dateStr = new Date().toLocaleString("en-IN");
         const orderResult = { orderId, dateStr, items: liveItems, subtotal: liveSubtotal, discount: liveDiscount, total: liveTotal, coupon: liveCoupon };
 
+        // Dual order mode: save the order to Firestore first, then open WhatsApp.
+        // Admin Orders expects these field names.
+        const orderDoc = {
+          orderId,
+          customerName: name,
+          customerPhone: phone,
+          address: addr,
+          items: liveItems.map(item => ({ id: item.id, name: item.name, qty: item.qty, size: item.size || "N/A", color: item.color || "Standard", price: item.price })),
+          subtotal: liveSubtotal,
+          discountApplied: liveDiscount,
+          couponUsed: liveCoupon,
+          totalAmount: liveTotal,
+          paymentMode,
+          orderDate: dateStr,
+          status: "Pending",
+          statusHistory: { Pending: dateStr },
+          createdAt: serverTimestamp(),
+          orderSource: "website"
+        };
+        await addDoc(collection(db, "orders"), orderDoc);
         saveOrderToLocal(orderResult.orderId);
         showToast("Order request ready. Send it on WhatsApp to confirm.");
         document.getElementById("slipOrderId").textContent = orderResult.orderId;
