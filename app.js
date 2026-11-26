@@ -50,11 +50,15 @@ function getProductImages(p) {
 
 /* ---------- Universal search + filters ---------- */
 function ensureUniversalFilters() {
-  if (document.getElementById('universalFilters')) return;
   const grid = document.getElementById('productGrid');
   if (!grid) return;
-  const wrap = document.createElement('section');
-  wrap.id = 'universalFilters';
+  // Rebuild the existing filter container too: removes legacy Store/Category/Price/Stock controls.
+  let wrap = document.getElementById('universalFilters');
+  if (!wrap) {
+    wrap = document.createElement('section');
+    wrap.id = 'universalFilters';
+    grid.parentNode.insertBefore(wrap, grid);
+  }
   wrap.className = 'universal-search-wrap';
   wrap.innerHTML = `
     <div class="uf-search-box">
@@ -63,7 +67,6 @@ function ensureUniversalFilters() {
       <button type="button" id="clearSearchInput" aria-label="Clear search" class="uf-search-clear" hidden>×</button>
     </div>
     <div id="searchSuggestions" class="uf-suggestions" role="listbox" aria-label="Search suggestions"></div>`;
-  grid.parentNode.insertBefore(wrap, grid);
 }
 
 const SEARCH_HISTORY_KEY = 'aaradhyaMartSearchHistoryV1';
