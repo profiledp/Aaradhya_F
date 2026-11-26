@@ -1228,3 +1228,56 @@ img { max-width: 100%; }
 .uf-clear{min-height:40px;padding:8px 14px;border:1px solid #cbd5e1;border-radius:9px;background:#fff;color:#10243b;font-weight:600;cursor:pointer}
 .uf-store-badge{position:absolute;top:10px;left:10px;z-index:2;background:#10243b;color:#fff;font-size:11px;font-weight:700;padding:5px 8px;border-radius:6px}
 @media(max-width:600px){.universal-filters{padding:10px;gap:9px}.uf-row{gap:8px}.uf-search{flex-basis:100%;min-width:0}.universal-filters select,.universal-filters input[type=number]{flex:1;min-width:calc(50% - 8px);font-size:14px}.uf-clear{flex:1}}
+
+/* ===== Universal Filters: compact polish (Nov 2026) ===== */
+#universalFilters.universal-filters{
+  position:relative;
+  inset:auto;
+  z-index:1;
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  gap:10px;
+  width:100%;
+  max-height:none;
+  height:auto;
+  overflow:visible;
+  margin:0 0 18px;
+  padding:12px 14px;
+  background:#fff;
+  border:1px solid #dce4ee;
+  border-radius:12px;
+  box-shadow:0 3px 12px rgba(16,36,59,.06);
+}
+#universalFilters .uf-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap;min-width:0}
+#universalFilters .uf-search-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(145px,190px);gap:9px}
+#universalFilters .uf-search{min-width:0;width:100%;min-height:40px;padding:0 11px;border-radius:8px}
+#universalFilters .uf-search input{min-height:38px;font-size:14px}
+#universalFilters select,#universalFilters input[type=number]{min-width:0;min-height:38px;height:38px;padding:7px 9px;border-radius:8px;font-size:13px;flex:1 1 125px}
+#universalFilters .uf-clear{min-height:38px;height:38px;padding:7px 13px;border-radius:8px;font-size:13px;flex:0 0 auto;background:#10243b;color:#fff;border-color:#10243b}
+#universalFilters .uf-clear:hover{background:#1d3553}
+#productGrid{position:relative;z-index:0;margin-top:0}
+@media(max-width:700px){
+  #universalFilters.universal-filters{padding:10px;margin-bottom:14px;gap:8px}
+  #universalFilters .uf-search-row{grid-template-columns:minmax(0,1fr)}
+  #universalFilters select,#universalFilters input[type=number]{flex:1 1 calc(50% - 8px);min-width:0;font-size:13px}
+  #universalFilters .uf-clear{flex:1 1 calc(50% - 8px)}
+}
+@media(max-width:380px){
+  #universalFilters select,#universalFilters input[type=number],#universalFilters .uf-clear{flex-basis:100%}
+}
+/* Search-history style dropdown (replaces bulky filter panel) */
+.universal-search-wrap{position:relative;z-index:30;margin:0 0 16px;width:100%;}
+.uf-search-box{display:flex;align-items:center;gap:12px;min-height:46px;padding:0 14px;border:1px solid #d8dee8;border-radius:10px;background:#fff;box-shadow:0 1px 3px rgba(15,23,42,.06);color:#667085;transition:border-color .18s,box-shadow .18s;}
+.uf-search-box:focus-within{border-color:#1685ff;box-shadow:0 0 0 2px rgba(22,133,255,.15);}
+.uf-search-icon{font-size:23px;line-height:1;flex:none;color:#667085;}
+.uf-search-box input{border:0!important;outline:0!important;box-shadow:none!important;background:transparent!important;width:100%;min-width:0;min-height:44px;padding:0!important;font:inherit;color:#182538;font-size:15px;}
+.uf-search-clear{border:0;background:transparent;color:#64748b;font-size:22px;line-height:1;cursor:pointer;padding:4px 8px;}
+.uf-suggestions{display:none;position:absolute;top:calc(100% + 3px);left:0;right:0;max-height:min(360px,65vh);overflow-y:auto;background:#fff;border:1px solid #e1e6ee;border-radius:0 0 12px 12px;box-shadow:0 8px 22px rgba(15,23,42,.15);z-index:100;}
+.uf-suggestions.active{display:block;}
+.uf-suggestion{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:12px 16px;border:0;background:#fff;cursor:pointer;color:#202a38;}
+.uf-suggestion:hover,.uf-suggestion:focus{background:#f5f8fc;outline:none;}
+.uf-suggestion-icon{width:28px;height:28px;display:flex;align-items:center;justify-content:center;flex:none;color:#7b8797;font-size:19px;}
+.uf-suggestion-text{display:flex;flex-direction:column;gap:2px;min-width:0;}
+.uf-suggestion-title{font-size:14px;line-height:1.4;overflow-wrap:anywhere;}
+.uf-suggestion-sub{font-size:13px;line-height:1.35;color:#1765d1;}
+@media(max-width:600px){.uf-search-box{min-height:44px;padding:0 11px;border-radius:9px}.uf-search-box input{min-height:42px;font-size:14px}.uf-suggestion{padding:11px 12px;gap:10px}.uf-suggestions{max-height:55vh}}
