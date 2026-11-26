@@ -694,11 +694,20 @@
           let history = orderData.statusHistory || {};
           history[newStatus] = timeStr;
 
-          await updateDoc(orderRef, { 
+          await updateDoc(orderRef, {
             status: newStatus,
-            statusHistory: history 
+            statusHistory: history
           });
-          
+
+          // Sync the minimal, non-PII public tracking document.
+          await setDoc(doc(db, "orderTracking", orderData.orderId), {
+            orderId: orderData.orderId,
+            status: newStatus,
+            orderDate: orderData.orderDate || "",
+            statusHistory: history,
+            updatedAt: now
+          }, { merge: true });
+
           sel.className = `status-select status-${newStatus.replace(/\s+/g, '')}`;
           showToast("Status Updated!");
         }
