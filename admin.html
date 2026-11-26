@@ -4,89 +4,113 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Admin Portal | Aaradhya Mart</title>
-  <!-- Keep your main style.css for fonts, but overrides below ensure layout is fixed -->
   <link rel="stylesheet" href="style.css">
   <style>
-    /* ================= RESET & BASE ================= */
-    * { box-sizing: border-box; }
-    body { background: #f4f6f8; margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; }
-    
-    /* ================= LOGIN SCREEN ================= */
+    body { background: #f4f6f8; margin: 0; font-family: Arial, sans-serif; }
     .login-split-wrapper { display: flex; min-height: 100vh; width: 100%; }
     .login-left { flex: 1; background: linear-gradient(135deg, #10243b, #1e3a5f); color: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px; position: relative; overflow: hidden; }
     .login-left::before { content: "AM"; position: absolute; font-size: 300px; font-family: Georgia, serif; opacity: 0.03; font-weight: bold; }
-    .login-left .brand-logo { width: 80px; height: 80px; background: #10243b; border: 2px solid #c5a36b; display: grid; place-items: center; border-radius: 12px; font-size: 30px; font-family: Georgia, serif; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 1; color: #c5a36b; }
+    .login-left .brand-logo { width: 80px; height: 80px; background: #10243b; border: 2px solid var(--gold); display: grid; place-items: center; border-radius: 12px; font-size: 30px; font-family: Georgia, serif; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 1; }
     .login-left h1 { font: normal 36px Georgia, serif; margin: 0 0 10px; color: #fff; z-index: 1; }
-    .login-left p { color: #c5a36b; font-size: 12px; letter-spacing: 3px; text-transform: uppercase; margin: 0; z-index: 1; }
-    
+    .login-left p { color: var(--gold); font-size: 12px; letter-spacing: 3px; text-transform: uppercase; margin: 0; z-index: 1; }
     .login-right { flex: 1; display: flex; justify-content: center; align-items: center; background: #f4f6f8; padding: 20px; }
     .login-card { background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 15px 40px rgba(0,0,0,0.08); width: 100%; max-width: 400px; }
-    .login-card h2 { font: normal 24px Georgia, serif; color: #10243b; margin-top: 0; margin-bottom: 10px; text-align: center; }
-    .login-card > p { color: #777; font-size: 13px; text-align: center; margin-bottom: 25px; }
+    .login-card h2 { font: normal 24px Georgia, serif; color: var(--navy); margin-top: 0; margin-bottom: 10px; text-align: center; }
+    .login-card > p { color: var(--muted); font-size: 13px; text-align: center; margin-bottom: 25px; }
     .input-group { margin-bottom: 15px; }
-    .input-group label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 6px; color: #333; }
-    .input-group input { width: 100%; padding: 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; outline: none; transition: 0.3s; }
-    .input-group input:focus { border-color: #10243b; box-shadow: 0 0 0 3px rgba(16,36,59,0.1); }
-    .btn-login { width: 100%; padding: 15px; background: #10243b; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.3s; }
+    .input-group label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 6px; color: var(--ink); }
+    .input-group input { width: 100%; padding: 14px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 14px; outline: none; transition: 0.3s; }
+    .input-group input:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(16,36,59,0.1); }
+    .btn-login { width: 100%; padding: 15px; background: var(--navy); color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.3s; }
     .btn-login:hover { background: #1e3a5f; }
     .error-msg { color: #ef4444; font-size: 12px; text-align: center; margin-top: 15px; font-weight: bold; display: none; }
+    @media (max-width: 768px) { .login-split-wrapper { flex-direction: column; } .login-left { padding: 30px 20px; flex: none; } .login-left h1 { font-size: 28px; } .login-right { padding: 20px; flex: none; } }
 
-    /* ================= ADMIN DASHBOARD ================= */
     .admin-shell { max-width: 1200px; margin: 40px auto; padding: 20px; display: none; }
     .admin-panel { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
     .grid-form { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-    .form-field label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px; color: #333; }
-    .form-field input, .form-field select, .form-field textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-family: inherit; outline: none; }
+    .form-field label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px; }
+    .form-field input, .form-field select, .form-field textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
     .form-field.full { grid-column: 1 / -1; }
-    
     .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-    .admin-table th, .admin-table td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; font-size: 13px; vertical-align: middle; }
+    .admin-table th, .admin-table td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; font-size: 13px; }
     .stock-input { width: 70px; padding: 5px; text-align: center; border: 1px solid #ccc; border-radius: 4px;}
     .stock-low { border: 2px solid #ef4444 !important; background: #fee2e2 !important; color: #b91c1c; font-weight: bold; }
-    
-    .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-family: inherit; }
+    .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
     .btn-primary { background: #10243b; color: #fff; }
     .btn-danger { background: #ef4444; color: #fff; }
     .btn-outline { background: #fff; border: 1px solid #ccc; color: #333; padding: 6px 12px; font-size: 11px; cursor: pointer; border-radius: 4px; }
-    
+    .btn-outline:hover { background: #f4f6f8; }
     .tab-content { display: none; }
     .tab-content.active { display: block; }
-    .main-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #ccc; padding-bottom: 10px; flex-wrap: wrap; }
-    .main-tab-btn { background: none; border: none; font-size: 16px; font-weight: bold; color: #777; cursor: pointer; padding: 10px; font-family: inherit; }
-    .main-tab-btn.active { color: #10243b; border-bottom: 3px solid #10243b; }
-
-    .admin-store-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; overflow-x: auto; }
-    .admin-tab { background: #fff; border: 1px solid #ddd; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: bold; color: #555; cursor: pointer; transition: 0.2s; white-space: nowrap; }
-    .admin-tab.active { background: #10243b; color: #fff; border-color: #10243b; box-shadow: 0 4px 10px rgba(16,36,59,0.2); }
+    .main-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #ccc; padding-bottom: 10px; flex-wrap: wrap;}
+    .main-tab-btn { background: none; border: none; font-size: 16px; font-weight: bold; color: #777; cursor: pointer; padding: 10px;}
+    .main-tab-btn.active { color: #10243b; border-bottom: 3px solid #10243b;}
+    .filter-bar { display: flex; gap: 15px; margin-bottom: 20px; background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #eee; align-items: center; flex-wrap: wrap; }
+    .filter-bar label { font-size: 13px; font-weight: bold; color: var(--navy); }
+    .filter-bar input, .filter-bar select { padding: 8px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; outline: none; }
+    .filter-bar button { padding: 8px 15px; border: none; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; }
+    .order-card { border: 1px solid #eee; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #fafafa; }
+    .order-card h4 { margin: 0 0 10px; color: #10243b; display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 10px;}
+    .order-card p { margin: 5px 0; font-size: 13px; }
+    .status-select { padding: 6px 10px; border-radius: 20px; font-weight: bold; border: 1px solid #ccc; cursor: pointer; outline: none; font-size: 12px; }
+    .status-Pending { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
+    .status-Confirmed { background: #e0f2fe; color: #0369a1; border-color: #7dd3fc; }
+    .status-Packed { background: #ffedd5; color: #9a3412; border-color: #fdba74; }
+    .status-OutforDelivery { background: #f3e8ff; color: #6b21a8; border-color: #d8b4fe; }
+    .status-Delivered { background: #dcfce7; color: #166534; border-color: #86efac; }
+    .status-Cancelled { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
+    .custom-modal-overlay { position: fixed; inset: 0; background: rgba(16, 36, 59, 0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; visibility: hidden; transition: 0.3s; padding: 15px;}
+    .custom-modal-overlay.active { opacity: 1; visibility: visible; }
+    .custom-modal { background: #fff; padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2); transform: scale(0.8); transition: 0.3s; max-height: 90vh; overflow-y:auto;}
+    .custom-modal-overlay.active .custom-modal { transform: scale(1); }
+    .custom-modal h3 { font-family: Georgia, serif; color: #10243b; margin-top: 0; font-size: 22px; }
+    .modal-actions { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
+    .modal-btn { padding: 12px 25px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; border: none; transition: 0.2s; flex: 1; }
+    .receipt-box { font-family: 'Courier New', Courier, monospace; background: #fff; width: 100%; max-width: 400px; border-radius: 8px; position: relative; max-height: 90vh; overflow-y: auto; text-align: left; padding: 20px;}
+    .receipt-header { text-align: center; padding-bottom: 15px; border-bottom: 1px dashed #ccc; margin-bottom: 15px;}
+    .receipt-header h2 { margin: 0; font-family: Georgia, serif; color: var(--navy); font-size: 24px; }
+    .receipt-header p { margin: 5px 0 0; font-size: 12px; color: var(--muted); }
+    .receipt-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px;}
+    .receipt-divider { border-top: 1px dashed #ccc; margin: 15px 0; }
+    .receipt-items-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 13px;}
+    .receipt-items-table th { text-align: left; border-bottom: 1px solid #ddd; padding-bottom: 5px; font-size: 11px; text-transform: uppercase; }
+    .receipt-items-table td { padding: 8px 0; border-bottom: 1px dashed #eee; }
+    .receipt-total-row { display: flex; justify-content: space-between; font-weight: bold; font-size: 16px; margin-top: 10px; color: var(--navy); }
+    .receipt-footer { text-align: center; padding: 15px 0 0; border-top: 1px dashed #ccc; margin-top: 15px; font-size: 11px; color: var(--muted); }
+    @media print { body * { visibility: hidden; } .custom-modal-overlay { position: absolute; left: 0; top: 0; background: transparent; backdrop-filter: none; visibility: visible; padding: 0; } .receipt-box { box-shadow: none; transform: none; max-height: none; overflow: visible; visibility: visible; margin: 0 auto; border: 1px solid #ccc; } .receipt-box * { visibility: visible; } .modal-actions { display: none; } }
 
     /* Image preview grid */
     .image-preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 10px; margin-top: 10px; }
     .image-preview-item { position: relative; aspect-ratio: 1; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; background: #f4f6f8; }
     .image-preview-item img { width: 100%; height: 100%; object-fit: cover; }
-    .image-preview-item .remove-img { position: absolute; top: 4px; right: 4px; background: rgba(239,68,68,0.9); color: #fff; border: none; width: 22px; height: 22px; border-radius: 50%; cursor: pointer; font-size: 12px; display: grid; place-items: center; }
+    .image-preview-item .remove-img { position: absolute; top: 4px; right: 4px; background: rgba(239,68,68,0.9); color: #fff; border: none; width: 22px; height: 22px; border-radius: 50%; cursor: pointer; font-size: 12px; line-height: 1; display: grid; place-items: center; }
     .image-preview-item .cover-badge { position: absolute; bottom: 4px; left: 4px; background: rgba(16,36,59,0.85); color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 3px; }
 
-    /* Modals & Modals Fix */
-    .custom-modal-overlay { position: fixed; inset: 0; background: rgba(16, 36, 59, 0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; visibility: hidden; transition: 0.3s; padding: 15px; }
-    .custom-modal-overlay.active { opacity: 1; visibility: visible; }
-    .custom-modal { background: #fff; padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2); transform: scale(0.8); transition: 0.3s; max-height: 90vh; overflow-y: auto; }
-    .custom-modal-overlay.active .custom-modal { transform: scale(1); }
-    .modal-actions { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
-    .modal-btn { padding: 12px 25px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; border: none; transition: 0.2s; flex: 1; }
-
-    /* Toast */
-    .custom-premium-toast { position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #10243b; color: #fff; padding: 15px 25px; border-radius: 50px; font-weight: bold; font-size: 14px; box-shadow: 0 10px 30px rgba(16,36,59,0.4); display: flex; align-items: center; gap: 10px; z-index: 99999; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 2px solid #c5a36b; }
-    .custom-premium-toast.show { transform: translateX(-50%) translateY(0); }
-    .custom-premium-toast.error { background: #ef4444; border-color: #fca5a5; }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .login-split-wrapper { flex-direction: column; }
-      .login-left { padding: 30px 20px; flex: none; min-height: 250px; }
-      .login-right { padding: 20px; flex: none; }
-      .grid-form { grid-template-columns: 1fr; }
-      .admin-shell { margin: 20px auto; padding: 15px; }
+    /* Admin Store Tabs */
+    .admin-store-tabs {
+      display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; overflow-x: auto;
     }
+    .admin-tab {
+      background: #fff; border: 1px solid #ddd; padding: 8px 16px; border-radius: 20px;
+      font-size: 13px; font-weight: bold; color: #555; cursor: pointer; transition: 0.2s; white-space: nowrap;
+    }
+    .admin-tab:hover { background: #f0f4f8; color: var(--navy); }
+    .admin-tab.active {
+      background: var(--navy); color: #fff; border-color: var(--navy);
+      box-shadow: 0 4px 10px rgba(16,36,59,0.2);
+    }
+
+    /* Premium Toast */
+    .custom-premium-toast {
+      position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-100px);
+      background: var(--navy); color: #fff; padding: 15px 25px; border-radius: 50px;
+      font-weight: bold; font-size: 14px; box-shadow: 0 10px 30px rgba(16,36,59,0.4);
+      display: flex; align-items: center; gap: 10px; z-index: 99999;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: 2px solid var(--gold);
+    }
+    .custom-premium-toast.show { transform: translateX(-50%) translateY(0); }
   </style>
 </head>
 <body>
@@ -146,19 +170,20 @@
 
             <div class="form-field full">
               <label>Product Image URLs (Paste links separated by Space or Comma) *</label>
+              <!-- ✅ FIX: Changed placeholder and added comma support in JS -->
               <input id="pImageUrlInput" placeholder="https://link1.jpg https://link2.jpg" onkeydown="handleImageUrlEnter(event)">
               <small style="color:#777; font-size:11px; display:block; margin-top:5px;">Add multiple images one by one. First image will be the cover.</small>
               <div id="imagePreviewGrid" class="image-preview-grid"></div>
             </div>
 
-            <div class="form-field"><label>Sizes (Comma Separated)</label><input id="pSizes" placeholder="M, L, XL (OR 5KG, 10KG, 25KG)"></div>
+            <div class="form-field"><label>Sizes (Comma Separated)</label><input id="pSizes" placeholder="M, L, XL (OR 250G, 500G)"></div>
             <div class="form-field"><label>Colours (Comma Separated)</label><input id="pColors" placeholder="Black, Blue, Red"></div>
             <div class="form-field"><label>Tag</label><input id="pTag" placeholder="NEW"></div>
 
             <div class="form-field full">
               <label style="display:flex; align-items:center; gap:10px; cursor:pointer; background:#e0f2fe; padding:10px; border-radius:6px; color:#0369a1;">
                 <input type="checkbox" id="pIsPerKg" style="width:18px; height:18px; margin:0;">
-                <span>Price is per KG (Auto-calculate for 250G, 500G, 1KG, 5KG, 10KG etc.)</span>
+                <span>Price is per KG (Auto-calculate price for 250G, 500G)</span>
               </label>
             </div>
             <div class="form-field full"><label style="display:flex; align-items:center; gap:10px; cursor:pointer; background:#fff3cd; padding:10px; border-radius:6px;"><input type="checkbox" id="pIsDeal" style="width:18px; height:18px; margin:0;"><span style="color:#856404;">🔥 Deal of the Day</span></label></div>
@@ -193,11 +218,11 @@
 
     <!-- 2. ORDERS -->
     <div id="tab-orders" class="tab-content">
-      <div class="filter-bar" style="display: flex; gap: 15px; margin-bottom: 20px; background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #eee; align-items: center; flex-wrap: wrap;">
+      <div class="filter-bar">
         <label>Date:</label>
-        <input type="date" id="orderDateFilter" style="padding: 8px; border: 1px solid #ccc; border-radius: 6px;">
+        <input type="date" id="orderDateFilter">
         <label>Status:</label>
-        <select id="orderStatusFilter" style="padding: 8px; border: 1px solid #ccc; border-radius: 6px;">
+        <select id="orderStatusFilter">
           <option value="All">All Status</option>
           <option value="Pending">Pending</option>
           <option value="Confirmed">Confirmed</option>
@@ -262,40 +287,44 @@
       <h3 id="deleteTitle">Delete Item?</h3>
       <p style="color:#777; font-size:14px;">Are you sure you want to delete this? This action cannot be undone.</p>
       <div class="modal-actions">
-        <button class="modal-btn" onclick="closeDeleteModal()" style="background:#fff; border:1px solid #ccc;">Cancel</button>
+        <button class="modal-btn btn-cancel" onclick="closeDeleteModal()" style="background:#fff; border:1px solid #ccc;">Cancel</button>
         <button class="modal-btn btn-danger" id="confirmDeleteBtn">Yes, Delete</button>
       </div>
     </div>
   </div>
 
   <div class="custom-modal-overlay" id="receiptModal">
-    <div class="receipt-box" style="font-family: 'Courier New', Courier, monospace; background: #fff; width: 100%; max-width: 400px; border-radius: 8px; position: relative; max-height: 90vh; overflow-y: auto; text-align: left; padding: 20px;">
-      <div class="receipt-header" style="text-align: center; padding-bottom: 15px; border-bottom: 1px dashed #ccc; margin-bottom: 15px;">
-        <h2 style="margin: 0; font-family: Georgia, serif; color: #10243b; font-size: 24px;">AARADHYA MART</h2>
-        <p style="margin: 5px 0 0; font-size: 12px; color: #777;">Bongariya Bazar, Azamgarh</p>
-        <p style="margin: 5px 0 0; font-size: 12px; color: #777;">Ph: +91 8931911428</p>
+    <div class="receipt-box" id="receiptContent">
+      <div class="receipt-header">
+        <h2>AARADHYA MART</h2>
+        <p>Bongariya Bazar, Azamgarh</p>
+        <p>Ph: +91 8931911428</p>
       </div>
       <div class="receipt-body" style="padding: 15px 0;">
-        <div class="receipt-row" style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px;"><span>Order ID:</span> <strong id="rOrderId"></strong></div>
-        <div class="receipt-row" style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px;"><span>Date:</span> <span id="rDate"></span></div>
-        <div class="receipt-row" style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px;"><span>Name:</span> <span id="rName"></span></div>
-        <div class="receipt-row" style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px;"><span>Phone:</span> <span id="rPhone"></span></div>
-        <div class="receipt-row" style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px;"><span>Address:</span> <span id="rAddress" style="text-align:right; max-width:200px;"></span></div>
-        <div class="receipt-divider" style="border-top: 1px dashed #ccc; margin: 15px 0;"></div>
-        <table class="receipt-items-table" style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 13px;">
-          <thead><tr><th style="text-align: left; border-bottom: 1px solid #ddd; padding-bottom: 5px; font-size: 11px;">Item</th><th style="text-align:center; font-size: 11px;">Qty</th><th style="text-align:right; font-size: 11px;">Price</th></tr></thead>
+        <div class="receipt-row"><span>Order ID:</span> <strong id="rOrderId"></strong></div>
+        <div class="receipt-row"><span>Date:</span> <span id="rDate"></span></div>
+        <div class="receipt-row"><span>Name:</span> <span id="rName"></span></div>
+        <div class="receipt-row"><span>Phone:</span> <span id="rPhone"></span></div>
+        <div class="receipt-row"><span>Address:</span> <span id="rAddress" style="text-align:right; max-width:200px;"></span></div>
+        <div class="receipt-divider"></div>
+        <table class="receipt-items-table">
+          <thead><tr><th>Item</th><th style="text-align:center;">Qty</th><th style="text-align:right;">Price</th></tr></thead>
           <tbody id="rItemsBody"></tbody>
         </table>
-        <div class="receipt-divider" style="border-top: 1px dashed #ccc; margin: 15px 0;"></div>
-        <div class="receipt-row" style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px;"><span>Subtotal:</span> <span>₹<span id="rSubtotal"></span></span></div>
-        <div class="receipt-row" id="rDiscountRow" style="display:none; color:#10b981; justify-content: space-between; margin-bottom: 8px; font-size: 13px;"><span>Discount:</span> <span>-₹<span id="rDiscount"></span></span></div>
-        <div class="receipt-total-row" style="display: flex; justify-content: space-between; font-weight: bold; font-size: 16px; margin-top: 10px; color: #10243b;"><span>TOTAL:</span> <span>₹<span id="rTotal"></span></span></div>
+        <div class="receipt-divider"></div>
+        <div class="receipt-row"><span>Subtotal:</span> <span>₹<span id="rSubtotal"></span></span></div>
+        <div class="receipt-row" id="rDiscountRow" style="display:none; color:#10b981;"><span>Discount:</span> <span>-₹<span id="rDiscount"></span></span></div>
+        <div class="receipt-total-row"><span>TOTAL:</span> <span>₹<span id="rTotal"></span></span></div>
+        <div style="margin-top:10px; font-size:11px; text-align:center;">
+          Payment Mode: <strong id="rPayment"></strong><br>
+          <span style="color:#d97706; font-weight:bold;">20% Advance Required</span>
+        </div>
       </div>
-      <div class="receipt-footer" style="text-align: center; padding: 15px 0 0; border-top: 1px dashed #ccc; margin-top: 15px; font-size: 11px; color: #777;">
+      <div class="receipt-footer">
         <p>Thank you for shopping with us!<br>Please keep this receipt for tracking.</p>
-        <div class="modal-actions" style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-          <button class="modal-btn" onclick="window.print()" style="background:#10243b; color:#fff;">🖨️ Print</button>
-          <button class="modal-btn" onclick="closeReceiptModal()" style="background:#eee; color:#333;">Close</button>
+        <div class="modal-actions">
+          <button class="modal-btn btn-cancel" onclick="window.print()" style="background:#10243b; color:#fff;">🖨️ Print</button>
+          <button class="modal-btn btn-cancel" onclick="closeReceiptModal()" style="background:#eee; color:#333;">Close</button>
         </div>
       </div>
     </div>
@@ -322,7 +351,10 @@
       toast.className = 'custom-premium-toast';
       toast.innerHTML = `<span>${type === 'success' ? '✅' : '⚠️'}</span> ${msg}`;
       
-      if(type === 'error') toast.classList.add('error');
+      if(type === 'error') {
+        toast.style.background = '#ef4444';
+        toast.style.borderColor = '#fca5a5';
+      }
       
       document.body.appendChild(toast);
       setTimeout(() => toast.classList.add('show'), 10);
@@ -365,15 +397,22 @@
       else if(tabName === 'settings') loadSettings();
     };
 
+    // ✅ FIX: Handles both Enter key AND commas/spaces
     window.handleImageUrlEnter = function(e) {
-      if (e.key === 'Enter') { e.preventDefault(); processImageInput(); }
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        processImageInput();
+      }
     };
 
     function processImageInput() {
       const input = document.getElementById("pImageUrlInput");
       const raw = input.value.trim();
       if (!raw) return;
+
+      // Split by space or comma
       const urls = raw.split(/[\s,]+/).filter(u => u.trim() !== "");
+
       let addedCount = 0;
       urls.forEach(url => {
         if (/^https?:\/\//i.test(url) && !currentImagesArray.includes(url)) {
@@ -381,6 +420,7 @@
           addedCount++;
         }
       });
+
       input.value = "";
       if (addedCount > 0) renderImagePreview();
       else showToast("Invalid or duplicate URL(s). Make sure they start with http.", "error");
@@ -389,6 +429,7 @@
     function renderImagePreview() {
       const grid = document.getElementById("imagePreviewGrid");
       let html = "";
+
       currentImagesArray.forEach((url, i) => {
         html += `
           <div class="image-preview-item">
@@ -397,6 +438,7 @@
             <button type="button" class="remove-img" onclick="removeImage(${i})">✕</button>
           </div>`;
       });
+
       grid.innerHTML = html || '<p style="color:#999;font-size:12px;grid-column:1/-1;">No images added yet. Paste URLs above.</p>';
     }
 
@@ -414,12 +456,19 @@
 
     function renderAdminTable() {
       let filtered = allProducts;
-      if (currentAdminStoreFilter !== "All") filtered = filtered.filter(p => p.store === currentAdminStoreFilter);
-      if (currentAdminSearchQuery) filtered = filtered.filter(p => p.name.toLowerCase().includes(currentAdminSearchQuery));
+
+      if (currentAdminStoreFilter !== "All") {
+        filtered = filtered.filter(p => p.store === currentAdminStoreFilter);
+      }
+
+      if (currentAdminSearchQuery) {
+        filtered = filtered.filter(p => p.name.toLowerCase().includes(currentAdminSearchQuery));
+      }
 
       const tbody = document.getElementById("productRows");
+
       if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 20px; color: #777;">No products found.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 20px; color: #777;">No products found matching your criteria.</td></tr>`;
         return;
       }
 
@@ -462,8 +511,10 @@
           document.getElementById("pIsDeal").checked = p.isDeal || false;
           document.getElementById("pIsPerKg").checked = p.isPerKg || false;
           document.getElementById("pDescription").value = p.description || "";
+
           currentImagesArray = (p.images && p.images.length) ? [...p.images] : (p.image ? [p.image] : []);
           renderImagePreview();
+
           document.getElementById("formTitle").textContent = "Edit Product";
           document.getElementById("saveBtn").textContent = "UPDATE PRODUCT";
           window.scrollTo(0, 0);
@@ -487,55 +538,36 @@
 
     document.getElementById("productForm").onsubmit = async (e) => {
       e.preventDefault();
+      
+      // ✅ FIX: Process any leftover text in the input box before saving
       processImageInput(); 
+
       const saveBtn = document.getElementById("saveBtn");
       const id = document.getElementById("editId").value || "P" + Date.now();
 
-      if (currentImagesArray.length === 0) { showToast("Please add at least one image URL.", "error"); return; }
+      if (currentImagesArray.length === 0) {
+        showToast("Please add at least one image URL.", "error");
+        return;
+      }
+
       saveBtn.disabled = true; saveBtn.textContent = "SAVING...";
 
       try {
-        const basePrice = Number(document.getElementById("pPrice").value);
-        const isPerKg = document.getElementById("pIsPerKg").checked;
-        const baseUnitStr = document.getElementById("pUnit").value.trim().toUpperCase();
-        const sizesString = document.getElementById("pSizes").value;
-        
-        let sizesArray = sizesString.split(",").map(s=>s.trim()).filter(Boolean);
-        let finalPrices = [];
-
-        // SMART CALCULATION (Handles 5KG, 500G, 10KG etc perfectly)
-        if (isPerKg && sizesArray.length > 0) {
-          finalPrices = sizesArray.map(size => {
-             let cleanSize = size.toUpperCase().replace(/[A-Z]/g, ''); 
-             let numericVal = parseFloat(cleanSize);
-             if (isNaN(numericVal)) return basePrice; 
-
-             if (size.toUpperCase().includes("G") && !size.toUpperCase().includes("KG")) {
-                return (numericVal / 1000) * basePrice;
-             }
-             else if (size.toUpperCase().includes("KG") || numericVal > 0) {
-                if (baseUnitStr.includes("KG") || baseUnitStr === "") return numericVal * basePrice;
-             }
-             return basePrice; 
-          });
-        }
-
         await setDoc(doc(db, "products", id), {
           store: document.getElementById("pStore").value,
           name: document.getElementById("pName").value,
           category: document.getElementById("pCategory").value,
-          price: basePrice, 
-          calculatedPrices: finalPrices, 
+          price: Number(document.getElementById("pPrice").value),
           originalPrice: Number(document.getElementById("pOriginal").value) || 0,
           unit: document.getElementById("pUnit").value,
           stock: Number(document.getElementById("pStock").value),
-          images: currentImagesArray, 
-          image: currentImagesArray[0], 
-          sizes: sizesArray,
+          images: currentImagesArray, // Save array
+          image: currentImagesArray[0], // Save primary string
+          sizes: document.getElementById("pSizes").value.split(",").map(s=>s.trim()).filter(Boolean),
           colors: document.getElementById("pColors").value.split(",").map(c=>c.trim()).filter(Boolean),
           tag: document.getElementById("pTag").value,
           isDeal: document.getElementById("pIsDeal").checked,
-          isPerKg: isPerKg,
+          isPerKg: document.getElementById("pIsPerKg").checked,
           description: document.getElementById("pDescription").value
         });
 
@@ -582,12 +614,12 @@
         const itemsStr = o.items.map(i => `${i.name} (x${i.qty})`).join("<br>");
         const statusClass = `status-${o.status.replace(/\s+/g, '')}`;
         return `
-          <div class="order-card" style="border: 1px solid #eee; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #fafafa;">
-            <h4 style="margin: 0 0 10px; color: #10243b; display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 10px;">
+          <div class="order-card">
+            <h4>
               <span>${o.orderId} - ${o.customerName}</span>
               <div style="display:flex; gap:5px;">
-                <button class="btn-outline" onclick="openReceipt('${d.id}')" style="padding:6px 12px; font-size:11px; border-radius:4px; border:1px solid #ccc; background:#fff; cursor:pointer;">🧾 Receipt</button>
-                <select class="status-select ${statusClass}" onchange="updateOrder('${d.id}', this.value, this)" style="padding: 6px 10px; border-radius: 20px; font-weight: bold; border: 1px solid #ccc; cursor: pointer; outline: none; font-size: 12px;">
+                <button class="btn-outline" onclick="openReceipt('${d.id}')">🧾 Receipt</button>
+                <select class="status-select ${statusClass}" onchange="updateOrder('${d.id}', this.value, this)">
                   <option value="Pending" ${o.status==='Pending'?'selected':''}>🟡 Pending</option>
                   <option value="Confirmed" ${o.status==='Confirmed'?'selected':''}>🔵 Confirmed</option>
                   <option value="Packed" ${o.status==='Packed'?'selected':''}>📦 Packed</option>
@@ -595,14 +627,14 @@
                   <option value="Delivered" ${o.status==='Delivered'?'selected':''}>🟢 Delivered</option>
                   <option value="Cancelled" ${o.status==='Cancelled'?'selected':''}>🔴 Cancelled</option>
                 </select>
-                <button class="btn btn-danger" style="padding:6px 10px; font-size:11px; border-radius:4px; cursor:pointer;" onclick="openDeleteModal('order', '${d.id}')">Delete</button>
+                <button class="btn btn-danger" style="padding:5px 10px; font-size:11px;" onclick="openDeleteModal('order', '${d.id}')">Delete</button>
               </div>
             </h4>
-            <p style="margin: 5px 0; font-size: 13px;"><strong>Date:</strong> ${o.orderDate}</p>
-            <p style="margin: 5px 0; font-size: 13px;"><strong>Phone:</strong> <a href="https://wa.me/91${o.customerPhone}" target="_blank" style="color:#10b981;">${o.customerPhone}</a></p>
-            <p style="margin: 5px 0; font-size: 13px;"><strong>Address:</strong> ${o.address}</p>
-            <p style="margin: 5px 0; font-size: 13px;"><strong>Products:</strong><br> ${itemsStr}</p>
-            <p style="margin: 5px 0; font-size: 13px;"><strong>Total:</strong> ₹${o.totalAmount} | <strong>Payment:</strong> ${o.paymentMode}</p>
+            <p><strong>Date:</strong> ${o.orderDate}</p>
+            <p><strong>Phone:</strong> <a href="https://wa.me/91${o.customerPhone}" target="_blank" style="color:#10b981;">${o.customerPhone}</a></p>
+            <p><strong>Address:</strong> ${o.address}</p>
+            <p><strong>Products:</strong><br> ${itemsStr}</p>
+            <p><strong>Total:</strong> ₹${o.totalAmount} | <strong>Payment:</strong> ${o.paymentMode}</p>
           </div>`;
       }).join("");
     }
@@ -645,10 +677,15 @@
           const orderData = orderSnap.data();
           const oldStatus = orderData.status;
           
-          if (newStatus === "Cancelled" && oldStatus !== "Cancelled") {
-            for (const item of orderData.items) { await updateDoc(doc(db, "products", item.id), { stock: increment(item.qty) }); }
-          } else if (oldStatus === "Cancelled" && newStatus !== "Cancelled") {
-            for (const item of orderData.items) { await updateDoc(doc(db, "products", item.id), { stock: increment(-item.qty) }); }
+          // Legacy orders may have had stock deducted at checkout. Website dual-mode
+          // orders (orderSource: "website") do not deduct stock automatically, so
+          // cancelling/reopening them must not adjust stock and create false counts.
+          if (orderData.orderSource !== "website") {
+            if (newStatus === "Cancelled" && oldStatus !== "Cancelled") {
+              for (const item of orderData.items) { await updateDoc(doc(db, "products", item.id), { stock: increment(item.qty) }); }
+            } else if (oldStatus === "Cancelled" && newStatus !== "Cancelled") {
+              for (const item of orderData.items) { await updateDoc(doc(db, "products", item.id), { stock: increment(-item.qty) }); }
+            }
           }
 
           const now = new Date();
@@ -657,7 +694,10 @@
           let history = orderData.statusHistory || {};
           history[newStatus] = timeStr;
 
-          await updateDoc(orderRef, { status: newStatus, statusHistory: history });
+          await updateDoc(orderRef, { 
+            status: newStatus,
+            statusHistory: history 
+          });
           
           sel.className = `status-select status-${newStatus.replace(/\s+/g, '')}`;
           showToast("Status Updated!");
@@ -675,6 +715,7 @@
         document.getElementById("rName").textContent = o.customerName;
         document.getElementById("rPhone").textContent = o.customerPhone;
         document.getElementById("rAddress").textContent = o.address;
+        document.getElementById("rPayment").textContent = o.paymentMode;
         let itemsHtml = ""; let subtotal = 0;
         o.items.forEach(item => {
           const itemTotal = Number(item.price) * Number(item.qty);
@@ -721,10 +762,10 @@
       document.getElementById("reviewsList").innerHTML = snap.docs.map(d => {
         const r = d.data();
         return `
-          <div class="order-card" style="border-left: 4px solid #f59e0b; border-top: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #fafafa;">
-            <h4 style="margin: 0 0 10px; color: #10243b; display:flex; justify-content:space-between;"><span>${r.productName}</span> <span style="color:#f59e0b;">${'⭐'.repeat(r.rating)}</span></h4>
-            <p style="margin: 5px 0; font-size: 13px;"><strong>Customer:</strong> ${r.customerName} | <strong>Date:</strong> ${r.date}</p>
-            <p style="margin: 5px 0; font-size: 13px;"><strong>Comment:</strong> ${r.comment}</p>
+          <div class="order-card" style="border-left: 4px solid #f59e0b;">
+            <h4><span>${r.productName}</span> <span style="color:#f59e0b;">${'⭐'.repeat(r.rating)}</span></h4>
+            <p><strong>Customer:</strong> ${r.customerName} | <strong>Date:</strong> ${r.date}</p>
+            <p><strong>Comment:</strong> ${r.comment}</p>
             <p style="margin-top:10px;"><button class="btn btn-danger" onclick="deleteReview('${d.id}')" style="padding:5px 10px; font-size:11px;">Delete</button></p>
           </div>`;
       }).join("");
