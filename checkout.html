@@ -181,7 +181,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, getDocs, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, addDoc, setDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = { apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y", authDomain: "aaradhya-mart.firebaseapp.com", projectId: "aaradhya-mart", storageBucket: "aaradhya-mart.firebasestorage.app", messagingSenderId: "146782544824", appId: "1:146782544824:web:d605e1971d3480fab1654d" };
     const app = initializeApp(firebaseConfig); const db = getFirestore(app);
@@ -381,7 +381,8 @@
           liveCoupon = code;
         }
         const liveTotal = Math.max(0, liveSubtotal - liveDiscount);
-        const orderId = "WA-" + Date.now().toString().slice(-8);
+        const trackingRandom = new Uint32Array(3); crypto.getRandomValues(trackingRandom);
+        const orderId = "WA-" + Array.from(trackingRandom, n => n.toString(16).padStart(8, "0")).join("").slice(0, 20).toUpperCase();
         const dateStr = new Date().toLocaleString("en-IN");
         const orderResult = { orderId, dateStr, items: liveItems, subtotal: liveSubtotal, discount: liveDiscount, total: liveTotal, coupon: liveCoupon };
 
@@ -405,6 +406,14 @@
           orderSource: "website"
         };
         await addDoc(collection(db, "orders"), orderDoc);
+        // Public tracking record contains no customer PII or item/amount/address details.
+        await setDoc(doc(db, "orderTracking", orderId), {
+          orderId,
+          status: "Pending",
+          orderDate: dateStr,
+          statusHistory: { Pending: dateStr },
+          updatedAt: serverTimestamp()
+        });
         // Store full customer-facing order details locally for the My Orders page.
         saveOrderToLocal({ ...orderDoc, orderId, orderDate: dateStr, totalAmount: liveTotal, items: orderDoc.items });
         showToast("Order request ready. Send it on WhatsApp to confirm.");
