@@ -5,6 +5,34 @@
   <title>Track Order | Aaradhya Mart</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%2310243b'/><text x='50' y='68' font-size='55' font-family='Georgia' fill='%23c5a36b' text-anchor='middle'>A</text></svg>">
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Aaradhya Mart animated order tracker */
+    @keyframes trackReveal { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes truckRide { 0%,100% { transform:translateX(-50%) translateY(0); } 50% { transform:translateX(-50%) translateY(-4px); } }
+    @keyframes truckGlow { 0%,100% { filter:drop-shadow(0 0 2px rgba(35,145,95,.15)); } 50% { filter:drop-shadow(0 0 9px rgba(35,145,95,.55)); } }
+    @keyframes lineShimmer { 0% { background-position:0 0; } 100% { background-position:220px 0; } }
+    @keyframes iconPop { 0% { transform:scale(.75); opacity:.4; } 70% { transform:scale(1.12); } 100% { transform:scale(1); opacity:1; } }
+    @keyframes successPulse { 0%,100% { box-shadow:0 0 0 0 rgba(34,197,94,.18); } 50% { box-shadow:0 0 0 9px rgba(34,197,94,.08); } }
+    .result-box { animation:trackReveal .45s ease both; }
+    .tracker-wrap { --track-progress:0%; position:relative; overflow:visible; }
+    .tracker-steps { position:relative; }
+    .tracker-progress-line { transition:width 1s cubic-bezier(.2,.8,.2,1); background-image:linear-gradient(90deg,#22c55e,#70e2a1,#22c55e); background-size:220px 100%; animation:lineShimmer 3s linear infinite; }
+    .step.active .step-icon { animation:iconPop .45s ease both; }
+    .step.current .step-icon { animation:successPulse 2s ease-in-out infinite; }
+    .step.current .step-label { color:#10243b; font-weight:800; }
+    .tracker-delivery-truck { position:absolute; top:-29px; left:var(--track-progress); z-index:3; font-size:22px; line-height:1; transform:translateX(-50%); animation:truckRide 1.25s ease-in-out infinite, truckGlow 2s ease-in-out infinite; transition:left 1s cubic-bezier(.2,.8,.2,1); pointer-events:none; }
+    .tracker-wrap.is-delivered .tracker-delivery-truck { display:none; }
+    .tracker-wrap.is-delivered .step:last-child .step-icon { animation:successPulse 1.7s ease-in-out infinite; }
+    .tracker-wrap.is-cancelled { animation:trackReveal .4s ease both; }
+    #trackBtn { transition:transform .2s ease, opacity .2s ease; }
+    #trackBtn:not(:disabled):hover { transform:translateY(-2px); }
+    #trackBtn:disabled { opacity:.75; cursor:wait; }
+    .track-loading-dot { display:inline-block; width:7px; height:7px; margin:0 2px; border-radius:50%; background:currentColor; animation:loadingDots .9s infinite ease-in-out; }
+    .track-loading-dot:nth-child(2) { animation-delay:.15s; } .track-loading-dot:nth-child(3) { animation-delay:.3s; }
+    @keyframes loadingDots { 0%,80%,100% { transform:scale(.5); opacity:.45; } 40% { transform:scale(1); opacity:1; } }
+    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important; } }
+  </style>
+
 </head>
 <body>
   <header class="site-header">
@@ -91,9 +119,11 @@
     function renderTracker(record) {
       const status = record.status || "Pending";
       const history = record.statusHistory || {};
-      if (status === "Cancelled") return `<div class="cancelled-banner"><h4>❌ Order Cancelled</h4><p>This order was cancelled. Contact support if you have questions.</p></div>`;
+      if (status === "Cancelled") return `<div class="cancelled-banner tracker-wrap is-cancelled"><h4>❌ Order Cancelled</h4><p>This order was cancelled. Contact support if you have questions.</p></div>`;
       const idx = Math.max(0, STATUS_ORDER.indexOf(status));
-      return `<div class="tracker-wrap"><div class="tracker-steps"><div class="tracker-progress-line" style="width:${idx * 25}%"></div>${LABELS.map((label,i)=>`<div class="step ${i <= idx ? "active" : ""}"><div class="step-icon">${i < idx ? "✓" : i === idx ? "●" : "○"}</div><div class="step-label">${label}</div>${history[label] ? `<div class="step-time">${safeText(history[label])}</div>` : ""}</div>`).join("")}</div></div>`;
+      const progress = idx * 25;
+      const delivered = status === "Delivered";
+      return `<div class="tracker-wrap ${delivered ? "is-delivered" : ""}" style="--track-progress:${progress}%"><div class="tracker-steps"><div class="tracker-progress-line" style="width:${progress}%"></div><div class="tracker-delivery-truck" aria-hidden="true" title="Current order status">🚚</div>${LABELS.map((label,i)=>`<div class="step ${i <= idx ? "active" : ""} ${i === idx ? "current" : ""}"><div class="step-icon">${i < idx ? "✓" : i === idx ? (delivered ? "✓" : "●") : "○"}</div><div class="step-label">${label}</div>${history[label] ? `<div class="step-time">${safeText(history[label])}</div>` : ""}</div>`).join("")}</div></div>`;
     }
     const resultsDiv = document.getElementById("orderResults");
     const errorMsg = document.getElementById("errorMsg");
@@ -102,7 +132,7 @@
       const orderId = normalizeOrderId(document.getElementById("trackOrderId").value);
       errorMsg.style.display = "none"; resultsDiv.innerHTML = "";
       if (!orderId) { errorMsg.textContent = "Please enter a valid Order ID."; errorMsg.style.display = "block"; return; }
-      button.disabled = true; button.textContent = "Checking...";
+      button.disabled = true; button.innerHTML = `Checking <span class="track-loading-dot"></span><span class="track-loading-dot"></span><span class="track-loading-dot"></span>`;
       try {
         const snap = await getDoc(doc(db, "orderTracking", orderId));
         if (!snap.exists()) { errorMsg.textContent = "Tracking record not found. Check the Order ID."; errorMsg.style.display = "block"; return; }
