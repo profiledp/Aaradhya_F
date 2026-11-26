@@ -52,18 +52,6 @@
     .place-order-btn { width: 100%; padding: 16px; background: var(--navy); color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 20px; }
     .advance-notice { background: #e0f2fe; border: 1px dashed #7dd3fc; color: #0369a1; padding: 12px; border-radius: 6px; font-size: 12px; font-weight: bold; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
     
-    /* 🌟 Location Button Style 🌟 */
-    .share-location-btn {
-      display: inline-flex; align-items: center; gap: 6px; background: #e0f2fe; color: #0369a1;
-      padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; text-decoration: none;
-      margin-top: 8px; border: 1px solid #7dd3fc; transition: 0.2s;
-    }
-    .share-location-btn:hover { background: #bae6fd; }
-
-    .advance-calc-box { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 8px; padding: 15px; margin-top: 15px; text-align: left; }
-    .advance-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: #92400e; }
-    .advance-row.total-row { border-top: 1px dashed #fcd34d; padding-top: 8px; margin-top: 8px; font-size: 15px; font-weight: bold; }
-
     /* ORDER SLIP POPUP */
     .slip-modal-overlay { position: fixed; inset: 0; background: rgba(16,36,59,0.7); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; visibility: hidden; transition: 0.3s; padding: 15px; }
     .slip-modal-overlay.active { opacity: 1; visibility: visible; }
@@ -87,6 +75,7 @@
     .slip-btn-close { background: #eee; color: #333; }
     @media print { body * { visibility: hidden; } .slip-modal-overlay { position: absolute; left: 0; top: 0; background: transparent; backdrop-filter: none; visibility: visible; padding: 0; } .slip-box { box-shadow: none; transform: none; max-height: none; overflow: visible; visibility: visible; margin: 0 auto; border: 1px solid #ccc; } .slip-box * { visibility: visible; } .slip-actions { display: none; } .slip-footer { background: #fff; } }
 
+    /* ✅ NAYA: Premium Toast */
     .custom-premium-toast {
       position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-100px);
       background: var(--navy); color: #fff; padding: 15px 25px; border-radius: 50px;
@@ -116,14 +105,7 @@
       <form id="checkoutForm">
         <div class="form-group"><label>Full Name *</label><input type="text" id="custName" required></div>
         <div class="form-group"><label>Mobile Number *</label><input type="tel" id="custPhone" required pattern="[0-9]{10}"></div>
-        <div class="form-group">
-          <label>Full Address *</label>
-          <textarea id="custAddress" required rows="2"></textarea>
-          <!-- 🌟 Location Share Button 🌟 -->
-          <a href="https://wa.me/918931911428?text=Hello%20Aaradhya%20Mart,%20I%20am%20sharing%20my%20exact%20location%20for%20delivery:" target="_blank" class="share-location-btn">
-            📍 Share Live Location on WhatsApp
-          </a>
-        </div>
+        <div class="form-group"><label>Full Address *</label><textarea id="custAddress" required rows="2"></textarea></div>
         <div style="display:flex; gap:10px;">
           <div class="form-group" style="flex:1;"><label>City *</label><input type="text" id="custCity" required></div>
           <div class="form-group" style="flex:1;"><label>Pincode *</label><input type="text" id="custPincode" required pattern="[0-9]{6}"></div>
@@ -155,21 +137,6 @@
           <h3 style="margin:10px 0 0; color:var(--navy);">Total Payable: ₹<span id="finalTotalTxt">0</span></h3>
         </div>
 
-        <div class="advance-calc-box">
-          <div class="advance-row">
-            <span>Total Amount:</span>
-            <strong>₹<span id="calcTotal">0</span></strong>
-          </div>
-          <div class="advance-row">
-            <span>Advance Required (20%):</span>
-            <strong>₹<span id="calcAdvance">0</span></strong>
-          </div>
-          <div class="advance-row total-row">
-            <span>Balance on Delivery:</span>
-            <strong>₹<span id="calcBalance">0</span></strong>
-          </div>
-        </div>
-
         <button type="submit" class="place-order-btn">CONFIRM ON WHATSAPP ↗</button>
       </form>
     </div>
@@ -197,19 +164,9 @@
         <div class="slip-row"><span>Subtotal:</span> <span>₹<span id="slipSubtotal"></span></span></div>
         <div class="slip-row" id="slipDiscountRow" style="display:none; color:#10b981;"><span>Discount:</span> <span>-₹<span id="slipDiscount"></span></span></div>
         <div class="slip-total-row"><span>TOTAL:</span> <span>₹<span id="slipTotal"></span></span></div>
-        
-        <div class="slip-divider"></div>
-        <div class="slip-row" style="color: #d97706; font-weight: bold;">
-          <span>20% Advance Required:</span> 
-          <span>₹<span id="slipAdvanceAmount">0</span></span>
-        </div>
-        <div class="slip-row" style="color: #4b5563; font-weight: bold; margin-bottom: 10px;">
-          <span>Balance on Delivery:</span> 
-          <span>₹<span id="slipBalanceAmount">0</span></span>
-        </div>
-
         <div style="margin-top:10px; font-size:11px; text-align:center;">
-          Payment Mode: <strong id="slipPayment"></strong>
+          Payment Mode: <strong id="slipPayment"></strong><br>
+          <span style="color:#d97706; font-weight:bold;">20% Advance Required</span>
         </div>
       </div>
       <div class="slip-footer">
@@ -233,21 +190,46 @@
     let currentSubtotal = 0, currentDiscount = 0, finalTotal = 0, appliedCoupon = "";
     let availableCouponsList = [];
 
+    // Calculate the displayed unit price from trusted product data and selected unit.
+    // Never treat URL or localStorage price as authoritative.
+    function calculateUnitPrice(product, unit) {
+      const basePrice = Number(product?.price);
+      if (!Number.isFinite(basePrice) || basePrice < 0) return 0;
+      if (!product?.isPerKg) return Math.round(basePrice);
+      const u = String(unit || '').toLowerCase();
+      let multiplier = 1;
+      if (u.includes('250g') || u.includes('250 g') || u.includes('0.25')) multiplier = 0.25;
+      else if (u.includes('500g') || u.includes('500 g') || u.includes('0.5')) multiplier = 0.5;
+      else if (u.includes('100g') || u.includes('100 g') || u.includes('0.1')) multiplier = 0.1;
+      else if (u.includes('2kg') || u.includes('2 kg')) multiplier = 2;
+      return Math.round(basePrice * multiplier);
+    }
+
+    // ✅ NAYA: Premium Toast Function
     function showToast(msg, type = "success") {
       let t = document.querySelector('.custom-premium-toast'); if(t) t.remove();
       const toast = document.createElement('div');
       toast.className = 'custom-premium-toast';
       toast.innerHTML = `<span>${type === 'success' ? '✅' : '⚠️'}</span> ${msg}`;
-      if(type === 'error') { toast.style.background = '#ef4444'; toast.style.borderColor = '#fca5a5'; }
+      
+      if(type === 'error') {
+        toast.style.background = '#ef4444';
+        toast.style.borderColor = '#fca5a5';
+      }
+      
       document.body.appendChild(toast);
       setTimeout(() => toast.classList.add('show'), 10);
-      setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 3500);
+      setTimeout(() => {
+        toast.classList.remove('show'); 
+        setTimeout(() => toast.remove(), 400);
+      }, 3500);
     }
 
     function saveOrderToLocal(orderId) {
       let myOrders = JSON.parse(localStorage.getItem("aaradhyaMyOrders") || "[]");
       if (!myOrders.includes(orderId)) {
-        myOrders.push(orderId); localStorage.setItem("aaradhyaMyOrders", JSON.stringify(myOrders));
+        myOrders.push(orderId);
+        localStorage.setItem("aaradhyaMyOrders", JSON.stringify(myOrders));
       }
     }
 
@@ -261,7 +243,7 @@
       const productId = urlParams.get('id'); 
       const size = urlParams.get('size') || "N/A";
       const color = urlParams.get('color') || "Standard";
-      const customPrice = urlParams.get('price');
+      // URL price is intentionally ignored; Firestore product price is the source.
       selectedStore = urlParams.get('store') || "Aaradhya Mart";
 
       const snap = await getDocs(collection(db, "products"));
@@ -284,14 +266,15 @@
         if (cart.length === 0) { showToast("Cart empty!", "error"); setTimeout(() => window.location.href = "index.html", 1500); return; }
         document.getElementById("productSummary").innerHTML = cart.map(item => {
           const p = allProducts.find(x => x.id === item.id); if(!p) return "";
-          const itemPrice = item.price || p.price;
+          const itemPrice = calculateUnitPrice(p, item.size);
           orderProducts.push({ ...p, selectedSize: item.size, selectedColor: item.color || 'Standard', selectedQty: item.qty, finalItemPrice: itemPrice }); 
           currentSubtotal += (itemPrice * item.qty);
           return `<div class="product-item-row"><img src="${p.image.split(',')[0]}" alt="${p.name}"><div class="product-item-info"><h4>${p.name}</h4><p>Size: ${item.size} | Colour: ${item.color || 'Standard'} | Qty: ${item.qty}</p></div><div class="product-item-price">₹${itemPrice * item.qty}</div></div>`;
         }).join("");
       } else {
         const p = allProducts.find(x => x.id === productId);
-        const finalPrice = customPrice ? Number(customPrice) : p.price;
+        if (!p) { showToast('Product not found. Please return to the shop.', 'error'); return; }
+        const finalPrice = calculateUnitPrice(p, size);
         orderProducts.push({ ...p, selectedSize: size, selectedColor: color, selectedQty: 1, finalItemPrice: finalPrice }); 
         currentSubtotal = finalPrice;
         document.getElementById("productSummary").innerHTML = `<div class="product-item-row"><img src="${p.image.split(',')[0]}" alt="${p.name}"><div class="product-item-info"><h4>${p.name}</h4><p>Size: ${size} | Colour: ${color} | Qty: 1</p></div><div class="product-item-price">₹${finalPrice}</div></div>`;
@@ -303,23 +286,9 @@
 
     function updateTotals() {
       finalTotal = currentSubtotal - currentDiscount;
-      
-      document.getElementById("subTotalTxt").textContent = currentSubtotal; 
-      document.getElementById("finalTotalTxt").textContent = finalTotal;
-      
-      if(currentDiscount > 0) { 
-        document.getElementById("discountTxtRow").style.display = "block"; 
-        document.getElementById("discountTxt").textContent = currentDiscount; 
-      } else { 
-        document.getElementById("discountTxtRow").style.display = "none"; 
-      }
-
-      const advance = Math.round(finalTotal * 0.20);
-      const balance = finalTotal - advance;
-      
-      document.getElementById("calcTotal").textContent = finalTotal;
-      document.getElementById("calcAdvance").textContent = advance;
-      document.getElementById("calcBalance").textContent = balance;
+      document.getElementById("subTotalTxt").textContent = currentSubtotal; document.getElementById("finalTotalTxt").textContent = finalTotal;
+      if(currentDiscount > 0) { document.getElementById("discountTxtRow").style.display = "block"; document.getElementById("discountTxt").textContent = currentDiscount; }
+      else { document.getElementById("discountTxtRow").style.display = "none"; }
     }
 
     document.getElementById("applyCouponBtn").onclick = async () => {
@@ -345,9 +314,6 @@
       const finalOrderItems = orderProducts.map(item => ({
         id: item.id, name: item.name, qty: item.selectedQty, size: item.selectedSize, color: item.selectedColor, price: item.finalItemPrice
       }));
-
-      const advanceAmount = Math.round(finalTotal * 0.20);
-      const balanceAmount = finalTotal - advanceAmount;
 
       try {
         await addDoc(collection(db, "orders"), {
@@ -379,13 +345,9 @@
       document.getElementById("slipTotal").textContent = finalTotal;
       if(currentDiscount > 0) { document.getElementById("slipDiscountRow").style.display = "flex"; document.getElementById("slipDiscount").textContent = currentDiscount; }
 
-      document.getElementById("slipAdvanceAmount").textContent = advanceAmount;
-      document.getElementById("slipBalanceAmount").textContent = balanceAmount;
-
       document.getElementById("orderSlipModal").classList.add("active");
 
-      const msg = `*NEW ORDER*\n*ID: ${newOrderId}*\nTotal: ₹${finalTotal} ${currentDiscount ? `(Coupon: ${appliedCoupon})` : ''}\n\n*Advance Required (20%): ₹${advanceAmount}*\n*Balance on Delivery: ₹${balanceAmount}*\n\nName: ${name}\nPhone: ${phone}\nAddress: ${addr}\n\n*Note:* I understand 20% advance is required for confirmation.`;
-      
+      const msg = `*NEW ORDER*\n*ID: ${newOrderId}*\nTotal: ₹${finalTotal} ${currentDiscount ? `(Coupon: ${appliedCoupon})` : ''}\nName: ${name}\nPhone: ${phone}\nAddress: ${addr}\n\n*Note:* I understand 20% advance is required for confirmation.`;
       if(isCartOrder) localStorage.removeItem("aaradhyaMartCart");
       
       setTimeout(() => { window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank"); }, 1000);
