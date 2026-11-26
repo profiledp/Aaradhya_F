@@ -1,5 +1,8 @@
 /* ==========================================================
-   AARADHYA MART — MASTER STYLESHEET (FINAL + SIDE OFFERS)
+   AARADHYA MART — MASTER STYLESHEET (REFACTORED)
+   - Removed duplicate animations (fly-to-cart, cartBounce)
+   - Centralized toast styles
+   - Added reusable tracker component styles
    ========================================================== */
 
 :root {
@@ -772,7 +775,7 @@ img { max-width: 100%; }
   100% { box-shadow: 0 0 0 0 rgba(37,211,102,0); }
 }
 
-/* ==================== FLY-TO-CART ==================== */
+/* ==================== FLY-TO-CART (single source) ==================== */
 .fly-image-anim {
   position: fixed;
   z-index: 99999;
@@ -907,7 +910,7 @@ img { max-width: 100%; }
 }
 
 /* ==========================================================
-   TRACK ORDER PAGE
+   TRACK ORDER PAGE — REUSABLE COMPONENTS
    ========================================================== */
 .track-container {
   max-width: 600px;
@@ -1215,85 +1218,13 @@ img { max-width: 100%; }
   .step-time { font-size: 8px; }
 }
 
-/* ==========================================================
-   SIDE OFFER BANNERS (नया फीचर)
-   ========================================================== */
-.side-offer-banner {
-  position: fixed;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 170px;
-  z-index: 9998;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 12px 35px rgba(16,36,59,0.25);
-  border: 2px solid var(--gold);
-  background: #fff;
-  animation: slideInOfferRight 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-.side-offer-banner.side-right { right: 15px; }
-.side-offer-banner.side-left  {
-  left: 15px;
-  animation-name: slideInOfferLeft;
-}
-
-.side-offer-banner a { display: block; }
-.side-offer-banner img {
-  width: 100%;
-  display: block;
-  cursor: pointer;
-  transition: transform 0.3s;
-}
-.side-offer-banner:hover img { transform: scale(1.04); }
-
-.side-offer-close {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: rgba(16,36,59,0.9);
-  color: #fff;
-  border: none;
-  font-size: 12px;
-  font-weight: bold;
-  cursor: pointer;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: 0.2s;
-}
-.side-offer-close:hover { background: var(--danger); transform: rotate(90deg); }
-
-@keyframes slideInOfferRight {
-  from { opacity: 0; transform: translateY(-50%) translateX(120px); }
-  to   { opacity: 1; transform: translateY(-50%) translateX(0); }
-}
-@keyframes slideInOfferLeft {
-  from { opacity: 0; transform: translateY(-50%) translateX(-120px); }
-  to   { opacity: 1; transform: translateY(-50%) translateX(0); }
-}
-
-/* मोबाइल पर default छिपा */
-@media (max-width: 1024px) {
-  .side-offer-banner { display: none; }
-}
-/* अगर mobileShow true है तो मोबाइल पर नीचे दिखेगा */
-@media (max-width: 768px) {
-  .side-offer-banner.mobile-show {
-    display: block;
-    top: auto;
-    bottom: 95px;
-    transform: none;
-    width: 130px;
-    animation: slideInOfferMobile 0.5s ease;
-  }
-  .side-offer-banner.mobile-show.side-right { right: 10px; }
-  .side-offer-banner.mobile-show.side-left  { left: 10px; }
-}
-@keyframes slideInOfferMobile {
-  from { opacity: 0; transform: translateY(50px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+/* ===== Aaradhya Mart Universal Search & Smart Filters ===== */
+.universal-filters{display:grid;gap:12px;margin:0 0 20px;padding:14px;background:#f8fafc;border:1px solid #e5eaf1;border-radius:14px}
+.uf-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.uf-search{display:flex;align-items:center;gap:9px;flex:1;min-width:220px;background:#fff;border:1px solid #d9e1ec;border-radius:10px;padding:0 12px;min-height:44px;color:#64748b}
+.uf-search input{border:0!important;outline:0!important;background:transparent!important;width:100%;min-width:0;min-height:40px;font:inherit;color:#10243b}
+.universal-filters select,.universal-filters input[type=number]{min-height:42px;padding:9px 11px;border:1px solid #d9e1ec;border-radius:9px;background:#fff;color:#10243b;font:inherit;min-width:125px;max-width:100%}
+.universal-filters select:focus,.universal-filters input:focus{outline:2px solid #93c5fd;outline-offset:1px}
+.uf-clear{min-height:40px;padding:8px 14px;border:1px solid #cbd5e1;border-radius:9px;background:#fff;color:#10243b;font-weight:600;cursor:pointer}
+.uf-store-badge{position:absolute;top:10px;left:10px;z-index:2;background:#10243b;color:#fff;font-size:11px;font-weight:700;padding:5px 8px;border-radius:6px}
+@media(max-width:600px){.universal-filters{padding:10px;gap:9px}.uf-row{gap:8px}.uf-search{flex-basis:100%;min-width:0}.universal-filters select,.universal-filters input[type=number]{flex:1;min-width:calc(50% - 8px);font-size:14px}.uf-clear{flex:1}}
