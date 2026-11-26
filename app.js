@@ -1,322 +1,1143 @@
-/* ==========================================================
-   AARADHYA MART — STOREFRONT LOGIC
-   Multi-store tabs • Multi-image gallery • WhatsApp orders
-   ========================================================== */
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-const STORE_KEY = "aaradhyaMartProductsV1";
-const WHATSAPP_NUMBER = "918931911428";
-let products = [];
-let currentStore = "Fashion";
+  <meta name="google-site-verification" content="hiQAkLa44zyk1N-KNLhALM6FzgBbLJ4TtERoyBT3tvU" />
+  <title>Aaradhya Mart | Fashion, A-Print & Kirana Store in Azamgarh</title>
+  <meta name="description" content="Shop the latest fashion clothes, custom printing (A-Print), and daily grocery essentials (Kirana) online at Aaradhya Mart. Fast delivery in Bongariya Bazar, Azamgarh.">
+  <meta property="og:title" content="Aaradhya Mart | Fashion, Print & Kirana">
+  <meta property="og:description" content="Shop clothing, custom prints and groceries online. Fast delivery in Azamgarh.">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=80">
+  <meta property="og:url" content="https://profiledp.github.io/Aaradhya_F/">
+  <meta name="theme-color" content="#10243b">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%2310243b'/><text x='50' y='68' font-size='55' font-family='Georgia' fill='%23c5a36b' text-anchor='middle'>A</text></svg>">
+  <link rel="stylesheet" href="style.css">
 
-/* ---------- Data loading ---------- */
-function loadStoreProducts() {
-  try {
-    const saved = localStorage.getItem(STORE_KEY);
-    products = saved ? JSON.parse(saved) : [...(window.STARTER_PRODUCTS || [])];
-    if (!Array.isArray(products)) products = [...(window.STARTER_PRODUCTS || [])];
-  } catch (e) {
-    products = [...(window.STARTER_PRODUCTS || [])];
-  }
-}
+  <style>
+    /* ============ FLOATING BUTTONS ============ */
+    .global-cart-btn { position: fixed; bottom: 30px; right: 30px; background: var(--navy); color: #fff; padding: 12px 20px; border-radius: 50px; display: flex; align-items: center; gap: 8px; text-decoration: none; box-shadow: 0 8px 25px rgba(16,36,59,0.3); z-index: 9999; transition: transform 0.3s; border: 1px solid var(--gold); }
+    .global-cart-btn:hover { transform: translateY(-3px); }
+    .cart-icon-svg { font-size: 20px; } .cart-text { font-size: 14px; font-weight: bold; }
+    .cart-badge { background: var(--gold); color: var(--navy); width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 12px; font-weight: bold; }
 
-/* ---------- Helpers ---------- */
-function money(value) {
-  return "₹" + Number(value || 0).toLocaleString("en-IN");
-}
+    .whatsapp-float-btn { position: fixed; bottom: 30px; left: 25px; background-color: #25D366; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(37,211,102,0.4); z-index: 9999; animation: pulse 2s infinite; }
+    .whatsapp-float-btn svg { width: 32px; height: 32px; }
 
-function escapeText(value) {
-  return String(value ?? "").replace(/[&<>"']/g, c => ({
-    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-  }[c]));
-}
+    .track-float-btn { position: fixed; bottom: 100px; left: 25px; background-color: #fff; color: var(--navy); padding: 10px 18px; border-radius: 50px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); z-index: 9999; text-decoration: none; border: 2px solid var(--navy); transition: 0.2s; }
+    .track-float-btn svg { width: 18px; height: 18px; stroke: var(--navy); stroke-width: 2.5; }
+    .track-float-btn span { font-size: 12px; font-weight: 900; text-transform: uppercase; }
+    .track-float-btn:hover { background: var(--navy); color: #fff; }
+    .track-float-btn:hover svg { stroke: #fff; }
 
-function safeImage(value) {
-  const s = String(value || "");
-  return /^(https:\/\/|assets\/|data:image\/)/i.test(s)
-    ? escapeText(s)
-    : "https://placehold.co/600x800/f1f0ed/10243b?text=No+Image";
-}
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(37,211,102,0.7); } 70% { box-shadow: 0 0 0 15px rgba(37,211,102,0); } 100% { box-shadow: 0 0 0 0 rgba(37,211,102,0); } }
 
-/* ---------- Multi-image helper ---------- */
-/* Returns array of image URLs for any product.
-   Handles new `images` array + legacy single `image` field. */
-function getProductImages(p) {
-  if (p.images && Array.isArray(p.images) && p.images.length > 0) {
-    return p.images.filter(Boolean);
-  }
-  if (p.image) return [p.image];
-  return [];
-}
+    @media (max-width: 768px) {
+      .track-float-btn { bottom: 85px !important; left: 15px !important; padding: 8px 12px !important; border-width: 1px !important; }
+      .track-float-btn span { display: none !important; }
+      .track-float-btn svg { width: 20px !important; height: 20px !important; }
+      .whatsapp-float-btn { bottom: 20px !important; left: 15px !important; width: 48px !important; height: 48px !important; }
+      .whatsapp-float-btn svg { width: 24px !important; height: 24px !important; }
+      .global-cart-btn { bottom: 20px !important; right: 15px !important; padding: 10px 14px !important; }
+      .global-cart-btn .cart-text { display: none !important; }
+      .global-cart-btn .cart-badge { width: 20px !important; height: 20px !important; font-size: 10px !important; }
+      .header-actions { gap: 5px !important; }
+      .header-wa { padding: 8px 10px !important; font-size: 10px !important; }
+    }
 
-/* ---------- Universal search + filters ---------- */
-function ensureUniversalFilters() {
-  const grid = document.getElementById('productGrid');
-  if (!grid) return;
-  // Rebuild the existing filter container too: removes legacy Store/Category/Price/Stock controls.
-  let wrap = document.getElementById('universalFilters');
-  if (!wrap) {
-    wrap = document.createElement('section');
-    wrap.id = 'universalFilters';
-    grid.parentNode.insertBefore(wrap, grid);
-  }
-  wrap.className = 'universal-search-wrap';
-  wrap.innerHTML = `
-    <div class="uf-search-box">
-      <span class="uf-search-icon" aria-hidden="true">⌕</span>
-      <input id="searchInput" type="search" placeholder="Search for Products, Brands and More..." autocomplete="off" aria-label="Search products">
-      <button type="button" id="clearSearchInput" aria-label="Clear search" class="uf-search-clear" hidden>×</button>
+    /* ============ HERO ============ */
+    .hero-new { min-height: 560px; position: relative; background: #0b1b2d url('https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=2000&q=85') center 38%/cover; display: flex; align-items: center; padding: 60px 7%; color: #fff; overflow: hidden; }
+    .hero-new .hero-shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(8,24,42,.96) 0%, rgba(8,24,42,.75) 45%, rgba(8,24,42,.35) 100%); }
+    .hero-grid { position: relative; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; width: 100%; max-width: 1300px; margin: 0 auto; align-items: center; }
+    .hero-copy-new { max-width: 580px; }
+    .hero-copy-new .eyebrow { display: block; margin-bottom: 12px; }
+    .hero-copy-new h1 { font: normal clamp(36px, 4.8vw, 62px)/1.06 Georgia, serif; margin: 0 0 22px; color: #fff; }
+    .hero-copy-new h1 em { color: var(--gold); font-weight: normal; font-style: italic; }
+    .hero-copy-new p { font-size: 15px; line-height: 1.8; color: #cbd5e1; margin: 0 0 28px; max-width: 480px; }
+    .hero-cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 34px; }
+    .hero-btn-primary { background: var(--gold); color: var(--navy); padding: 15px 30px; border-radius: 6px; font-size: 13px; font-weight: bold; letter-spacing: 0.5px; text-decoration: none; cursor: pointer; border: none; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; }
+    .hero-btn-primary:hover { background: #d4b47a; transform: translateY(-2px); }
+    .hero-btn-secondary { background: transparent; color: #fff; padding: 15px 30px; border-radius: 6px; font-size: 13px; font-weight: bold; letter-spacing: 0.5px; text-decoration: none; cursor: pointer; border: 1px solid rgba(255,255,255,0.35); transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; }
+    .hero-btn-secondary:hover { background: rgba(255,255,255,0.1); border-color: var(--gold); color: var(--gold); }
+
+    .hero-stats { display: flex; gap: 30px; flex-wrap: wrap; padding-top: 25px; border-top: 1px solid rgba(255,255,255,0.12); }
+    .hero-stat strong { display: block; font: normal 26px Georgia, serif; color: var(--gold); margin-bottom: 4px; }
+    .hero-stat span { font-size: 11px; letter-spacing: 1px; color: #94a3b8; text-transform: uppercase; }
+
+    .hero-collage { position: relative; height: 400px; display: none; }
+    .hero-collage-img { position: absolute; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 2px solid rgba(197,163,107,0.3); object-fit: cover; }
+    .hero-collage-img.img-1 { width: 210px; height: 260px; top: 0; left: 10%; transform: rotate(-4deg); z-index: 1; }
+    .hero-collage-img.img-2 { width: 190px; height: 230px; top: 90px; right: 5%; transform: rotate(5deg); z-index: 2; }
+    .hero-collage-img.img-3 { width: 170px; height: 200px; bottom: 0; left: 35%; transform: rotate(-2deg); z-index: 3; }
+
+    @media (min-width: 900px) { .hero-collage { display: block; } }
+    @media (max-width: 650px) {
+      .hero-new { min-height: auto; padding: 50px 5%; }
+      .hero-grid { grid-template-columns: 1fr; }
+      .hero-stats { gap: 20px; padding-top: 20px; }
+      .hero-stat strong { font-size: 20px; }
+      .hero-stat span { font-size: 10px; }
+    }
+
+    /* ============ TRUST BADGES ============ */
+    .trust-badges-bar { display: flex; justify-content: center; gap: 30px; padding: 18px 7%; background: #f8f9fa; border-bottom: 1px solid #eee; flex-wrap: wrap; }
+    .trust-badge { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: bold; color: var(--navy); }
+    .trust-badge svg { width: 18px; height: 18px; stroke: var(--gold); stroke-width: 2; fill: none; }
+
+    /* ============ OFFER BANNER ============ */
+    .offer-banner-container { background: #ef4444; color: #fff; padding: 10px 0; overflow: hidden; white-space: nowrap; display: flex; align-items: center; }
+    .offer-banner-track { display: inline-flex; animation: scrollText 20s linear infinite; }
+    .offer-banner-item { display: inline-block; margin-right: 50px; font-size: 13px; font-weight: bold; }
+    .offer-banner-item span { background:#fff; color:#ef4444; padding:2px 8px; border-radius:4px; font-family:monospace; margin-left: 5px;}
+    @keyframes scrollText { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+    /* ============ QUICK SHOP PILLS ============ */
+    .quick-shop-section { padding: 45px 7% 25px; text-align: center; background: #fff; }
+    .quick-shop-pills { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+    .quick-pill { display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; border-radius: 30px; font-size: 12px; font-weight: 600; color: var(--navy); background: #fff; border: 1px solid var(--line); text-decoration: none; transition: 0.25s; }
+    .quick-pill:hover { background: var(--navy); color: #fff; border-color: var(--navy); transform: translateY(-2px); box-shadow: 0 6px 15px rgba(16,36,59,0.15); }
+
+    /* ============ SECTION HEADINGS ============ */
+    .section-wrap h2 { font: normal 36px/1.2 Georgia, serif; color: var(--navy); margin: 8px 0 0; }
+    .eyebrow { display: block; font-size: 11px; letter-spacing: 2.5px; color: var(--gold); font-weight: bold; text-transform: uppercase; }
+
+    /* ============ FEATURED SECTION ============ */
+    .featured-section { padding: 55px 7%; background: #f8f9fa; }
+    .featured-header { display: flex; justify-content: space-between; align-items: end; margin-bottom: 35px; flex-wrap: wrap; gap: 15px; }
+    .featured-view-all { font-size: 12px; font-weight: bold; color: var(--navy); text-decoration: underline; letter-spacing: 0.3px; }
+    .featured-view-all:hover { color: var(--gold); }
+    .featured-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 18px; }
+
+    /* ============ STORE CARDS ============ */
+    .store-directory-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-bottom: 40px; }
+    .store-dir-card-new { position: relative; overflow: hidden; border-radius: 16px; min-height: 320px; padding: 35px 30px; display: flex; flex-direction: column; justify-content: space-between; text-decoration: none; transition: transform 0.35s ease, box-shadow 0.35s ease; box-shadow: 0 8px 25px rgba(0,0,0,0.12); }
+    .store-dir-card-new:hover { transform: translateY(-8px); box-shadow: 0 20px 45px rgba(0,0,0,0.25); }
+    .store-dir-card-new .store-icon-circle { width: 58px; height: 58px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; margin-bottom: 18px; background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.25); }
+    .store-dir-card-new h3 { font: normal 26px Georgia, serif; margin: 0 0 8px; }
+    .store-dir-card-new p { font-size: 13px; line-height: 1.6; margin: 0; opacity: 0.92; }
+    .store-dir-card-new .store-cta { font-weight: bold; font-size: 13px; margin-top: 20px; display: inline-flex; align-items: center; gap: 6px; }
+    .store-dir-card-new .store-cta::after { content: '→'; transition: transform 0.3s; }
+    .store-dir-card-new:hover .store-cta::after { transform: translateX(5px); }
+
+    .store-fashion { background: linear-gradient(135deg, rgba(16,36,59,0.92), rgba(30,58,95,0.85)), url('https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=800&q=80') center/cover; color: #fff; }
+    .store-fashion .store-cta { color: var(--gold); }
+
+    .store-print { background: linear-gradient(135deg, rgba(197,163,107,0.92), rgba(168,135,86,0.85)), url('https://images.unsplash.com/photo-1562654501-a0ccc0fc3fb1?auto=format&fit=crop&w=800&q=80') center/cover; color: #10243b; }
+    .store-print .store-cta { color: #10243b; }
+    .store-print .store-icon-circle { background: rgba(16,36,59,0.15); border-color: rgba(16,36,59,0.25); }
+
+    .store-kirana { background: linear-gradient(135deg, rgba(11,61,46,0.93), rgba(22,90,69,0.85)), url('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=800&q=80') center/cover; color: #fff; }
+    .store-kirana .store-cta { color: #a7f3d0; }
+
+    /* ============ HOW IT WORKS ============ */
+    .how-it-works { padding: 65px 7%; background: var(--cream); text-align: center; }
+    .hiw-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 35px; max-width: 1000px; margin: 40px auto 0; }
+    .hiw-step-num { width: 72px; height: 72px; background: var(--navy); color: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font: bold 28px Georgia, serif; margin: 0 auto 18px; box-shadow: 0 8px 20px rgba(16,36,59,0.2); }
+    .hiw-step h3 { font: normal 19px Georgia, serif; color: var(--navy); margin: 0 0 8px; }
+    .hiw-step p { font-size: 13px; color: #68717a; line-height: 1.7; margin: 0; }
+
+    /* ============ WHY CHOOSE US ============ */
+    .features-section { padding: 65px 7%; background: #fff; text-align: center; }
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 22px; max-width: 1200px; margin: 40px auto 0; }
+    .feature-card-new { background: #fff; padding: 35px 25px; border-radius: 16px; box-shadow: 0 4px 18px rgba(0,0,0,0.04); border: 1px solid #f0efec; transition: all 0.3s; }
+    .feature-card-new:hover { transform: translateY(-6px); box-shadow: 0 15px 35px rgba(0,0,0,0.08); border-color: var(--gold); }
+    .feature-icon-circle { width: 60px; height: 60px; margin: 0 auto 18px; background: rgba(197,163,107,0.12); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .feature-icon-circle svg { width: 26px; height: 26px; stroke: var(--gold); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .feature-card-new h3 { font: normal 19px Georgia, serif; color: var(--navy); margin: 0 0 10px; }
+    .feature-card-new p { font-size: 13px; color: #68717a; line-height: 1.7; margin: 0; }
+
+    /* ============ TESTIMONIALS ============ */
+    .testimonials-section { padding: 65px 7%; background: #f8f9fa; }
+    .testimonials-section h2 { text-align: center; margin-bottom: 40px; }
+    .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 1000px; margin: 0 auto; }
+    .testimonial-card { background: #fff; padding: 28px; border-radius: 14px; border: 1px solid #f0efec; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+    .testimonial-card::before { content: "“"; position: absolute; top: 8px; right: 22px; font-size: 80px; font-family: Georgia; color: rgba(197,163,107,0.18); line-height: 1; }
+    .testimonial-stars { color: #f59e0b; font-size: 14px; margin-bottom: 12px; }
+    .testimonial-text { font-size: 14px; color: #4b5563; line-height: 1.75; font-style: italic; margin-bottom: 18px; position: relative; z-index: 1; }
+    .testimonial-author { font-size: 11px; font-weight: bold; color: var(--navy); text-transform: uppercase; letter-spacing: 1px; }
+
+    /* ============ RECENTLY VIEWED ============ */
+    .recent-section { padding: 40px 7% 20px; background: #fff; }
+    .recent-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .recent-header h2 { font-size: 22px; margin: 0; color: var(--navy); }
+
+    /* ============ MAP SECTION ============ */
+    .map-section { padding: 65px 7%; background: #fff; }
+    .map-container { display: flex; flex-wrap: wrap; gap: 35px; max-width: 1200px; margin: 0 auto; align-items: center; }
+    .map-info { flex: 1; min-width: 300px; }
+    .map-info h2 { font: normal 36px Georgia, serif; color: var(--navy); margin: 8px 0 20px; }
+    .map-info p { font-size: 14px; line-height: 1.8; color: #4b5563; margin-bottom: 15px; }
+    .map-info .store-address { font-size: 15px; font-weight: bold; color: var(--navy); border-left: 4px solid var(--gold); padding-left: 15px; margin-bottom: 25px; line-height: 1.6; }
+    .map-btn { display: inline-block; background: var(--navy); color: #fff; padding: 14px 26px; border-radius: 6px; font-weight: bold; font-size: 13px; text-decoration: none; transition: 0.3s; }
+    .map-btn:hover { background: #1e3a5f; transform: translateY(-2px); }
+    .map-iframe { flex: 1; min-width: 300px; height: 380px; border-radius: 14px; overflow: hidden; box-shadow: 0 15px 40px rgba(0,0,0,0.12); }
+    .map-iframe iframe { width: 100%; height: 100%; border: 0; }
+
+    /* ============ FESTIVE BANNER ============ */
+    .festive-banner { display: none; background: linear-gradient(90deg, #d97706, #f59e0b); color: #fff; text-align: center; padding: 15px; font-size: 15px; font-weight: bold; text-decoration: none; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(217, 119, 6, 0.3); position: relative; overflow: hidden; }
+    .festive-banner::before { content: "✨"; position: absolute; left: 10%; top: 50%; transform: translateY(-50%); font-size: 20px; opacity: 0.5; }
+    .festive-banner::after { content: "✨"; position: absolute; right: 10%; top: 50%; transform: translateY(-50%); font-size: 20px; opacity: 0.5; }
+    .festive-banner:hover { background: linear-gradient(90deg, #b45309, #d97706); color: #fff; }
+
+    /* ============ WELCOME POPUP ============ */
+    .welcome-overlay { position: fixed; inset: 0; background: rgba(16,36,59,0.85); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; z-index: 99999; opacity: 0; visibility: hidden; transition: opacity 0.4s ease; padding: 15px; }
+    .welcome-overlay.active { opacity: 1; visibility: visible; }
+    .welcome-box { background: #fff; width: 100%; max-width: 440px; border-radius: 16px; text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.35); transform: scale(0.85); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); overflow: hidden; position: relative; }
+    .welcome-overlay.active .welcome-box { transform: scale(1); }
+    .welcome-image { width: 100%; height: 170px; object-fit: cover; }
+    .welcome-content { padding: 30px 28px; }
+    .welcome-content h2 { font: normal 25px Georgia, serif; color: var(--navy); margin: 0 0 8px; }
+    .welcome-content > p { font-size: 13px; color: #555; line-height: 1.65; margin-bottom: 22px; }
+    .welcome-coupon { display: inline-block; background: linear-gradient(135deg, #fff3cd, #ffe69c); border: 2px dashed #d97706; padding: 14px 26px; border-radius: 10px; margin-bottom: 20px; position: relative; cursor: pointer; transition: 0.2s; }
+    .welcome-coupon:hover { transform: scale(1.03); }
+    .welcome-coupon span { font-size: 10px; color: #856404; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+    .welcome-coupon strong { display: block; font-size: 24px; color: #d97706; font-family: monospace; margin-top: 4px; letter-spacing: 2px; }
+    .welcome-coupon small { display: block; margin-top: 6px; color: #a16207; font-size: 9px; font-weight: bold; text-transform: uppercase; }
+    .welcome-btn { display: block; width: 100%; background: var(--navy); color: #fff; padding: 15px; border-radius: 8px; font-weight: bold; font-size: 14px; text-decoration: none; border: none; cursor: pointer; transition: 0.3s; letter-spacing: 0.5px; }
+    .welcome-btn:hover { background: #1e3a5f; }
+    .welcome-skip { display: block; margin-top: 14px; font-size: 11px; color: #999; text-decoration: underline; cursor: pointer; background: none; border: none; }
+    .welcome-close { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.55); color: #fff; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 2; transition: 0.2s; }
+    .welcome-close:hover { background: rgba(0,0,0,0.8); }
+
+    /* ============ DEALS MODAL ============ */
+    .deal-modal-overlay { position: fixed; inset: 0; background: rgba(16,36,59,0.85); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; visibility: hidden; transition: 0.3s; padding: 20px; }
+    .deal-modal-overlay.active { opacity: 1; visibility: visible; }
+    .deal-modal-box { background: #f8f9fa; width: 100%; max-width: 950px; border-radius: 14px; position: relative; max-height: 90vh; overflow-y: auto; padding: 30px; transform: scale(0.9); transition: 0.3s; }
+    .deal-modal-overlay.active .deal-modal-box { transform: scale(1); }
+    .deal-close-btn { position: absolute; top: 15px; right: 15px; background: #fff; border: 1px solid #ddd; width: 36px; height: 36px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: 0.2s; z-index: 3; }
+    .deal-close-btn:hover { background: #fee2e2; color: #ef4444; }
+    .deal-header { text-align: center; margin-bottom: 30px; }
+    .deal-header h2 { font: normal 32px Georgia, serif; color: #ef4444; margin: 0; }
+    .deal-header p { color: var(--muted); font-size: 14px; margin-top: 8px; }
+    .deal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 18px; }
+
+    /* ============ FOOTER ============ */
+    .footer-new { background: #0b1b2d; color: #fff; padding: 55px 7% 25px; }
+    .footer-grid-new { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; max-width: 1200px; margin: 0 auto 40px; }
+    .footer-new .brand { margin-bottom: 15px; }
+    .footer-new .brand-mark { background: #fff; color: var(--navy); border-color: var(--gold); }
+    .footer-new .brand strong { color: #fff; font-family: Georgia, serif; }
+    .footer-new .brand small { color: var(--gold); }
+    .footer-col h4 { font-size: 11px; letter-spacing: 2px; color: var(--gold); margin: 0 0 16px; text-transform: uppercase; font-weight: bold; }
+    .footer-col a, .footer-col p { display: block; font-size: 12px; color: #cbd5e1; margin-bottom: 10px; line-height: 1.6; transition: 0.2s; text-decoration: none; }
+    .footer-col a:hover { color: var(--gold); }
+    .footer-bottom { border-top: 1px solid #1e3a5f; padding-top: 22px; text-align: center; font-size: 11px; color: #64748b; }
+
+    /* ============ RESPONSIVE ============ */
+    @media (max-width: 900px) {
+      .hero-new { min-height: auto; padding: 60px 5%; }
+      .hero-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 650px) {
+      .section-wrap h2, .featured-section h2, .map-info h2 { font-size: 28px !important; }
+      .featured-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .store-dir-card-new { min-height: 260px; padding: 28px 22px; }
+      .store-dir-card-new h3 { font-size: 22px; }
+      .quick-shop-pills { gap: 8px; }
+      .quick-pill { padding: 10px 16px; font-size: 11px; }
+      .map-iframe { height: 280px; }
+      .hero-stats { gap: 18px; }
+      .hero-stat strong { font-size: 20px; }
+    }
+
+    /* ✅ NAYA: Flipkart Style Header */
+    .header-search-container {
+      flex: 1;
+      max-width: 700px;
+      margin: 0 30px;
+      position: relative;
+    }
+    .header-search-input {
+      width: 100%;
+      padding: 12px 18px 12px 45px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      outline: none;
+      background: #f8f9fa url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23777" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>') no-repeat 15px center;
+      transition: 0.3s;
+    }
+    .header-search-input:focus {
+      background-color: #fff;
+      border-color: var(--navy);
+      box-shadow: 0 4px 15px rgba(16,36,59,0.1);
+    }
+    .header-search-results {
+      position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+      background: #fff; border: 1px solid #e5e7eb; border-radius: 12px;
+      max-height: 420px; overflow-y: auto; box-shadow: 0 12px 32px rgba(16,36,59,.16);
+      display: none; z-index: 1000; padding: 6px 0;
+    }
+    .header-search-results.active { display: block; }
+    .am-search-suggestion { display:flex; align-items:center; gap:12px; width:100%;
+      padding:11px 16px; border:0; background:#fff; text-align:left; cursor:pointer;
+      color:#263445; text-decoration:none; font:inherit; }
+    .am-search-suggestion:hover, .am-search-suggestion:focus { background:#f5f7fa; outline:none; }
+    .am-search-icon { width:24px; flex:0 0 24px; color:#87909a; text-align:center; font-size:17px; }
+    .am-search-text { min-width:0; flex:1; }
+    .am-search-title { display:block; font-size:13px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .am-search-sub { display:block; margin-top:2px; color:#2563eb; font-size:12px; }
+    .am-search-section { padding:8px 16px 5px; color:#6b7280; font-size:10px; text-transform:uppercase; letter-spacing:.06em; }
+    .am-search-empty { padding:14px 16px; color:#6b7280; font-size:12px; }
+    .am-search-clear-history { margin:4px 12px 6px auto; display:block; border:0; background:transparent; color:#2563eb; font-size:11px; cursor:pointer; }
+    @media (max-width: 768px) {
+      .header-search-container { margin: 0 10px; max-width: none; }
+      .header-search-input { padding: 11px 12px 11px 38px; }
+      .header-search-results { max-height: min(65vh, 420px); }
+    }
+
+    /* ============ AARADHYA AI CHAT ============ */
+    .ai-launcher-dock{position:fixed;right:22px;bottom:105px;z-index:10001;display:flex;align-items:center;gap:8px;padding:7px;background:#fff;border:1px solid #e2e8f0;border-radius:999px;box-shadow:0 8px 28px rgba(16,36,59,.2)}
+    .ai-fab{background:linear-gradient(135deg,#10243b,#1e3a5f);color:#fff;border:1px solid var(--gold);border-radius:999px;padding:12px 16px;display:flex;align-items:center;gap:9px;cursor:pointer;font-weight:800;white-space:nowrap}
+    .ai-fab:hover,.ai-dock-link:hover{transform:translateY(-2px)}.ai-fab .ai-dot{width:9px;height:9px;background:#55df9b;border-radius:50%;box-shadow:0 0 0 4px rgba(85,223,155,.15)}
+    .ai-dock-link{width:42px;height:42px;display:grid;place-items:center;border-radius:50%;text-decoration:none;transition:transform .2s;flex:0 0 auto}
+    .ai-dock-link.track{background:#f1f5f9;color:#10243b}.ai-dock-link.whatsapp{background:#25D366;color:#fff}.ai-dock-link svg{width:21px;height:21px;display:block}
+    .ai-dock-link .dock-tip{position:absolute;bottom:calc(100% + 9px);background:#10243b;color:#fff;padding:5px 8px;border-radius:6px;font-size:10px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s}
+    .ai-dock-link:hover .dock-tip{opacity:1}
+    .whatsapp-float-btn,.track-float-btn{display:none!important}
+    .ai-panel{position:fixed;right:20px;bottom:165px;width:min(390px,calc(100vw - 24px));height:min(590px,calc(100vh - 190px));z-index:10002;background:#fff;border:1px solid #dce2e9;border-radius:18px;box-shadow:0 22px 65px rgba(0,0,0,.25);display:none;overflow:hidden;flex-direction:column}
+    .ai-panel.open{display:flex}.ai-head{background:linear-gradient(135deg,#10243b,#1e3a5f);color:#fff;padding:16px;display:flex;align-items:center;justify-content:space-between}.ai-brand{display:flex;align-items:center;gap:10px}.ai-avatar{width:38px;height:38px;border-radius:12px;background:#c5a36b;color:#10243b;display:grid;place-items:center;font-weight:900}.ai-head small{display:block;color:#d4dce5;font-size:11px;margin-top:3px}.ai-close{border:0;background:rgba(255,255,255,.15);color:#fff;width:32px;height:32px;border-radius:50%;font-size:20px;cursor:pointer}
+    .ai-messages{flex:1;overflow-y:auto;padding:14px;background:#f7f9fb;display:flex;flex-direction:column;gap:11px}.ai-msg{max-width:88%;padding:11px 13px;border-radius:14px;font-size:13px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}.ai-msg.bot{align-self:flex-start;background:#fff;color:#263445;border:1px solid #e5eaf0;border-bottom-left-radius:4px}.ai-msg.user{align-self:flex-end;background:#10243b;color:#fff;border-bottom-right-radius:4px}.ai-suggestions{display:flex;gap:7px;flex-wrap:wrap;padding:10px 12px;background:#fff;border-top:1px solid #edf0f4}.ai-suggestion{background:#f8fafc;border:1px solid #dce3eb;border-radius:20px;padding:7px 10px;font-size:11px;color:#10243b;cursor:pointer}.ai-form{display:flex;gap:8px;padding:12px;border-top:1px solid #e5eaf0;background:#fff}.ai-input{flex:1;min-width:0;border:1px solid #d5dce5;border-radius:24px;padding:11px 14px;font-size:13px;outline:none}.ai-input:focus{border-color:#10243b}.ai-send{border:0;background:#10243b;color:#fff;border-radius:50%;width:42px;height:42px;cursor:pointer;font-size:18px}.ai-send:disabled{opacity:.55;cursor:not-allowed}.ai-footnote{text-align:center;font-size:10px;color:#8893a0;padding:0 10px 8px;background:#fff}
+    .ai-product-list{display:grid;gap:8px;margin-top:9px;width:100%}.ai-product-card{display:flex;gap:10px;align-items:center;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:8px;color:#263445;text-decoration:none;max-width:100%}.ai-product-card img{width:58px;height:62px;object-fit:cover;border-radius:8px;background:#f1f5f9}.ai-product-info{min-width:0;flex:1}.ai-product-info strong{display:block;font-size:12px;line-height:1.35}.ai-product-info small{display:block;color:#64748b;font-size:10px;margin-top:3px}.ai-product-price{font-weight:800;color:#10243b;font-size:13px;white-space:nowrap}.ai-action-link{display:inline-block;margin-top:8px;padding:8px 12px;background:#10243b;color:#fff!important;border-radius:18px;text-decoration:none;font-size:11px;font-weight:700}
+    @media(max-width:600px){.ai-launcher-dock{right:8px;bottom:82px;gap:5px;padding:5px}.ai-fab{padding:10px 12px;font-size:12px}.ai-dock-link{width:36px;height:36px}.ai-dock-link svg{width:19px;height:19px}.ai-panel{right:8px;bottom:140px;width:calc(100vw - 16px);height:min(560px,calc(100vh - 160px))}}
+
+
+    /* ============ HOMEPAGE PREMIUM REFRESH ============ */
+    .home-intro-strip{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;padding:13px 5%;background:#f7f4ee;border-bottom:1px solid #e9e2d7;color:#34465a;font-size:12px;font-weight:700}
+    .home-intro-strip span{display:inline-flex;align-items:center;gap:7px}
+    .home-intro-strip i{width:6px;height:6px;border-radius:50%;background:var(--gold);display:inline-block}
+    .home-category-section{padding:58px 7%;background:#fff}
+    .home-section-head{text-align:center;max-width:680px;margin:0 auto 30px}
+    .home-section-head h2{font:normal clamp(27px,3vw,38px) Georgia,serif;color:var(--navy);margin:8px 0 10px}
+    .home-section-head p{font-size:13px;line-height:1.7;color:#697586;margin:0}
+    .home-category-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:15px;max-width:1250px;margin:auto}
+    .home-category-card{position:relative;overflow:hidden;min-height:190px;border-radius:13px;text-decoration:none;background:#e9e4dc;box-shadow:0 7px 22px rgba(16,36,59,.07);isolation:isolate}
+    .home-category-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .5s}
+    .home-category-card:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(7,20,35,.83),rgba(7,20,35,.02) 75%);z-index:0}
+    .home-category-card:hover img{transform:scale(1.07)}
+    .home-category-card strong{position:absolute;z-index:1;bottom:17px;left:14px;right:10px;color:#fff;font:normal 19px Georgia,serif}
+    .home-category-card small{display:block;font:600 9px Arial,sans-serif;letter-spacing:1.3px;text-transform:uppercase;color:#ead6b5;margin-top:5px}
+    .home-budget-section{padding:52px 7%;background:#f5f3ef}
+    .home-budget-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:1100px;margin:28px auto 0}
+    .home-budget-card{border:1px solid #e7dfd2;background:#fff;border-radius:12px;padding:22px 18px;text-decoration:none;color:var(--navy);transition:.25s;display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .home-budget-card:hover{transform:translateY(-4px);border-color:var(--gold);box-shadow:0 10px 25px rgba(16,36,59,.08)}
+    .home-budget-card b{display:block;font:normal 24px Georgia,serif}
+    .home-budget-card small{display:block;color:#78818c;font-size:10px;margin-top:5px}
+    .home-budget-card .budget-arrow{font-size:23px;color:var(--gold)}
+    .home-promo-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:52px 7%;background:#fff}
+    .home-promo-card{min-height:230px;border-radius:15px;overflow:hidden;position:relative;display:flex;align-items:center;padding:30px;color:#fff;text-decoration:none;background:#142b45;isolation:isolate}
+    .home-promo-card:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(9,25,43,.94),rgba(9,25,43,.25));z-index:-1}
+    .home-promo-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;transition:transform .5s}
+    .home-promo-card:hover img{transform:scale(1.05)}
+    .home-promo-card span{font-size:9px;letter-spacing:2px;color:#e5c58e;font-weight:800;text-transform:uppercase}
+    .home-promo-card h3{font:normal 27px Georgia,serif;margin:9px 0}
+    .home-promo-card p{font-size:12px;line-height:1.6;color:#e1e7ef;max-width:300px;margin:0 0 15px}
+    .home-promo-card b{font-size:11px;color:#f1d5a5}
+    .home-service-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:28px 7%;background:#10243b;color:#fff}
+    .home-service-item{display:flex;align-items:center;gap:11px;justify-content:center;padding:8px}
+    .home-service-icon{width:39px;height:39px;flex:0 0 39px;border:1px solid rgba(214,183,132,.45);border-radius:50%;display:grid;place-items:center;color:#e3c38e;font-size:17px}
+    .home-service-item strong{display:block;font-size:11px}
+    .home-service-item small{display:block;font-size:9px;color:#bdc8d5;margin-top:4px}
+    @media(max-width:950px){.home-category-grid{grid-template-columns:repeat(3,1fr)}.home-category-card{min-height:180px}}
+    @media(max-width:650px){.home-category-section,.home-budget-section{padding:40px 5%}.home-category-grid{grid-template-columns:repeat(2,1fr);gap:10px}.home-category-card{min-height:170px}.home-category-card strong{font-size:17px}.home-budget-grid{grid-template-columns:repeat(2,1fr);gap:9px}.home-budget-card{padding:17px 13px}.home-budget-card b{font-size:21px}.home-promo-row{grid-template-columns:1fr;padding:35px 5%;gap:12px}.home-promo-card{min-height:205px;padding:24px}.home-service-strip{grid-template-columns:repeat(2,1fr);padding:20px 4%;gap:8px}.home-service-item{justify-content:flex-start}.home-intro-strip{font-size:10px;gap:8px}}
+
+
+  /* Universal search & filters */
+  .am-universal-filter{display:none;position:absolute;top:calc(100% + 8px);left:0;right:0;z-index:1000;background:#fff;border:1px solid #dbe2ea;border-radius:14px;box-shadow:0 16px 40px rgba(16,36,59,.18);padding:12px;color:#10243b;max-height:75vh;overflow:auto}
+  .am-universal-filter.active{display:block}
+  .am-filter-row{display:flex;gap:8px;align-items:center;margin-bottom:9px}
+  .am-filter-row select{min-width:0;flex:1;border:1px solid #d5dde6;border-radius:8px;background:#fff;padding:9px 10px;color:#10243b;font-size:12px}
+  .am-price-row label{display:flex;align-items:center;gap:5px;font-size:11px;white-space:nowrap;color:#475569}
+  .am-price-row input[type=number]{width:78px;border:1px solid #d5dde6;border-radius:7px;padding:8px;font-size:12px}
+  .am-stock-label{gap:5px!important}
+  #amClearFilters{border:1px solid #10243b;background:#10243b;color:#fff;border-radius:8px;padding:8px 11px;font-size:12px;cursor:pointer}
+  .am-filter-summary{font-size:11px;color:#64748b;padding:2px 3px 6px}
+  .am-universal-results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .am-universal-card{display:flex;gap:9px;align-items:center;text-decoration:none;color:#10243b;border:1px solid #edf0f4;border-radius:10px;padding:8px;min-width:0}
+  .am-universal-card img{width:58px;height:58px;object-fit:cover;border-radius:8px;background:#f1f5f9;flex:0 0 58px}
+  .am-universal-card .am-card-text{min-width:0;flex:1}
+  .am-universal-card strong{display:block;font-size:12px;line-height:1.35;overflow:hidden;text-overflow:ellipsis}
+  .am-universal-card small{display:block;color:#64748b;font-size:10px;margin-top:3px}
+  .am-universal-card b{display:block;font-size:12px;color:#b58a4b;margin-top:4px}
+  .am-no-results{padding:18px;text-align:center;color:#64748b;font-size:13px;grid-column:1/-1}
+  @media(max-width:650px){.am-filter-row{flex-wrap:wrap}.am-filter-row select{flex-basis:30%;font-size:11px;padding:8px 5px}.am-price-row label{font-size:10px}.am-price-row input[type=number]{width:60px}.am-universal-results{grid-template-columns:1fr}.am-universal-filter{left:-4px;right:-4px}}
+
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <a class="brand" href="index.html"><span class="brand-mark">AM</span><span><strong>AARADHYA MART</strong><small>YOUR EVERYDAY STORE</small></span></a>
+    
+    <!-- Flipkart Style Search Bar -->
+    <div class="header-search-container">
+      <input type="text" id="headerSearchInput" class="header-search-input" placeholder="Search for Products, Brands and More..." autocomplete="off">
+      <div id="headerSearchResults" class="header-search-results" role="listbox" aria-label="Search suggestions"></div>
     </div>
-    <div id="searchSuggestions" class="uf-suggestions" role="listbox" aria-label="Search suggestions"></div>`;
-}
 
-const SEARCH_HISTORY_KEY = 'aaradhyaMartSearchHistoryV1';
-function getSearchHistory() {
-  try { return JSON.parse(localStorage.getItem(SEARCH_HISTORY_KEY) || '[]').filter(Boolean).slice(0, 6); }
-  catch(e) { return []; }
-}
-function saveSearchHistory(term) {
-  const cleaned = String(term || '').trim();
-  if (!cleaned) return;
-  const history = getSearchHistory().filter(x => x.toLowerCase() !== cleaned.toLowerCase());
-  history.unshift(cleaned);
-  try { localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(history.slice(0, 6))); } catch(e) {}
-}
-function renderSearchSuggestions(query = '') {
-  const box = document.getElementById('searchSuggestions');
-  const input = document.getElementById('searchInput');
-  if (!box || !input) return;
-  const q = String(query || '').trim().toLowerCase();
-  let rows = [];
-  if (!q) {
-    rows = getSearchHistory().map(term => ({type:'history', text:term, sub:'Recent search'}));
-  } else {
-    const matches = products.filter(p => {
-      const hay = [p.name,p.store,p.category,p.description,p.tag,p.brand,p.id,p.keywords,...(p.searchTags||[]),...(p.colors||[]),...(p.sizes||[])].flat().join(' ').toLowerCase();
-      return hay.includes(q);
-    }).slice(0, 6);
-    rows = matches.map(p => ({type:'product', text:p.name, sub:`in ${p.store || currentStore}`, id:p.id}));
-    if (!rows.length) rows = [{type:'search', text:`Search all products for “${query}”`, sub:'Press Enter to search'}];
-  }
-  if (!rows.length) { box.innerHTML = ''; box.classList.remove('active'); return; }
-  box.innerHTML = rows.map(r => `<button type="button" class="uf-suggestion" data-suggestion="${escapeText(r.text)}" ${r.id ? `data-product-id="${escapeText(r.id)}"` : ''}><span class="uf-suggestion-icon">${r.type === 'history' ? '◷' : '⌕'}</span><span class="uf-suggestion-text"><span class="uf-suggestion-title">${escapeText(r.text)}</span><span class="uf-suggestion-sub">${escapeText(r.sub)}</span></span></button>`).join('');
-  box.classList.add('active');
-}
-function hideSearchSuggestions() { document.getElementById('searchSuggestions')?.classList.remove('active'); }
-function applySearchTerm(term, remember = true) {
-  const input = document.getElementById('searchInput');
-  if (!input) return;
-  input.value = term;
-  if (remember) saveSearchHistory(term);
-  renderStore();
-  hideSearchSuggestions();
-  const clearBtn = document.getElementById('clearSearchInput');
-  if (clearBtn) clearBtn.hidden = !term;
-}
-function updateCategoryOptions() {
-  const catSelect = document.getElementById('categoryFilter');
-  if (!catSelect) return;
-  const storeChoice = document.getElementById('storeFilter')?.value || currentStore;
-  const relevant = storeChoice === 'All' ? products : products.filter(p => p.store === storeChoice);
-  const uniqueCats = [...new Set(relevant.map(p => p.category).filter(Boolean))].sort((a,b) => String(a).localeCompare(String(b)));
-  const oldValue = catSelect.value;
-  catSelect.innerHTML = '<option value="All">All Categories</option>' + uniqueCats.map(cat => `<option value="${escapeText(cat)}">${escapeText(cat)}</option>`).join('');
-  if (uniqueCats.includes(oldValue)) catSelect.value = oldValue;
-}
-function switchStore(storeName) {
-  currentStore = storeName;
-  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-  const activeTab = document.querySelector(`.tab-btn[data-store="${storeName}"]`);
-  if (activeTab) activeTab.classList.add('active');
-  const titles = { Fashion: 'Clothing & Apparel', Print: 'Custom Printing Services', Kirana: 'Grocery & Daily Needs' };
-  const titleEl = document.getElementById('currentStoreTitle');
-  if (titleEl) titleEl.textContent = titles[storeName] || storeName;
-  const printBanner = document.getElementById('printBanner');
-  if (printBanner) printBanner.classList.toggle('hidden', storeName !== 'Print');
-  ensureUniversalFilters();
-  const storeFilter = document.getElementById('storeFilter');
-  if (storeFilter && storeFilter.value !== 'All') storeFilter.value = storeName;
-  updateCategoryOptions();
-  renderStore();
-}
-function renderStore() {
-  const query = (document.getElementById('searchInput')?.value || '').trim().toLowerCase();
-  const storeChoice = currentStore;
-  const sort = 'featured';
-  let list = products.filter(p => p.store === storeChoice);
-  list = list.filter(p => {
-    const haystack = [p.name, p.store, p.category, p.description, p.tag, p.brand, p.id, p.keywords,
-      ...(p.searchTags || []), ...(p.colors || []), ...(p.sizes || [])].flat().join(' ').toLowerCase();
-    return haystack.includes(query);
-  });
-  if (sort === 'low') list.sort((a,b) => Number(a.price || 0) - Number(b.price || 0));
-  if (sort === 'high') list.sort((a,b) => Number(b.price || 0) - Number(a.price || 0));
-  if (sort === 'name') list.sort((a,b) => String(a.name || '').localeCompare(String(b.name || '')));
-  const countEl = document.getElementById('productCount');
-  if (countEl) countEl.textContent = `${list.length} ITEMS`; 
-  const grid = document.getElementById('productGrid');
-  const empty = document.getElementById('emptyState');
-  if (empty) empty.classList.toggle('hidden', list.length !== 0);
-  if (!grid) return;
-  grid.innerHTML = list.map(p => {
-    const isOut = Number(p.stock) <= 0;
-    const imgs = getProductImages(p);
-    const cover = imgs[0];
-    const imgCountBadge = imgs.length > 1 ? `<span class="card-images-count">📷 ${imgs.length}</span>` : '';
-    const storeBadge = storeChoice === 'All' ? `<span class="uf-store-badge">${escapeText(p.store || '')}</span>` : '';
-    return `<article class="product-card" style="${isOut ? 'opacity:0.8;' : ''}">
-      <div class="product-image-wrap" data-open="${escapeText(p.id)}"><img src="${safeImage(cover)}" alt="${escapeText(p.name)}" loading="lazy" onerror="this.src='https://placehold.co/600x800/f1f0ed/10243b?text=No+Image'">${p.tag ? `<span class="product-tag">${escapeText(p.tag)}</span>` : ''}${imgCountBadge}${storeBadge}${isOut ? `<span class="out-of-stock-tag">SOLD OUT</span>` : ''}</div>
-      <div class="product-info"><span class="product-category">${escapeText(p.category)}</span><h3>${escapeText(p.name)}</h3><div class="product-price">${p.price === 0 ? 'Custom Quote' : money(p.price)}${Number(p.originalPrice) > Number(p.price) && p.originalPrice > 0 ? `<span class="old-price">${money(p.originalPrice)}</span>` : ''}</div>
-      <div class="product-actions"><button class="btn-view" data-open="${escapeText(p.id)}">Details</button><button class="btn-order" data-order="${escapeText(p.id)}" ${isOut ? 'disabled' : ''}>${isOut ? 'Sold Out' : 'Order'}</button></div></div></article>`;
-  }).join('');
-}
+    <div class="header-actions" style="display: flex; gap: 8px; align-items: center;">
+      <a href="my-orders.html" class="header-wa" style="background:#fff; color:var(--navy); border:1px solid var(--navy); padding: 11px 15px;">📦 My Orders</a>
+      <a href="admin.html" class="header-wa" style="padding: 11px 15px;">Admin ⚙️</a>
+    </div>
+  </header>
 
+  <!-- TRUST BADGES -->
+  <div class="trust-badges-bar">
+    <div class="trust-badge"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>100% Secure</div>
+    <div class="trust-badge"><svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>Fast Delivery</div>
+    <div class="trust-badge"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></svg>Cash on Delivery</div>
+    <div class="trust-badge"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>Best Quality</div>
+  </div>
+  
+  <main>
+    <!-- HERO -->
+    <section class="hero-new">
+      <div class="hero-shade"></div>
+      <div class="hero-grid">
+        <div class="hero-copy-new">
+          <span class="eyebrow">BONGARIYA BAZAR · AZAMGARH</span>
+          <h1>Discover your style,<br><em>every day.</em></h1>
+          <p>Explore fashion, everyday essentials and custom services from your local Aaradhya Mart. Browse collections and contact our team for assistance.</p>
 
-/* ---------- Product dialog with gallery ---------- */
-function openProduct(id) {
-  const p = products.find(x => x.id === id);
-  if (!p) return;
+          <div class="hero-cta-row">
+            <a href="#shops" class="hero-btn-primary">Shop Now <span>→</span></a>
+            <button class="hero-btn-secondary" onclick="openDealsModal()">🔥 Today's Deals</button>
+          </div>
 
-  const dialog = document.getElementById("productDialog");
-  const images = getProductImages(p);
+          <div class="hero-stats">
+            <div class="hero-stat"><strong>6+</strong><span>Shopping Categories</span></div>
+            <div class="hero-stat"><strong>Local</strong><span>Store Support</span></div>
+            <div class="hero-stat"><strong>Easy</strong><span>Shopping Help</span></div>
+          </div>
+        </div>
 
-  // Fallback if no images
-  const safeImages = images.length > 0
-    ? images
-    : ["https://placehold.co/600x800/f1f0ed/10243b?text=No+Image"];
-
-  const priceHtml = p.price === 0
-    ? `<span style="color:var(--gold);font-weight:bold;">Custom Quote</span>`
-    : `${money(p.price)} ${Number(p.originalPrice) > Number(p.price)
-        ? `<span class="old-price">${money(p.originalPrice)}</span>`
-        : ""}`;
-
-  // Thumbnails only if > 1 image
-  const thumbnailsHtml = safeImages.length > 1 ? `
-    <div class="thumbnails">
-      ${safeImages.map((img, i) => `
-        <img src="${safeImage(img)}"
-             class="thumb ${i === 0 ? 'active' : ''}"
-             data-index="${i}"
-             alt="View ${i + 1}"
-             onerror="this.src='https://placehold.co/600x800/f1f0ed/10243b?text=No+Image'">
-      `).join("")}
-    </div>` : "";
-
-  document.getElementById("dialogContent").innerHTML = `
-    <div class="dialog-layout">
-      <div class="product-gallery">
-        <img id="mainProductImage"
-             class="main-image"
-             src="${safeImage(safeImages[0])}"
-             alt="${escapeText(p.name)}"
-             onerror="this.src='https://placehold.co/600x800/f1f0ed/10243b?text=No+Image'">
-        ${thumbnailsHtml}
+        <div class="hero-collage">
+          <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=400&q=80" alt="Fashion" class="hero-collage-img img-1">
+          <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=400&q=80" alt="Grocery" class="hero-collage-img img-2">
+          <img src="https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9?auto=format&fit=crop&w=400&q=80" alt="Custom Print" class="hero-collage-img img-3">
+        </div>
       </div>
-      <div class="dialog-details">
-        <span class="product-category">${escapeText(p.category)}</span>
-        <h2>${escapeText(p.name)}</h2>
-        <div class="product-price">${priceHtml}</div>
-        <p>${escapeText(p.description)}</p>
+    </section>
 
-        ${p.sizes && p.sizes.length > 0 ? `
-        <label>Select Size / Qty</label>
-        <select id="sizeChoice">
-          ${p.sizes.map(s => `<option>${escapeText(s)}</option>`).join("")}
-        </select>` : ''}
+    <a href="#" id="festiveBanner" class="festive-banner"></a>
 
-        ${p.colors && p.colors.length > 0 ? `
-        <label>Select Colour</label>
-        <select id="colorChoice">
-          ${p.colors.map(c => `<option>${escapeText(c)}</option>`).join("")}
-        </select>` : ''}
+    <div id="offerBanner" class="offer-banner-container" style="display:none;">
+      <div class="offer-banner-track" id="bannerTrack"></div>
+    </div>
 
-        <p style="margin-top:10px;">
-          Status: ${Number(p.stock) > 0
-            ? "<span style='color:var(--success);font-weight:bold;'>In Stock</span>"
-            : "<span style='color:#ef4444;font-weight:bold;'>Out of Stock</span>"}
-        </p>
-
-        <button class="button-navy" id="dialogOrder" ${Number(p.stock) <= 0 ? 'disabled' : ''} style="margin-top:15px;">
-          ${Number(p.stock) <= 0 ? 'Out of Stock' : 'Order on WhatsApp ↗'}
-        </button>
+    <!-- QUICK SHOP PILLS -->
+    <section class="quick-shop-section">
+      <span class="eyebrow">QUICK SHOP</span>
+      <div class="quick-shop-pills">
+        <a href="fashion.html?category=Men" class="quick-pill">👔 Men</a>
+        <a href="fashion.html?category=Women" class="quick-pill">👚 Women</a>
+        <a href="fashion.html?category=Kids" class="quick-pill">🧒 Kids</a>
+        <a href="fashion.html?category=Winter%20Wear" class="quick-pill">🧥 Winter</a>
+        <a href="print.html" class="quick-pill">🖨️ Custom Print</a>
+        <a href="kirana.html" class="quick-pill">🛒 Grocery</a>
       </div>
-    </div>`;
+    </section>
 
-  dialog.showModal();
+    <!-- SHOP BY CATEGORY: VISUAL CATEGORY NAVIGATION -->
+    <section class="home-category-section" id="homeCategories">
+      <div class="home-section-head"><span class="eyebrow">FIND YOUR STYLE</span><h2>Shop by Category</h2><p>Explore collections for every age, occasion and everyday need.</p></div>
+      <div class="home-category-grid">
+        <a class="home-category-card" href="fashion.html?category=Men"><img loading="lazy" src="https://images.unsplash.com/photo-1617137968427-85924c800a22?auto=format&fit=crop&w=600&q=80" alt="Men's fashion"><strong>Men's Wear<small>Everyday essentials</small></strong></a>
+        <a class="home-category-card" href="fashion.html?category=Women"><img loading="lazy" src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=600&q=80" alt="Women's fashion"><strong>Women's Wear<small>Style and elegance</small></strong></a>
+        <a class="home-category-card" href="fashion.html?category=Kids"><img loading="lazy" src="https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?auto=format&fit=crop&w=600&q=80" alt="Kids clothing"><strong>Kids Wear<small>Comfort for little ones</small></strong></a>
+        <a class="home-category-card" href="fashion.html?category=Sports%20Wear"><img loading="lazy" src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=600&q=80" alt="Sports clothing" onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 600 420%22%3E%3Cdefs%3E%3ClinearGradient id=%22g%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22%3E%3Cstop stop-color=%22%2310243b%22/%3E%3Cstop offset=%221%22 stop-color=%22%233d6b80%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22600%22 height=%22420%22 fill=%22url(%23g)%22/%3E%3Ccircle cx=%22300%22 cy=%22145%22 r=%2265%22 fill=%22%23e8e1d6%22 opacity=%22.9%22/%3E%3Cpath d=%22M190 360c8-100 55-145 110-145s102 45 110 145%22 fill=%22%23e8e1d6%22 opacity=%22.9%22/%3E%3Ctext x=%22300%22 y=%22395%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2224%22 fill=%22white%22%3ESPORTS WEAR%3C/text%3E%3C/svg%3E';"><strong>Sports Wear<small>Move with comfort</small></strong></a>
+        <a class="home-category-card" href="fashion.html?category=Winter%20Wear"><img loading="lazy" src="https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=600&q=80" alt="Winter wear"><strong>Winter Wear<small>Seasonal favourites</small></strong></a>
+        <a class="home-category-card" href="fashion.html?category=Accessories"><img loading="lazy" src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=600&q=80" alt="Fashion accessories"><strong>Accessories<small>Complete your look</small></strong></a>
+      </div>
+    </section>
 
-  // Wire up thumbnails → swap main image
-  document.querySelectorAll(".product-gallery .thumb").forEach(thumb => {
-    thumb.addEventListener("click", () => {
-      const idx = Number(thumb.dataset.index);
-      document.getElementById("mainProductImage").src = safeImage(safeImages[idx]);
-      document.querySelectorAll(".product-gallery .thumb").forEach(t => t.classList.remove("active"));
-      thumb.classList.add("active");
+    <!-- SHOP BY BUDGET: ASSISTANT-POWERED QUICK FILTERS -->
+    <section class="home-budget-section" id="shopByBudget">
+      <div class="home-section-head"><span class="eyebrow">SMART BUDGET SHOPPING</span><h2>Good Style, Great Prices</h2><p>Choose your budget. Ask Aaradhya will find matching products from the website catalog.</p></div>
+      <div class="home-budget-grid">
+        <button class="home-budget-card" type="button" data-ai-question="Show products under ₹299"><span><b>Under ₹299</b><small>Explore pocket-friendly picks</small></span><span class="budget-arrow">→</span></button>
+        <button class="home-budget-card" type="button" data-ai-question="Show products under ₹500"><span><b>Under ₹500</b><small>Everyday value shopping</small></span><span class="budget-arrow">→</span></button>
+        <button class="home-budget-card" type="button" data-ai-question="Show products under ₹999"><span><b>Under ₹999</b><small>More styles to explore</small></span><span class="budget-arrow">→</span></button>
+        <button class="home-budget-card" type="button" data-ai-question="Show the cheapest products"><span><b>Lowest Price</b><small>See lowest priced products</small></span><span class="budget-arrow">→</span></button>
+      </div>
+    </section>
+
+    <!-- FEATURED PRODUCTS -->
+    <section class="featured-section" id="featuredSection">
+      <div class="featured-header">
+        <div>
+          <span class="eyebrow">HANDPICKED FOR YOU</span>
+          <h2 style="font: normal 36px Georgia, serif; color: var(--navy); margin: 8px 0 0;">Bestsellers</h2>
+        </div>
+        <a href="fashion.html" class="featured-view-all">View All Products →</a>
+      </div>
+      <div class="featured-grid" id="featuredGrid">
+        <p style="grid-column: 1/-1; text-align: center; color: #999; padding: 30px;">Loading featured products...</p>
+      </div>
+    </section>
+
+    <!-- SEASONAL / SERVICE PROMOTIONS -->
+    <section class="home-promo-row" aria-label="Explore more at Aaradhya Mart">
+      <a class="home-promo-card" href="fashion.html?category=Winter%20Wear"><img loading="lazy" src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1000&q=80" alt="Fashion collection"><div><span>Refresh your wardrobe</span><h3>Find Your Everyday Look</h3><p>Browse clothing collections for men, women and kids.</p><b>EXPLORE FASHION →</b></div></a>
+      <a class="home-promo-card" href="support.html"><img loading="lazy" src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1000&q=80" alt="Customer shopping support"><div><span>Here when you need us</span><h3>Shopping Made Easier</h3><p>Need help with products, orders, returns or payments? Our support team is here.</p><b>VISIT SUPPORT →</b></div></a>
+    </section>
+
+    <!-- RECENTLY VIEWED -->
+    <section class="recent-section" id="recentlyViewedSection" style="display:none;">
+      <div class="recent-header">
+        <h2>👀 Recently Viewed</h2>
+      </div>
+      <div class="featured-grid" id="recentGrid"></div>
+    </section>
+
+    <!-- OUR STORES -->
+    <section class="section-wrap" id="shops" style="padding-top: 55px; padding-bottom: 60px;">
+      <div style="text-align: center; margin-bottom: 40px;">
+        <span class="eyebrow">EXPLORE OUR VERTICALS</span>
+        <h2>Our Stores</h2>
+      </div>
+
+      <div class="store-directory-grid">
+        <a href="fashion.html" class="store-dir-card-new store-fashion">
+          <div>
+            <div class="store-icon-circle">👗</div>
+            <h3>Aaradhya Fashion</h3>
+            <p>Men · Women · Kids · Sports · Winter wear</p>
+          </div>
+          <span class="store-cta">Explore Collection</span>
+        </a>
+
+        <a href="print.html" class="store-dir-card-new store-print">
+          <div>
+            <div class="store-icon-circle">🖨️</div>
+            <h3>A-Print</h3>
+            <p>Custom printing · T-Shirts · Cards · Banners</p>
+          </div>
+          <span class="store-cta">Get Custom Quote</span>
+        </a>
+
+        <a href="kirana.html" class="store-dir-card-new store-kirana">
+          <div>
+            <div class="store-icon-circle">🛒</div>
+            <h3>Aaradhya Kirana</h3>
+            <p>Grocery · Essentials · Household items</p>
+          </div>
+          <span class="store-cta">Order Groceries</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="how-it-works">
+      <span class="eyebrow">SIMPLE & EASY</span>
+      <h2 style="font: normal 36px Georgia, serif; color: var(--navy); margin: 8px 0 0;">How It Works</h2>
+      <div class="hiw-grid">
+        <div class="hiw-step">
+          <div class="hiw-step-num">1</div>
+          <h3>Browse</h3>
+          <p>Pick from our 3 stores — Fashion, Print, or Kirana.</p>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-step-num">2</div>
+          <h3>Order</h3>
+          <p>Pay 20% advance, confirm on WhatsApp, we pack.</p>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-step-num">3</div>
+          <h3>Receive</h3>
+          <p>Track live status & receive at your doorstep in 1-2 hours.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHY CHOOSE US -->
+    <section class="features-section">
+      <span class="eyebrow">WHY CHOOSE US</span>
+      <h2>We Provide Best Service</h2>
+      <div class="features-grid">
+        <div class="feature-card-new">
+          <div class="feature-icon-circle">
+            <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+          </div>
+          <h3>Fast Delivery</h3>
+          <p>Get your order delivered to your doorstep within 1–2 hours — available within a 5 km radius of Bongariya Bazar.</p>
+        </div>
+        <div class="feature-card-new">
+          <div class="feature-icon-circle">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+          <h3>Best Quality</h3>
+          <p>We source the highest quality products for our customers at affordable prices.</p>
+        </div>
+        <div class="feature-card-new">
+          <div class="feature-icon-circle">
+            <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+          </div>
+          <h3>Cash on Delivery</h3>
+          <p>Pay only when you receive your order. 100% safe and secure shopping.</p>
+        </div>
+        <div class="feature-card-new">
+          <div class="feature-icon-circle">
+            <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M8 16H3v5"></path></svg>
+          </div>
+          <h3>Easy Returns</h3>
+          <p>Not satisfied with the product? Get easy returns and exchanges.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SUPPORT CTA -->
+    <section style="padding: 50px 7%; background: linear-gradient(135deg, #10243b, #1e3a5f); text-align: center;">
+      <span class="eyebrow" style="color: var(--gold);">NEED HELP?</span>
+      <h2 style="font: normal 32px Georgia, serif; color: #fff; margin: 10px 0 12px;">We're Here to Help</h2>
+      <p style="font-size: 14px; color: #cbd5e1; max-width: 520px; margin: 0 auto 25px;">Order inquiry, returns, payments, or custom print quotes — get instant help from our team on WhatsApp.</p>
+      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+        <a href="support.html" style="display: inline-flex; align-items: center; gap: 8px; background: #25D366; color: #fff; padding: 14px 28px; border-radius: 8px; font-weight: bold; font-size: 13px; text-decoration: none; transition: 0.3s;">
+          💬 Visit Support Center
+        </a>
+        <a href="https://wa.me/918931911428?text=Hello%20Aaradhya%20Mart%2C%20I%20need%20help." target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 8px; background: transparent; color: #fff; padding: 14px 28px; border-radius: 8px; font-weight: bold; font-size: 13px; text-decoration: none; border: 1px solid rgba(255,255,255,0.3); transition: 0.3s;">
+          📞 WhatsApp: +91 89319 11428
+        </a>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="testimonials-section" id="testimonialsSection" style="display:none;">
+      <span class="eyebrow" style="text-align: center; display: block;">WHAT OUR CUSTOMERS SAY</span>
+      <h2>Customer Reviews</h2>
+      <div class="testimonials-grid" id="testimonialsGrid"></div>
+    </section>
+
+    <!-- MAP -->
+    <section class="map-section">
+      <div class="map-container">
+        <div class="map-info">
+          <span class="eyebrow">VISIT OUR STORE</span>
+          <h2>Find Us on Map</h2>
+          <p>Our shop is located in Bongariya Bazaar, Azamgarh. Come visit us and enjoy our new collection!</p>
+          <p class="store-address">📍 Bongariya Bazar, Azamgarh,<br>Uttar Pradesh - 276126</p>
+          <a href="https://www.google.com/maps/@25.8356927,83.2665054,21z?hl=en" target="_blank" class="map-btn">🗺️ Get Directions →</a>
+        </div>
+        <div class="map-iframe">
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d500!2d83.2665054!3d25.8356927!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjXCsDUwJzA4LjUiTiA4M8KwMTUnNTkuNCJF!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <section class="home-service-strip" aria-label="Shopping support highlights">
+    <div class="home-service-item"><span class="home-service-icon">🛍</span><span><strong>Easy Product Browsing</strong><small>Explore categories and collections</small></span></div>
+    <div class="home-service-item"><span class="home-service-icon">📦</span><span><strong>Order Assistance</strong><small>Get help with your orders</small></span></div>
+    <div class="home-service-item"><span class="home-service-icon">💬</span><span><strong>WhatsApp Support</strong><small>Talk to our store team</small></span></div>
+    <div class="home-service-item"><span class="home-service-icon">📍</span><span><strong>Visit Our Local Store</strong><small>Bongariya Bazar, Azamgarh</small></span></div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer-new">
+    <div class="footer-grid-new">
+      <div class="footer-col">
+        <div class="brand" style="margin-bottom: 15px;">
+          <span class="brand-mark">AM</span>
+          <span>
+            <strong>AARADHYA MART</strong>
+            <small>YOUR EVERYDAY STORE</small>
+          </span>
+        </div>
+        <p>Serving Azamgarh with fashion, custom printing, and groceries — all under one trusted roof.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <a href="index.html">Home</a>
+        <a href="my-orders.html">My Orders</a>
+        <a href="about.html">About & Policies</a>
+        <a href="track.html">Track Order</a>
+        <a href="delivery-policy.html">🚚 Delivery Policy</a>
+      </div>
+      <div class="footer-col">
+        <h4>Our Stores</h4>
+        <a href="fashion.html">Aaradhya Fashion</a>
+        <a href="print.html">A-Print</a>
+        <a href="kirana.html">Aaradhya Kirana</a>
+        <a href="support.html">Customer Support</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <p>📍 Bongariya Bazar,<br>Azamgarh, UP - 276126</p>
+        <a href="https://wa.me/918931911428" style="color: #25D366;">📞 +91 89319 11428</a>
+        <a href="support.html" style="color: #25D366;">💬 Customer Support</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      © 2026 Aradhya Mart. All rights reserved. Created with ❤️ by Deepak Pal - Vijay.
+    </div>
+  </footer>
+
+  <!-- FLOATING BUTTONS -->
+  <a href="cart.html" id="globalCartBtn" class="global-cart-btn">
+    <span class="cart-icon-svg">🛒</span>
+    <span class="cart-text">Cart</span>
+    <span class="cart-badge" id="globalCartCount">0</span>
+  </a>
+  <!-- WhatsApp and Track Order shortcuts are grouped beside Ask Aaradhya below. -->
+
+  <!-- DEALS MODAL -->
+  <div class="deal-modal-overlay" id="dealsModal">
+    <div class="deal-modal-box">
+      <button class="deal-close-btn" onclick="closeDealsModal()">×</button>
+      <div class="deal-header">
+        <h2>🔥 Deal of the Day</h2>
+        <p>Grab these offers before they're gone!</p>
+      </div>
+      <div class="deal-grid" id="dealGrid"></div>
+    </div>
+  </div>
+
+  <!-- WELCOME POPUP -->
+  <div class="welcome-overlay" id="welcomeModal">
+    <div class="welcome-box">
+      <button class="welcome-close" onclick="closeWelcome()">×</button>
+      <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=800&q=80" alt="Welcome" class="welcome-image">
+      <div class="welcome-content">
+        <h2>Welcome to Aaradhya Mart!</h2>
+        <p>Aapke liye laye hain kuch khaas offers. Ab shopping karein aur payein <strong>Special Discount</strong>!</p>
+
+        <div class="welcome-coupon" id="welcomeCouponBox" onclick="copyCouponCode()">
+          <span>🎉 FIRST ORDER OFFER</span>
+          <strong id="welcomeCouponCode">LOADING...</strong>
+          <small>Tap to copy →</small>
+        </div>
+
+        <a href="#shops" class="welcome-btn" onclick="closeWelcome()">START SHOPPING →</a>
+        <button class="welcome-skip" onclick="closeWelcome()">No thanks, I'll browse</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, getDocs, query, where, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = { apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y", authDomain: "aaradhya-mart.firebaseapp.com", projectId: "aaradhya-mart", storageBucket: "aaradhya-mart.firebasestorage.app", messagingSenderId: "146782544824", appId: "1:146782544824:web:d605e1971d3480fab1654d" };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    
+    let allProductsForSearch = [];
+
+    /* ============ CART ============ */
+    function updateGlobalCart() {
+      try {
+        const cart = JSON.parse(localStorage.getItem("aaradhyaMartCart") || "[]");
+        const count = cart.reduce((sum, item) => sum + (Number(item.qty) || 1), 0);
+        const badge = document.getElementById("globalCartCount");
+        if (badge) {
+          badge.textContent = count;
+          badge.style.background = count === 0 ? "#ccc" : "var(--gold)";
+          badge.style.color = count === 0 ? "#fff" : "var(--navy)";
+        }
+      } catch(e) {}
+    }
+
+    /* ============ HEADER SEARCH BAR ============ */
+    /* ============ HEADER SEARCH: HISTORY + LIVE SUGGESTIONS ============ */
+    async function initHeaderSearch() {
+      const snap = await getDocs(collection(db, "products"));
+      snap.forEach(d => allProductsForSearch.push({ id: d.id, ...d.data() }));
+      window.allProductsForSearch = allProductsForSearch;
+
+      const input = document.getElementById("headerSearchInput");
+      const resultsBox = document.getElementById("headerSearchResults");
+      if (!input || !resultsBox) return;
+      const HISTORY_KEY = "aaradhyaMartHeaderSearchHistoryV1";
+      const storeFile = s => ({Fashion:'fashion.html',Kirana:'kirana.html',Print:'print.html'}[s] || 'index.html');
+      const safe = v => String(v ?? '').replace(/[&<>\"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]));
+      const historyGet = () => { try { return JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]').filter(Boolean).slice(0,6); } catch(e){ return []; } };
+      const historySave = q => { q=String(q||'').trim(); if(!q)return; const arr=historyGet().filter(x=>x.toLowerCase()!==q.toLowerCase()); arr.unshift(q); try{localStorage.setItem(HISTORY_KEY,JSON.stringify(arr.slice(0,6)));}catch(e){} };
+      const productText = p => [p.name,p.category,p.store,p.description,p.brand,p.tags,p.color,p.colors,p.size,p.sizes,p.keywords].flat().filter(Boolean).join(' ').toLowerCase();
+      function render(q='') {
+        q=String(q||'').trim().toLowerCase();
+        if(!q){
+          const history=historyGet();
+          if(!history.length){resultsBox.innerHTML='<div class="am-search-empty">Search products, brands and categories to get started.</div>';}
+          else resultsBox.innerHTML='<div class="am-search-section">Recent searches</div>'+history.map(term=>`<button type="button" class="am-search-suggestion" data-history="${safe(term)}"><span class="am-search-icon">◷</span><span class="am-search-text"><span class="am-search-title">${safe(term)}</span><span class="am-search-sub">Recent search</span></span></button>`).join('')+'<button type="button" class="am-search-clear-history" data-clear-history>Clear history</button>';
+        } else {
+          const matches=allProductsForSearch.filter(p=>productText(p).includes(q)).slice(0,7);
+          if(!matches.length){resultsBox.innerHTML=`<div class="am-search-empty">No products found for “${safe(input.value)}”</div>`;}
+          else resultsBox.innerHTML='<div class="am-search-section">Products</div>'+matches.map(p=>{const store=String(p.store||'');const img=String(p.image||p.imageUrl||p.images?.[0]||'').split(',')[0].trim();return `<a class="am-search-suggestion" role="option" href="${storeFile(store)}"><span class="am-search-icon">⌕</span><span class="am-search-text"><span class="am-search-title">${safe(p.name||'Product')}</span><span class="am-search-sub">${safe(p.category||'General')} · ${safe(store)}</span></span></a>`;}).join('');
+        }
+        resultsBox.classList.add('active');
+      }
+      input.addEventListener('focus',()=>render(input.value));
+      input.addEventListener('input',()=>render(input.value));
+      input.addEventListener('keydown',e=>{if(e.key==='Escape'){resultsBox.classList.remove('active');input.blur();} if(e.key==='Enter'){const q=input.value.trim();if(q){historySave(q);render(q);}}});
+      resultsBox.addEventListener('click',e=>{
+        const clear=e.target.closest('[data-clear-history]'); if(clear){try{localStorage.removeItem(HISTORY_KEY);}catch(err){} render('');return;}
+        const history=e.target.closest('[data-history]'); if(history){const term=history.dataset.history||''; input.value=term; historySave(term); render(term);}
+      });
+      document.addEventListener('click',e=>{if(!e.target.closest('.header-search-container'))resultsBox.classList.remove('active');});
+      render('');
+    }
+
+    /* ============ FESTIVE BANNER ============ */
+    async function loadFestiveBanner() {
+      try {
+        const snap = await getDoc(doc(db, "settings", "banner"));
+        if (snap.exists()) {
+          const s = snap.data();
+          const bannerEl = document.getElementById("festiveBanner");
+          if (s.text) {
+            bannerEl.textContent = s.text;
+            bannerEl.href = s.link || "#shops";
+            bannerEl.style.display = "block";
+          }
+        }
+      } catch(e) { console.log("Banner error:", e); }
+    }
+
+    /* ============ OFFER SCROLLING BANNER ============ */
+    async function loadBannerCoupons() {
+      try {
+        const snap = await getDocs(collection(db, "coupons"));
+        if (!snap.empty) {
+          let allCoupons = [];
+          snap.forEach(d => allCoupons.push(d.data()));
+          let html = "";
+          for(let i=0; i<2; i++) {
+            allCoupons.forEach(c => {
+              html += `<div class="offer-banner-item">🎉 Get ${c.discount}% OFF! Use Code <span>${c.code}</span> at Checkout.</div>`;
+            });
+          }
+          document.getElementById("bannerTrack").innerHTML = html;
+          document.getElementById("offerBanner").style.display = "flex";
+        }
+      } catch(e) {}
+    }
+
+    /* ============ FEATURED PRODUCTS ============ */
+    async function loadFeatured() {
+      try {
+        const snap = await getDocs(collection(db, "products"));
+        const all = [];
+        snap.forEach(d => all.push({ id: d.id, ...d.data() }));
+
+        const featured = all.filter(p => Number(p.stock) > 0).slice(0, 8);
+
+        const grid = document.getElementById("featuredGrid");
+        if (featured.length === 0) {
+          grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999; padding: 30px;">No products available yet.</p>';
+          return;
+        }
+
+        grid.innerHTML = featured.map(p => {
+          const img = p.image ? p.image.split(',')[0].trim() : 'https://placehold.co/400';
+          const storeFile = p.store.toLowerCase();
+          
+          let discountHtml = '';
+          if (Number(p.originalPrice) > Number(p.price) && p.originalPrice > 0) {
+            const discountPercent = Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100);
+            discountHtml = `<span class="discount-badge">${discountPercent}% OFF</span>`;
+          }
+
+          const oldPrice = Number(p.originalPrice) > Number(p.price) && p.originalPrice > 0
+            ? `<span style="font-size: 11px; color: #999; text-decoration: line-through; margin-left: 5px; font-weight: normal;">₹${p.originalPrice}</span>`
+            : '';
+
+          return `
+            <article class="product-card">
+              <a href="${storeFile}.html" style="text-decoration: none; color: inherit; display: block;">
+                <div class="product-image-wrap">
+                  <img src="${img}" alt="${p.name}" loading="lazy" onerror="this.src='https://placehold.co/400'">
+                  <span class="product-tag" style="background: var(--navy); color: #fff; border: 1px solid var(--gold);">${p.store}</span>
+                </div>
+                <h3 style="font-size: 13px; margin: 8px 0 4px; height: 34px; overflow: hidden; line-height: 1.3; font-weight: bold; color: var(--navy);">${p.name}</h3>
+                <div style="font-size: 14px; font-weight: bold; color: var(--navy); display: flex; align-items: center; flex-wrap: wrap;">
+                  ₹${p.price}${oldPrice}${discountHtml}
+                </div>
+              </a>
+            </article>`;
+        }).join("");
+      } catch(e) {
+        console.log("Featured error:", e);
+      }
+    }
+
+    /* ============ RECENTLY VIEWED ============ */
+    async function loadRecentlyViewed() {
+      try {
+        const recentIds = JSON.parse(localStorage.getItem("aaradhyaRecent") || "[]");
+        if(recentIds.length === 0) return;
+
+        const snap = await getDocs(collection(db, "products"));
+        const allProducts = [];
+        snap.forEach(d => allProducts.push({ id: d.id, ...d.data() }));
+
+        const recentProducts = recentIds.map(id => allProducts.find(p => p.id === id)).filter(Boolean);
+
+        if(recentProducts.length !== recentIds.length) {
+          localStorage.setItem("aaradhyaRecent", JSON.stringify(recentProducts.map(p=>p.id)));
+        }
+
+        if(recentProducts.length > 0) {
+          document.getElementById("recentlyViewedSection").style.display = "block";
+          document.getElementById("recentGrid").innerHTML = recentProducts.map(p => {
+            const img = p.image ? p.image.split(',')[0].trim() : 'https://placehold.co/400';
+            const storeFile = p.store.toLowerCase();
+            
+            let discountHtml = '';
+            if (Number(p.originalPrice) > Number(p.price) && p.originalPrice > 0) {
+              const discountPercent = Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100);
+              discountHtml = `<span class="discount-badge">${discountPercent}% OFF</span>`;
+            }
+
+            return `
+              <article class="product-card">
+                <a href="${storeFile}.html" style="text-decoration: none; color: inherit; display: block;">
+                  <div class="product-image-wrap">
+                    <img src="${img}" alt="${p.name}" loading="lazy" onerror="this.src='https://placehold.co/400'">
+                  </div>
+                  <h3 style="font-size: 13px; margin: 8px 0 4px; height: 34px; overflow: hidden; line-height: 1.3; font-weight: bold; color: var(--navy);">${p.name}</h3>
+                  <div style="font-size: 14px; font-weight: bold; color: var(--navy); display: flex; align-items: center; flex-wrap: wrap;">₹${p.price}${discountHtml}</div>
+                </a>
+              </article>
+            `;
+          }).join("");
+        }
+      } catch(e) { console.log(e); }
+    }
+
+    /* ============ TESTIMONIALS ============ */
+    async function loadTestimonials() {
+      try {
+        const q = query(collection(db, "reviews"));
+        const snap = await getDocs(q);
+        if(snap.empty) return;
+
+        document.getElementById("testimonialsSection").style.display = "block";
+        let html = "";
+        let count = 0;
+        snap.forEach(doc => {
+          if(count >= 3) return;
+          const r = doc.data();
+          html += `
+            <div class="testimonial-card">
+              <div class="testimonial-stars">${'⭐'.repeat(r.rating)}</div>
+              <p class="testimonial-text">"${r.comment}"</p>
+              <div class="testimonial-author">— ${r.customerName}</div>
+            </div>
+          `;
+          count++;
+        });
+        document.getElementById("testimonialsGrid").innerHTML = html;
+      } catch(e) { console.log("Reviews error:", e); }
+    }
+
+    /* ============ WELCOME POPUP ============ */
+    async function loadWelcomePopup() {
+      if(sessionStorage.getItem("welcomeShown")) return;
+
+      try {
+        const snap = await getDocs(collection(db, "coupons"));
+        if(!snap.empty) {
+          const coupon = snap.docs[0].data();
+          document.getElementById("welcomeCouponCode").textContent = coupon.code;
+        } else {
+          document.getElementById("welcomeCouponBox").style.display = "none";
+        }
+        setTimeout(() => {
+          document.getElementById("welcomeModal").classList.add("active");
+        }, 1500);
+      } catch(e) { console.log("Welcome popup error:", e); }
+    }
+
+    window.closeWelcome = function() {
+      document.getElementById("welcomeModal").classList.remove("active");
+      sessionStorage.setItem("welcomeShown", "true");
+    }
+
+    window.copyCouponCode = function() {
+      const code = document.getElementById("welcomeCouponCode").textContent;
+      if (code && code !== "LOADING...") {
+        navigator.clipboard.writeText(code).then(() => {
+          const el = document.getElementById("welcomeCouponBox");
+          const small = el.querySelector("small");
+          const original = small.textContent;
+          small.textContent = "✓ Copied!";
+          small.style.color = "#16a34a";
+          setTimeout(() => { small.textContent = original; small.style.color = "#a16207"; }, 2000);
+        });
+      }
+    }
+
+    /* ============ DEALS MODAL ============ */
+    window.openDealsModal = async function() {
+      const modal = document.getElementById("dealsModal");
+      const grid = document.getElementById("dealGrid");
+      modal.classList.add("active");
+      grid.innerHTML = "<p style='text-align:center; width:100%;'>Loading deals...</p>";
+
+      try {
+        const q = query(collection(db, "products"), where("isDeal", "==", true));
+        const snap = await getDocs(q);
+
+        if(snap.empty) {
+          grid.innerHTML = "<p style='text-align:center; width:100%; color:var(--muted); padding:30px;'>No deals available right now. Please check back later!</p>";
+          return;
+        }
+
+        let html = "";
+        snap.forEach(doc => {
+          const p = doc.data();
+          const firstImg = p.image ? p.image.split(',')[0].trim() : 'https://placehold.co/400';
+          
+          let discountHtml = '';
+          if (Number(p.originalPrice) > Number(p.price) && p.originalPrice > 0) {
+            const discountPercent = Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100);
+            discountHtml = `<span class="discount-badge">${discountPercent}% OFF</span>`;
+          }
+
+          html += `
+            <article class="product-card" style="border: 1px solid #ef4444; box-shadow: 0 4px 15px rgba(239,68,68,0.2);">
+              <div class="product-image-wrap">
+                <img src="${firstImg}" alt="${p.name}">
+                <span style="position:absolute; top:5px; left:5px; background:#ef4444; color:#fff; padding:2px 6px; border-radius:4px; font-size:9px; font-weight:bold;">DEAL 🔥</span>
+              </div>
+              <div class="product-info">
+                <h3 style="font-size:13px; height:32px;">${p.name}</h3>
+                <div style="font-size:12px; font-weight:bold; color:#ef4444; display:flex; align-items:center; gap:5px;">
+                  ₹${p.price} <span style="font-size:10px; color:#aaa; text-decoration:line-through;">₹${p.originalPrice}</span>${discountHtml}
+                </div>
+                <a href="${p.store.toLowerCase()}.html" style="display:block; text-align:center; margin-top:8px; background:var(--navy); color:#fff; padding:8px; border-radius:4px; font-size:11px; font-weight:bold; text-decoration:none;">View Product ↗</a>
+              </div>
+            </article>
+          `;
+        });
+        grid.innerHTML = html;
+      } catch(e) {
+        grid.innerHTML = "<p style='color:red; text-align:center;'>Error loading deals.</p>";
+      }
+    }
+
+    window.closeDealsModal = function() {
+      document.getElementById("dealsModal").classList.remove("active");
+    }
+
+    document.getElementById("dealsModal").addEventListener("click", function(e) {
+      if(e.target === this) closeDealsModal();
     });
-  });
 
-  // Order button
-  if (Number(p.stock) > 0) {
-    document.getElementById("dialogOrder").addEventListener("click", () => {
-      const size = document.getElementById("sizeChoice")?.value || "N/A";
-      const color = document.getElementById("colorChoice")?.value || "N/A";
-      orderProduct(p.id, size, color);
+    /* ============ INIT ============ */
+    document.addEventListener("DOMContentLoaded", () => {
+      updateGlobalCart();
+      initHeaderSearch();
+      loadFestiveBanner();
+      loadBannerCoupons();
+      loadFeatured();
+      loadRecentlyViewed();
+      loadTestimonials();
+      loadWelcomePopup();
     });
-  }
-}
+  </script>
 
-/* ---------- WhatsApp order ---------- */
-function orderProduct(id, size, color) {
-  const p = products.find(x => x.id === id);
-  if (!p) return;
-
-  const storeName = p.store === "Fashion"
-    ? "Aaradhya Fashion"
-    : p.store === "Print"
-    ? "A-Print"
-    : "Aaradhya Kirana";
-
-  const msg = `Hello ${storeName}!\nI want to order:\n\nProduct: ${p.name}\nPrice: ${p.price === 0 ? 'Custom Quote' : money(p.price)}\nSize/Qty: ${size}\nColour: ${color}\n\nPlease confirm.`;
-
-  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
-}
-
-/* ---------- Init ---------- */
-document.addEventListener("DOMContentLoaded", () => {
-  loadStoreProducts();
-  ensureUniversalFilters();
-  switchStore('Fashion');
-  const searchInput = document.getElementById('searchInput');
-  const clearSearch = document.getElementById('clearSearchInput');
-  searchInput?.addEventListener('input', () => {
-    renderStore();
-    if (clearSearch) clearSearch.hidden = !searchInput.value;
-    renderSearchSuggestions(searchInput.value);
-  });
-  searchInput?.addEventListener('focus', () => renderSearchSuggestions(searchInput.value));
-  searchInput?.addEventListener('keydown', e => {
-    if (e.key === 'Enter') { e.preventDefault(); applySearchTerm(searchInput.value); }
-    if (e.key === 'Escape') hideSearchSuggestions();
-  });
-  clearSearch?.addEventListener('click', () => { applySearchTerm('', false); renderSearchSuggestions(''); searchInput?.focus(); });
-  document.getElementById('searchSuggestions')?.addEventListener('click', e => {
-    const row = e.target.closest('.uf-suggestion');
-    if (!row) return;
-    const term = row.dataset.suggestion || '';
-    applySearchTerm(term);
-  });
-  document.addEventListener('click', e => { if (!e.target.closest('#universalFilters')) hideSearchSuggestions(); });
-  document.getElementById("productGrid")?.addEventListener("click", e => {
-    const open = e.target.closest("[data-open]");
-    const order = e.target.closest("[data-order]");
-    if (open) openProduct(open.dataset.open);
-    if (order && !order.disabled) orderProduct(order.dataset.order, "N/A", "N/A");
-  });
-
-  document.getElementById("dialogClose")?.addEventListener("click", () => {
-    document.getElementById("productDialog").close();
-  });
-
-  document.getElementById("productDialog")?.addEventListener("click", e => {
-    if (e.target.id === "productDialog") e.target.close();
-  });
-});
+  <!-- Aaradhya Free Smart Shopping Assistant (No API / No backend) -->
+  <div class="ai-launcher-dock" aria-label="Quick support actions">
+    <a class="ai-dock-link track" href="track.html" aria-label="Track Order" title="Track Order">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v11H3z"/><path d="M14 10h4l3 3v5h-7z"/><circle cx="7.5" cy="18.5" r="1.5"/><circle cx="17.5" cy="18.5" r="1.5"/></svg><span class="dock-tip">Track Order</span>
+    </a>
+    <a class="ai-dock-link whatsapp" href="https://wa.me/918931911428?text=Namaste%2C%20Aaradhya%20Mart%20se%20support%20chahiye." target="_blank" rel="noopener" aria-label="WhatsApp Support" title="WhatsApp Support">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 2.7A13.2 13.2 0 0 0 4.7 22.7L3 29l6.5-1.7A13.2 13.2 0 1 0 16 2.7zm0 2.4a10.8 10.8 0 0 1 0 21.6c-1.8 0-3.6-.5-5.1-1.3l-.4-.2-3.8 1 1-3.7-.3-.5A10.8 10.8 0 0 1 16 5.1zm-5.1 5.7c-.3 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.6s1.1 3 1.3 3.2c.2.2 2.1 3.4 5.2 4.6 2.6 1 3.1.8 3.7.7.6-.1 1.9-.8 2.2-1.6.3-.8.3-1.4.2-1.6-.1-.1-.3-.2-.7-.4l-2.1-1c-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.5-.6c.2-.2.2-.3.3-.6.1-.2 0-.4 0-.6l-.9-2.2c-.2-.5-.4-.5-.6-.5z"/></svg><span class="dock-tip">WhatsApp Support</span>
+    </a>
+    <button class="ai-fab" id="aiFab" type="button" aria-label="Open Aaradhya Smart Assistant"><span class="ai-dot"></span> Ask Aaradhya</button>
+  </div>
+  <section class="ai-panel" id="aiPanel" aria-label="Aaradhya Smart Shopping Assistant" aria-live="polite">
+    <header class="ai-head"><div class="ai-brand"><div class="ai-avatar">AF</div><div><strong>Aaradhya Shopping Assistant</strong><small>Free Smart Search · Hindi / Hinglish / English</small></div></div><button class="ai-close" id="aiClose" type="button" aria-label="Close chat">×</button></header>
+    <div class="ai-messages" id="aiMessages"><div class="ai-msg bot">Namaste! 🙏 Main Aaradhya Mart ka free shopping assistant hoon. Aap products, price, categories, order ya latest fashion trend ke baare mein pooch sakte hain.</div></div>
+    <div class="ai-suggestions" id="aiSuggestions"><button class="ai-suggestion" type="button">Product search</button><button class="ai-suggestion" type="button">Sabse sasta product?</button><button class="ai-suggestion" type="button">₹500 ke andar</button><button class="ai-suggestion" type="button">Where is my order?</button><button class="ai-suggestion" type="button">Return / Exchange</button><button class="ai-suggestion" type="button">Payment options</button><button class="ai-suggestion" type="button">Delivery time</button></div>
+    <form class="ai-form" id="aiForm"><input class="ai-input" id="aiInput" maxlength="300" placeholder="Apna sawaal likhein..." autocomplete="off" aria-label="Message Aaradhya Assistant"><button class="ai-send" id="aiSend" type="submit" aria-label="Send">➤</button></form><div class="ai-footnote">Product availability and prices may change. Confirm with the store before ordering.</div>
+  </section>
+  <script>
+  (() => {
+    const fab=document.getElementById('aiFab'), panel=document.getElementById('aiPanel'), closeBtn=document.getElementById('aiClose'), form=document.getElementById('aiForm'), input=document.getElementById('aiInput'), messages=document.getElementById('aiMessages'), send=document.getElementById('aiSend');
+    const SHOP_PHONE='918931911428';
+    const ORDER_PAGE='my-orders.html';
+    function openChat(){panel.classList.add('open');fab.style.display='none';input.focus()}
+    function closeChat(){panel.classList.remove('open');fab.style.display='flex'}
+    fab.addEventListener('click',openChat);closeBtn.addEventListener('click',closeChat);
+    document.querySelectorAll('[data-ai-question]').forEach(btn=>btn.addEventListener('click',()=>{openChat();input.value=btn.getAttribute('data-ai-question')||'';form.requestSubmit()}));
+    function addMessage(text,role){const el=document.createElement('div');el.className='ai-msg '+role;el.textContent=text;messages.appendChild(el);messages.scrollTop=messages.scrollHeight;return el}
+    function addLink(parent,href,label){const a=document.createElement('a');a.href=href;a.textContent=label;a.className='ai-action-link';parent.appendChild(a);return a}
+    function catalog(){return Array.isArray(window.allProductsForSearch)?window.allProductsForSearch:[]}
+    function priceOf(p){const v=Number(String(p.price??p.sellingPrice??p.selling_price??'').replace(/[^0-9.]/g,''));return Number.isFinite(v)&&v>0?v:Infinity}
+    function productText(p){return [p.name,p.category,p.store,p.description,p.brand,p.tags].filter(Boolean).join(' ').toLowerCase()}
+    function showProducts(list,title){
+      if(!list.length){addMessage('Is search mein abhi website catalog par product nahi mila. Aap product ka doosra naam ya category try karein.','bot');return}
+      const wrap=document.createElement('div');wrap.className='ai-msg bot';wrap.style.maxWidth='96%';
+      const heading=document.createElement('strong');heading.textContent=title+' ('+list.length+')';wrap.appendChild(heading);
+      const grid=document.createElement('div');grid.className='ai-product-list';
+      list.slice(0,8).forEach(p=>{
+        const card=document.createElement('a');card.className='ai-product-card';
+        const store=String(p.store||'').toLowerCase().replace(/[^a-z0-9-]/g,'');
+        card.href=store?store+'.html':'#shops';
+        const img=document.createElement('img');const raw=String(p.image||p.imageUrl||'').split(',')[0].trim();img.src=raw||'https://placehold.co/120x120?text=Product';img.alt=String(p.name||'Product');img.onerror=()=>{img.src='https://placehold.co/120x120?text=Product'};
+        const info=document.createElement('div');info.className='ai-product-info';const name=document.createElement('strong');name.textContent=String(p.name||'Product');const meta=document.createElement('small');meta.textContent=[p.category,p.store].filter(Boolean).join(' · ')||'Aaradhya Mart';info.append(name,meta);
+        const price=document.createElement('span');price.className='ai-product-price';price.textContent=priceOf(p)===Infinity?'Price N/A':'₹'+priceOf(p);
+        card.append(img,info,price);grid.appendChild(card);
+      });
+      wrap.appendChild(grid);messages.appendChild(wrap);messages.scrollTop=messages.scrollHeight;
+    }
+    function supportAnswer(q){
+      if(/where is my order|track.*order|order.*track|mera order|mera parcel|order status|order kahan|my order|order kaha|delivery status/.test(q)){
+        const box=addMessage('Aap apne order ka status “My Orders” page par check kar sakte hain. Wahan apne order details / registered mobile number ke saath tracking option dekhein. Agar status nahi dikhe, WhatsApp par order ID bhejkar support lein.','bot');
+        addLink(box,ORDER_PAGE,'📦 Open My Orders');addLink(box,'https://wa.me/'+SHOP_PHONE+'?text='+encodeURIComponent('Namaste, mujhe apne order ka status check karna hai. Order ID: '),'WhatsApp Support');return true;
+      }
+      if(/cancel.*order|order.*cancel|cancel kar|order radd/.test(q)){
+        const box=addMessage('Order cancel karne ke liye jaldi se WhatsApp support par order ID aur registered mobile number bhejein. Cancellation tabhi confirm maana jayega jab store se confirmation mil jaaye.','bot');addLink(box,'https://wa.me/'+SHOP_PHONE+'?text='+encodeURIComponent('Namaste, mujhe apna order cancel karwana hai. Order ID: '),'Request order cancellation');return true;
+      }
+      if(/return|exchange|replace|wapas|badalna|size.*change|wrong.*product|damaged/.test(q)){
+        const box=addMessage('Return / Exchange ke liye product receive karne ke baad order ID, product photo aur issue WhatsApp par share karein. Return/exchange approval store policy aur product condition ke hisaab se confirm hoga.','bot');addLink(box,'https://wa.me/'+SHOP_PHONE+'?text='+encodeURIComponent('Namaste, mujhe return/exchange support chahiye. Order ID: '),'Return / Exchange Support');return true;
+      }
+      if(/payment|pay|upi|cash|cod|cash on delivery|online payment|refund/.test(q)){
+        addMessage('Payment options order ke waqt available options par depend karte hain. Cash on Delivery ya online payment ki availability checkout / store se confirm karein. Refund ke liye order ID ke saath WhatsApp support se contact karein.','bot');return true;
+      }
+      if(/delivery|deliver|kitne din|kab tak|delivery time|shipping|pincode/.test(q)){
+        addMessage('Website par local delivery ka estimated time 1–2 hours aur 5 km radius ke liye mention hai. Doosre locations, pincode aur product availability ke liye store se confirm karein.','bot');return true;
+      }
+      if(/contact|phone|number|address|location|shop kahan/.test(q)){
+        addMessage('Aaradhya Mart\nBongariya Bazar, Azamgarh\nWhatsApp / Contact: +91 89319 11428','bot');return true;
+      }
+      if(/order kaise|how to order|place.*order|buy.*product|purchase|checkout/.test(q)){
+        const box=addMessage('Order karne ke liye product browse karein, product details dekhein aur website ke order process ko follow karein. Agar help chahiye to WhatsApp par product ka naam bhejein.','bot');addLink(box,'https://wa.me/'+SHOP_PHONE+'?text='+encodeURIComponent('Namaste, mujhe Aaradhya Mart se order karna hai.'),'Order on WhatsApp');return true;
+      }
+      if(/size|measurement|fit|sizing/.test(q)){addMessage('Size ke liye product listing mein available size options check karein. Agar size chart ya fitting confirm karni ho to product ka naam WhatsApp par bhejein.','bot');return true}
+      if(/offer|discount|sale|coupon/.test(q)){addMessage('Current offers website ke Deals section, banners aur product listing par check karein. Coupon ya discount ki validity checkout se pehle store se confirm karein.','bot');return true}
+      return false;
+    }
+    function googleSearch(q){const url='https://www.google.com/search?q='+encodeURIComponent(q);const box=addMessage('Aapke sawaal ke liye Google Web Search khol sakte hain: '+q,'bot');addLink(box,url,'🌐 Search the Web');}
+    function answer(text){
+      const q=text.toLowerCase().trim(),items=catalog();
+      if(supportAnswer(q))return;
+      if(/web search|latest fashion|fashion trend|trending|trend|2026.*fashion|fashion.*2026/.test(q)){googleSearch(text+' clothing fashion India 2026');return}
+      if(/sabse sasta|sasta product|cheapest|lowest price|cheap product|kam price|low price/.test(q)){const prices=items.filter(p=>priceOf(p)!==Infinity).sort((a,b)=>priceOf(a)-priceOf(b));showProducts(prices.slice(0,8),'Catalog ke sabse saste products');return}
+      const budgetMatch=q.match(/(?:₹|rs\.?|rupees?\s*)(\d{2,6})|(?:under|below|ke andar|within)\s*(\d{2,6})/i);const budget=budgetMatch?Number(budgetMatch[1]||budgetMatch[2]):null;
+      const categoryWords=[['winter',/winter|hoodie|jacket|sweater|sweatshirt|windcheater/],['men',/men|mens|male|ladk|boy|boys/],['women',/women|womens|female|ladki|girl|girls|saree/],['kids',/kids|child|children|baby/],['sports',/sports|track|gym|activewear/],['footwear',/footwear|shoes|shoe|sandal|slipper/],['accessories',/accessor|belt|wallet|cap|bag|watch/]];
+      const cat=categoryWords.find(x=>x[1].test(q));
+      if(budget!==null||/500 ke andar|under 500|below 500|budget|affordable|kam budget/.test(q)){
+        const limit=budget??500;let found=items.filter(p=>priceOf(p)<=limit);
+        if(cat)found=found.filter(p=>cat[1].test(productText(p)));
+        showProducts(found.sort((a,b)=>priceOf(a)-priceOf(b)),(cat?cat[0]+' ':'')+'₹'+limit+' ke andar products');return;
+      }
+      if(cat){showProducts(items.filter(p=>cat[1].test(productText(p))),(cat[0]+' collection ke products'));return}
+      if(/product search|search product|find product|dhundo|dikh|dikhao|chahiye|looking for|search/.test(q)){
+        const terms=q.replace(/product|search|find|dhundo|dikh|dikhao|chahiye|please|show|me|mujhe|koi|kuch|do|hai|the|a|an|for|under|below|ke|andar|rs\.?|rupees?|₹|\d+/g,' ').trim().split(/\s+/).filter(w=>w.length>1);
+        const found=items.filter(p=>terms.some(t=>productText(p).includes(t)));
+        showProducts(found,'Aapki product search ke results');return;
+      }
+      if(/category|kya milta|products|product|kapde|collection|catalog/.test(q)){addMessage('Aaradhya Mart par Men’s Wear, Women’s Wear, Kids Wear, Sports Wear, Winter Wear, Accessories aur Footwear categories hain. Product ka naam ya category likhein, main catalog mein search karunga.','bot');return}
+      if(/hello|hi|namaste|hey/.test(q)){addMessage('Namaste 🙏 Welcome to Aaradhya Mart! Main product search, price, order tracking page, cancellation, return/exchange, payment aur delivery se judi help kar sakta hoon.','bot');return}
+      googleSearch(text);
+    }
+    document.getElementById('aiSuggestions').addEventListener('click',e=>{const b=e.target.closest('.ai-suggestion');if(b){input.value=b.textContent;form.requestSubmit()}});
+    form.addEventListener('submit',e=>{e.preventDefault();const text=input.value.trim();if(!text||send.disabled)return;input.value='';addMessage(text,'user');send.disabled=true;try{answer(text)}catch(err){addMessage('Maaf kijiye, is sawaal ka jawab abhi nahi de paaya. Kripya WhatsApp support try karein.','bot');console.error('Aaradhya Smart Assistant:',err)}finally{send.disabled=false;input.focus()}});
+  })();
+  </script>
+</body>
+</html>
