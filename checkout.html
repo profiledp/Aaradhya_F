@@ -181,7 +181,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, getDocs, addDoc, doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, doc, runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = { apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y", authDomain: "aaradhya-mart.firebaseapp.com", projectId: "aaradhya-mart", storageBucket: "aaradhya-mart.firebasestorage.app", messagingSenderId: "146782544824", appId: "1:146782544824:web:d605e1971d3480fab1654d" };
     const app = initializeApp(firebaseConfig); const db = getFirestore(app);
@@ -189,6 +189,7 @@
     let orderProducts = [], selectedStore = "Aaradhya Mart", isCartOrder = false;
     let currentSubtotal = 0, currentDiscount = 0, finalTotal = 0, appliedCoupon = "";
     let availableCouponsList = [];
+    let appliedCouponDocId = "";
 
     // Calculate the displayed unit price from trusted product data and selected unit.
     // Never treat URL or localStorage price as authoritative.
@@ -255,7 +256,7 @@
         document.getElementById("couponsListBox").style.display = "block";
         let couponsHtml = "";
         cSnap.forEach(d => {
-          const c = d.data(); availableCouponsList.push(c);
+          const c = d.data(); availableCouponsList.push({ ...c, _docId: d.id });
           couponsHtml += `<div class="coupon-card" onclick="selectCoupon('${c.code}')"><div class="coupon-left"><h3>${c.discount}%</h3><p>OFF</p></div><div class="coupon-right"><h4>Get ${c.discount}% Discount</h4><p>Applicable on all products.</p><div class="coupon-code-box"><span>${c.code}</span><button type="button" class="copy-btn">TAP TO APPLY</button></div></div></div>`;
         });
         document.getElementById("couponsList").innerHTML = couponsHtml;
@@ -294,63 +295,135 @@
     document.getElementById("applyCouponBtn").onclick = async () => {
       const code = document.getElementById("couponCodeInput").value.trim().toUpperCase(); const msg = document.getElementById("couponMsg");
       if(!code) return;
-      const foundCoupon = availableCouponsList.find(c => c.code === code);
-      if(foundCoupon) {
-        currentDiscount = Math.round((currentSubtotal * foundCoupon.discount) / 100); appliedCoupon = code;
-        msg.style.display = "block"; msg.style.color = "#10b981"; msg.textContent = `✅ Coupon Applied! You saved ₹${currentDiscount}`; updateTotals();
-      } else {
-        msg.style.display = "block"; msg.style.color = "#ef4444"; msg.textContent = "❌ Invalid or Expired Coupon."; currentDiscount = 0; appliedCoupon = ""; updateTotals();
+      try {
+        // 4.1D: verify coupon from Firestore at apply time, not only cached page data.
+        const couponSnap = await getDocs(collection(db, "coupons"));
+        let freshCoupon = null, freshCouponDocId = "";
+        couponSnap.forEach(d => { const c = d.data(); if (String(c.code || d.id).trim().toUpperCase() === code) { freshCoupon = c; freshCouponDocId = d.id; } });
+        const percent = Number(freshCoupon?.discount);
+        if (freshCoupon && Number.isFinite(percent) && percent > 0 && percent <= 100) {
+          currentDiscount = Math.round((currentSubtotal * percent) / 100); appliedCoupon = code; appliedCouponDocId = freshCouponDocId;
+          msg.style.display = "block"; msg.style.color = "#10b981"; msg.textContent = `✅ Coupon Applied! You saved ₹${currentDiscount}`; updateTotals();
+        } else {
+          msg.style.display = "block"; msg.style.color = "#ef4444"; msg.textContent = "❌ Invalid or Expired Coupon."; currentDiscount = 0; appliedCoupon = ""; appliedCouponDocId = ""; updateTotals();
+        }
+      } catch (couponErr) {
+        msg.style.display = "block"; msg.style.color = "#ef4444"; msg.textContent = "❌ Coupon check failed. Please try again."; currentDiscount = 0; appliedCoupon = ""; appliedCouponDocId = ""; updateTotals();
       }
     }
 
+    // Steps 4.1A-E: client-side checkout hardening. Firestore Rules must still authorize safely.
+    let submitInProgress = false;
     document.getElementById("checkoutForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const btn = e.target.querySelector('button[type="submit"]'); btn.textContent = "Processing..."; btn.disabled = true;
-      
-      const newOrderId = "ORD-" + Date.now().toString().slice(-6);
-      const dateStr = new Date().toLocaleString("en-IN");
-      const name = custName.value, phone = custPhone.value, addr = custAddress.value + ", " + custCity.value + " - " + custPincode.value;
-      
-      const finalOrderItems = orderProducts.map(item => ({
-        id: item.id, name: item.name, qty: item.selectedQty, size: item.selectedSize, color: item.selectedColor, price: item.finalItemPrice
-      }));
+      if (submitInProgress) return; // 4.1C: guard double-click / repeated submit
+      submitInProgress = true;
+      const btn = e.target.querySelector('button[type="submit"]');
+      const originalButtonText = btn.textContent;
+      btn.textContent = "Processing...";
+      btn.disabled = true;
+
+      const name = document.getElementById("custName").value.trim();
+      const phone = document.getElementById("custPhone").value.trim();
+      const addr = document.getElementById("custAddress").value.trim() + ", " +
+        document.getElementById("custCity").value.trim() + " - " + document.getElementById("custPincode").value.trim();
+      const paymentMode = document.querySelector('input[name="payment"]:checked')?.value || "COD";
+      const code = appliedCoupon.trim().toUpperCase();
 
       try {
-        await addDoc(collection(db, "orders"), {
-          orderId: newOrderId, customerName: name, customerPhone: phone, address: addr, paymentMode: document.querySelector('input[name="payment"]:checked').value,
-          store: selectedStore, items: finalOrderItems, totalAmount: finalTotal, discountApplied: currentDiscount, couponUsed: appliedCoupon, orderDate: dateStr, status: "Pending"
+        if (!orderProducts.length) throw new Error("Cart is empty.");
+        if (!name || !/^[0-9]{10}$/.test(phone) || !document.getElementById("custAddress").value.trim() ||
+            !document.getElementById("custCity").value.trim() || !/^[0-9]{6}$/.test(document.getElementById("custPincode").value.trim())) {
+          throw new Error("Please check your name, 10-digit mobile number, address and 6-digit pincode.");
+        }
+        for (const item of orderProducts) {
+          const qty = Number(item.selectedQty);
+          if (!item.id || !Number.isInteger(qty) || qty < 1) throw new Error("Invalid item or quantity in cart.");
+        }
+
+        // 4.1E: one Firestore transaction reads current products/coupon, checks stock,
+        // recomputes amounts, creates a unique order doc, and decrements stock atomically.
+        const orderId = "ORD-" + Date.now().toString().slice(-6) + "-" + Math.random().toString(36).slice(2, 7).toUpperCase();
+        const orderRef = doc(db, "orders", orderId);
+        const uniqueProductIds = [...new Set(orderProducts.map(item => item.id))];
+        const productRefs = uniqueProductIds.map(id => doc(db, "products", id));
+        const productQtyById = new Map();
+        for (const item of orderProducts) productQtyById.set(item.id, (productQtyById.get(item.id) || 0) + Number(item.selectedQty));
+        const couponRef = code && appliedCouponDocId ? doc(db, "coupons", appliedCouponDocId) : null;
+        const dateStr = new Date().toLocaleString("en-IN");
+
+        const orderResult = await runTransaction(db, async (tx) => {
+          const existingOrder = await tx.get(orderRef);
+          if (existingOrder.exists()) throw new Error("This order was already submitted. Please do not submit again.");
+
+          const productSnapshots = [];
+          for (const ref of productRefs) productSnapshots.push(await tx.get(ref));
+          const productSnapshotById = new Map(uniqueProductIds.map((id, idx) => [id, productSnapshots[idx]]));
+          let liveSubtotal = 0;
+          const liveItems = [];
+          for (let i = 0; i < orderProducts.length; i++) {
+            const item = orderProducts[i], snap = productSnapshotById.get(item.id);
+            if (!snap.exists()) throw new Error(`${item.name} is no longer available.`);
+            const live = snap.data();
+            const stock = Number(live.stock);
+            const qty = Number(item.selectedQty);
+            if (!Number.isFinite(stock) || stock < 0) throw new Error(`Stock information unavailable for ${item.name}.`);
+            if (!Number.isInteger(qty) || qty < 1 || qty > stock) throw new Error(`${live.name || item.name}: only ${stock} item(s) currently in stock.`);
+            const price = calculateUnitPrice(live, item.selectedSize);
+            if (!Number.isFinite(price) || price < 0) throw new Error(`Invalid price for ${live.name || item.name}.`);
+            liveSubtotal += price * qty;
+            liveItems.push({ id: item.id, name: live.name || item.name, qty, size: item.selectedSize, color: item.selectedColor, price });
+          }
+
+          let liveDiscount = 0, liveCoupon = "";
+          if (couponRef) {
+            const couponSnap = await tx.get(couponRef);
+            if (!couponSnap.exists()) throw new Error("Coupon is no longer valid. Please remove it and try again.");
+            const coupon = couponSnap.data();
+            const couponCode = String(coupon.code || code).trim().toUpperCase();
+            const percent = Number(coupon.discount);
+            if (couponCode !== code || !Number.isFinite(percent) || percent <= 0 || percent > 100) throw new Error("Coupon is invalid.");
+            liveDiscount = Math.round(liveSubtotal * percent / 100);
+            liveCoupon = code;
+          }
+          const liveTotal = Math.max(0, liveSubtotal - liveDiscount);
+          tx.set(orderRef, {
+            orderId, customerName: name, customerPhone: phone, address: addr, paymentMode,
+            store: selectedStore, items: liveItems, totalAmount: liveTotal,
+            discountApplied: liveDiscount, couponUsed: liveCoupon, orderDate: dateStr, status: "Pending"
+          });
+          for (let i = 0; i < productRefs.length; i++) {
+            const productId = uniqueProductIds[i];
+            const qty = productQtyById.get(productId);
+            tx.update(productRefs[i], { stock: Number(productSnapshots[i].data().stock) - qty });
+          }
+          return { orderId, dateStr, items: liveItems, subtotal: liveSubtotal, discount: liveDiscount, total: liveTotal, coupon: liveCoupon };
         });
-        for (const item of orderProducts) { await updateDoc(doc(db, "products", item.id), { stock: increment(-item.selectedQty) }); }
 
-        saveOrderToLocal(newOrderId);
-
-      } catch(err) { showToast("Order failed! Please try again.", "error"); btn.textContent = "CONFIRM"; btn.disabled = false; return; }
-
-      showToast("Order Placed Successfully!");
-
-      document.getElementById("slipOrderId").textContent = newOrderId;
-      document.getElementById("slipDate").textContent = dateStr;
-      document.getElementById("slipName").textContent = name;
-      document.getElementById("slipPhone").textContent = phone;
-      document.getElementById("slipAddress").textContent = addr;
-      document.getElementById("slipPayment").textContent = document.querySelector('input[name="payment"]:checked').value;
-      
-      let itemsHtml = "";
-      orderProducts.forEach(item => {
-        itemsHtml += `<tr><td>${item.name} <br><small style="color:#777;">Size: ${item.selectedSize} | Colour: ${item.selectedColor}</small></td><td style="text-align:center;">${item.selectedQty}</td><td style="text-align:right;">₹${item.finalItemPrice * item.selectedQty}</td></tr>`;
-      });
-      document.getElementById("slipItemsBody").innerHTML = itemsHtml;
-      
-      document.getElementById("slipSubtotal").textContent = currentSubtotal;
-      document.getElementById("slipTotal").textContent = finalTotal;
-      if(currentDiscount > 0) { document.getElementById("slipDiscountRow").style.display = "flex"; document.getElementById("slipDiscount").textContent = currentDiscount; }
-
-      document.getElementById("orderSlipModal").classList.add("active");
-
-      const msg = `*NEW ORDER*\n*ID: ${newOrderId}*\nTotal: ₹${finalTotal} ${currentDiscount ? `(Coupon: ${appliedCoupon})` : ''}\nName: ${name}\nPhone: ${phone}\nAddress: ${addr}\n\n*Note:* I understand 20% advance is required for confirmation.`;
-      if(isCartOrder) localStorage.removeItem("aaradhyaMartCart");
-      
-      setTimeout(() => { window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank"); }, 1000);
+        // 4.1C: store order ID once locally; 4.1E: DB transaction prevents partial order/stock writes.
+        saveOrderToLocal(orderResult.orderId);
+        showToast("Order Placed Successfully!");
+        document.getElementById("slipOrderId").textContent = orderResult.orderId;
+        document.getElementById("slipDate").textContent = orderResult.dateStr;
+        document.getElementById("slipName").textContent = name;
+        document.getElementById("slipPhone").textContent = phone;
+        document.getElementById("slipAddress").textContent = addr;
+        document.getElementById("slipPayment").textContent = paymentMode;
+        document.getElementById("slipItemsBody").innerHTML = orderResult.items.map(item =>
+          `<tr><td>${item.name} <br><small style="color:#777;">Size: ${item.size} | Colour: ${item.color}</small></td><td style="text-align:center;">${item.qty}</td><td style="text-align:right;">₹${item.price * item.qty}</td></tr>`).join("");
+        document.getElementById("slipSubtotal").textContent = orderResult.subtotal;
+        document.getElementById("slipTotal").textContent = orderResult.total;
+        if (orderResult.discount > 0) { document.getElementById("slipDiscountRow").style.display = "flex"; document.getElementById("slipDiscount").textContent = orderResult.discount; }
+        document.getElementById("orderSlipModal").classList.add("active");
+        const msg = `*NEW ORDER*\n*ID: ${orderResult.orderId}*\nTotal: ₹${orderResult.total} ${orderResult.discount ? `(Coupon: ${orderResult.coupon})` : ''}\nName: ${name}\nPhone: ${phone}\nAddress: ${addr}\n\n*Note:* I understand 20% advance is required for confirmation.`;
+        if (isCartOrder) localStorage.removeItem("aaradhyaMartCart");
+        setTimeout(() => { window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank"); }, 1000);
+      } catch (err) {
+        showToast(err?.message || "Order failed. Please try again.", "error");
+        submitInProgress = false;
+        btn.textContent = originalButtonText;
+        btn.disabled = false;
+      }
     });
 
     window.closeSlipAndRedirect = function() {
