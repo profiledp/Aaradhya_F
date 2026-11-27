@@ -271,13 +271,16 @@
     }
     .header-search-results.active { display: block; }
     .am-search-suggestion { display:flex; align-items:center; gap:12px; width:100%;
-      padding:11px 16px; border:0; background:#fff; text-align:left; cursor:pointer;
-      color:#263445; text-decoration:none; font:inherit; }
+      padding:10px 16px; border:0; background:#fff; text-align:left; cursor:pointer;
+      color:#263445; text-decoration:none; font:inherit; min-height:72px; box-sizing:border-box; }
     .am-search-suggestion:hover, .am-search-suggestion:focus { background:#f5f7fa; outline:none; }
     .am-search-icon { width:24px; flex:0 0 24px; color:#87909a; text-align:center; font-size:17px; }
-    .am-search-text { min-width:0; flex:1; }
-    .am-search-title { display:block; font-size:13px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-    .am-search-sub { display:block; margin-top:2px; color:#2563eb; font-size:12px; }
+    .am-search-thumb { width:54px; height:54px; flex:0 0 54px; object-fit:contain; border:1px solid #eef0f2; border-radius:8px; background:#fff; }
+    .am-search-text { min-width:0; flex:1; display:flex; flex-direction:column; justify-content:center; }
+    .am-search-title { display:block; font-size:13px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#263445; }
+    .am-search-sub { display:block; margin-top:2px; color:#64748b; font-size:12px; }
+    .am-search-price { display:block; margin-top:3px; color:#b66a14; font-size:12px; font-weight:600; }
+    @media (max-width: 480px) { .am-search-suggestion { gap:9px; padding:9px 12px; min-height:66px; } .am-search-thumb { width:48px; height:48px; flex-basis:48px; } }
     .am-search-section { padding:8px 16px 5px; color:#6b7280; font-size:10px; text-transform:uppercase; letter-spacing:.06em; }
     .am-search-empty { padding:14px 16px; color:#6b7280; font-size:12px; }
     .am-search-clear-history { margin:4px 12px 6px auto; display:block; border:0; background:transparent; color:#2563eb; font-size:11px; cursor:pointer; }
@@ -758,12 +761,12 @@
         q=String(q||'').trim().toLowerCase();
         if(!q){
           const history=historyGet();
-          if(!history.length){resultsBox.innerHTML='<div class="am-search-empty">Search products, brands and categories to get started.</div>';}
+          if(!history.length){resultsBox.innerHTML='';}
           else resultsBox.innerHTML='<div class="am-search-section">Recent searches</div>'+history.map(term=>`<button type="button" class="am-search-suggestion" data-history="${safe(term)}"><span class="am-search-icon">◷</span><span class="am-search-text"><span class="am-search-title">${safe(term)}</span><span class="am-search-sub">Recent search</span></span></button>`).join('')+'<button type="button" class="am-search-clear-history" data-clear-history>Clear history</button>';
         } else {
           const matches=allProductsForSearch.filter(p=>productText(p).includes(q)).slice(0,7);
           if(!matches.length){resultsBox.innerHTML=`<div class="am-search-empty">No products found for “${safe(input.value)}”</div>`;}
-          else resultsBox.innerHTML='<div class="am-search-section">Products</div>'+matches.map(p=>{const store=String(p.store||'');const img=String(p.image||p.imageUrl||p.images?.[0]||'').split(',')[0].trim();return `<a class="am-search-suggestion" role="option" href="${storeFile(store)}"><span class="am-search-icon">⌕</span><span class="am-search-text"><span class="am-search-title">${safe(p.name||'Product')}</span><span class="am-search-sub">${safe(p.category||'General')} · ${safe(store)}</span></span></a>`;}).join('');
+          else resultsBox.innerHTML='<div class="am-search-section">Products</div>'+matches.map(p=>{const store=String(p.store||'');const img=String(p.image||p.imageUrl||p.images?.[0]||'').split(',')[0].trim();const price=Number(p.price??p.sellingPrice??p.selling_price);const imageSrc=/^(https:\/\/|assets\/|data:image\/)/i.test(img)?safe(img):'https://placehold.co/100x100?text=Product';const priceText=Number.isFinite(price)&&price>0?'₹'+price.toLocaleString('en-IN'):'';return `<a class="am-search-suggestion" role="option" href="${storeFile(store)}"><img class="am-search-thumb" src="${imageSrc}" alt="${safe(p.name||'Product')}" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/100x100?text=Product'"><span class="am-search-text"><span class="am-search-title">${safe(p.name||'Product')}</span><span class="am-search-sub">${safe(p.category||'General')} · ${safe(store)}</span>${priceText?`<span class="am-search-price">${priceText}</span>`:''}</span></a>`;}).join('');
         }
         resultsBox.classList.add('active');
       }
