@@ -687,6 +687,10 @@
           const oldStatus = orderData.status || "Pending";
           if (oldStatus === newStatus) return;
 
+          // Keep public order-tracking record synchronized with Admin status.
+          const trackingRef = orderData.orderId ? doc(db, "orderTracking", orderData.orderId) : null;
+          const trackingSnap = trackingRef ? await transaction.get(trackingRef) : null;
+
           const items = Array.isArray(orderData.items) ? orderData.items : [];
           const qtyByProduct = new Map();
           for (const item of items) {
@@ -730,6 +734,11 @@
           if (shouldDeduct) updates.stockDeducted = true;
           if (shouldRestock) updates.stockDeducted = false;
           transaction.update(orderRef, updates);
+          if (trackingRef) {
+            const trackingData = trackingSnap && trackingSnap.exists() ? trackingSnap.data() : {};
+            const trackingHistory = { ...(trackingData.statusHistory || orderData.statusHistory || {}), [newStatus]: timeStr };
+            transaction.set(trackingRef, { orderId: orderData.orderId, status: newStatus, statusHistory: trackingHistory }, { merge: true });
+          }
         });
         sel.className = `status-select status-${newStatus.replace(/\s+/g, '')}`;
         showToast("Status Updated! Stock adjusted only when Confirmed.");
