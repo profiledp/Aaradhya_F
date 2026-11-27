@@ -332,7 +332,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, getDocs, doc, getDoc, setDoc, deleteDoc, updateDoc, increment, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, doc, getDoc, setDoc, deleteDoc, updateDoc, increment, query, orderBy, runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
     const firebaseConfig = { apiKey: "AIzaSyAffhI69b-piezGsdI5E1lUVcNj9nobG8Y", authDomain: "aaradhya-mart.firebaseapp.com", projectId: "aaradhya-mart", storageBucket: "aaradhya-mart.firebasestorage.app", messagingSenderId: "146782544824", appId: "1:146782544824:web:d605e1971d3480fab1654d" };
@@ -668,51 +668,75 @@
       loadOrders();
     };
 
+    // Stock is deducted exactly once when an order moves to Confirmed.
+    // A cancellation restores stock only if this order previously deducted it.
+    // All product stock updates and the order flag/status are committed atomically.
     window.updateOrder = async (id, newStatus, sel) => {
+      const previousValue = sel.value;
       try {
         sel.disabled = true;
         const orderRef = doc(db, "orders", id);
-        const orderSnap = await getDoc(orderRef);
-        if (orderSnap.exists()) {
+        await runTransaction(db, async (transaction) => {
+          const orderSnap = await transaction.get(orderRef);
+          if (!orderSnap.exists()) throw new Error("Order not found.");
           const orderData = orderSnap.data();
-          const oldStatus = orderData.status;
-          
-          // Legacy orders may have had stock deducted at checkout. Website dual-mode
-          // orders (orderSource: "website") do not deduct stock automatically, so
-          // cancelling/reopening them must not adjust stock and create false counts.
-          if (orderData.orderSource !== "website") {
-            if (newStatus === "Cancelled" && oldStatus !== "Cancelled") {
-              for (const item of orderData.items) { await updateDoc(doc(db, "products", item.id), { stock: increment(item.qty) }); }
-            } else if (oldStatus === "Cancelled" && newStatus !== "Cancelled") {
-              for (const item of orderData.items) { await updateDoc(doc(db, "products", item.id), { stock: increment(-item.qty) }); }
+          const oldStatus = orderData.status || "Pending";
+          if (oldStatus === newStatus) return;
+
+          const items = Array.isArray(orderData.items) ? orderData.items : [];
+          const qtyByProduct = new Map();
+          for (const item of items) {
+            const productId = item.id || item.productId;
+            const qty = Number(item.qty ?? item.quantity);
+            if (!productId || !Number.isInteger(qty) || qty <= 0) throw new Error("Invalid order item.");
+            qtyByProduct.set(productId, (qtyByProduct.get(productId) || 0) + qty);
+          }
+
+          const shouldDeduct = newStatus === "Confirmed" && orderData.stockDeducted !== true;
+          const shouldRestock = newStatus === "Cancelled" && orderData.stockDeducted === true;
+          const productRefs = [];
+          const productSnaps = [];
+          if (shouldDeduct || shouldRestock) {
+            for (const [productId, qty] of qtyByProduct) {
+              const productRef = doc(db, "products", productId);
+              const productSnap = await transaction.get(productRef);
+              if (!productSnap.exists()) throw new Error(`Product missing: ${productId}`);
+              productRefs.push({ ref: productRef, id: productId, qty });
+              productSnaps.push(productSnap);
+            }
+            if (shouldDeduct) {
+              for (let i = 0; i < productRefs.length; i++) {
+                const stock = Number(productSnaps[i].data().stock);
+                const qty = productRefs[i].qty;
+                if (!Number.isFinite(stock) || stock < qty) {
+                  throw new Error(`${productSnaps[i].data().name || productRefs[i].id}: insufficient stock (available ${Math.max(0, stock || 0)}).`);
+                }
+              }
+            }
+            for (const product of productRefs) {
+              const currentStock = Number(productSnaps[productRefs.indexOf(product)].data().stock || 0);
+              transaction.update(product.ref, { stock: currentStock + (shouldDeduct ? -product.qty : product.qty) });
             }
           }
 
           const now = new Date();
           const timeStr = now.toLocaleString("en-IN", { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-          
-          let history = orderData.statusHistory || {};
-          history[newStatus] = timeStr;
-
-          await updateDoc(orderRef, {
-            status: newStatus,
-            statusHistory: history
-          });
-
-          // Sync the minimal, non-PII public tracking document.
-          await setDoc(doc(db, "orderTracking", orderData.orderId), {
-            orderId: orderData.orderId,
-            status: newStatus,
-            orderDate: orderData.orderDate || "",
-            statusHistory: history,
-            updatedAt: now
-          }, { merge: true });
-
-          sel.className = `status-select status-${newStatus.replace(/\s+/g, '')}`;
-          showToast("Status Updated!");
-        }
-      } catch (error) { showToast("Status update failed!", "error"); } finally { sel.disabled = false; }
+          const history = { ...(orderData.statusHistory || {}), [newStatus]: timeStr };
+          const updates = { status: newStatus, statusHistory: history };
+          if (shouldDeduct) updates.stockDeducted = true;
+          if (shouldRestock) updates.stockDeducted = false;
+          transaction.update(orderRef, updates);
+        });
+        sel.className = `status-select status-${newStatus.replace(/\s+/g, '')}`;
+        showToast("Status Updated! Stock adjusted only when Confirmed.");
+        if (typeof loadOrders === "function") loadOrders();
+      } catch (error) {
+        console.error("Order status / stock update error:", error);
+        showToast(error?.message || "Status update failed!", "error");
+        sel.value = previousValue;
+      } finally { sel.disabled = false; }
     };
+
 
     window.openReceipt = async function(orderDocId) {
       try {
