@@ -37,6 +37,27 @@ function safeImage(value) {
     : "https://placehold.co/600x800/f1f0ed/10243b?text=No+Image";
 }
 
+/* Universal Stock Status: 0 = Out, 1–9 = Low, 10+ = In. */
+function getStockStatus(p) {
+  const raw = p?.stock;
+  if (raw === undefined || raw === null || raw === '' || !Number.isFinite(Number(raw))) return null;
+  const qty = Number(raw);
+  if (qty <= 0) return { key: 'out', label: 'Out of Stock', short: 'OUT OF STOCK', qty };
+  if (qty < 10) return { key: 'low', label: 'Low Stock', short: `LOW STOCK · ${qty} LEFT`, qty };
+  return { key: 'in', label: 'In Stock', short: 'IN STOCK', qty };
+}
+function stockStatusTextHtml(p) {
+  const s = getStockStatus(p);
+  if (!s) return "<p style='margin-top:10px;'>Status: Availability on request</p>";
+  if (s.key === 'out') return "<p style='margin-top:10px;color:#b91c1c;font-weight:bold;'>Status: Out of Stock</p>";
+  if (s.key === 'low') return `<p style='margin-top:10px;color:#d97706;font-weight:bold;'>Status: Low Stock · ${s.qty} left</p>`;
+  return `<p style='margin-top:10px;color:#247a3b;font-weight:bold;'>Status: In Stock · ${s.qty} available</p>`;
+}
+function stockBadgeHtml(p) {
+  const status = getStockStatus(p);
+  return status ? `<span class="stock-status-badge stock-${status.key}">${status.short}</span>` : '';
+}
+
 /* ---------- Multi-image helper ---------- */
 /* Returns array of image URLs for any product.
    Handles new `images` array + legacy single `image` field. */
@@ -60,6 +81,7 @@ function ensureUniversalFilters() {
     grid.parentNode.insertBefore(wrap, grid);
   }
   wrap.className = 'universal-search-wrap';
+  if (!document.getElementById('universalStockBadgeStyles')) { const st = document.createElement('style'); st.id = 'universalStockBadgeStyles'; st.textContent = '\n    /* Universal stock status badges */\n    .stock-status-badge{position:absolute;top:7px;right:7px;z-index:4;padding:4px 7px;border-radius:5px;font-size:9px;line-height:1.2;font-weight:800;letter-spacing:.2px;max-width:calc(100% - 14px);white-space:nowrap}\n    .stock-in{background:#e8f5e9;color:#247a3b}.stock-low{background:#fff3d6;color:#986900}.stock-out{background:#fde8e8;color:#b91c1c}\n    @media(max-width:640px){.stock-status-badge{top:5px;right:5px;padding:3px 5px;font-size:8px}}\n'; document.head.appendChild(st); }
   wrap.innerHTML = `
     <div class="uf-search-box">
       <span class="uf-search-icon" aria-hidden="true">⌕</span>
@@ -164,7 +186,7 @@ function renderStore() {
     const imgCountBadge = imgs.length > 1 ? `<span class="card-images-count">📷 ${imgs.length}</span>` : '';
     const storeBadge = storeChoice === 'All' ? `<span class="uf-store-badge">${escapeText(p.store || '')}</span>` : '';
     return `<article class="product-card" style="${isOut ? 'opacity:0.8;' : ''}">
-      <div class="product-image-wrap" data-open="${escapeText(p.id)}"><img src="${safeImage(cover)}" alt="${escapeText(p.name)}" loading="lazy" onerror="this.src='https://placehold.co/600x800/f1f0ed/10243b?text=No+Image'">${p.tag ? `<span class="product-tag">${escapeText(p.tag)}</span>` : ''}${imgCountBadge}${storeBadge}${isOut ? `<span class="out-of-stock-tag">SOLD OUT</span>` : ''}</div>
+      <div class="product-image-wrap" data-open="${escapeText(p.id)}"><img src="${safeImage(cover)}" alt="${escapeText(p.name)}" loading="lazy" onerror="this.src='https://placehold.co/600x800/f1f0ed/10243b?text=No+Image'">${p.tag ? `<span class="product-tag">${escapeText(p.tag)}</span>` : ''}${stockBadgeHtml(p)}${imgCountBadge}${storeBadge}${isOut ? `<span class="out-of-stock-tag">SOLD OUT</span>` : ''}</div>
       <div class="product-info"><span class="product-category">${escapeText(p.category)}</span><h3>${escapeText(p.name)}</h3><div class="product-price">${p.price === 0 ? 'Custom Quote' : money(p.price)}${Number(p.originalPrice) > Number(p.price) && p.originalPrice > 0 ? `<span class="old-price">${money(p.originalPrice)}</span>` : ''}</div>
       <div class="product-actions"><button class="btn-view" data-open="${escapeText(p.id)}">Details</button><button class="btn-order" data-order="${escapeText(p.id)}" ${isOut ? 'disabled' : ''}>${isOut ? 'Sold Out' : 'Order'}</button></div></div></article>`;
   }).join('');
@@ -230,11 +252,7 @@ function openProduct(id) {
           ${p.colors.map(c => `<option>${escapeText(c)}</option>`).join("")}
         </select>` : ''}
 
-        <p style="margin-top:10px;">
-          Status: ${Number(p.stock) > 0
-            ? "<span style='color:var(--success);font-weight:bold;'>In Stock</span>"
-            : "<span style='color:#ef4444;font-weight:bold;'>Out of Stock</span>"}
-        </p>
+        ${stockStatusTextHtml(p)}
 
         <button class="button-navy" id="dialogOrder" ${Number(p.stock) <= 0 ? 'disabled' : ''} style="margin-top:15px;">
           ${Number(p.stock) <= 0 ? 'Out of Stock' : 'Order on WhatsApp ↗'}
