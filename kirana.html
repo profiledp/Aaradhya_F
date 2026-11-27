@@ -73,7 +73,27 @@
       .header-wa, .header-support-btn { padding: 9px 12px !important; font-size: 10px !important; }
       .header-support-btn svg { display: none; }
     }
-  </style>
+  
+    /* Aaradhya Kirana product-grid refresh: scoped to this page */
+    .shop-section { max-width: 1560px; margin: 0 auto; padding-top: 34px !important; padding-bottom: 110px !important; }
+    .shop-heading-row { margin-bottom: 18px !important; }
+    .shop-controls { gap: 14px !important; margin-bottom: 18px !important; }
+    .shop-controls .search-field { min-width: 0; box-shadow: 0 2px 8px rgba(16,36,59,.035); }
+    .category-nav { gap: 9px !important; margin-bottom: 22px !important; padding-bottom: 16px !important; }
+    .cat-nav-btn { padding: 10px 20px !important; }
+    .shop-trust-row { margin-bottom: 22px !important; border-radius: 10px !important; }
+    .product-grid { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 18px !important; align-items: stretch; }
+    .product-card { padding: 14px !important; border-radius: 15px !important; box-shadow: 0 2px 8px rgba(16,36,59,.035); min-width: 0; }
+    .product-card:hover { transform: translateY(-3px) !important; box-shadow: 0 12px 26px rgba(16,36,59,.10) !important; }
+    .product-image-wrap { aspect-ratio: 1 / 0.88 !important; border-radius: 11px !important; margin-bottom: 13px !important; background: linear-gradient(180deg,#f8fafc,#f1f4f7) !important; }
+    .product-image-wrap img { padding: 12px !important; }
+    .product-card h3, .product-card .product-name { line-height: 1.35; }
+    .product-card .product-price, .product-card .price { font-size: 17px; }
+    .product-card button { min-height: 40px; border-radius: 8px; }
+    @media (max-width: 1100px) { .shop-section { max-width: 100%; } .product-grid { grid-template-columns: repeat(3, minmax(0,1fr)) !important; gap: 14px !important; } }
+    @media (max-width: 720px) { .shop-section { padding-left: 4% !important; padding-right: 4% !important; padding-top: 24px !important; } .shop-controls { flex-direction: column; gap: 9px !important; } .shop-controls select { width: 100%; } .product-grid { grid-template-columns: repeat(2, minmax(0,1fr)) !important; gap: 11px !important; } .product-card { padding: 9px !important; border-radius: 12px !important; } .product-image-wrap { aspect-ratio: 1 / 1 !important; } .cat-nav-btn { padding: 9px 14px !important; } }
+    @media (max-width: 380px) { .product-grid { gap: 8px !important; } .product-card { padding: 7px !important; } }
+</style>
 </head>
 <body>
   <header class="site-header">
