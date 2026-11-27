@@ -210,7 +210,7 @@
         </div>
 
         <table class="admin-table">
-          <thead><tr><th>Image</th><th>Store</th><th>Name</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
+          <thead><tr><th>Image</th><th>Store</th><th>Product ID</th><th>Name</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
           <tbody id="productRows"></tbody>
         </table>
       </div>
@@ -462,13 +462,13 @@
       }
 
       if (currentAdminSearchQuery) {
-        filtered = filtered.filter(p => p.name.toLowerCase().includes(currentAdminSearchQuery));
+        filtered = filtered.filter(p => (p.name || "").toLowerCase().includes(currentAdminSearchQuery) || String(p.productId || p.id || "").toLowerCase().includes(currentAdminSearchQuery));
       }
 
       const tbody = document.getElementById("productRows");
 
       if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 20px; color: #777;">No products found matching your criteria.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 20px; color: #777;">No products found matching your criteria.</td></tr>`;
         return;
       }
 
@@ -478,7 +478,7 @@
         return `
           <tr>
             <td><img src="${thumb}" style="width:44px;height:44px;object-fit:cover;border-radius:6px;" onerror="this.src='https://placehold.co/60x60?text=?'"></td>
-            <td>${p.store}</td><td>${p.name}</td><td>₹${p.price}</td>
+            <td>${p.store}</td><td><strong>${p.productId || p.id}</strong></td><td>${p.name}</td><td>₹${p.price}</td>
             <td><input type="number" class="stock-input ${p.stock <= 5 ? 'stock-low' : ''}" value="${p.stock}" data-stock-id="${p.id}"></td>
             <td>
               <button class="btn btn-primary" style="padding:5px 10px; font-size:11px;" data-edit="${p.id}">Edit</button>
@@ -543,7 +543,10 @@
       processImageInput(); 
 
       const saveBtn = document.getElementById("saveBtn");
-      const id = document.getElementById("editId").value || "P" + Date.now();
+      const editId = document.getElementById("editId").value;
+      const selectedStore = document.getElementById("pStore").value;
+      const storePrefix = { Fashion: "AF", Kirana: "AK", Print: "AP" }[selectedStore] || "AM";
+      const id = editId || `${storePrefix}-${Date.now()}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
 
       if (currentImagesArray.length === 0) {
         showToast("Please add at least one image URL.", "error");
@@ -554,7 +557,8 @@
 
       try {
         await setDoc(doc(db, "products", id), {
-          store: document.getElementById("pStore").value,
+          productId: id,
+          store: selectedStore,
           name: document.getElementById("pName").value,
           category: document.getElementById("pCategory").value,
           price: Number(document.getElementById("pPrice").value),
@@ -611,7 +615,7 @@
       const ordersList = document.getElementById("ordersList");
       ordersList.innerHTML = docs.map(d => {
         const o = d.data();
-        const itemsStr = o.items.map(i => `${i.name} (x${i.qty})`).join("<br>");
+        const itemsStr = o.items.map(i => `${i.name} <small style="color:#777;">[Product ID: ${i.productId || i.id || i.productID || "N/A"}]</small> (x${i.qty})`).join("<br>");
         const statusClass = `status-${o.status.replace(/\s+/g, '')}`;
         return `
           <div class="order-card">
