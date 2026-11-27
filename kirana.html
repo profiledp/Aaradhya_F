@@ -116,6 +116,11 @@
 .product-badge.special-price, .product-badge.offer, .product-badge.discount { background:#b91c1c !important; }
 .product-badge.popular { background:#7c3aed !important; }
 @media(max-width:640px){ .product-badge { top:5px !important; left:5px !important; padding:3px 6px !important; font-size:8px !important; } }
+
+    /* Universal stock status badges */
+    .stock-status-badge{position:absolute;top:7px;right:7px;z-index:4;padding:4px 7px;border-radius:5px;font-size:9px;line-height:1.2;font-weight:800;letter-spacing:.2px;max-width:calc(100% - 14px);white-space:nowrap}
+    .stock-in{background:#e8f5e9;color:#247a3b}.stock-low{background:#fff3d6;color:#986900}.stock-out{background:#fde8e8;color:#b91c1c}
+    @media(max-width:640px){.stock-status-badge{top:5px;right:5px;padding:3px 5px;font-size:8px}}
 </style>
 </head>
 <body>
@@ -215,6 +220,27 @@
     }
 
     function money(v) { return "₹" + Number(v||0).toLocaleString("en-IN"); }
+/* Universal Stock Status: 0 = Out, 1–9 = Low, 10+ = In. */
+function getStockStatus(p) {
+  const raw = p?.stock;
+  if (raw === undefined || raw === null || raw === '' || !Number.isFinite(Number(raw))) return null;
+  const qty = Number(raw);
+  if (qty <= 0) return { key: 'out', label: 'Out of Stock', short: 'OUT OF STOCK', qty };
+  if (qty < 10) return { key: 'low', label: 'Low Stock', short: `LOW STOCK · ${qty} LEFT`, qty };
+  return { key: 'in', label: 'In Stock', short: 'IN STOCK', qty };
+}
+function stockStatusTextHtml(p) {
+  const s = getStockStatus(p);
+  if (!s) return "<p style='margin-top:10px;'>Status: Availability on request</p>";
+  if (s.key === 'out') return "<p style='margin-top:10px;color:#b91c1c;font-weight:bold;'>Status: Out of Stock</p>";
+  if (s.key === 'low') return `<p style='margin-top:10px;color:#d97706;font-weight:bold;'>Status: Low Stock · ${s.qty} left</p>`;
+  return `<p style='margin-top:10px;color:#247a3b;font-weight:bold;'>Status: In Stock · ${s.qty} available</p>`;
+}
+function stockBadgeHtml(p) {
+  const status = getStockStatus(p);
+  return status ? `<span class="stock-status-badge stock-${status.key}">${status.short}</span>` : '';
+}
+
     
     function calculateDisplayPrice(basePrice, unitStr, isPerKg) {
       if(!isPerKg) return basePrice;
@@ -264,6 +290,7 @@
             <img src="${firstImg}" alt="${p.name}" loading="lazy" onerror="this.src='${PLACEHOLDER}'">
             <div class="quick-view-overlay">Quick View</div>
             ${(p.badge || p.tag) ? `<span class="product-tag product-badge ${String(p.badge || p.tag).toLowerCase().replace(/[^a-z0-9]+/g,'-')}">${p.badge || p.tag}</span>` : ''}
+            ${stockBadgeHtml(p)}
             ${isOut ? `<span class="out-of-stock-tag">OUT OF STOCK</span>` : ''}
           </div>
           <div class="product-info">
@@ -350,10 +377,11 @@
             <h2>${p.name}</h2>
             <div class="product-price" id="dialog-price-display">${money(initialPrice)}</div>
             <p>${p.description || 'Fresh and high quality grocery item.'}</p>
+            ${stockStatusTextHtml(p)}
             <label>Size:</label>
             <select id="sizeChoice" onchange="updateDialogPriceDisplay(${p.price}, ${p.isPerKg})">${(p.sizes||[p.unit||'Standard']).map(s=>`<option value="${s}">${s}</option>`).join("")}</select>
-            <button class="button-navy" id="dialogCart" style="margin-top:10px;">ADD TO CART 🛒</button>
-            <button class="button-navy" id="dialogOrder" style="background:#c5a36b; color:#10243b; margin-top:5px;">BUY NOW ↗</button>
+            <button class="button-navy" id="dialogCart" style="margin-top:10px;" ${Number(p.stock) <= 0 ? 'disabled' : ''}>${Number(p.stock) <= 0 ? 'OUT OF STOCK' : 'ADD TO CART 🛒'}</button>
+            <button class="button-navy" id="dialogOrder" style="background:#c5a36b; color:#10243b; margin-top:5px;" ${Number(p.stock) <= 0 ? 'disabled' : ''}>${Number(p.stock) <= 0 ? 'OUT OF STOCK' : 'BUY NOW ↗'}</button>
             
             <div class="review-list">
               <h4 style="font-size:13px; margin:0 0 5px; color:var(--navy);">Customer Reviews</h4>
