@@ -107,6 +107,15 @@
     @media (max-width: 900px) { .product-grid { grid-template-columns: repeat(3, minmax(0,1fr)) !important; gap: 10px !important; } }
     @media (max-width: 640px) { .shop-section { padding-left: 4% !important; padding-right: 4% !important; padding-top: 20px !important; } .shop-controls { flex-direction: column; gap: 8px !important; } .shop-controls select { width: 100%; } .product-grid { grid-template-columns: repeat(2, minmax(0,1fr)) !important; gap: 9px !important; } .product-card { padding: 8px !important; border-radius: 10px !important; } .product-image-wrap { aspect-ratio: 1 / 1 !important; margin-bottom: 8px !important; } .cat-nav-btn { padding: 8px 12px !important; } .product-card button { min-height: 38px; } }
     @media (max-width: 360px) { .product-grid { gap: 7px !important; } .product-card { padding: 6px !important; } .product-card h3, .product-card .product-name { font-size: 12px; } .product-card button { font-size: 11px; padding-left: 5px; padding-right: 5px; } }
+
+/* Product badge styling: labels are rendered only when product data contains badge/tag. */
+.product-image-wrap { position:relative !important; overflow:hidden !important; }
+.product-badge { position:absolute !important; top:7px !important; left:7px !important; z-index:3 !important; display:inline-flex !important; align-items:center !important; max-width:calc(100% - 14px) !important; padding:4px 7px !important; border-radius:5px !important; background:#10243b !important; color:#fff !important; font-size:9px !important; line-height:1.2 !important; font-weight:800 !important; letter-spacing:.3px !important; box-shadow:0 2px 5px rgba(16,36,59,.14) !important; white-space:nowrap !important; overflow:hidden !important; text-overflow:ellipsis !important; }
+.product-badge.best-seller, .product-badge.best-selling { background:#d97706 !important; }
+.product-badge.new, .product-badge.new-arrival { background:#0f766e !important; }
+.product-badge.special-price, .product-badge.offer, .product-badge.discount { background:#b91c1c !important; }
+.product-badge.popular { background:#7c3aed !important; }
+@media(max-width:640px){ .product-badge { top:5px !important; left:5px !important; padding:3px 6px !important; font-size:8px !important; } }
 </style>
 </head>
 <body>
@@ -254,7 +263,7 @@
           <div class="product-image-wrap" data-open="${p.id}">
             <img src="${firstImg}" alt="${p.name}" loading="lazy" onerror="this.src='${PLACEHOLDER}'">
             <div class="quick-view-overlay">Quick View</div>
-            ${p.tag ? `<span class="product-tag">${p.tag}</span>` : ''}
+            ${(p.badge || p.tag) ? `<span class="product-tag product-badge ${String(p.badge || p.tag).toLowerCase().replace(/[^a-z0-9]+/g,'-')}">${p.badge || p.tag}</span>` : ''}
             ${isOut ? `<span class="out-of-stock-tag">OUT OF STOCK</span>` : ''}
           </div>
           <div class="product-info">
