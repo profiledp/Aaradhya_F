@@ -28,6 +28,17 @@
 
     .admin-shell { max-width: 1200px; margin: 40px auto; padding: 20px; display: none; }
     .admin-panel { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
+    /* Dashboard v2 additions */
+    .dashboard-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px; margin-bottom:18px; }
+    .dash-card { border:1px solid #e7edf3; border-radius:12px; padding:18px; background:#fff; box-shadow:0 3px 12px rgba(16,36,59,.04); }
+    .dash-card .dash-label { color:#64748b; font-size:12px; font-weight:700; margin-bottom:8px; }
+    .dash-card .dash-value { color:#10243b; font-size:26px; font-weight:800; line-height:1.2; }
+    .dash-card .dash-note { color:#94a3b8; font-size:11px; margin-top:6px; }
+    .dashboard-two-col { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; }
+    .dash-list-row { display:flex; justify-content:space-between; gap:12px; padding:10px 0; border-bottom:1px solid #eef2f6; font-size:13px; }
+    .dash-list-row:last-child { border-bottom:0; }
+    .dash-pill { display:inline-block; border-radius:20px; padding:3px 9px; font-size:11px; font-weight:700; background:#eaf2ff; color:#1d4ed8; }
+    @media(max-width:600px){ .dash-card .dash-value{font-size:22px;} }
     .grid-form { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
     .form-field label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px; }
     .form-field input, .form-field select, .form-field textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
@@ -146,12 +157,31 @@
     </div>
 
     <div class="main-tabs">
+      <button class="main-tab-btn" onclick="switchMainTab('dashboard', this)">📊 Dashboard</button>
       <button class="main-tab-btn active" onclick="switchMainTab('products', this)">🛍️ Products</button>
       <button class="main-tab-btn" onclick="switchMainTab('orders', this)">📦 Orders</button>
       <button class="main-tab-btn" onclick="switchMainTab('coupons', this)">🎟️ Coupons</button>
       <button class="main-tab-btn" onclick="switchMainTab('reviews', this)">⭐ Reviews</button>
       <button class="main-tab-btn" onclick="switchMainTab('settings', this)">⚙️ Settings</button>
     </div>
+
+    <!-- Dashboard v2 additions; existing sections retained -->
+    <div id="tab-dashboard" class="tab-content">
+      <div class="admin-panel">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+          <div><h2 style="margin:0 0 6px;">Business Dashboard</h2><small style="color:#64748b;">All Stores · Live Firebase data</small></div>
+          <button class="btn btn-primary" onclick="loadDashboard()">↻ Refresh Dashboard</button>
+        </div>
+        <div id="dashboardMessage" style="margin-top:15px;color:#64748b;font-size:13px;">Loading dashboard...</div>
+        <div id="dashboardCards" class="dashboard-grid" style="margin-top:15px;"></div>
+      </div>
+      <div class="dashboard-two-col">
+        <div class="admin-panel"><h2>🚨 Stock Alerts</h2><div id="dashboardStockAlerts">Loading...</div></div>
+        <div class="admin-panel"><h2>🏆 Top Selling Products</h2><div id="dashboardTopProducts">Loading...</div></div>
+      </div>
+      <div class="admin-panel"><h2>🧾 Recent Orders</h2><div id="dashboardRecentOrders">Loading...</div></div>
+    </div>
+
 
     <!-- 1. PRODUCTS -->
     <div id="tab-products" class="tab-content active">
@@ -390,7 +420,8 @@
       btnElement.classList.add('active');
       document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
       document.getElementById(`tab-${tabName}`).classList.add('active');
-      if(tabName === 'products') loadProducts();
+      if(tabName === 'dashboard') loadDashboard();
+      else if(tabName === 'products') loadProducts();
       else if(tabName === 'orders') loadOrders();
       else if(tabName === 'coupons') loadCoupons();
       else if(tabName === 'reviews') loadReviews();
@@ -598,6 +629,62 @@
       renderImagePreview();
       document.getElementById("formTitle").textContent = "Add New Product";
       document.getElementById("saveBtn").textContent = "SAVE PRODUCT";
+    };
+
+    function dashboardEscape(value) {
+      return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+    }
+    function dashboardOrderDate(order) {
+      const raw = order.orderDate || order.createdAt || order.date || '';
+      const parsed = new Date(raw);
+      if (!Number.isNaN(parsed.getTime())) return parsed;
+      const match = String(raw).match(/(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})/);
+      if (match) return new Date(Number(match[3]), Number(match[2])-1, Number(match[1]));
+      return null;
+    }
+    window.loadDashboard = async function() {
+      const msg = document.getElementById('dashboardMessage');
+      const cards = document.getElementById('dashboardCards');
+      msg.textContent = 'Loading dashboard data...';
+      try {
+        const [ordersSnap, productsSnap] = await Promise.all([getDocs(collection(db, 'orders')), getDocs(collection(db, 'products'))]);
+        const orders = ordersSnap.docs.map(d => ({docId:d.id, ...d.data()}));
+        const products = productsSnap.docs.map(d => ({docId:d.id, ...d.data()}));
+        const confirmedOrders = orders.filter(o => ['Confirmed','Packed','Out for Delivery','Delivered'].includes(o.status));
+        const confirmedValue = confirmedOrders.reduce((sum,o)=>sum + (Number(o.totalAmount)||0),0);
+        const pendingCount = orders.filter(o => (o.status || 'Pending') === 'Pending').length;
+        const deliveryCount = orders.filter(o => ['Packed','Out for Delivery'].includes(o.status)).length;
+        const lowStock = products.filter(p => Number(p.stock) > 0 && Number(p.stock) <= 5);
+        const outStock = products.filter(p => Number(p.stock) <= 0);
+        const metrics = [
+          ['Confirmed Order Value', `₹${confirmedValue.toLocaleString('en-IN')}`, 'Confirmed through Delivered; excludes Pending/Cancelled'],
+          ['Total Orders', orders.length.toLocaleString('en-IN'), 'All statuses'],
+          ['Pending Orders', pendingCount.toLocaleString('en-IN'), 'Awaiting confirmation'],
+          ['Active Delivery', deliveryCount.toLocaleString('en-IN'), 'Packed / Out for Delivery'],
+          ['Total Products', products.length.toLocaleString('en-IN'), 'All stores'],
+          ['Low Stock', lowStock.length.toLocaleString('en-IN'), '1–5 units'],
+          ['Out of Stock', outStock.length.toLocaleString('en-IN'), 'Stock is 0 or below']
+        ];
+        cards.innerHTML = metrics.map(m=>`<div class="dash-card"><div class="dash-label">${dashboardEscape(m[0])}</div><div class="dash-value">${dashboardEscape(m[1])}</div><div class="dash-note">${dashboardEscape(m[2])}</div></div>`).join('');
+        const alertItems = [...lowStock.map(p=>({p,kind:'Low Stock',color:'#b45309'})), ...outStock.map(p=>({p,kind:'Out of Stock',color:'#b91c1c'}))];
+        document.getElementById('dashboardStockAlerts').innerHTML = alertItems.length ? alertItems.slice(0,15).map(({p,kind,color})=>`<div class="dash-list-row"><span>${dashboardEscape(p.name || p.title || p.docId)}</span><span style="color:${color};font-weight:700;white-space:nowrap;">${kind} · ${Number(p.stock)||0}</span></div>`).join('') : `<p style="color:#64748b;">No low/out-of-stock products.</p>`;
+        const soldMap = new Map();
+        for (const order of confirmedOrders) for (const item of (Array.isArray(order.items)?order.items:[])) {
+          const key = item.productId || item.id || item.productID || item.name || 'Unknown';
+          const qty = Number(item.qty ?? item.quantity) || 0;
+          const current = soldMap.get(key) || {name:item.name || key,qty:0}; current.qty += qty; soldMap.set(key,current);
+        }
+        const top = [...soldMap.values()].sort((a,b)=>b.qty-a.qty).slice(0,8);
+        document.getElementById('dashboardTopProducts').innerHTML = top.length ? top.map((p,i)=>`<div class="dash-list-row"><span>${i+1}. ${dashboardEscape(p.name)}</span><span class="dash-pill">${p.qty} sold</span></div>`).join('') : `<p style="color:#64748b;">No confirmed sales yet.</p>`;
+        const recent = [...orders].sort((a,b)=>{const da=dashboardOrderDate(a),db=dashboardOrderDate(b);return (db?.getTime()||0)-(da?.getTime()||0);}).slice(0,8);
+        document.getElementById('dashboardRecentOrders').innerHTML = recent.length ? recent.map(o=>`<div class="dash-list-row"><span><strong>${dashboardEscape(o.orderId || o.docId)}</strong> · ${dashboardEscape(o.customerName || 'Customer')}</span><span style="text-align:right;white-space:nowrap;">₹${(Number(o.totalAmount)||0).toLocaleString('en-IN')} · <span class="dash-pill">${dashboardEscape(o.status || 'Pending')}</span></span></div>`).join('') : `<p style="color:#64748b;">No orders yet.</p>`;
+        msg.textContent = `Updated successfully · ${orders.length} orders · ${products.length} products`;
+      } catch(error) {
+        console.error('Dashboard load error:', error);
+        msg.textContent = 'Dashboard could not load data. Check Firebase connection and permissions.';
+        cards.innerHTML = '';
+        ['dashboardStockAlerts','dashboardTopProducts','dashboardRecentOrders'].forEach(id=>document.getElementById(id).innerHTML="<p style='color:#b91c1c;'>Unable to load data.</p>");
+      }
     };
 
     async function loadOrders() {
