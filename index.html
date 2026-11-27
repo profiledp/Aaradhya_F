@@ -761,8 +761,12 @@
         q=String(q||'').trim().toLowerCase();
         if(!q){
           const history=historyGet();
-          if(!history.length){resultsBox.innerHTML='';}
-          else resultsBox.innerHTML='<div class="am-search-section">Recent searches</div>'+history.map(term=>`<button type="button" class="am-search-suggestion" data-history="${safe(term)}"><span class="am-search-icon">◷</span><span class="am-search-text"><span class="am-search-title">${safe(term)}</span><span class="am-search-sub">Recent search</span></span></button>`).join('')+'<button type="button" class="am-search-clear-history" data-clear-history>Clear history</button>';
+          if(!history.length){
+            resultsBox.innerHTML='';
+            resultsBox.classList.remove('active');
+            return;
+          }
+          resultsBox.innerHTML='<div class="am-search-section">Recent searches</div>'+history.map(term=>`<button type="button" class="am-search-suggestion" data-history="${safe(term)}"><span class="am-search-icon">◷</span><span class="am-search-text"><span class="am-search-title">${safe(term)}</span><span class="am-search-sub">Recent search</span></span></button>`).join('')+'<button type="button" class="am-search-clear-history" data-clear-history>Clear history</button>';
         } else {
           const matches=allProductsForSearch.filter(p=>productText(p).includes(q)).slice(0,7);
           if(!matches.length){resultsBox.innerHTML=`<div class="am-search-empty">No products found for “${safe(input.value)}”</div>`;}
