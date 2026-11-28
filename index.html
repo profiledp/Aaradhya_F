@@ -13,6 +13,12 @@
   <meta property="og:url" content="https://profiledp.github.io/Aaradhya_F/">
   <meta name="theme-color" content="#10243b">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%2310243b'/><text x='50' y='68' font-size='55' font-family='Georgia' fill='%23c5a36b' text-anchor='middle'>A</text></svg>">
+  <link rel="manifest" href="manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Aaradhya Mart">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
   <link rel="stylesheet" href="style.css">
 
   <style>
@@ -463,6 +469,17 @@
   .home-service-icon { color:#f0c987 !important; border-color:rgba(240,201,135,.55) !important; background:rgba(255,255,255,.06) !important; }
   .home-service-item { opacity:1 !important; filter:none !important; }
 
+
+  /* PWA install banner */
+  .pwa-install-card{display:flex;align-items:center;gap:12px;max-width:1200px;margin:10px auto;padding:12px 16px;border:1px solid rgba(197,163,107,.45);border-radius:14px;background:#f8fafc;color:#10243b;box-shadow:0 6px 20px rgba(16,36,59,.08)}
+  .pwa-install-card[hidden]{display:none!important}
+  .pwa-install-copy{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+  .pwa-install-copy strong{font-size:14px;color:#10243b}
+  .pwa-install-copy span{font-size:12px;color:#64748b}
+  #pwaInstallButton{border:0;border-radius:999px;background:#10243b;color:#fff;padding:10px 16px;font-weight:700;cursor:pointer;white-space:nowrap}
+  #pwaInstallClose{border:0;background:transparent;color:#64748b;font-size:22px;cursor:pointer;padding:0 4px}
+  @media(max-width:650px){.pwa-install-card{margin:8px 12px;padding:10px;gap:8px}.pwa-install-copy strong{font-size:12px}.pwa-install-copy span{font-size:10px}#pwaInstallButton{padding:9px 12px;font-size:12px}}
+
 </style>
   <style>
 
@@ -665,6 +682,12 @@
       <a href="cart.html" id="globalCartBtn" class="header-cart-btn" aria-label="Open cart">🛒 <span class="header-cart-label">Cart</span> <span class="cart-badge" id="globalCartCount">0</span></a>
     </div>
   </header>
+
+  <section id="pwaInstallCard" class="pwa-install-card" hidden aria-live="polite">
+    <div class="pwa-install-copy"><strong>Install Aaradhya Mart</strong><span>Shop faster from your phone's home screen.</span></div>
+    <button id="pwaInstallButton" type="button">Install App</button>
+    <button id="pwaInstallClose" type="button" aria-label="Dismiss install banner">×</button>
+  </section>
 
   <!-- TRUST BADGES -->
   <div class="trust-badges-bar">
@@ -1445,5 +1468,30 @@
     form.addEventListener('submit',e=>{e.preventDefault();const text=input.value.trim();if(!text||send.disabled)return;input.value='';addMessage(text,'user');send.disabled=true;try{answer(text)}catch(err){addMessage('Maaf kijiye, is sawaal ka jawab abhi nahi de paaya. Kripya WhatsApp support try karein.','bot');console.error('Aaradhya Smart Assistant:',err)}finally{send.disabled=false;input.focus()}});
   })();
   </script>
+
+<script>
+(function(){
+  let deferredInstallPrompt=null;
+  const card=document.getElementById('pwaInstallCard');
+  const installBtn=document.getElementById('pwaInstallButton');
+  const closeBtn=document.getElementById('pwaInstallClose');
+  if(!card||!installBtn||!closeBtn)return;
+  window.addEventListener('beforeinstallprompt',function(e){
+    e.preventDefault(); deferredInstallPrompt=e; card.hidden=false;
+  });
+  installBtn.addEventListener('click',async function(){
+    if(!deferredInstallPrompt)return;
+    deferredInstallPrompt.prompt();
+    try{await deferredInstallPrompt.userChoice;}catch(err){}
+    deferredInstallPrompt=null; card.hidden=true;
+  });
+  closeBtn.addEventListener('click',function(){card.hidden=true;});
+  window.addEventListener('appinstalled',function(){card.hidden=true; deferredInstallPrompt=null;});
+  if('serviceWorker' in navigator){
+    window.addEventListener('load',function(){navigator.serviceWorker.register('./service-worker.js').catch(function(err){console.warn('PWA service worker registration failed:',err);});});
+  }
+})();
+</script>
+
 </body>
 </html>
