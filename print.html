@@ -83,6 +83,31 @@
       .print-policies-section { margin: 30px 15px; padding: 20px; }
     }
   
+    /* Custom Design CTA — clear, premium placement after product grid */
+    .custom-design-cta{max-width:1000px;margin:42px auto 24px;padding:clamp(22px,4vw,38px);border-radius:18px;background:linear-gradient(120deg,#10243b,#1e3a5f);color:#fff;border:1px solid var(--gold);box-shadow:0 14px 35px rgba(16,36,59,.12);display:flex;align-items:center;justify-content:space-between;gap:24px;position:relative;overflow:hidden}
+    .custom-design-cta:after{content:"✦";position:absolute;right:28%;top:-28px;font-size:150px;opacity:.06;pointer-events:none}
+    .custom-design-cta-copy{max-width:650px;position:relative;z-index:1}
+    .custom-design-kicker{font-size:10px;letter-spacing:2px;font-weight:800;color:#d8b778}
+    .custom-design-cta h2{font:normal clamp(22px,3vw,30px) Georgia,serif;margin:8px 0;color:#fff}
+    .custom-design-cta p{margin:0;color:#e4eaf2;font-size:13px;line-height:1.6}
+    .custom-design-points{display:flex;flex-wrap:wrap;gap:8px 18px;padding:0;margin:14px 0 0;list-style:none;color:#f4f7fb;font-size:11px}
+    .custom-design-points li:before{content:"✓";color:#d8b778;font-weight:900;margin-right:6px}
+    .custom-design-cta-button{position:relative;z-index:1;flex-shrink:0;background:#d5b477;color:#10243b;border:0;border-radius:999px;padding:13px 20px;font-size:13px;font-weight:800;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.15);transition:transform .2s,background .2s}
+    .custom-design-cta-button:hover{transform:translateY(-2px);background:#e7c991}
+    .custom-design-cta-button span{margin-left:8px}
+    .print-policies-section{margin-top:26px}
+    .print-policy-accordion{border:1px solid #e2e8f0;border-radius:12px;overflow:hidden}
+    .print-policy-accordion summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:12px;padding:16px;background:#f8fafc;color:var(--navy)}
+    .print-policy-accordion summary::-webkit-details-marker{display:none}
+    .policy-summary-icon{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:#fff;border:1px solid #e7edf4;font-size:18px;flex-shrink:0}
+    .print-policy-accordion summary strong{display:block;font-size:14px}
+    .print-policy-accordion summary small{display:block;color:#64748b;font-size:11px;margin-top:3px;line-height:1.4}
+    .policy-chevron{margin-left:auto;font-size:20px;transition:transform .2s}
+    .print-policy-accordion[open] .policy-chevron{transform:rotate(180deg)}
+    .print-policy-accordion .policy-grid{padding:18px;background:#fff}
+    .print-policy-accordion .policy-grid{margin:0}
+    @media(max-width:768px){.custom-design-cta{margin:28px 15px 20px;flex-direction:column;align-items:flex-start;gap:18px}.custom-design-cta-button{width:100%;justify-content:center}.custom-design-points{gap:7px 12px}.print-policy-accordion summary{padding:13px}}
+
     /* Print floating shortcuts — consistent Home/Fashion/Kirana capsule */
     .print-floating-actions{position:fixed!important;right:18px!important;bottom:20px!important;z-index:10000;display:flex!important;align-items:center!important;gap:8px!important;padding:7px 8px!important;background:#fff!important;border:1px solid #e3e9f1!important;border-radius:999px!important;box-shadow:0 8px 28px rgba(16,36,59,.18)!important;}
     .print-floating-actions .global-cart-btn,.print-floating-actions .whatsapp-float-btn,.print-floating-actions .track-float-btn{position:static!important;left:auto!important;right:auto!important;bottom:auto!important;transform:none!important;margin:0!important;box-shadow:none!important;}
@@ -123,9 +148,6 @@
       <div>
         <span class="eyebrow">CUSTOM PRINTING</span>
         <h2 style="margin: 6px 0 0;">A-Print Collection</h2>
-        <button id="openCustomRequestBtn" style="background: linear-gradient(135deg, #10243b, #1e3a5f); color: #fff; border: 1px solid var(--gold); padding: 10px 20px; border-radius: 6px; font-weight: bold; font-size: 13px; cursor: pointer; margin-top: 12px; box-shadow: 0 4px 10px rgba(16,36,59,0.2); display: inline-flex; align-items: center; gap: 6px;">
-          🎨 Request Custom Design
-        </button>
       </div>
       <span class="product-count-label">Showing <strong id="productCount">0</strong> products</span>
     </div>
@@ -149,6 +171,19 @@
     <div class="empty-state hidden" id="emptyState"><span>✧</span><h3>No print products found</h3></div>
   </main>
 
+  <!-- CUSTOM DESIGN CTA: positioned after product grid, before policies -->
+  <section class="custom-design-cta" aria-labelledby="customDesignCtaTitle">
+    <div class="custom-design-cta-copy">
+      <span class="custom-design-kicker">MADE JUST FOR YOU</span>
+      <h2 id="customDesignCtaTitle">Have a design idea in mind?</h2>
+      <p>Share your idea, photo, logo, text or reference with us. We’ll help you make it print-ready.</p>
+      <ul class="custom-design-points">
+        <li>Personalized designs</li><li>Logo & photo printing</li><li>Custom sizes and quantities</li>
+      </ul>
+    </div>
+    <button id="openCustomRequestBtn" class="custom-design-cta-button" type="button">🎨 Request Custom Design <span aria-hidden="true">→</span></button>
+  </section>
+
   <!-- ========================================== -->
   <!-- PRINT POLICIES SECTION -->
   <!-- ========================================== -->
@@ -159,7 +194,9 @@
       <p>Please read our policies carefully before placing a custom print order.</p>
     </div>
     
-    <div class="policy-grid">
+    <details class="print-policy-accordion">
+      <summary><span class="policy-summary-icon">📋</span><span><strong>Read Printing Policies & Guidelines</strong><small>Design approval, payment, cancellation, colors, defects and pickup</small></span><span class="policy-chevron" aria-hidden="true">⌄</span></summary>
+      <div class="policy-grid">
       <!-- 1. Design Approval -->
       <div class="policy-box">
         <div class="policy-icon">📝</div>
@@ -221,7 +258,8 @@
           <p>Have a logo or photo ready? You can send it to us directly on WhatsApp after placing the order. We use high-resolution printing to ensure the best quality!</p>
         </div>
       </div>
-    </div>
+      </div>
+    </details>
   </section>
 
   <dialog class="product-dialog" id="productDialog">
