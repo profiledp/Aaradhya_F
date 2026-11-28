@@ -264,30 +264,64 @@
       box-shadow: 0 4px 15px rgba(16,36,59,0.1);
     }
     .header-search-results {
-      position: absolute; top: calc(100% + 6px); left: 0; right: 0;
-      background: #fff; border: 1px solid #e5e7eb; border-radius: 12px;
-      max-height: 420px; overflow-y: auto; box-shadow: 0 12px 32px rgba(16,36,59,.16);
-      display: none; z-index: 1000; padding: 6px 0;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      margin-top: 5px;
+      max-height: 400px;
+      overflow-y: auto;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      display: none;
+      z-index: 1000;
     }
-    .header-search-results.active { display: block; }
-    .am-search-suggestion { display:flex; align-items:center; gap:12px; width:100%;
-      padding:10px 16px; border:0; background:#fff; text-align:left; cursor:pointer;
-      color:#263445; text-decoration:none; font:inherit; min-height:72px; box-sizing:border-box; }
-    .am-search-suggestion:hover, .am-search-suggestion:focus { background:#f5f7fa; outline:none; }
-    .am-search-icon { width:24px; flex:0 0 24px; color:#87909a; text-align:center; font-size:17px; }
-    .am-search-thumb { width:54px; height:54px; flex:0 0 54px; object-fit:contain; border:1px solid #eef0f2; border-radius:8px; background:#fff; }
-    .am-search-text { min-width:0; flex:1; display:flex; flex-direction:column; justify-content:center; }
-    .am-search-title { display:block; font-size:13px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#263445; }
-    .am-search-sub { display:block; margin-top:2px; color:#64748b; font-size:12px; }
-    .am-search-price { display:block; margin-top:3px; color:#b66a14; font-size:12px; font-weight:600; }
-    @media (max-width: 480px) { .am-search-suggestion { gap:9px; padding:9px 12px; min-height:66px; } .am-search-thumb { width:48px; height:48px; flex-basis:48px; } }
-    .am-search-section { padding:8px 16px 5px; color:#6b7280; font-size:10px; text-transform:uppercase; letter-spacing:.06em; }
-    .am-search-empty { padding:14px 16px; color:#6b7280; font-size:12px; }
-    .am-search-clear-history { margin:4px 12px 6px auto; display:block; border:0; background:transparent; color:#2563eb; font-size:11px; cursor:pointer; }
+    .header-search-results.active {
+      display: block;
+    }
+    .search-result-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 12px 18px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      transition: 0.2s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .search-result-item:hover {
+      background: #f0fdf4;
+    }
+    .search-result-item img {
+      width: 45px;
+      height: 45px;
+      object-fit: contain;
+      border-radius: 4px;
+      background: #f8f9fa;
+    }
+    .search-result-item h4 {
+      margin: 0 0 3px;
+      font-size: 14px;
+      color: var(--navy);
+    }
+    .search-result-item p {
+      margin: 0;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .search-result-item .s-price {
+      font-weight: bold;
+      font-size: 14px;
+      color: var(--navy);
+    }
+
     @media (max-width: 768px) {
-      .header-search-container { margin: 0 10px; max-width: none; }
-      .header-search-input { padding: 11px 12px 11px 38px; }
-      .header-search-results { max-height: min(65vh, 420px); }
+      .header-search-container {
+        display: none;
+      }
     }
 
     /* ============ AARADHYA AI CHAT ============ */
@@ -366,6 +400,52 @@
   .am-no-results{padding:18px;text-align:center;color:#64748b;font-size:13px;grid-column:1/-1}
   @media(max-width:650px){.am-filter-row{flex-wrap:wrap}.am-filter-row select{flex-basis:30%;font-size:11px;padding:8px 5px}.am-price-row label{font-size:10px}.am-price-row input[type=number]{width:60px}.am-universal-results{grid-template-columns:1fr}.am-universal-filter{left:-4px;right:-4px}}
 
+
+    /* ===== Homepage premium polish v4: visual-only, no markup/JS changes ===== */
+    .hero-new{background-position:center 38%;background-attachment:scroll;isolation:isolate}
+    .hero-new:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 78% 24%,rgba(197,163,107,.18),transparent 36%);pointer-events:none;z-index:0}
+    .hero-new .hero-shade{background:linear-gradient(105deg,rgba(7,19,33,.97) 0%,rgba(8,24,42,.82) 42%,rgba(8,24,42,.38) 100%)}
+    .hero-copy-new{animation:amHeroReveal .7s ease both}
+    .hero-copy-new .eyebrow{letter-spacing:2.4px}
+    .hero-copy-new h1{letter-spacing:-.7px;text-wrap:balance}
+    .hero-copy-new p{max-width:470px}
+    .hero-btn-primary,.hero-btn-secondary{border-radius:999px;min-height:48px;box-shadow:0 6px 22px rgba(0,0,0,.14)}
+    .hero-btn-primary{box-shadow:0 7px 25px rgba(197,163,107,.22)}
+    .hero-btn-primary:focus-visible,.hero-btn-secondary:focus-visible,.quick-pill:focus-visible,.home-category-card:focus-visible,.home-budget-card:focus-visible{outline:3px solid #c5a36b;outline-offset:3px}
+    .hero-stat strong{letter-spacing:-.4px}
+    .hero-collage-img{will-change:transform;animation:amFloat 5.5s ease-in-out infinite}
+    .hero-collage-img.img-2{animation-delay:-1.8s}.hero-collage-img.img-3{animation-delay:-3.2s}
+    .quick-shop-section{padding-top:34px;padding-bottom:32px}
+    .quick-shop-pills{gap:10px}
+    .quick-pill{padding:12px 20px;box-shadow:0 2px 9px rgba(16,36,59,.035)}
+    .home-category-section{padding-top:66px;padding-bottom:66px}
+    .home-section-head h2{letter-spacing:-.45px}
+    .home-section-head p{max-width:580px;margin-inline:auto}
+    .home-category-grid{gap:16px}
+    .home-category-card{border-radius:16px;box-shadow:0 10px 26px rgba(16,36,59,.09);transition:transform .28s ease,box-shadow .28s ease}
+    .home-category-card img{filter:saturate(.94);transition:transform .65s cubic-bezier(.2,.7,.2,1),filter .4s}
+    .home-category-card:after{background:linear-gradient(0deg,rgba(7,20,35,.88) 0%,rgba(7,20,35,.22) 56%,rgba(7,20,35,0) 100%)}
+    .home-category-card strong{bottom:18px;left:16px;letter-spacing:.1px}
+    .home-category-card:hover{transform:translateY(-5px);box-shadow:0 17px 34px rgba(16,36,59,.16)}
+    .home-category-card:hover img{transform:scale(1.06);filter:saturate(1.08)}
+    .home-budget-section{padding-top:62px;padding-bottom:62px;background:linear-gradient(135deg,#f7f5f1,#f0ece5)}
+    .home-budget-card{border-radius:15px;box-shadow:0 4px 15px rgba(16,36,59,.035);min-height:86px}
+    .home-budget-card:hover{box-shadow:0 14px 28px rgba(16,36,59,.10)}
+    .featured-section{padding-top:66px;padding-bottom:66px}
+    .featured-header{align-items:center;margin-bottom:28px}
+    .featured-view-all{border-radius:999px;padding:10px 15px;border:1px solid rgba(16,36,59,.16);transition:background .2s,color .2s,border .2s}
+    .featured-view-all:hover{background:var(--navy);color:#fff;border-color:var(--navy)}
+    .home-promo-row{padding-top:62px;padding-bottom:62px;gap:20px}
+    .home-promo-card{border-radius:18px;box-shadow:0 10px 28px rgba(16,36,59,.10);transition:transform .28s ease,box-shadow .28s ease}
+    .home-promo-card:hover{transform:translateY(-4px);box-shadow:0 18px 38px rgba(16,36,59,.17)}
+    .home-promo-card:before{background:linear-gradient(100deg,rgba(8,21,37,.94),rgba(8,21,37,.30))}
+    .home-service-strip{padding-top:30px;padding-bottom:30px}
+    .home-service-item{transition:transform .22s ease}.home-service-item:hover{transform:translateY(-2px)}
+    @keyframes amHeroReveal{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes amFloat{0%,100%{translate:0 0}50%{translate:0 -7px}}
+    @media(max-width:900px){.hero-new{min-height:490px}.home-category-grid{gap:12px}}
+    @media(max-width:650px){.hero-new{min-height:0;padding:42px 5%}.hero-copy-new h1{font-size:clamp(34px,9vw,48px);margin-bottom:16px}.hero-copy-new p{font-size:13px;line-height:1.7}.hero-cta-row{gap:9px;margin-bottom:26px}.hero-btn-primary,.hero-btn-secondary{padding:12px 19px;font-size:12px}.hero-stats{gap:14px}.hero-stat strong{font-size:19px}.hero-stat span{font-size:9px;letter-spacing:.6px}.quick-shop-section{padding-top:28px;padding-bottom:24px}.quick-shop-pills{gap:8px}.quick-pill{padding:10px 14px;font-size:11px}.home-category-section{padding-top:42px;padding-bottom:42px}.home-category-card{border-radius:13px;min-height:165px}.home-category-card strong{left:12px;bottom:14px}.home-budget-section{padding-top:42px;padding-bottom:42px}.home-budget-card{min-height:76px;border-radius:12px}.featured-section{padding-top:44px;padding-bottom:44px}.featured-header{margin-bottom:20px}.home-promo-row{padding-top:36px;padding-bottom:36px}.home-promo-card{border-radius:14px}.home-service-strip{padding-top:22px;padding-bottom:22px}}
+    @media(prefers-reduced-motion:reduce){.hero-copy-new,.hero-collage-img{animation:none!important}.home-category-card,.home-category-card img,.home-budget-card,.home-promo-card,.home-service-item{transition:none!important}}
   </style>
 </head>
 <body>
@@ -376,7 +456,21 @@
     <!-- Flipkart Style Search Bar -->
     <div class="header-search-container">
       <input type="text" id="headerSearchInput" class="header-search-input" placeholder="Search for Products, Brands and More..." autocomplete="off">
-      <div id="headerSearchResults" class="header-search-results" role="listbox" aria-label="Search suggestions"></div>
+      <div id="headerSearchResults" class="header-search-results"></div>
+      <div class="am-universal-filter" id="amUniversalFilter" aria-label="Universal product search filters">
+        <div class="am-filter-row">
+          <select id="amStoreFilter" aria-label="Store"><option value="All">All Stores</option><option value="Fashion">Fashion</option><option value="Kirana">Kirana</option><option value="Print">Print</option></select>
+          <select id="amCategoryFilter" aria-label="Category"><option value="All">All Categories</option></select>
+          <select id="amSortFilter" aria-label="Sort products"><option value="relevance">Relevance</option><option value="low">Price: Low to High</option><option value="high">Price: High to Low</option><option value="name">Name A–Z</option></select>
+        </div>
+        <div class="am-filter-row am-price-row">
+          <label>Min ₹ <input id="amMinPrice" type="number" min="0" placeholder="0"></label>
+          <label>Max ₹ <input id="amMaxPrice" type="number" min="0" placeholder="Any"></label>
+          <label class="am-stock-label"><input id="amInStock" type="checkbox"> In stock only</label>
+          <button id="amClearFilters" type="button">Clear</button>
+        </div>
+        <div class="am-filter-summary" id="amFilterSummary">Start typing to search across all stores.</div>
+      </div>
     </div>
 
     <div class="header-actions" style="display: flex; gap: 8px; align-items: center;">
@@ -742,47 +836,54 @@
     }
 
     /* ============ HEADER SEARCH BAR ============ */
-    /* ============ HEADER SEARCH: HISTORY + LIVE SUGGESTIONS ============ */
     async function initHeaderSearch() {
       const snap = await getDocs(collection(db, "products"));
       snap.forEach(d => allProductsForSearch.push({ id: d.id, ...d.data() }));
       window.allProductsForSearch = allProductsForSearch;
-
       const input = document.getElementById("headerSearchInput");
       const resultsBox = document.getElementById("headerSearchResults");
-      if (!input || !resultsBox) return;
-      const HISTORY_KEY = "aaradhyaMartHeaderSearchHistoryV1";
+      const filterPanel = document.getElementById("amUniversalFilter");
+      const storeSelect = document.getElementById("amStoreFilter");
+      const categorySelect = document.getElementById("amCategoryFilter");
+      const sortSelect = document.getElementById("amSortFilter");
+      const minPrice = document.getElementById("amMinPrice");
+      const maxPrice = document.getElementById("amMaxPrice");
+      const inStock = document.getElementById("amInStock");
+      const summary = document.getElementById("amFilterSummary");
+      const clearBtn = document.getElementById("amClearFilters");
+      let filtered = [];
+      const priceOf = p => { const n=Number(String(p.price ?? p.sellingPrice ?? p.selling_price ?? '').replace(/[^0-9.]/g,'')); return Number.isFinite(n)?n:0; };
+      const textOf = p => [p.name,p.category,p.store,p.description,p.brand,p.tags,p.color,p.colors,p.size,p.sizes].flat().filter(Boolean).join(' ').toLowerCase();
       const storeFile = s => ({Fashion:'fashion.html',Kirana:'kirana.html',Print:'print.html'}[s] || 'index.html');
-      const safe = v => String(v ?? '').replace(/[&<>\"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]));
-      const historyGet = () => { try { return JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]').filter(Boolean).slice(0,6); } catch(e){ return []; } };
-      const historySave = q => { q=String(q||'').trim(); if(!q)return; const arr=historyGet().filter(x=>x.toLowerCase()!==q.toLowerCase()); arr.unshift(q); try{localStorage.setItem(HISTORY_KEY,JSON.stringify(arr.slice(0,6)));}catch(e){} };
-      const productText = p => [p.name,p.category,p.store,p.description,p.brand,p.tags,p.color,p.colors,p.size,p.sizes,p.keywords].flat().filter(Boolean).join(' ').toLowerCase();
-      function render(q='') {
-        q=String(q||'').trim().toLowerCase();
-        if(!q){
-          const history=historyGet();
-          if(!history.length){
-            resultsBox.innerHTML='';
-            resultsBox.classList.remove('active');
-            return;
-          }
-          resultsBox.innerHTML='<div class="am-search-section">Recent searches</div>'+history.map(term=>`<button type="button" class="am-search-suggestion" data-history="${safe(term)}"><span class="am-search-icon">◷</span><span class="am-search-text"><span class="am-search-title">${safe(term)}</span><span class="am-search-sub">Recent search</span></span></button>`).join('')+'<button type="button" class="am-search-clear-history" data-clear-history>Clear history</button>';
-        } else {
-          const matches=allProductsForSearch.filter(p=>productText(p).includes(q)).slice(0,7);
-          if(!matches.length){resultsBox.innerHTML=`<div class="am-search-empty">No products found for “${safe(input.value)}”</div>`;}
-          else resultsBox.innerHTML='<div class="am-search-section">Products</div>'+matches.map(p=>{const store=String(p.store||'');const img=String(p.image||p.imageUrl||p.images?.[0]||'').split(',')[0].trim();const price=Number(p.price??p.sellingPrice??p.selling_price);const imageSrc=/^(https:\/\/|assets\/|data:image\/)/i.test(img)?safe(img):'https://placehold.co/100x100?text=Product';const priceText=Number.isFinite(price)&&price>0?'₹'+price.toLocaleString('en-IN'):'';return `<a class="am-search-suggestion" role="option" href="${storeFile(store)}"><img class="am-search-thumb" src="${imageSrc}" alt="${safe(p.name||'Product')}" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/100x100?text=Product'"><span class="am-search-text"><span class="am-search-title">${safe(p.name||'Product')}</span><span class="am-search-sub">${safe(p.category||'General')} · ${safe(store)}</span>${priceText?`<span class="am-search-price">${priceText}</span>`:''}</span></a>`;}).join('');
-        }
-        resultsBox.classList.add('active');
+      function updateCategories(){
+        const store=storeSelect.value;
+        const cats=[...new Set(allProductsForSearch.filter(p=>store==='All'||p.store===store).map(p=>p.category).filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b)));
+        const current=categorySelect.value;categorySelect.innerHTML='<option value="All">All Categories</option>'+cats.map(c=>`<option value="${String(c).replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[x]))}">${String(c).replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[x]))}</option>`).join('');
+        if(cats.includes(current))categorySelect.value=current;
       }
-      input.addEventListener('focus',()=>render(input.value));
-      input.addEventListener('input',()=>render(input.value));
-      input.addEventListener('keydown',e=>{if(e.key==='Escape'){resultsBox.classList.remove('active');input.blur();} if(e.key==='Enter'){const q=input.value.trim();if(q){historySave(q);render(q);}}});
-      resultsBox.addEventListener('click',e=>{
-        const clear=e.target.closest('[data-clear-history]'); if(clear){try{localStorage.removeItem(HISTORY_KEY);}catch(err){} render('');return;}
-        const history=e.target.closest('[data-history]'); if(history){const term=history.dataset.history||''; input.value=term; historySave(term); render(term);}
-      });
-      document.addEventListener('click',e=>{if(!e.target.closest('.header-search-container'))resultsBox.classList.remove('active');});
-      render('');
+      function renderUniversal(){
+        const q=input.value.trim().toLowerCase();const store=storeSelect.value;const cat=categorySelect.value;const sort=sortSelect.value;
+        const min=minPrice.value===''?0:Number(minPrice.value);const max=maxPrice.value===''?Infinity:Number(maxPrice.value);
+        filtered=allProductsForSearch.filter(p=>{
+          if(store!=='All'&&p.store!==store)return false;if(cat!=='All'&&p.category!==cat)return false;
+          if(q&&!textOf(p).includes(q))return false;const price=priceOf(p);if(price<min||price>max)return false;
+          if(inStock.checked&&Number(p.stock)<=0)return false;return true;
+        });
+        if(sort==='low')filtered.sort((a,b)=>priceOf(a)-priceOf(b));else if(sort==='high')filtered.sort((a,b)=>priceOf(b)-priceOf(a));else if(sort==='name')filtered.sort((a,b)=>String(a.name||'').localeCompare(String(b.name||'')));
+        summary.textContent=`${filtered.length} product${filtered.length===1?'':'s'} found · ${store==='All'?'All Stores':store}${q?' · Search: '+q:''}`;
+        resultsBox.innerHTML='<div class="am-universal-results">'+filtered.slice(0,12).map(p=>{
+          const raw=String(p.image||p.imageUrl||p.images?.[0]||'').split(',')[0].trim();const img=raw||'https://placehold.co/120x120?text=Product';const name=String(p.name||'Product');const safeName=name.replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[x]));const store=String(p.store||'');const file=storeFile(store);
+          return `<a class="am-universal-card" href="${file}"><img src="${img}" alt="${safeName}" onerror="this.src='https://placehold.co/120x120?text=Product'"><span class="am-card-text"><strong>${safeName}</strong><small>${String(p.category||'General')} · ${store}</small><b>₹${priceOf(p).toLocaleString('en-IN')}</b></span></a>`;
+        }).join('')+(filtered.length===0?'<div class="am-no-results">😕 No matching products. Try changing filters or search terms.</div>':'')+'</div>';
+        resultsBox.classList.add('active');filterPanel.classList.add('active');
+      }
+      input.addEventListener('focus',()=>{filterPanel.classList.add('active');renderUniversal();});
+      input.addEventListener('input',()=>{filterPanel.classList.add('active');renderUniversal();});
+      [storeSelect,categorySelect,sortSelect,minPrice,maxPrice,inStock].forEach(el=>el.addEventListener('change',renderUniversal));
+      storeSelect.addEventListener('change',updateCategories);
+      clearBtn.addEventListener('click',()=>{input.value='';storeSelect.value='All';sortSelect.value='relevance';minPrice.value='';maxPrice.value='';inStock.checked=false;updateCategories();categorySelect.value='All';renderUniversal();});
+      updateCategories();
+      document.addEventListener('click',e=>{if(!e.target.closest('.header-search-container')){resultsBox.classList.remove('active');filterPanel.classList.remove('active');}});
     }
 
     /* ============ FESTIVE BANNER ============ */
