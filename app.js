@@ -37,27 +37,6 @@ function safeImage(value) {
     : "https://placehold.co/600x800/f1f0ed/10243b?text=No+Image";
 }
 
-/* Universal Stock Status: 0 = Out, 1–9 = Low, 10+ = In. */
-function getStockStatus(p) {
-  const raw = p?.stock;
-  if (raw === undefined || raw === null || raw === '' || !Number.isFinite(Number(raw))) return null;
-  const qty = Number(raw);
-  if (qty <= 0) return { key: 'out', label: 'Out of Stock', short: 'OUT OF STOCK', qty };
-  if (qty < 10) return { key: 'low', label: 'Low Stock', short: `LOW STOCK · ${qty} LEFT`, qty };
-  return { key: 'in', label: 'In Stock', short: 'IN STOCK', qty };
-}
-function stockStatusTextHtml(p) {
-  const s = getStockStatus(p);
-  if (!s) return "<p style='margin-top:10px;'>Status: Availability on request</p>";
-  if (s.key === 'out') return "<p style='margin-top:10px;color:#b91c1c;font-weight:bold;'>Status: Out of Stock</p>";
-  if (s.key === 'low') return `<p style='margin-top:10px;color:#d97706;font-weight:bold;'>Status: Low Stock · ${s.qty} left</p>`;
-  return `<p style='margin-top:10px;color:#247a3b;font-weight:bold;'>Status: In Stock · ${s.qty} available</p>`;
-}
-function stockBadgeHtml(p) {
-  const status = getStockStatus(p);
-  return status ? `<span class="stock-status-badge stock-${status.key}">${status.short}</span>` : '';
-}
-
 /* ---------- Multi-image helper ---------- */
 /* Returns array of image URLs for any product.
    Handles new `images` array + legacy single `image` field. */
@@ -69,129 +48,106 @@ function getProductImages(p) {
   return [];
 }
 
-/* ---------- Universal search + filters ---------- */
-function ensureUniversalFilters() {
-  const grid = document.getElementById('productGrid');
-  if (!grid) return;
-  // Rebuild the existing filter container too: removes legacy Store/Category/Price/Stock controls.
-  let wrap = document.getElementById('universalFilters');
-  if (!wrap) {
-    wrap = document.createElement('section');
-    wrap.id = 'universalFilters';
-    grid.parentNode.insertBefore(wrap, grid);
-  }
-  wrap.className = 'universal-search-wrap';
-  if (!document.getElementById('universalStockBadgeStyles')) { const st = document.createElement('style'); st.id = 'universalStockBadgeStyles'; st.textContent = '\n    /* Universal stock status badges */\n    .stock-status-badge{position:absolute;top:7px;right:7px;z-index:4;padding:4px 7px;border-radius:5px;font-size:9px;line-height:1.2;font-weight:800;letter-spacing:.2px;max-width:calc(100% - 14px);white-space:nowrap}\n    .stock-in{background:#e8f5e9;color:#247a3b}.stock-low{background:#fff3d6;color:#986900}.stock-out{background:#fde8e8;color:#b91c1c}\n    @media(max-width:640px){.stock-status-badge{top:5px;right:5px;padding:3px 5px;font-size:8px}}\n'; document.head.appendChild(st); }
-  wrap.innerHTML = `
-    <div class="uf-search-box">
-      <span class="uf-search-icon" aria-hidden="true">⌕</span>
-      <input id="searchInput" type="search" placeholder="Search for Products, Brands and More..." autocomplete="off" aria-label="Search products">
-      <button type="button" id="clearSearchInput" aria-label="Clear search" class="uf-search-clear" hidden>×</button>
-    </div>
-    <div id="searchSuggestions" class="uf-suggestions" role="listbox" aria-label="Search suggestions"></div>`;
-}
-
-const SEARCH_HISTORY_KEY = 'aaradhyaMartSearchHistoryV1';
-function getSearchHistory() {
-  try { return JSON.parse(localStorage.getItem(SEARCH_HISTORY_KEY) || '[]').filter(Boolean).slice(0, 6); }
-  catch(e) { return []; }
-}
-function saveSearchHistory(term) {
-  const cleaned = String(term || '').trim();
-  if (!cleaned) return;
-  const history = getSearchHistory().filter(x => x.toLowerCase() !== cleaned.toLowerCase());
-  history.unshift(cleaned);
-  try { localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(history.slice(0, 6))); } catch(e) {}
-}
-function renderSearchSuggestions(query = '') {
-  const box = document.getElementById('searchSuggestions');
-  const input = document.getElementById('searchInput');
-  if (!box || !input) return;
-  const q = String(query || '').trim().toLowerCase();
-  let rows = [];
-  if (!q) {
-    rows = getSearchHistory().map(term => ({type:'history', text:term, sub:'Recent search'}));
-  } else {
-    const matches = products.filter(p => {
-      const hay = [p.name,p.store,p.category,p.description,p.tag,p.brand,p.id,p.keywords,...(p.searchTags||[]),...(p.colors||[]),...(p.sizes||[])].flat().join(' ').toLowerCase();
-      return hay.includes(q);
-    }).slice(0, 6);
-    rows = matches.map(p => ({type:'product', text:p.name, sub:`in ${p.store || currentStore}`, id:p.id}));
-    if (!rows.length) rows = [{type:'search', text:`Search all products for “${query}”`, sub:'Press Enter to search'}];
-  }
-  if (!rows.length) { box.innerHTML = ''; box.classList.remove('active'); return; }
-  box.innerHTML = rows.map(r => `<button type="button" class="uf-suggestion" data-suggestion="${escapeText(r.text)}" ${r.id ? `data-product-id="${escapeText(r.id)}"` : ''}><span class="uf-suggestion-icon">${r.type === 'history' ? '◷' : '⌕'}</span><span class="uf-suggestion-text"><span class="uf-suggestion-title">${escapeText(r.text)}</span><span class="uf-suggestion-sub">${escapeText(r.sub)}</span></span></button>`).join('');
-  box.classList.add('active');
-}
-function hideSearchSuggestions() { document.getElementById('searchSuggestions')?.classList.remove('active'); }
-function applySearchTerm(term, remember = true) {
-  const input = document.getElementById('searchInput');
-  if (!input) return;
-  input.value = term;
-  if (remember) saveSearchHistory(term);
-  renderStore();
-  hideSearchSuggestions();
-  const clearBtn = document.getElementById('clearSearchInput');
-  if (clearBtn) clearBtn.hidden = !term;
-}
-function updateCategoryOptions() {
-  const catSelect = document.getElementById('categoryFilter');
-  if (!catSelect) return;
-  const storeChoice = document.getElementById('storeFilter')?.value || currentStore;
-  const relevant = storeChoice === 'All' ? products : products.filter(p => p.store === storeChoice);
-  const uniqueCats = [...new Set(relevant.map(p => p.category).filter(Boolean))].sort((a,b) => String(a).localeCompare(String(b)));
-  const oldValue = catSelect.value;
-  catSelect.innerHTML = '<option value="All">All Categories</option>' + uniqueCats.map(cat => `<option value="${escapeText(cat)}">${escapeText(cat)}</option>`).join('');
-  if (uniqueCats.includes(oldValue)) catSelect.value = oldValue;
-}
+/* ---------- Store switcher ---------- */
 function switchStore(storeName) {
   currentStore = storeName;
+
   document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
   const activeTab = document.querySelector(`.tab-btn[data-store="${storeName}"]`);
   if (activeTab) activeTab.classList.add('active');
-  const titles = { Fashion: 'Clothing & Apparel', Print: 'Custom Printing Services', Kirana: 'Grocery & Daily Needs' };
-  const titleEl = document.getElementById('currentStoreTitle');
+
+  const titles = {
+    "Fashion": "Clothing & Apparel",
+    "Print": "Custom Printing Services",
+    "Kirana": "Grocery & Daily Needs"
+  };
+  const titleEl = document.getElementById("currentStoreTitle");
   if (titleEl) titleEl.textContent = titles[storeName] || storeName;
-  const printBanner = document.getElementById('printBanner');
-  if (printBanner) printBanner.classList.toggle('hidden', storeName !== 'Print');
-  ensureUniversalFilters();
-  const storeFilter = document.getElementById('storeFilter');
-  if (storeFilter && storeFilter.value !== 'All') storeFilter.value = storeName;
-  updateCategoryOptions();
+
+  const printBanner = document.getElementById("printBanner");
+  if (printBanner) printBanner.classList.toggle("hidden", storeName !== "Print");
+
+  // Rebuild category dropdown for this store
+  const catSelect = document.getElementById("categoryFilter");
+  catSelect.innerHTML = `<option value="All">All Categories</option>`;
+  const storeProducts = products.filter(p => p.store === storeName);
+  const uniqueCats = [...new Set(storeProducts.map(p => p.category).filter(Boolean))];
+  uniqueCats.forEach(cat => {
+    catSelect.innerHTML += `<option value="${escapeText(cat)}">${escapeText(cat)}</option>`;
+  });
+
+  const searchEl = document.getElementById("searchInput");
+  if (searchEl) searchEl.value = "";
+
   renderStore();
 }
+
+/* ---------- Render product grid ---------- */
 function renderStore() {
-  const query = (document.getElementById('searchInput')?.value || '').trim().toLowerCase();
-  const storeChoice = currentStore;
-  const sort = 'featured';
-  let list = products.filter(p => p.store === storeChoice);
+  const query = (document.getElementById("searchInput")?.value || "").trim().toLowerCase();
+  const category = document.getElementById("categoryFilter")?.value || "All";
+  const sort = document.getElementById("sortFilter")?.value || "featured";
+
+  let list = products.filter(p => p.store === currentStore);
+
+  if (category !== "All") list = list.filter(p => p.category === category);
+
   list = list.filter(p => {
-    const haystack = [p.name, p.store, p.category, p.description, p.tag, p.brand, p.id, p.keywords,
-      ...(p.searchTags || []), ...(p.colors || []), ...(p.sizes || [])].flat().join(' ').toLowerCase();
+    const haystack = [
+      p.name,
+      p.category,
+      p.description,
+      ...(p.colors || []),
+      ...(p.sizes || [])
+    ].join(" ").toLowerCase();
     return haystack.includes(query);
   });
-  if (sort === 'low') list.sort((a,b) => Number(a.price || 0) - Number(b.price || 0));
-  if (sort === 'high') list.sort((a,b) => Number(b.price || 0) - Number(a.price || 0));
-  if (sort === 'name') list.sort((a,b) => String(a.name || '').localeCompare(String(b.name || '')));
-  const countEl = document.getElementById('productCount');
-  if (countEl) countEl.textContent = `${list.length} ITEMS`; 
-  const grid = document.getElementById('productGrid');
-  const empty = document.getElementById('emptyState');
-  if (empty) empty.classList.toggle('hidden', list.length !== 0);
-  if (!grid) return;
+
+  if (sort === "low") list.sort((a, b) => Number(a.price) - Number(b.price));
+  if (sort === "high") list.sort((a, b) => Number(b.price) - Number(a.price));
+
+  document.getElementById("productCount").textContent = `${list.length} ITEMS`;
+  const grid = document.getElementById("productGrid");
+  document.getElementById("emptyState").classList.toggle("hidden", list.length !== 0);
+
   grid.innerHTML = list.map(p => {
     const isOut = Number(p.stock) <= 0;
     const imgs = getProductImages(p);
     const cover = imgs[0];
-    const imgCountBadge = imgs.length > 1 ? `<span class="card-images-count">📷 ${imgs.length}</span>` : '';
-    const storeBadge = storeChoice === 'All' ? `<span class="uf-store-badge">${escapeText(p.store || '')}</span>` : '';
-    return `<article class="product-card" style="${isOut ? 'opacity:0.8;' : ''}">
-      <div class="product-image-wrap" data-open="${escapeText(p.id)}"><img src="${safeImage(cover)}" alt="${escapeText(p.name)}" loading="lazy" onerror="this.src='https://placehold.co/600x800/f1f0ed/10243b?text=No+Image'">${p.tag ? `<span class="product-tag">${escapeText(p.tag)}</span>` : ''}${stockBadgeHtml(p)}${imgCountBadge}${storeBadge}${isOut ? `<span class="out-of-stock-tag">SOLD OUT</span>` : ''}</div>
-      <div class="product-info"><span class="product-category">${escapeText(p.category)}</span><h3>${escapeText(p.name)}</h3><div class="product-price">${p.price === 0 ? 'Custom Quote' : money(p.price)}${Number(p.originalPrice) > Number(p.price) && p.originalPrice > 0 ? `<span class="old-price">${money(p.originalPrice)}</span>` : ''}</div>
-      <div class="product-actions"><button class="btn-view" data-open="${escapeText(p.id)}">Details</button><button class="btn-order" data-order="${escapeText(p.id)}" ${isOut ? 'disabled' : ''}>${isOut ? 'Sold Out' : 'Order'}</button></div></div></article>`;
-  }).join('');
-}
+    const imgCountBadge = imgs.length > 1
+      ? `<span class="card-images-count">📷 ${imgs.length}</span>`
+      : "";
 
+    return `
+    <article class="product-card" style="${isOut ? 'opacity: 0.8;' : ''}">
+      <div class="product-image-wrap" data-open="${escapeText(p.id)}">
+        <img src="${safeImage(cover)}"
+             alt="${escapeText(p.name)}"
+             loading="lazy"
+             onerror="this.src='https://placehold.co/600x800/f1f0ed/10243b?text=No+Image'">
+        ${p.tag ? `<span class="product-tag">${escapeText(p.tag)}</span>` : ""}
+        ${imgCountBadge}
+        ${isOut ? `<span class="out-of-stock-tag">SOLD OUT</span>` : ""}
+      </div>
+      <div class="product-info">
+        <span class="product-category">${escapeText(p.category)}</span>
+        <h3>${escapeText(p.name)}</h3>
+        <div class="product-price">
+          ${p.price === 0 ? 'Custom Quote' : money(p.price)}
+          ${Number(p.originalPrice) > Number(p.price) && p.originalPrice > 0
+            ? `<span class="old-price">${money(p.originalPrice)}</span>`
+            : ""}
+        </div>
+        <div class="product-actions">
+          <button class="btn-view" data-open="${escapeText(p.id)}">Details</button>
+          <button class="btn-order" data-order="${escapeText(p.id)}" ${isOut ? 'disabled' : ''}>
+            ${isOut ? 'Sold Out' : 'Order'}
+          </button>
+        </div>
+      </div>
+    </article>`;
+  }).join("");
+}
 
 /* ---------- Product dialog with gallery ---------- */
 function openProduct(id) {
@@ -252,7 +208,11 @@ function openProduct(id) {
           ${p.colors.map(c => `<option>${escapeText(c)}</option>`).join("")}
         </select>` : ''}
 
-        ${stockStatusTextHtml(p)}
+        <p style="margin-top:10px;">
+          Status: ${Number(p.stock) > 0
+            ? "<span style='color:var(--success);font-weight:bold;'>In Stock</span>"
+            : "<span style='color:#ef4444;font-weight:bold;'>Out of Stock</span>"}
+        </p>
 
         <button class="button-navy" id="dialogOrder" ${Number(p.stock) <= 0 ? 'disabled' : ''} style="margin-top:15px;">
           ${Number(p.stock) <= 0 ? 'Out of Stock' : 'Order on WhatsApp ↗'}
@@ -301,28 +261,12 @@ function orderProduct(id, size, color) {
 /* ---------- Init ---------- */
 document.addEventListener("DOMContentLoaded", () => {
   loadStoreProducts();
-  ensureUniversalFilters();
   switchStore('Fashion');
-  const searchInput = document.getElementById('searchInput');
-  const clearSearch = document.getElementById('clearSearchInput');
-  searchInput?.addEventListener('input', () => {
-    renderStore();
-    if (clearSearch) clearSearch.hidden = !searchInput.value;
-    renderSearchSuggestions(searchInput.value);
-  });
-  searchInput?.addEventListener('focus', () => renderSearchSuggestions(searchInput.value));
-  searchInput?.addEventListener('keydown', e => {
-    if (e.key === 'Enter') { e.preventDefault(); applySearchTerm(searchInput.value); }
-    if (e.key === 'Escape') hideSearchSuggestions();
-  });
-  clearSearch?.addEventListener('click', () => { applySearchTerm('', false); renderSearchSuggestions(''); searchInput?.focus(); });
-  document.getElementById('searchSuggestions')?.addEventListener('click', e => {
-    const row = e.target.closest('.uf-suggestion');
-    if (!row) return;
-    const term = row.dataset.suggestion || '';
-    applySearchTerm(term);
-  });
-  document.addEventListener('click', e => { if (!e.target.closest('#universalFilters')) hideSearchSuggestions(); });
+
+  document.getElementById("searchInput")?.addEventListener("input", renderStore);
+  document.getElementById("categoryFilter")?.addEventListener("change", renderStore);
+  document.getElementById("sortFilter")?.addEventListener("change", renderStore);
+
   document.getElementById("productGrid")?.addEventListener("click", e => {
     const open = e.target.closest("[data-open]");
     const order = e.target.closest("[data-order]");
