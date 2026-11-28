@@ -466,6 +466,15 @@
 </style>
   <style>
 
+
+  /* HEADER CART + FOOTER ADMIN PLACEMENT */
+  .header-cart-btn { display:inline-flex; align-items:center; gap:7px; white-space:nowrap; text-decoration:none; color:#fff; background:var(--navy); border:1px solid var(--gold); border-radius:999px; padding:11px 15px; font-size:13px; font-weight:800; box-shadow:0 4px 12px rgba(16,36,59,.12); transition:transform .2s,box-shadow .2s; }
+  .header-cart-btn:hover { transform:translateY(-1px); box-shadow:0 7px 17px rgba(16,36,59,.18); }
+  .header-cart-btn .cart-badge { background:#fff; color:var(--navy); width:23px; height:23px; }
+  .footer-admin-link { display:inline-block; margin-left:12px; color:var(--am-gold)!important; text-decoration:none; opacity:.9; }
+  .footer-admin-link:hover { opacity:1; text-decoration:underline; }
+  @media(max-width:650px){ .header-cart-btn { justify-content:center; padding:9px 10px; font-size:11px; } .header-cart-btn .cart-badge { width:19px;height:19px;font-size:10px; } .footer-admin-link { display:block; margin:10px 0 0; } }
+
   /* ===== AARADHYA MART HOMEPAGE PREMIUM UI/UX REFRESH v5 ===== */
   :root { --am-ink:#10243b; --am-gold:#c5a36b; --am-paper:#f7f8fa; --am-border:#e6eaf0; }
   html { scroll-behavior:smooth; scroll-padding-top:100px; }
@@ -536,7 +545,6 @@
   .footer-grid-new { gap:clamp(18px,3vw,40px); }
   .footer-col a { transition:color .2s,transform .2s; }
   .footer-col a:hover { transform:translateX(2px); }
-  .global-cart-btn { border-radius:999px; padding:13px 18px; backdrop-filter:blur(8px); }
   .track-float-btn { border-radius:999px; }
   .quickview-box,.deal-modal-box,.welcome-box { border-radius:22px; }
   button,a,input,select { -webkit-tap-highlight-color:transparent; }
@@ -596,7 +604,6 @@
     .home-service-item small { font-size:10px; }
     .footer-grid-new { grid-template-columns:1fr 1fr; gap:22px 16px; }
     .footer-bottom { font-size:10px; line-height:1.6; }
-    .global-cart-btn { bottom:14px!important; right:12px!important; }
     .whatsapp-float-btn { bottom:14px!important; left:12px!important; }
     .track-float-btn { bottom:74px!important; left:12px!important; }
   }
@@ -631,7 +638,7 @@
 
     <div class="header-actions" style="display: flex; gap: 8px; align-items: center;">
       <a href="my-orders.html" class="header-wa" style="background:#fff; color:var(--navy); border:1px solid var(--navy); padding: 11px 15px;">📦 My Orders</a>
-      <a href="admin.html" class="header-wa" style="padding: 11px 15px;">Admin ⚙️</a>
+      <a href="cart.html" id="globalCartBtn" class="header-cart-btn" aria-label="Open cart">🛒 <span class="header-cart-label">Cart</span> <span class="cart-badge" id="globalCartCount">0</span></a>
     </div>
   </header>
 
@@ -927,16 +934,12 @@
     </div>
     <div class="footer-bottom">
       © 2026 Aradhya Mart. All rights reserved. Created with ❤️ by Deepak Pal - Vijay.
+      <a href="admin.html" class="footer-admin-link">⚙ Admin Login</a>
     </div>
   </footer>
 
   <!-- FLOATING BUTTONS -->
-  <a href="cart.html" id="globalCartBtn" class="global-cart-btn">
-    <span class="cart-icon-svg">🛒</span>
-    <span class="cart-text">Cart</span>
-    <span class="cart-badge" id="globalCartCount">0</span>
-  </a>
-  <!-- WhatsApp and Track Order shortcuts are grouped beside Ask Aaradhya below. -->
+  <!-- Cart moved to the header. WhatsApp, Track Order and Ask Aaradhya remain in the floating group. -->
 
   <!-- DEALS MODAL -->
   <div class="deal-modal-overlay" id="dealsModal">
