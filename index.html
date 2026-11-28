@@ -609,7 +609,31 @@
   }
   @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 
-  </style>
+  
+  /* Mobile header refinement: keep Orders and Cart compact, side-by-side with brand */
+  @media (max-width:650px){
+    .site-header{position:relative!important;grid-template-columns:minmax(0,1fr) auto!important;grid-template-rows:auto auto!important;align-items:center!important;gap:10px 8px!important;padding:12px 14px!important}
+    .brand{grid-column:1!important;grid-row:1!important;justify-self:start!important;min-width:0!important}
+    .brand-mark{width:42px!important;height:42px!important;flex:0 0 42px!important}
+    .brand strong{font-size:clamp(14px,4vw,17px)!important;letter-spacing:1.2px!important}
+    .brand small{font-size:8px!important;letter-spacing:1.6px!important}
+    .header-actions{grid-column:2!important;grid-row:1!important;display:flex!important;width:auto!important;justify-content:flex-end!important;gap:6px!important;white-space:nowrap!important}
+    .header-actions .header-wa{flex:0 0 auto!important;width:auto!important;min-height:40px!important;padding:8px 11px!important;font-size:11px!important;line-height:1!important;border-radius:999px!important}
+    .header-actions .header-cart-btn{flex:0 0 auto!important;width:auto!important;min-height:40px!important;padding:8px 10px!important;font-size:11px!important;gap:5px!important;border-radius:999px!important}
+    .header-actions .header-cart-label{display:inline!important}
+    .header-actions .cart-badge{width:18px!important;height:18px!important;font-size:10px!important}
+    .header-search-container{grid-column:1/-1!important;grid-row:2!important;width:100%!important;max-width:none!important;margin:0!important}
+    .header-search-input{min-height:42px!important;border-radius:12px!important}
+    .trust-badges-bar{gap:8px!important;padding:10px 9px!important}
+    .trust-badge{flex-basis:calc(50% - 6px)!important;font-size:10px!important;justify-content:center!important}
+  }
+  @media(max-width:390px){
+    .brand strong{font-size:13px!important;letter-spacing:.8px!important}
+    .brand small{letter-spacing:1.1px!important}
+    .header-actions .header-wa{padding:8px 9px!important;font-size:10px!important}
+    .header-actions .header-cart-btn{padding:8px 9px!important}
+  }
+</style>
 </head>
 <body>
 
