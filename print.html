@@ -130,7 +130,21 @@
     .print-floating-actions .track-float-btn svg{width:22px!important;height:22px!important;stroke:#10243b!important;}
     .print-floating-actions .track-float-btn span{display:none!important;}
     @media(max-width:650px){.print-floating-actions{right:10px!important;bottom:14px!important;gap:6px!important;padding:5px 6px!important;}.print-floating-actions .global-cart-btn{padding:8px 10px!important;}.print-floating-actions .whatsapp-float-btn,.print-floating-actions .track-float-btn{width:40px!important;height:40px!important;min-width:40px!important;}}
-</style>
+
+/* Product grid stability + Fashion/Kirana-style card sizing */
+#productGrid.product-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:16px!important;align-items:stretch!important}
+#productGrid .product-card{width:100%!important;min-width:0!important;max-width:none!important;animation:printCardIn .28s ease both}
+#productGrid .product-image-wrap{height:clamp(150px,18vw,220px)!important;overflow:hidden!important}
+#productGrid .product-image-wrap img{width:100%!important;height:100%!important;object-fit:contain!important}
+#productGrid .product-info{min-width:0!important}
+#productGrid .product-info h3{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.5em}
+#productGrid.print-filtering{opacity:.65;transition:opacity .12s ease}
+@keyframes printCardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:1100px){#productGrid.product-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:14px!important}}
+@media(max-width:760px){#productGrid.product-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}#productGrid .product-image-wrap{height:clamp(130px,36vw,180px)!important}}
+@media(prefers-reduced-motion:reduce){#productGrid .product-card{animation:none!important;transition:none!important}}
+
+  </style>
 </head>
 <body>
   <header class="site-header">
@@ -432,7 +446,7 @@
       const sort = document.getElementById("sortFilter").value;
       
       let list = products.filter(p => p.store === PAGE_STORE);
-      if (cat !== "All") list = list.filter(p => p.category === cat);
+      if (cat !== "All") list = list.filter(p => String(p.category || "").trim().toLowerCase() === String(cat).trim().toLowerCase());
       list = list.filter(p => [p.name, p.category].join(" ").toLowerCase().includes(queryStr));
       if (sort === "low") list.sort((a,b)=>a.price-b.price);
       if (sort === "high") list.sort((a,b)=>b.price-a.price);
