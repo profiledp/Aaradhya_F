@@ -139,6 +139,9 @@
 #productGrid .product-info{min-width:0!important}
 #productGrid .product-info h3{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.5em}
 #productGrid.print-filtering{opacity:.65;transition:opacity .12s ease}
+#productGrid.filter-exit{opacity:0;transform:translateY(5px);transition:opacity .09s ease,transform .09s ease}
+#productGrid.filter-enter{animation:printFilterEnter .24s ease both}
+@keyframes printFilterEnter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes printCardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:1100px){#productGrid.product-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:14px!important}}
 @media(max-width:760px){#productGrid.product-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}#productGrid .product-image-wrap{height:clamp(130px,36vw,180px)!important}}
@@ -399,6 +402,7 @@
     
     const PAGE_STORE = "Print"; 
     let products = [];
+    let activeCategory = "All";
     let currentImages = []; let currentImgIndex = 0;
 
     const PLACEHOLDER = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'><rect width='400' height='400' fill='%23f8f9fa'/><text x='200' y='200' font-size='52' font-family='Georgia' fill='%23c5a36b' text-anchor='middle' dominant-baseline='middle' opacity='0.5'>AM</text></svg>";
@@ -409,24 +413,22 @@
         products = []; 
         querySnapshot.forEach((doc) => products.push({ id: doc.id, ...doc.data() }));
         
-        const catSelect = document.getElementById("categoryFilter");
-        catSelect.innerHTML = `<option value="All">All Categories</option>`;
-        
-        const uniqueCats = [...new Set(products.filter(p => p.store === PAGE_STORE).map(p => p.category).filter(Boolean))];
-        
+        const uniqueCats = [...new Set(products
+          .filter(p => String(p.store || "").trim().toLowerCase() === PAGE_STORE.toLowerCase())
+          .map(p => String(p.category || "").trim()).filter(Boolean))];
         const catNav = document.getElementById("categoryNav");
-        catNav.innerHTML = `<button class="cat-nav-btn active" data-cat="All">All</button>` +
-          uniqueCats.map(c => `<button class="cat-nav-btn" data-cat="${c}">${c}</button>`).join("");
-        
+        catNav.innerHTML = `<button class="cat-nav-btn active" data-cat="All" type="button">All</button>` +
+          uniqueCats.map(c => `<button class="cat-nav-btn" data-cat="${c.replace(/\"/g, '&quot;')}" type="button">${c}</button>`).join("");
         catNav.querySelectorAll(".cat-nav-btn").forEach(btn => {
           btn.onclick = () => {
+            activeCategory = btn.dataset.cat || "All";
             catNav.querySelectorAll(".cat-nav-btn").forEach(b => b.classList.remove("active"));
             btn.classList.add("active");
-            catSelect.value = btn.dataset.cat;
-            render();
+            animateFilterRender();
           };
         });
-        
+        document.getElementById("searchInput").addEventListener("input", animateFilterRender);
+        document.getElementById("sortFilter").addEventListener("change", animateFilterRender);
         render();
       } catch (err) {
         console.error("Error loading products:", err);
@@ -440,12 +442,24 @@
 
     function money(v) { return "₹" + Number(v||0).toLocaleString("en-IN"); }
     
+    function animateFilterRender() {
+      const grid = document.getElementById("productGrid");
+      if (!grid) { render(); return; }
+      grid.classList.add("filter-exit");
+      window.setTimeout(() => {
+        render();
+        grid.classList.remove("filter-exit");
+        grid.classList.add("filter-enter");
+        window.setTimeout(() => grid.classList.remove("filter-enter"), 260);
+      }, 90);
+    }
+
     function render() {
       const queryStr = document.getElementById("searchInput").value.toLowerCase();
-      const cat = document.getElementById("categoryFilter").value;
+      const cat = activeCategory;
       const sort = document.getElementById("sortFilter").value;
       
-      let list = products.filter(p => p.store === PAGE_STORE);
+      let list = products.filter(p => String(p.store || "").trim().toLowerCase() === PAGE_STORE.toLowerCase());
       if (cat !== "All") list = list.filter(p => String(p.category || "").trim().toLowerCase() === String(cat).trim().toLowerCase());
       list = list.filter(p => [p.name, p.category].join(" ").toLowerCase().includes(queryStr));
       if (sort === "low") list.sort((a,b)=>a.price-b.price);
@@ -683,8 +697,7 @@
     document.addEventListener("DOMContentLoaded", () => {
       loadFirebaseProducts(); updateGlobalCart(); loadDeals();
       
-      document.getElementById("searchInput").addEventListener("input", render); 
-      document.getElementById("sortFilter").addEventListener("change", render);
+
       
       // Custom Design Form Logic
       const requestOverlay = document.getElementById("customRequestOverlay");
