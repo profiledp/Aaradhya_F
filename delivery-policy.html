@@ -44,6 +44,30 @@
       .page-header h1 { font-size: 32px; }
       .charge-table th, .charge-table td { padding: 12px 10px; font-size: 13px; }
     }
+
+    /* Premium delivery policy refresh */
+    .page-header { background: linear-gradient(135deg,#10243b 0%,#1e3a5f 58%,#243f60 100%); padding: clamp(42px,6vw,70px) 7% clamp(38px,5vw,58px); }
+    .page-header h1 { text-shadow: 0 2px 20px rgba(0,0,0,.16); }
+    .policy-container { max-width: 1000px; margin: clamp(28px,4vw,48px) auto; }
+    .delivery-grid { gap: 18px; }
+    .delivery-card { border-radius: 18px; padding: clamp(22px,3vw,32px); box-shadow: 0 10px 28px rgba(16,36,59,.06); }
+    .delivery-card .dc-icon { width: 68px; height: 68px; display: grid; place-items: center; margin: 0 auto 14px; border-radius: 20px; background: #f2f5f9; }
+    .section-title { margin-top: 32px; font-size: clamp(24px,3vw,30px); }
+    .charge-table-wrap { width: 100%; overflow-x: auto; border-radius: 14px; -webkit-overflow-scrolling: touch; }
+    .charge-table { min-width: 540px; border-radius: 14px; box-shadow: 0 10px 28px rgba(16,36,59,.05); }
+    .charge-table th { background: linear-gradient(135deg,#10243b,#1e3a5f); }
+    .charge-table td, .charge-table th { padding: 16px; }
+    .area-list { border-radius: 18px; background: linear-gradient(135deg,#f0fdf4,#f7fff9); padding: clamp(18px,3vw,28px); }
+    .area-list ul { grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); }
+    .note-box { border-radius: 12px; border-left-width: 5px; box-shadow: 0 4px 15px rgba(217,119,6,.06); }
+    .delivery-help-card { display:flex; align-items:center; justify-content:space-between; gap:22px; margin:32px 0 10px; padding:clamp(20px,3vw,30px); border-radius:18px; background:linear-gradient(135deg,#10243b,#1e3a5f); color:#fff; box-shadow:0 12px 30px rgba(16,36,59,.12); }
+    .delivery-help-kicker { color:#d6b77f; font-size:11px; font-weight:800; letter-spacing:2px; }
+    .delivery-help-copy h3 { margin:8px 0; color:#fff; font:normal 24px Georgia,serif; }
+    .delivery-help-copy p { margin:0; color:#d5deea; line-height:1.6; font-size:14px; }
+    .delivery-whatsapp { flex-shrink:0; display:inline-flex; align-items:center; justify-content:center; padding:13px 20px; border-radius:999px; background:#20c968; color:#fff; text-decoration:none; font-weight:700; transition:transform .2s,box-shadow .2s; box-shadow:0 5px 16px rgba(32,201,104,.22); }
+    .delivery-whatsapp:hover { transform:translateY(-2px); box-shadow:0 8px 22px rgba(32,201,104,.28); }
+    @media(max-width:650px) { .policy-container { margin:28px auto; padding:0 16px; } .delivery-card { padding:22px 18px; } .charge-table th,.charge-table td { padding:12px 10px; } .delivery-help-card { flex-direction:column; align-items:stretch; text-align:center; gap:16px; } .delivery-whatsapp { width:100%; box-sizing:border-box; } .area-list ul { grid-template-columns:1fr 1fr; } }
+    @media(prefers-reduced-motion:reduce) { .delivery-card,.delivery-whatsapp { transition:none; } .delivery-card:hover,.delivery-whatsapp:hover { transform:none; } }
   </style>
 </head>
 <body>
@@ -73,6 +97,7 @@
     </div>
 
     <h2 class="section-title">Delivery Charges</h2>
+    <div class="charge-table-wrap">
     <table class="charge-table">
       <thead>
         <tr>
@@ -99,6 +124,7 @@
         </tr>
       </tbody>
     </table>
+    </div>
 
     <div class="note-box">
       <p><strong>Note:</strong> Grocery (Kirana) items are only delivered within Azamgarh city limits. For custom print (A-Print) orders, shipping charges will be communicated via WhatsApp based on the quantity and weight.</p>
@@ -119,7 +145,18 @@
       </ul>
     </div>
 
+    <div class="delivery-help-card">
+      <div class="delivery-help-copy">
+        <span class="delivery-help-kicker">NEED DELIVERY HELP?</span>
+        <h3>Questions about delivery or charges?</h3>
+        <p>Contact our team for delivery availability, charges or order assistance.</p>
+      </div>
+      <a class="delivery-whatsapp" href="https://wa.me/918931911428?text=Hello%20Aaradhya%20Mart%2C%20I%20have%20a%20question%20about%20delivery." target="_blank" rel="noopener">Chat on WhatsApp</a>
+    </div>
+
+
   </div>
+
 
   <footer class="site-footer" style="margin-top: 0;">
     <div class="footer-links" style="display: flex; justify-content: center; gap: 20px; margin-bottom: 15px; flex-wrap: wrap;">
