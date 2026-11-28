@@ -56,6 +56,15 @@
     }
     .bounce-anim { animation: cartBounce 0.5s ease; }
 
+
+    /* Print page premium hero */
+    .print-hero{max-width:1200px;margin:0 auto 32px;padding:clamp(24px,4vw,48px);border-radius:22px;background:radial-gradient(circle at 78% 30%,rgba(213,180,119,.22),transparent 30%),linear-gradient(120deg,#10243b,#1d3a5e);color:#fff;display:grid;grid-template-columns:1.15fr .85fr;gap:24px;align-items:center;overflow:hidden;position:relative}
+    .print-hero-copy{position:relative;z-index:2}.print-hero-kicker{font-size:10px;letter-spacing:2px;font-weight:800;color:#d8b778}.print-hero h1{font:normal clamp(32px,5vw,52px) Georgia,serif;line-height:1.08;margin:12px 0;color:#fff}.print-hero h1 em{color:#d8b778;font-style:normal}.print-hero p{max-width:520px;color:#e4eaf2;font-size:14px;line-height:1.65;margin:0}.print-hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}.print-hero-primary,.print-hero-secondary{border-radius:999px;padding:12px 18px;font-size:12px;font-weight:800;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer}.print-hero-primary{border:0;background:#d8b778;color:#10243b}.print-hero-primary:hover{background:#e7c991}.print-hero-secondary{border:1px solid rgba(255,255,255,.45);color:#fff;background:transparent}.print-hero-points{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px;color:#e8edf5;font-size:11px}.print-hero-art{height:245px;position:relative;max-width:340px;width:100%;margin:auto}.hero-paper{position:absolute;width:175px;height:230px;border-radius:5px;box-shadow:0 20px 50px rgba(0,0,0,.22);padding:18px;box-sizing:border-box}.hero-paper-back{background:#d8b778;right:20px;top:8px;transform:rotate(9deg);display:flex;align-items:center;justify-content:center;color:#10243b;font:italic 26px Georgia,serif;text-align:center}.hero-paper-front{background:#fbfaf7;left:25px;top:8px;transform:rotate(-8deg);color:#10243b;display:flex;flex-direction:column}.hero-paper-front small{font-size:9px;letter-spacing:2px;color:#a47a38}.hero-paper-front strong{font:normal 28px Georgia,serif;margin-top:28px;line-height:1.1}.hero-paper-line{width:38px;height:3px;background:#d8b778;margin-top:16px}.hero-paper-foot{font-size:7px;letter-spacing:1px;margin-top:auto;color:#64748b}.hero-stamp{position:absolute;right:0;bottom:6px;background:#fff;color:#10243b;border:2px solid #d8b778;border-radius:50%;width:70px;height:70px;display:grid;place-items:center;text-align:center;font-size:10px;font-weight:900;letter-spacing:1px;transform:rotate(12deg);box-shadow:0 8px 20px rgba(0,0,0,.15)}
+    /* Inspiration showcase: illustrative mockups, not customer work */
+    .print-showcase{max-width:1200px;margin:38px auto 30px;padding:0 4px}.print-showcase-head{text-align:center;margin-bottom:18px}.print-showcase-head .showcase-kicker{font-size:10px;letter-spacing:2px;font-weight:800;color:#b08a4d}.print-showcase-head h2{font:normal 28px Georgia,serif;color:var(--navy);margin:7px 0}.print-showcase-head p{margin:0;color:#64748b;font-size:13px}.print-showcase-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.showcase-card{background:#fff;border:1px solid #e7edf4;border-radius:14px;overflow:hidden;box-shadow:0 7px 22px rgba(16,36,59,.04);transition:transform .2s,box-shadow .2s}.showcase-card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(16,36,59,.1)}.showcase-visual{height:175px;display:grid;place-items:center;overflow:hidden;background:#f1f5f9;padding:16px}.showcase-art{width:100%;height:100%;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}.showcase-art.wedding{background:linear-gradient(135deg,#f7eee2,#ead4b7);color:#795b3d}.wedding-invite{background:#fffdf8;border:1px solid #c8a779;width:68%;height:85%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;box-shadow:0 7px 20px #8b6f4a33;padding:12px;box-sizing:border-box;font-family:Georgia,serif}.wedding-invite small{letter-spacing:2px;font-size:7px}.wedding-invite strong{font-size:19px;font-weight:normal;margin:8px 0}.wedding-invite span{font-size:8px}.showcase-art.card{background:#e7edf3}.business-card{background:#10243b;color:#d8b778;width:72%;height:64%;padding:14px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;box-shadow:0 8px 18px #10243b33}.business-card strong{font:normal 18px Georgia,serif}.business-card small{font-size:7px;letter-spacing:1.6px;color:#fff;margin-top:6px}.business-card i{height:2px;background:#d8b778;width:35px;margin:9px 0}.showcase-art.banner{background:linear-gradient(130deg,#dce8f5,#a9c4df)}.banner-art{width:90%;height:60%;background:linear-gradient(110deg,#173c66,#3679a7);color:#fff;display:flex;align-items:center;justify-content:space-around;padding:12px;box-sizing:border-box;box-shadow:0 8px 15px #23435b44}.banner-art strong{font:normal 20px Georgia,serif}.banner-art span{font-size:8px;color:#d8b778}.showcase-art.idcard{background:#e9edf2}.id-card-art{width:54%;height:85%;border-radius:8px;background:#fff;border:1px solid #d4dde6;display:flex;flex-direction:column;align-items:center;padding:10px;box-sizing:border-box;box-shadow:0 7px 18px #172f4b22}.id-card-art .id-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#d8b778,#9fb5c8);margin-bottom:6px}.id-card-art strong{font-size:9px;color:#10243b}.id-card-art small{font-size:6px;color:#64748b;margin-top:4px}.showcase-art.sticker{background:#fff6db}.sticker-art{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;max-width:210px}.sticker-art span{background:#d8b778;color:#10243b;border:2px dashed #fff;border-radius:50%;width:45px;height:45px;display:grid;place-items:center;font-size:8px;font-weight:900;transform:rotate(-8deg)}.sticker-art span:nth-child(2){background:#10243b;color:#fff;transform:rotate(8deg)}.sticker-art span:nth-child(3){background:#e7a2a2;transform:rotate(-3deg)}.showcase-art.photo{background:linear-gradient(135deg,#e4d9ed,#c8b5dd)}.photo-art{width:66%;height:80%;background:#fff;padding:9px;box-sizing:border-box;box-shadow:0 7px 20px #39214e33;transform:rotate(-5deg)}.photo-art div{height:100%;background:linear-gradient(135deg,#d9c1e6,#f0e7f6 45%,#9fb6cb);display:grid;place-items:center;color:#fff;font:normal 22px Georgia,serif}.showcase-card-copy{padding:13px 15px 15px}.showcase-card-copy h3{margin:0;color:var(--navy);font-size:14px}.showcase-card-copy p{margin:5px 0 11px;color:#64748b;font-size:11px;line-height:1.5}.showcase-request-btn{border:1px solid #d8b778;background:#fff;color:#10243b;border-radius:999px;padding:8px 12px;font-size:10px;font-weight:800;cursor:pointer}.showcase-request-btn:hover{background:#f8f2e6}
+    @media(max-width:900px){.print-hero{grid-template-columns:1fr .8fr}.print-showcase-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:650px){.print-hero{margin:0 15px 26px;grid-template-columns:1fr;padding:24px}.print-hero-art{height:205px;max-width:280px}.hero-paper{width:150px;height:190px}.print-hero h1{font-size:34px}.print-showcase{margin:30px 15px;padding:0}.print-showcase-grid{grid-template-columns:1fr 1fr;gap:10px}.showcase-visual{height:130px;padding:8px}.showcase-card-copy{padding:10px}.showcase-card-copy p{font-size:10px}.showcase-request-btn{padding:8px 9px;font-size:9px}}
+
     /* --- PRINT POLICIES STYLING --- */
     .print-policies-section {
       max-width: 1000px; margin: 60px auto; padding: 30px; background: #fff;
@@ -137,6 +146,24 @@
 
   <main class="section-wrap shop-section" style="padding-top: 40px;">
     
+  <section class="print-hero" aria-labelledby="printHeroTitle">
+    <div class="print-hero-copy">
+      <span class="print-hero-kicker">AARADHYA MART · PRINT STUDIO</span>
+      <h1 id="printHeroTitle">Make Every Print <em>Personal.</em></h1>
+      <p>From everyday essentials to special occasions — explore printing services or share your own design idea.</p>
+      <div class="print-hero-actions">
+        <button type="button" class="print-hero-primary" id="printHeroCustomBtn">Request Custom Design <span>↗</span></button>
+        <a href="#productGrid" class="print-hero-secondary">Explore Print Products ↓</a>
+      </div>
+      <div class="print-hero-points"><span>✦ Custom designs</span><span>✦ Multiple print options</span><span>✦ WhatsApp enquiry</span></div>
+    </div>
+    <div class="print-hero-art" aria-hidden="true">
+      <div class="hero-paper hero-paper-back"><span>PRINT<br>YOUR<br>IDEA</span></div>
+      <div class="hero-paper hero-paper-front"><small>A-PRINT</small><strong>Ideas<br>in Print.</strong><span class="hero-paper-line"></span><span class="hero-paper-foot">DESIGN · CREATE · PRINT</span></div>
+      <div class="hero-stamp">MADE<br>FOR YOU</div>
+    </div>
+  </section>
+
     <section id="blinkitDealSection" class="blinkit-deal-banner" style="display:none;">
       <div class="deal-banner-header">
         <h3>⚡ Deal of the Day <span>ENDS SOON</span></h3>
@@ -170,6 +197,20 @@
     <div class="product-grid" id="productGrid"></div>
     <div class="empty-state hidden" id="emptyState"><span>✧</span><h3>No print products found</h3></div>
   </main>
+
+  <!-- PRINTING SHOWCASE: illustrative sample concepts -->
+  <section class="print-showcase" aria-labelledby="printShowcaseTitle">
+    <div class="print-showcase-head"><span class="showcase-kicker">DESIGN INSPIRATION</span><h2 id="printShowcaseTitle">Our Printing Showcase</h2><p>Explore sample styles and request a design inspired by what you like.</p></div>
+    <div class="print-showcase-grid">
+      <article class="showcase-card"><div class="showcase-visual"><div class="showcase-art wedding"><div class="wedding-invite"><small>WITH LOVE & BLESSINGS</small><strong>Wedding<br>Invitation</strong><span>Join us for our special day</span></div></div></div><div class="showcase-card-copy"><h3>Wedding Invitation</h3><p>Elegant invitation concepts for your celebration.</p><button class="showcase-request-btn" data-showcase-product="Marriage Card" data-showcase-detail="Elegant wedding invitation inspired design">Request this style ↗</button></div></article>
+      <article class="showcase-card"><div class="showcase-visual"><div class="showcase-art card"><div class="business-card"><strong>Aaradhya</strong><small>YOUR BRAND · YOUR IDENTITY</small><i></i><small>BUSINESS / VISITING CARD</small></div></div></div><div class="showcase-card-copy"><h3>Visiting Card</h3><p>Clean, premium business identity concepts.</p><button class="showcase-request-btn" data-showcase-product="Visiting Card" data-showcase-detail="Premium visiting card design inspired by the showcase">Request this style ↗</button></div></article>
+      <article class="showcase-card"><div class="showcase-visual"><div class="showcase-art banner"><div class="banner-art"><div><span>YOUR MESSAGE</span><br><strong>BIG & BOLD</strong></div><span>FLEX · BANNER</span></div></div></div><div class="showcase-card-copy"><h3>Banner & Flex</h3><p>Bold, readable layouts for events and promotions.</p><button class="showcase-request-btn" data-showcase-product="Other" data-showcase-detail="Banner or flex printing. Please ask for sizes and quote.">Request this style ↗</button></div></article>
+      <article class="showcase-card"><div class="showcase-visual"><div class="showcase-art idcard"><div class="id-card-art"><div class="id-avatar"></div><strong>IDENTITY CARD</strong><small>PHOTO · NAME · DETAILS</small><small>DESIGN SAMPLE</small></div></div></div><div class="showcase-card-copy"><h3>ID Card</h3><p>Photo and information card layouts for organizations.</p><button class="showcase-request-btn" data-showcase-product="Other" data-showcase-detail="ID card printing request. Please ask for layout, material and quote.">Request this style ↗</button></div></article>
+      <article class="showcase-card"><div class="showcase-visual"><div class="showcase-art sticker"><div class="sticker-art"><span>HELLO</span><span>BRAND</span><span>THANK<br>YOU</span></div></div></div><div class="showcase-card-copy"><h3>Stickers & Labels</h3><p>Custom label and sticker concepts for products or gifts.</p><button class="showcase-request-btn" data-showcase-product="Other" data-showcase-detail="Custom stickers or labels. Please ask for size, quantity and quote.">Request this style ↗</button></div></article>
+      <article class="showcase-card"><div class="showcase-visual"><div class="showcase-art photo"><div class="photo-art"><div>Photo Gift</div></div></div></div><div class="showcase-card-copy"><h3>Photo Gifts</h3><p>Photo printing and personalized gift concepts.</p><button class="showcase-request-btn" data-showcase-product="Photo Frames" data-showcase-detail="Photo gift or photo frame printing inspired by the showcase">Request this style ↗</button></div></article>
+    </div>
+  </section>
+
 
   <!-- CUSTOM DESIGN CTA: positioned after product grid, before policies -->
   <section class="custom-design-cta" aria-labelledby="customDesignCtaTitle">
@@ -301,6 +342,11 @@
             <option value="Visiting Card">Visiting Card</option>
             <option value="Marriage Card">Marriage Card</option>
             <option value="Pamphlet">Pamphlet</option>
+            <option value="Banner/Flex">Banner / Flex</option>
+            <option value="ID Card">ID Card</option>
+            <option value="Stickers/Labels">Stickers / Labels</option>
+            <option value="Certificates">Certificates</option>
+            <option value="Photo Gifts">Photo Gifts</option>
             <option value="Other">Other (Mention in description)</option>
           </select>
         </div>
@@ -630,7 +676,19 @@
       const requestOverlay = document.getElementById("customRequestOverlay");
       const requestForm = document.getElementById("customDesignForm");
       
-      document.getElementById("openCustomRequestBtn").onclick = () => requestOverlay.style.display = "flex";
+      const openCustomRequest = () => requestOverlay.style.display = "flex";
+      document.getElementById("openCustomRequestBtn").onclick = openCustomRequest;
+      document.getElementById("printHeroCustomBtn").onclick = openCustomRequest;
+      document.querySelectorAll(".showcase-request-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const productSelect = document.getElementById("cdProduct");
+          const detailsField = document.getElementById("cdDetails");
+          productSelect.value = btn.dataset.showcaseProduct || "Other";
+          detailsField.value = btn.dataset.showcaseDetail || "";
+          openCustomRequest();
+          document.getElementById("cdName").focus();
+        });
+      });
       document.getElementById("closeRequestBtn").onclick = () => requestOverlay.style.display = "none";
       requestOverlay.addEventListener("click", (e) => { if (e.target === requestOverlay) requestOverlay.style.display = "none"; });
 
