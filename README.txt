@@ -1,41 +1,18 @@
-AARADHYA FASHION V2 - UPDATED WEBSITE
-=====================================
-Updated:
-- Seven categories: Men, Women, Kids, Sports Wear, Winter Wear, Accessories, Footwear
-- Seven category cards and category filter
-- About Us section with Bongariya Bazar, Azamgarh address
-- Admin category dropdown with all seven categories
-- Product search, sorting, details and WhatsApp order
-- Responsive navy theme
+Aaradhya Mart Homepage - Marketplace Balanced Update
 
-Files: index.html, style.css, app.js, products.js, admin.html, admin.js
+This update adjusts the homepage to present all three Aaradhya Mart stores equally:
+- Fashion (fashion.html)
+- Kirana (kirana.html)
+- Print (print.html)
 
-Run locally:
-1. Extract ZIP.
-2. Open folder in VS Code.
-3. Use Live Server on index.html.
-4. Admin panel: admin.html
+Changes made:
+- Hero copy generalized from fashion-first to marketplace-wide messaging.
+- Hero stat changed to 3 stores.
+- Main category section changed to "Explore Our Stores" with 3 equal store cards.
+- Quick Shop shortcuts reordered so Fashion, Kirana and Print appear first.
+- Budget/value section wording generalized to all stores.
+- Featured Products section label generalized and link points back to store categories.
+- Promotions now feature Kirana and Print instead of fashion-only promotion.
 
-Demo Admin:
-Username: admin
-Password: AF2026!
-
-Important:
-This is a front-end demo. Admin password is visible in admin.js and is NOT secure.
-Admin changes are stored in LocalStorage in this browser only; they do not sync
-to other customers/devices. For secure shared administration, use a backend/database.
-
-WhatsApp number configured: 918931911428.
-Update in app.js and index.html if needed.
-
-GitHub Pages:
-Upload all files and folders to repository root.
-Settings > Pages > Deploy from a branch > main > /(root) > Save.
-
-
-V3 CATEGORY FIX
----------------
-The homepage category cards now include all seven categories:
-Men's Wear, Women's Wear, Kids Wear, Sports Wear, Winter Wear,
-Accessories, and Footwear.
-Desktop: 7 cards per row; tablet: 4; mobile: 2.
+Existing functions, sections outside these targeted areas, and shopping behavior were not intentionally removed.
+Replace only index.html after making a backup. Other files are included unchanged.\nLive website behavior is not verified here; review on GitHub Pages after deployment.
