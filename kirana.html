@@ -121,7 +121,20 @@
     .stock-status-badge{position:absolute;top:7px;right:7px;z-index:4;padding:4px 7px;border-radius:5px;font-size:9px;line-height:1.2;font-weight:800;letter-spacing:.2px;max-width:calc(100% - 14px);white-space:nowrap}
     .stock-in{background:#e8f5e9;color:#247a3b}.stock-low{background:#fff3d6;color:#986900}.stock-out{background:#fde8e8;color:#b91c1c}
     @media(max-width:640px){.stock-status-badge{top:5px;right:5px;padding:3px 5px;font-size:8px}}
-</style>
+
+    /* Kirana floating actions: compact home-page style capsule */
+    .kirana-floating-actions { position:fixed !important; right:18px !important; bottom:18px !important; z-index:9999 !important; display:flex !important; align-items:center !important; gap:8px !important; padding:7px !important; background:#fff !important; border:1px solid #e6ebf1 !important; border-radius:999px !important; box-shadow:0 8px 28px rgba(16,36,59,.16) !important; }
+    .kirana-floating-actions .global-cart-btn { position:static !important; inset:auto !important; transform:none !important; display:inline-flex !important; align-items:center !important; gap:8px !important; height:44px !important; padding:0 16px !important; background:#10243b !important; color:#fff !important; border:1px solid #c5a36b !important; border-radius:999px !important; box-shadow:none !important; text-decoration:none !important; }
+    .kirana-floating-actions .global-cart-btn .cart-badge { min-width:22px !important; height:22px !important; display:inline-flex !important; align-items:center !important; justify-content:center !important; border-radius:50% !important; font-size:11px !important; }
+    .kirana-floating-actions .whatsapp-float-btn, .kirana-floating-actions .track-float-btn { position:static !important; inset:auto !important; transform:none !important; width:44px !important; height:44px !important; min-width:44px !important; padding:0 !important; display:flex !important; align-items:center !important; justify-content:center !important; border-radius:50% !important; box-shadow:none !important; text-decoration:none !important; }
+    .kirana-floating-actions .whatsapp-float-btn { background:#25D366 !important; }
+    .kirana-floating-actions .whatsapp-float-btn svg { width:23px !important; height:23px !important; display:block !important; }
+    .kirana-floating-actions .track-float-btn { background:#f1f5f9 !important; color:#10243b !important; border:1px solid #e5eaf0 !important; }
+    .kirana-floating-actions .track-float-btn svg { width:21px !important; height:21px !important; stroke:#10243b !important; stroke-width:2 !important; }
+    .kirana-floating-actions .track-float-btn span { position:absolute !important; width:1px !important; height:1px !important; padding:0 !important; margin:-1px !important; overflow:hidden !important; clip:rect(0,0,0,0) !important; white-space:nowrap !important; border:0 !important; }
+    @media(max-width:640px){ .kirana-floating-actions { right:10px !important; bottom:10px !important; gap:6px !important; padding:5px !important; } .kirana-floating-actions .global-cart-btn { height:40px !important; padding:0 12px !important; gap:6px !important; } .kirana-floating-actions .whatsapp-float-btn, .kirana-floating-actions .track-float-btn { width:40px !important; height:40px !important; min-width:40px !important; } }
+
+  </style>
 </head>
 <body>
   <header class="site-header">
@@ -176,9 +189,11 @@
     <div id="dialogContent"></div>
   </dialog>
 
-  <a href="cart.html" id="globalCartBtn" class="global-cart-btn"><span class="cart-icon-svg">🛒</span><span class="cart-text">Cart</span><span class="cart-badge" id="globalCartCount">0</span></a>
-  <a href="https://wa.me/918931911428?text=Hello%20Aaradhya%20Mart" target="_blank" class="whatsapp-float-btn" aria-label="Chat on WhatsApp"><svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M16.004 2C8.28 2 2 8.28 2 16c0 2.47.64 4.79 1.76 6.81L2 30l7.39-1.71A13.93 13.93 0 0 0 16.004 30C23.72 30 30 23.72 30 16S23.72 2 16.004 2zm0 2.31c6.76 0 12.23 5.47 12.23 12.23 0 6.76-5.47 12.23-12.23 12.23-2.13 0-4.13-.55-5.86-1.51l-.42-.23-4.32 1 1-4.21-.24-.4A12.17 12.17 0 0 1 3.77 16c0-6.76 5.47-12.23 12.23-12.23z" fill="#fff"/><path d="M21.66 18.14c-.23-.12-1.38-.68-1.6-.76-.21-.08-.37-.12-.53.12-.16.24-.61.76-.75.92-.14.16-.28.18-.51.06-.23-.12-1-.37-1.91-1.18-.71-.63-1.18-1.41-1.32-1.65-.14-.24-.02-.37.1-.49.11-.11.23-.28.35-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.53-1.27-.72-1.74-.19-.46-.38-.4-.53-.4h-.45c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.69 2.58 4.1 3.62.57.25 1.02.4 1.37.51.57.18 1.09.15 1.5.09.46-.07 1.38-.56 1.58-1.11.2-.55.2-1.02.14-1.11-.06-.09-.22-.15-.45-.27z" fill="#fff"/></svg></a>
-  <a href="track.html" class="track-float-btn" aria-label="Track Order"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg><span>Track Order</span></a>
+  <div class="kirana-floating-actions" aria-label="Shopping shortcuts">
+    <a href="cart.html" id="globalCartBtn" class="global-cart-btn"><span class="cart-icon-svg">🛒</span><span class="cart-text">Cart</span><span class="cart-badge" id="globalCartCount">0</span></a>
+    <a href="https://wa.me/918931911428?text=Hello%20Aaradhya%20Mart" target="_blank" rel="noopener" class="whatsapp-float-btn" aria-label="Chat on WhatsApp"><svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M16.004 2C8.28 2 2 8.28 2 16c0 2.47.64 4.79 1.76 6.81L2 30l7.39-1.71A13.93 13.93 0 0 0 16.004 30C23.72 30 30 23.72 30 16S23.72 2 16.004 2zm0 2.31c6.76 0 12.23 5.47 12.23 12.23 0 6.76-5.47 12.23-12.23 12.23-2.13 0-4.13-.55-5.86-1.51l-.42-.23-4.32 1 1-4.21-.24-.4A12.17 12.17 0 0 1 3.77 16c0-6.76 5.47-12.23 12.23-12.23z" fill="#fff"/><path d="M21.66 18.14c-.23-.12-1.38-.68-1.6-.76-.21-.08-.37-.12-.53.12-.16.24-.61.76-.75.92-.14.16-.28.18-.51.06-.23-.12-1-.37-1.91-1.18-.71-.63-1.18-1.41-1.32-1.65-.14-.24-.02-.37.1-.49.11-.11.23-.28.35-.42.12-.14.16-.24.24-.4.08-.16.04-.30-.02-.42-.06-.12-.53-1.27-.72-1.74-.19-.46-.38-.40-.53-.40h-.45c-.16 0-.42.06-.64.30-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.69 2.58 4.1 3.62.57.25 1.02.4 1.37.51.57.18 1.09.15 1.5.09.46-.07 1.38-.56 1.58-1.11.20-.55.20-1.02.14-1.11-.06-.09-.22-.15-.45-.27z" fill="#fff"/></svg></a>
+    <a href="track.html" class="track-float-btn" aria-label="Track Order"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg><span>Track Order</span></a>
+  </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
